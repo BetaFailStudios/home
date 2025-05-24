@@ -1,0 +1,965 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Levels of Graplink</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
+</head>
+<body>
+    <style>
+        body {
+            background-color: #222;
+            margin: auto;
+            height: 100%;
+            overflow: hidden;
+            cursor: none;
+        }
+        .share-tech-regular {
+            font-family: "Share Tech", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+    </style>
+    
+    <canvas id="gameScreen" width="1500" height="1000"></canvas>
+    <p id="fps">60</p>
+    <script>
+        const sceneSets = [
+            [
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":275,"y":850,"width":300,"height":200,"metal":true},{"x":662.5,"y":337.5,"width":25,"height":575,"metal":true},{"x":275,"y":362.5,"width":300,"height":25,"metal":true},{"x":950,"y":62.5,"width":500,"height":25,"metal":true},{"x":87.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":1412.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":1162.5,"y":-487.5,"width":175,"height":25,"metal":true},{"x":737.5,"y":-725,"width":25,"height":350,"metal":true},{"x":912.5,"y":-862.5,"width":25,"height":275,"metal":true},{"x":562.5,"y":-887.5,"width":325,"height":25,"metal":true},{"x":87.5,"y":-1500,"width":25,"height":1000,"metal":true},{"x":1412.5,"y":-1500,"width":25,"height":1000,"metal":true},{"x":262.5,"y":-1337.5,"width":25,"height":325,"metal":true},{"x":412.5,"y":-1487.5,"width":275,"height":25,"metal":true},{"x":937.5,"y":-1637.5,"width":325,"height":25,"metal":true},{"x":750,"y":-1987.5,"width":1300,"height":25,"metal":true},{"x":1325,"y":-1900,"width":100,"height":100,"winCon":true},{"x":1262.5,"y":-350,"width":25,"height":300,"metal":true}]
+                `
+            ],[
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1212.5,"y":587.5,"width":25,"height":425,"metal":true},{"x":1150,"y":387.5,"width":100,"height":25,"metal":true},{"x":662.5,"y":250,"width":25,"height":150,"metal":true},{"x":887.5,"y":75,"width":25,"height":150,"metal":true},{"x":375,"y":112.5,"width":200,"height":25,"metal":true},{"x":87.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":1412.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":412.5,"y":-262.5,"width":275,"height":25,"metal":true},{"x":287.5,"y":-212.5,"width":25,"height":75,"metal":true},{"x":750,"y":-987.5,"width":1300,"height":25,"metal":true},{"x":962.5,"y":-512.5,"width":25,"height":175,"metal":true},{"x":1025,"y":-587.5,"width":100,"height":25,"metal":true},{"x":1087.5,"y":-675,"width":25,"height":200,"metal":true},{"x":1250,"y":-762.5,"width":250,"height":25,"winCon":true}]
+                `
+            ],[
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":162.5,"y":712.5,"width":125,"height":25,"metal":true},{"x":237.5,"y":837.5,"width":25,"height":275,"metal":true},{"x":412.5,"y":725,"width":25,"height":250,"metal":true},{"x":500,"y":612.5,"width":150,"height":25,"metal":true},{"x":862.5,"y":537.5,"width":175,"height":25,"metal":true},{"x":1225,"y":412.5,"width":200,"height":25,"metal":true},{"x":962.5,"y":237.5,"width":25,"height":175,"metal":true},{"x":862.5,"y":162.5,"width":175,"height":25,"metal":true},{"x":475,"y":62.5,"width":200,"height":25,"metal":true},{"x":162.5,"y":12.5,"width":125,"height":25,"metal":true},{"x":212.5,"y":-112.5,"width":25,"height":225,"metal":true},{"x":162.5,"y":-237.5,"width":125,"height":25,"metal":true},{"x":87.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":1412.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":750,"y":-987.5,"width":1300,"height":25,"metal":true},{"x":537.5,"y":-312.5,"width":175,"height":25,"metal":true},{"x":1150,"y":-362.5,"width":200,"height":25,"metal":true},{"x":1150,"y":-675,"width":100,"height":100,"winCon":true}]
+                `
+            ],[
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":237.5,"y":512.5,"width":25,"height":75,"metal":true},{"x":350,"y":462.5,"width":250,"height":25,"metal":true},{"x":1087.5,"y":262.5,"width":25,"height":225,"metal":true},{"x":1412.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":87.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":1137.5,"y":137.5,"width":125,"height":25,"metal":true},{"x":1137.5,"y":-162.5,"width":125,"height":25,"metal":true},{"x":1187.5,"y":-125,"width":25,"height":50,"metal":true},{"x":287.5,"y":-287.5,"width":175,"height":25,"metal":true},{"x":362.5,"y":-237.5,"width":25,"height":75,"metal":true},{"x":237.5,"y":-800,"width":25,"height":400,"metal":true},{"x":375,"y":-987.5,"width":250,"height":25,"metal":true},{"x":87.5,"y":-1250,"width":25,"height":500,"metal":true},{"x":750,"y":-1487.5,"width":1300,"height":25,"metal":true},{"x":1412.5,"y":-1250,"width":25,"height":500,"metal":true},{"x":837.5,"y":-1387.5,"width":25,"height":175,"metal":true},{"x":1062.5,"y":-1187.5,"width":25,"height":175,"metal":true},{"x":1237.5,"y":-1262.5,"width":275,"height":25,"winCon":true}]
+                `
+            ],[
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1212.5,"y":662.5,"width":25,"height":375,"metal":true},{"x":1150,"y":487.5,"width":100,"height":25,"metal":true},{"x":712.5,"y":262.5,"width":25,"height":325,"metal":true},{"x":887.5,"y":50,"width":25,"height":350,"metal":true},{"x":612.5,"y":112.5,"width":175,"height":25,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":87.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":1412.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":287.5,"y":-262.5,"width":25,"height":225,"metal":true},{"x":450,"y":-362.5,"width":300,"height":25,"metal":true},{"x":1087.5,"y":-650,"width":25,"height":300,"metal":true},{"x":750,"y":-987.5,"width":1300,"height":25,"metal":true},{"x":825,"y":-750,"width":100,"height":100,"winCon":true}]
+                `
+            ],[
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":837.5,"y":-137.5,"width":225,"height":25,"metal":true},{"x":212.5,"y":387.5,"width":225,"height":25,"metal":true},{"x":725,"y":175,"width":50,"height":50},{"x":712.5,"y":-12.5,"width":25,"height":275,"metal":true},{"x":1187.5,"y":537.5,"width":175,"height":25,"metal":true},{"x":1262.5,"y":650,"width":25,"height":200,"metal":true},{"x":1412.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":87.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":1387.5,"y":-387.5,"width":25,"height":275,"metal":true},{"x":875,"y":-700,"width":50,"height":50},{"x":750,"y":-987.5,"width":1300,"height":25,"metal":true},{"x":137.5,"y":-750,"width":25,"height":400,"winCon":true},{"x":137.5,"y":-512.5,"width":75,"height":25,"metal":true},{"x":487.5,"y":-75,"width":25,"height":400,"metal":true}]
+                `
+            ],[
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":400,"y":650,"width":50,"height":50},{"x":387.5,"y":437.5,"width":25,"height":325,"metal":true},{"x":500,"y":262.5,"width":250,"height":25,"metal":true},{"x":1412.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":750,"y":-987.5,"width":1300,"height":25,"metal":true},{"x":87.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":1125,"y":-537.5,"width":200,"height":25,"metal":true},{"x":1212.5,"y":-400,"width":25,"height":250,"metal":true},{"x":137.5,"y":-675,"width":25,"height":250,"winCon":true},{"x":1075,"y":-125,"width":50,"height":50}]
+                `
+            ],[
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1100,"y":325,"width":50,"height":50},{"x":1112.5,"y":37.5,"width":25,"height":475,"metal":true},{"x":925,"y":-187.5,"width":350,"height":25,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1362.5,"y":87.5,"width":75,"height":25,"metal":true},{"x":1337.5,"y":225,"width":25,"height":250,"metal":true},{"x":1362.5,"y":362.5,"width":75,"height":25,"metal":true},{"x":1412.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":87.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":750,"y":-987.5,"width":1300,"height":25,"metal":true},{"x":312.5,"y":-550,"width":25,"height":200,"metal":true},{"x":412.5,"y":-637.5,"width":175,"height":25,"metal":true},{"x":487.5,"y":-812.5,"width":25,"height":275,"winCon":true},{"x":262.5,"y":662.5,"width":25,"height":225,"metal":true},{"x":325,"y":537.5,"width":150,"height":25,"metal":true}]
+                `
+            ],[
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":537.5,"y":75,"width":25,"height":200,"metal":true},{"x":325,"y":187.5,"width":450,"height":25,"metal":true},{"x":87.5,"y":-250,"width":25,"height":500,"metal":true},{"x":1412.5,"y":-250,"width":25,"height":500,"metal":true},{"x":750,"y":-487.5,"width":1300,"height":25,"metal":true},{"x":312.5,"y":137.5,"width":375,"height":25,"winCon":true},{"x":625,"y":837.5,"width":1000,"height":25,"oneWay":"y","metal":true},{"x":1137.5,"y":812.5,"width":25,"height":75,"metal":true},{"x":1125,"y":-37.5,"width":250,"height":25,"metal":true},{"x":475,"y":450,"width":50,"height":50},{"x":737.5,"y":412.5,"width":575,"height":25,"metal":true},{"x":1237.5,"y":50,"width":25,"height":150,"metal":true},{"x":1075,"y":762.5,"width":150,"height":25,"metal":true},{"x":575,"y":-12.5,"width":50,"height":25}]
+                `
+            ],/*[
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":875,"y":287.5,"width":1050,"height":25,"metal":true},{"x":637.5,"y":762.5,"width":1025,"height":25,"oneWay":"y","metal":true},{"x":362.5,"y":212.5,"width":25,"height":125,"metal":true},{"x":475,"y":162.5,"width":200,"height":25,"metal":true},{"x":975,"y":-75,"width":50,"height":50},{"x":1200,"y":-87.5,"width":350,"height":25,"winCon":true},{"x":1412.5,"y":-125,"width":25,"height":250,"metal":true},{"x":750,"y":-237.5,"width":1300,"height":25,"metal":true},{"x":87.5,"y":-125,"width":25,"height":250,"metal":true},{"x":962.5,"y":-162.5,"width":25,"height":125,"metal":true},{"x":1062.5,"y":312.5,"width":125,"height":25,"reset":true},{"x":437.5,"y":312.5,"width":125,"height":25}]
+                `
+            ],*/
+        ]
+
+        let scenes = sceneSets[0];
+
+        let loadedScenes = [ {}, {}, {} ];
+
+        let times = [
+        ]
+
+        for (item in sceneSets) times.push("---");
+
+        if (localStorage.getItem("graplinkTimes")) {
+            JSON.parse(localStorage.getItem("graplinkTimes")).forEach((item,i) => { times[i] = item })
+        }
+
+        //canvas or gamescreen
+        var canvas = document.getElementById("gameScreen");
+        //context, for drawing
+        var ctx = canvas.getContext("2d");
+        //settings canvas size and scale
+        var screenScale = window.innerWidth/canvas.width
+        if (window.innerHeight/canvas.height < screenScale) screenScale = window.innerHeight/canvas.height;
+        
+        //ctx.translate((window.innerWidth-canvas.width*screenScale)/4, (window.innerHeight-canvas.height*screenScale)/4);
+
+        //ctx.scale(screenScale, screenScale);
+
+        var stop = false;
+        var frameCount = 0;
+        //var $results = $("#results");
+        var fps, fpsInterval, startTime, now, then, elapsed;
+
+        let platforms = [
+            {x:1450,y:500,width:50,height:2000},
+            {x:50,y:500,width:50,height:2000}
+        ]
+
+        // initialize the timer variables and start the animation
+
+        function startAnimating(fps) {
+            fpsInterval = 1000 / fps;
+            then = Date.now();
+            startTime = then;
+            animate();
+        }
+
+        // the animation loop calculates time elapsed since the last loop
+        // and only draws if your specified fps interval is achieved
+
+        function animate() {
+
+            // request another frame
+
+            requestAnimationFrame(animate);
+
+            // calc elapsed time since last loop
+
+            now = Date.now();
+            elapsed = now - then;
+
+            // if enough time has elapsed, draw the next frame
+
+            if (elapsed > fpsInterval) {
+
+                // Get ready for next frame by setting then=now, but also adjust for your
+                // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+                then = now - (elapsed % fpsInterval);
+
+                // Put your drawing code here
+                tickloop();
+            }
+        }
+        //resizing
+        window.addEventListener("resize", (  ) => {
+            ctx.resetTransform();
+
+            //settings canvas size and scale
+            screenScale = window.innerWidth/canvas.width;
+            if (window.innerHeight/canvas.height < screenScale) screenScale = window.innerHeight/canvas.height;
+            
+            ctx.translate((window.innerWidth-canvas.width*screenScale)/2, (window.innerHeight-canvas.height*screenScale)/2);
+
+            ctx.scale(screenScale, screenScale);
+
+            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth;
+        });
+        
+        ctx.scale(screenScale, screenScale);
+
+        ctx.translate((window.innerWidth-1500*screenScale)/2, (window.innerHeight-1000*screenScale)/2);
+
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+
+        var filterStrength = 10; //used  to be 20
+        var frameTime = 0, lastLoop = new Date, thisLoop;
+        var fpsOut = document.getElementById('fps');
+
+        // Report the fps only every second, to only lightly affect measurements
+        setInterval(function(){
+            fpsOut.innerHTML = (1000/frameTime).toFixed(1);
+            game.fps = Math.max(30, Number(fpsOut.innerHTML));
+        },1000);
+
+        const keys = [];
+        let keyBuffer = [];
+
+        //detect keypresses
+        window.addEventListener('keydown', function (e) { if (!e.repeat) {
+            const key = e.key.toLowerCase();
+            if (!keys.includes(key) && !game.menu) keys.push(key);
+            if (!keyBuffer.includes(key) && !game.menu && (key.includes("arrow") || key == "z" || key == "x")) keyBuffer.push(key);
+            
+            if (!game.menu || game.menu == "winCon") {
+                if (key == " ") location.reload();
+                if (key == "r") {
+                    player = {
+                        size: 50, rotation: 0, subRotation: 0, coyoteTime: 0, wallCoyoteTime: 0, xHit: 0,
+                        x: 750, y: 900, vx: 0, vy: 0, ice: false, wallJumpStrength: 0.5, lastTouchIce: false
+                    }
+
+                    grapple = {
+                        x: 750, y: 500, vx: 0, vy: 0, length: 0, maxLength: 500, minLength: 100,
+                        connected: false, visible: false, speed: 5, left: 0, cooldown: 0
+                    }
+
+                    platforms = [
+                        {x:1450,y:500,width:50,height:2000},
+                        {x:50,y:500,width:50,height:2000}
+                    ]
+
+                    for(var i = scenes.length-1; i >= 0; i--) {
+                        platforms.forEach((item2, i2) => {if (i2 > 1) item2.y += canvas.height});
+                        platforms.push(...JSON.parse(scenes[i]));
+                    };
+
+                    game.timerAdvance = false;
+                    game.timer = 0;
+
+                    scenePos = 0;
+                    posOffset = 0;
+
+                    keyBuffer = [];
+                    keys.splice(0);
+
+                    game.menu = false;
+                }
+            }
+            
+            if (game.menu && game.menu != "winCon") {
+                if (key == "arrowright" && game.selectedLevel < sceneSets.length-1) game.selectedLevel++;
+                if (key == "arrowleft" && game.selectedLevel > 0) game.selectedLevel--;
+                if (key == "arrowdown" && game.selectedLevel < sceneSets.length-10) game.selectedLevel += 10;
+                if (key == "arrowup" && game.selectedLevel > 9) game.selectedLevel -= 10;
+
+                if (key == "z") {
+                    scenes = sceneSets[game.selectedLevel];
+
+                    for(var i = scenes.length-1; i >= 0; i--) {
+                        platforms.forEach((item2, i2) => {if (i2 > 1) item2.y += canvas.height});
+                        platforms.push(...JSON.parse(scenes[i]));
+                    };
+
+                    game.menu = false;
+                }
+                if (key == "q") {
+                    loadScene()
+                }
+            }
+        }}, false);
+        window.addEventListener('keyup', function (e) {
+            const key = e.key.toLowerCase();
+            while (keys.includes(key)) {
+                keys.splice(keys.indexOf(key), 1);
+            } 
+            while (keyBuffer.includes(key)) {
+                keyBuffer.splice(keyBuffer.indexOf(key), 1);
+            } 
+            if (key == "x" && grapple.connected) {
+                grapple.connected = false;
+                grapple.visible = false;
+            } 
+        }, false);
+
+        ctx.lineWidth = 3;
+
+        async function loadScene() {
+            const clipboardContents = await navigator.clipboard.readText();
+            if (Array.isArray(JSON.parse(clipboardContents))) {
+                scenes = [clipboardContents];
+
+                platforms.splice(2)
+                platforms.push(...JSON.parse(clipboardContents));
+
+                /*for(var i = sceneSets[game.selectedLevel].length-1; i >= 0; i--) {
+                    platforms.forEach((item2, i2) => {if (i2 > 1) item2.y += canvas.height});
+                    platforms.push(...JSON.parse(sceneSets[game.selectedLevel][i]));
+                };*/
+                game.menu = false;
+            }
+        }
+
+        const game = {
+            timer: 0, timerAdvance: false,
+            fps: 60, menu: true, selectedLevel: 0,
+            gravity: 1,
+            controls: { x: 0, y: 0 },
+            speedCap: 100, friction: 0.02, groundFriction: 0.2, capFriction: 0.2, jumpStrength: 17,
+        }
+
+        let player = {
+            size: 50, rotation: 0, subRotation: 0, coyoteTime: 0, wallCoyoteTime: 0, xHit: 0,
+            x: 750, y: 900, vx: 0, vy: 0, ice: false, wallJumpStrength: 0.5, lastTouchIce: false
+        }
+
+        let grapple = {
+            x: 750, y: 500, vx: 0, vy: 0, length: 0, maxLength: 500, minLength: 100,
+            connected: false, visible: false, speed: 5, left: 0, cooldown: 0
+        }
+
+        let scenePos = 0;
+        let posOffset = 0;
+
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+
+        function tickloop() {
+            if (keyBuffer.length && !game.menu) game.timerAdvance = true;
+            if (game.timerAdvance) game.timer++;
+
+            //check frameRate
+            var thisFrameTime = (thisLoop=new Date) - lastLoop;
+            frameTime += (thisFrameTime - frameTime) / filterStrength;
+            lastLoop = thisLoop;
+            
+            ctx.fillStyle = "#222";
+            ctx.fillRect(-1000,-1000,3500,3000);
+
+            if (game.menu) {
+                if (game.menu == "winCon") {
+                    ctx.beginPath();
+                    ctx.font = "100px share tech";
+                    ctx.fillStyle = "#eee";
+                    ctx.fillText("Level: "+(game.selectedLevel+1), canvas.width/2, 300);
+                    ctx.fillText("Time: "+(game.timer/60).toFixed(2), canvas.width/2, 400);
+                    ctx.font = "70px share tech";
+                    ctx.fillText("Space for level select", canvas.width/2, 500);
+                    ctx.fillText("R for restart", canvas.width/2, 600);
+
+                    return;
+                }
+
+                sceneSets.forEach( (item,i) => {
+                    const x = 50+i%10*70;
+                    const y = 50+Math.floor(i/10)*70;
+
+                    ctx.beginPath();
+                    ctx.fillStyle = "#555"
+                    ctx.strokeStyle = "#eee"
+                    ctx.rect(x,y,50,50);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.font = "20px share tech";
+                    ctx.fillStyle = "#eee";
+                    ctx.fillText(times[i], x+25, y+70);
+
+                    if (game.selectedLevel == i) {
+                        ctx.moveTo(x-5, y+10);
+                        ctx.lineTo(x-5, y-5);
+                        ctx.lineTo(x+10, y-5);
+
+                        ctx.moveTo(x+50-10, y-5);
+                        ctx.lineTo(x+50+5, y-5);
+                        ctx.lineTo(x+50+5, y+10);
+
+                        ctx.moveTo(x-5, y+50-10);
+                        ctx.lineTo(x-5, y+50+5);
+                        ctx.lineTo(x+10, y+50+5);
+
+                        ctx.moveTo(x+50-10, y+50+5);
+                        ctx.lineTo(x+50+5, y+50+5);
+                        ctx.lineTo(x+50+5, y+50-10);
+                    }
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.fillStyle = "#ddd";
+                    ctx.font = "20px share tech";
+                    ctx.fillText(i+1,x+25,y+25);
+                })
+            } else {
+                //drawTimer
+                ctx.beginPath();
+                ctx.font = "20px share tech";
+                ctx.fillStyle = "#fff";
+                ctx.fillText((game.timer/60).toFixed(2), canvas.width/2, 50);
+
+                game.controls = { x: 0, y: 0 };
+
+                platformTick();
+
+                grappleTick();
+
+                playerTick();
+
+                ctx.beginPath();
+                ctx.strokeStyle = "#fff";
+
+                ctx.strokeRect(200,1110+posOffset, 35, 35);
+                ctx.strokeRect(250,1110+posOffset, 35, 35);
+
+                ctx.strokeRect(400,1095+posOffset, 25, 25);
+                ctx.strokeRect(365,1130+posOffset, 25, 25);
+                ctx.strokeRect(400,1130+posOffset, 25, 25);
+                ctx.strokeRect(435,1130+posOffset, 25, 25);
+
+                ctx.beginPath();
+
+                ctx.moveTo(210, 1120+posOffset);
+                ctx.lineTo(225, 1120+posOffset);
+                ctx.lineTo(210, 1135+posOffset);
+                ctx.lineTo(225, 1135+posOffset);
+
+                ctx.moveTo(260, 1120+posOffset);
+                ctx.lineTo(275, 1135+posOffset);
+                ctx.moveTo(275, 1120+posOffset);
+                ctx.lineTo(260, 1135+posOffset);
+
+                ctx.stroke();
+
+                sceneLoader();
+
+                //player controls visual
+                ctx.fillStyle = "#ffffff44"
+
+                ctx.beginPath();
+                ctx.rect(900,45, 25, 25);
+                if (keys.includes("arrowup")) ctx.fill();
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.rect(865,80, 25, 25);
+                if (keys.includes("arrowleft")) ctx.fill();
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.rect(900,80, 25, 25);
+                if (keys.includes("arrowdown")) ctx.fill();
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.rect(935,80, 25, 25);
+                if (keys.includes("arrowright")) ctx.fill();
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.rect(500,55, 35, 35);
+                if (keys.includes("z")) ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.rect(550,55, 35, 35);
+                if (keys.includes("x")) ctx.fill();
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(510, 65);
+                ctx.lineTo(525, 65);
+                ctx.lineTo(510, 80);
+                ctx.lineTo(525, 80);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(560, 65);
+                ctx.lineTo(575, 80);
+                ctx.moveTo(575, 65);
+                ctx.lineTo(560, 80);
+                ctx.stroke();
+            }
+        }
+
+        function playerTick() {
+            player.rotation += 0.025;
+            player.subRotation += 0.003;
+            //draw the player
+            ctx.strokeStyle = `rgba(255, 255, 255, ${player.wallJumpStrength})`;
+            ctx.fillStyle = "#ffffff33";
+            ctx.beginPath();
+            ctx.moveTo(player.x-player.size*0.4, player.y-player.size*0.5+1.5);
+            ctx.lineTo(player.x+player.size*0.4, player.y-player.size*0.5+1.5);
+            ctx.moveTo(player.x-player.size*0.4, player.y+player.size*0.5-1.5);
+            ctx.lineTo(player.x+player.size*0.4, player.y+player.size*0.5-1.5);
+            ctx.moveTo(player.x-player.size*0.5+1.5, player.y-player.size*0.4);
+            ctx.lineTo(player.x-player.size*0.5+1.5, player.y+player.size*0.4);
+            ctx.moveTo(player.x+player.size*0.5-1.5, player.y-player.size*0.4);
+            ctx.lineTo(player.x+player.size*0.5-1.5, player.y+player.size*0.4);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            for(var i = 0; i < Math.PI*2; i += Math.PI/4) ctx.lineTo( player.x+Math.sin(player.subRotation+i)*player.size*0.4, player.y-Math.cos(player.subRotation+i)*player.size*0.4 );
+            ctx.closePath();
+            ctx.stroke();
+
+            //inside
+            ctx.fillStyle = `rgba(255, 255, 255, ${grapple.left*player.wallJumpStrength})`;
+            ctx.beginPath();
+            ctx.moveTo( player.x + Math.sin( player.subRotation + player.rotation ) * player.size*0.4, player.y + Math.cos( player.subRotation + player.rotation ) * player.size*0.4 );
+            ctx.lineTo( player.x + Math.sin( player.subRotation - player.rotation + Math.PI / 2 ) * player.size*0.4, player.y + Math.cos( player.subRotation - player.rotation + Math.PI / 2 ) * player.size*0.4 );
+            ctx.lineTo( player.x + Math.sin( player.subRotation + player.rotation - Math.PI / 2 ) * player.size*0.4, player.y + Math.cos( player.subRotation + player.rotation - Math.PI / 2 ) * player.size*0.4 );
+            ctx.lineTo( player.x + Math.sin( player.subRotation - player.rotation + Math.PI ) * player.size*0.4, player.y + Math.cos( player.subRotation - player.rotation + Math.PI ) * player.size*0.4 );
+            ctx.closePath();
+            ctx.fill();
+
+            playerControls();
+            
+            player.x += player.vx; player.y += player.vy;
+            
+            checkPlayerCollisions();
+
+            player.vy += game.gravity;
+            player.vx *= 1-game.friction;
+            player.vy *= 1-game.friction;
+
+            //soft speed cap
+            if ( Math.hypot(player.vx, player.vy) > game.speedCap ) {
+                player.vx *= 1-game.capFriction;
+                player.vy *= 1-game.capFriction;
+            }
+        }
+
+        function checkPlayerCollisions() {
+            player.noControl = false;
+            let otherTouch = false;
+            let iceTouch = false;
+            let xFriction = false;
+            let yFriction = false;
+            platforms.forEach( (platform) => {
+                if ( 
+                    player.x+player.size/2 >= platform.x-platform.width/2 && player.x-player.size/2 <= platform.x+platform.width/2 &&
+                    player.y+player.size/2 >= platform.y-platform.height/2 && player.y-player.size/2 <= platform.y+platform.height/2
+                ) {
+                    if (platform.winCon) {
+                        game.menu = "winCon";
+                        game.timerAdvance = false;
+
+                        if ((game.timer/60).toFixed(2) < Number(times[game.selectedLevel]) || times[game.selectedLevel] == "---") times[game.selectedLevel] = (game.timer/60).toFixed(2);
+
+                        localStorage.setItem("graplinkTimes", JSON.stringify(times));
+                    }
+                    if (platform.reset && !grapple.connected) {
+                        player.wallJumpStrength = 1;
+                        grapple.left = 1;
+                    }
+                    if (platform.noControl) player.noControl = true;
+                    if (platform.ice) iceTouch = true;
+                    if (!platform.glass && !platform.noControl) {
+                        if (!platform.ice) otherTouch = true;
+
+                        const diff = { x: platform.x-platform.width/2-(player.x+player.size/2), 
+                            y: platform.y-platform.height/2-player.y-player.size/2 }
+
+                        const otherX = platform.x+platform.width/2-player.x+player.size/2;
+                        const otherY = platform.y+platform.height/2-player.y+player.size/2;
+                        if (Math.abs(otherX) < Math.abs(diff.x)) diff.x = otherX;
+                        if (Math.abs(otherY) < Math.abs(diff.y)) diff.y = otherY;
+                        
+                        let collisionDirection = "";
+
+                        if (Math.abs(diff.y) < Math.abs(diff.x)) collisionDirection = "y";
+                        else collisionDirection = "x";
+
+                        if (diff[collisionDirection] < 0) collisionDirection = "-" + collisionDirection;
+
+                        if (platform.oneWay) if (collisionDirection != platform.oneWay || player["v"+platform.oneWay.at(-1)]*(1-2*platform.oneWay.includes("-")) > 0) collisionDirection = "";
+
+                        if (collisionDirection.includes("x")) if ( ! (Math.sign(diff.x) == -Math.sign(player.vx) ) ) collisionDirection = "";
+                        if (collisionDirection.includes("y")) if ( ! (Math.sign(diff.y) == -Math.sign(player.vy) ) ) collisionDirection = "";
+
+                        if (collisionDirection.includes("y")) {
+                            if (diff.y) player.y = platform.y + (platform.height/2+player.size/2) * Math.sign(diff.y);
+                            
+                            player.vy = 0;
+
+                            if (player.y < platform.y) {
+                                player.coyoteTime = 0.1;
+                                player.wallJumpStrength = 1;
+                                player.ice = true;
+                                if (!grapple.connected) grapple.left = 1;
+                            }
+
+                            if (Math.sign(player.vx) != Math.sign(game.controls.x) && !platform.ice) xFriction = 1-game.groundFriction;
+                        } else if (collisionDirection.includes("x")) {
+                            if (diff.x) player.x = platform.x + (platform.width/2+player.size/2) * Math.sign(diff.x);
+                            
+                            player.vx = 0;
+
+                            player.xHit = 1-2*(player.x < platform.x);
+                            if (player.vy > 0 && !platform.ice) yFriction = 1-2*game.groundFriction;
+
+                            player.wallCoyoteTime = 0.1;
+                        }
+                    }
+                }
+            } );
+
+            if (player.wallCoyoteTime <= 0) {
+                player.xHit = 0;
+                if (player.coyoteTime <= 0) player.ice = false;
+            }
+            if (player.coyoteTime <= 0 || player.wallCoyoteTime <= 0) {
+                if (/*!iceTouch && */otherTouch) player.ice = false;
+                else if (iceTouch && !otherTouch) player.ice = true;
+            }
+
+            if (xFriction) player.vx *= xFriction;
+            if (yFriction) player.vy *= yFriction;
+            //else player.ice = false;
+        }
+
+        function playerControls() {
+            if ((keys.includes("arrowright") - keys.includes("arrowleft")) || (keys.includes("arrowdown") - keys.includes("arrowup"))) {
+                game.controls = {
+                    x: keys.includes("arrowright") - keys.includes("arrowleft"), y: keys.includes("arrowdown") - keys.includes("arrowup"),
+                }
+            }
+
+            if (!player.noControl) {
+                if (game.controls.x) player.vx += game.controls.x*0.6*( 0.1 + 0.9*!(player.ice && !player.xHit) );
+                if (game.controls.y > 0) player.vy += 1/3;
+                else player.vy -= 1/3;
+            }
+
+            if (player.coyoteTime > 0) player.coyoteTime -= 1/60;
+            if (player.wallCoyoteTime > 0) player.wallCoyoteTime -= 1/60;
+            if (grapple.cooldown > 0) grapple.cooldown -= 1/60;
+            if (keyBuffer.includes("z")) {
+                let didJump = false;
+                if (player.coyoteTime > 0) {
+                    player.coyoteTime = 0;
+                    if (player.vy > -game.jumpStrength) player.vy = -game.jumpStrength;
+                    didJump = true;
+                } else if (player.xHit) {
+                    const jumpStrength = -game.jumpStrength*0.9*player.wallJumpStrength*( 0.3 + 0.7*!player.ice )
+                    player.vx = player.xHit*game.jumpStrength*0.55;
+                    if (player.vy > jumpStrength) player.vy = jumpStrength;
+                    player.wallJumpStrength *= 0.9;
+                    didJump = true;
+                }
+
+                if (didJump) while (keyBuffer.includes("z")) {
+                    keyBuffer.splice(keyBuffer.indexOf("z"), 1);
+                    grapple.cooldown = 0.1;
+                } 
+            }
+
+            if (keyBuffer.includes("x") && !grapple.connected && (game.controls.x || game.controls.y) && grapple.left > 0) {
+                var oriAangle = Math.atan(game.controls.x/game.controls.y) + Math.PI*(game.controls.y < 0);
+                if (game.controls.y == 0) oriAangle = game.controls.x*Math.PI/2;
+            
+                let noHit = true;
+                const angleRez = Math.PI/30;
+                for (var i = 0; i < 12 && noHit; i++) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#ffffff09";
+                    ctx.moveTo(player.x, player.y);
+                    let angle = oriAangle;
+
+                    if (i == 1) angle -= angleRez;
+                    else if (i == 3) angle += angleRez;
+                    else if (i == 4) angle -= angleRez*2;
+                    else if (i == 5) angle += angleRez*2;
+                    else if (i == 6) angle -= angleRez*3;
+                    else if (i == 7) angle += angleRez*3;
+                    else if (i == 8) angle -= angleRez*4;
+                    else if (i == 9) angle += angleRez*4;
+                    else if (i == 10) angle -= angleRez*5;
+                    else if (i == 11) angle += angleRez*5;
+
+                    grapple.vx = grapple.speed*Math.sin(angle);
+                    grapple.vy = grapple.speed*Math.cos(angle);
+
+                    grapple.x = player.x;
+                    grapple.y = player.y;
+
+                    let contin = true;
+                    while (contin) {
+                        grapple.x += grapple.vx;
+                        grapple.y += grapple.vy;
+                        const dist = Math.hypot(player.x-grapple.x, player.y-grapple.y);
+                        let angle = Math.atan( (player.x-grapple.x) / (player.y-grapple.y) ) + Math.PI * (player.y > grapple.y);
+                        if (player.y == grapple.y) angle = -Math.sign(player.x-grapple.x)*Math.PI/2;
+
+                        if (dist > grapple.maxLength) {
+                            grapple.visible = false;
+                            contin = false;
+                        } else platforms.forEach( (platform) => {
+                            if ( grapple.x >= platform.x-platform.width/2 && grapple.x <= platform.x+platform.width/2 && 
+                                grapple.y >= platform.y-platform.height/2 && grapple.y <= platform.y+platform.height/2 && !platform.noControl && !platform.winCon) if (platform.metal ) { 
+                                grapple.visible = false;
+                                contin = false;
+                            } else {
+                                noHit = false;
+                                if (!platform.reset) grapple.left--;
+                                player.wallJumpStrength = 1;
+                                contin = false;
+
+                                contin = false;
+                                if (dist < grapple.minLength && grapple.cooldown <= 0) {
+                                    grapple.length = grapple.minLength*2;
+
+                                    const playerSpeed = Math.hypot(player.vx, player.vy);
+                                    const cosineSimilarity = ( player.vx * Math.sin(angle) + player.vy * Math.cos(angle)) / playerSpeed; 
+
+                                    player.vx -= Math.sin(angle)*30 + Math.sin(angle)*playerSpeed*cosineSimilarity;
+                                    player.vy -= Math.cos(angle)*30 + Math.cos(angle)*playerSpeed*cosineSimilarity;
+                                    player.coyoteTime = 0;
+                                    player.wallCoyoteTime = 0;
+                                } else grapple.length = dist;
+                                grapple.connected = true;
+                                grapple.visible = true;
+
+                                const diff = { x: platform.x-platform.width/2-grapple.x, 
+                                    y: platform.y-platform.height/2-grapple.y }
+
+                                const otherX = platform.x+platform.width/2-grapple.x;
+                                const otherY = platform.y+platform.height/2-grapple.y;
+                                if (Math.abs(otherX) < Math.abs(diff.x)) diff.x = otherX;
+                                if (Math.abs(otherY) < Math.abs(diff.y)) diff.y = otherY;
+
+                                if (Math.abs(diff.y) < Math.abs(diff.x)) {
+                                    if (diff.y) grapple.y = platform.y + (platform.height/2) * Math.sign(diff.y);
+                                    if (Math.sign(diff.y != Math.sign(grapple.vy) )) grapple.vy = 0;
+                                } else {
+                                    if (diff.x) grapple.x = platform.x + (platform.width/2) * Math.sign(diff.x);
+                                    if (Math.sign(diff.x != Math.sign(grapple.vx) )) grapple.vx = 0;
+                                }
+                            }
+                        } );
+                    }
+                    ctx.lineTo(grapple.x, grapple.y);
+                    //ctx.stroke();
+                }
+
+                if (!noHit) while (keyBuffer.includes("x")) {
+                    keyBuffer.splice(keyBuffer.indexOf("x"), 1);
+                } else {
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#ffffff09";
+                    ctx.arc(player.x, player.y, grapple.maxLength, Math.PI/2-oriAangle-angleRez*5, Math.PI/2-oriAangle+angleRez*5);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function grappleTick() {
+            if (grapple.connected) {
+                grapple.visible = true;
+                const dist = Math.hypot(player.x-grapple.x, player.y-grapple.y);
+                if (dist > grapple.length+1) {
+                    let angle = Math.atan( (player.x-grapple.x) / (player.y-grapple.y) ) + Math.PI * (player.y > grapple.y);
+                    if (player.y == grapple.y) angle = -Math.sign(player.x-grapple.x)*Math.PI/2;
+                    const moveDist = grapple.length-dist;
+
+                    player.x -= Math.sin(angle)*moveDist;
+                    player.y -= Math.cos(angle)*moveDist;
+
+                    const playerSpeed = Math.hypot(player.vx, player.vy);
+                    let playerAngle;
+
+                    let cosineSimilarity = ( Math.sin(angle+Math.PI/2) * player.vx + Math.cos(angle+Math.PI/2) * player.vy ) / playerSpeed;
+                    //reduces centrifugal friction
+                    if (Math.abs(cosineSimilarity) > 0.9) cosineSimilarity = Math.sign(cosineSimilarity) * (1-0.25*(1-Math.abs(cosineSimilarity)) );
+
+                    if (cosineSimilarity > 0) playerAngle = angle + Math.PI/2;
+                    else playerAngle = angle - Math.PI/2;
+
+                    player.vx = Math.sin(playerAngle)*playerSpeed*Math.abs(cosineSimilarity);
+                    player.vy = Math.cos(playerAngle)*playerSpeed*Math.abs(cosineSimilarity);
+
+                    player.wallJumpStrength = 1;
+                }
+            }
+
+            if (grapple.visible) {
+                const dist = Math.hypot(player.x-grapple.x, player.y-grapple.y);
+                let angle = Math.atan( (player.x-grapple.x) / (player.y-grapple.y) ) + Math.PI * (player.y > grapple.y);
+                if (player.y == grapple.y) angle = -Math.sign(player.x-grapple.x)*Math.PI/2;
+                const zigZag = (grapple.length-dist)/grapple.length * 10 * grapple.connected;
+                const moveDist = dist/10;
+
+                ctx.strokeStyle = "#fff";
+                ctx.beginPath();
+                ctx.moveTo(player.x, player.y);
+                for (var i = 1; i < 10; i++) ctx.lineTo( player.x + Math.sin(angle)*i*moveDist + Math.sin(angle+Math.PI/2)*(1-2*(i%2))*zigZag, player.y + Math.cos(angle)*i*moveDist + Math.cos(angle+Math.PI/2)*(1-2*(i%2))*zigZag );
+                ctx.lineTo(grapple.x, grapple.y);
+                ctx.stroke();
+            }
+        }
+
+        function platformTick() {
+            platforms.forEach( (item, i) => {
+                if (item.noControl) {
+                    const point1 = [25+item.x-item.width/2,item.y-item.height/2];
+                    const point2 = [item.x-item.width/2,25+item.y-item.height/2];
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#00ff0044";
+
+                    ctx.rect(item.x-item.width/2,item.y-item.height/2,1,1);
+                    ctx.rect(item.x+item.width/2,item.y+item.height/2,1,1);
+
+                    var contin = true;
+                    while (contin) {
+                        ctx.moveTo(...point1);
+                        ctx.lineTo(...point2);
+
+                        if (point1[0] > item.x+item.width/2-20) point1[1] += 25;
+                        else point1[0] += 25;
+                        if (point2[1] > item.y+item.height/2-20) point2[0] += 25;
+                        else point2[1] += 25;
+
+                        if (point1[1] > item.y+item.height/2-25 && point2[0] > item.x+item.width/2-25) contin = false;
+                    }
+
+                    ctx.stroke();
+
+                    return;
+                }
+
+                if (item.winCon) {
+                    const point1 = [item.x-item.width/2-1.5,item.y-item.height/2-1.5];
+                    const point2 = [item.x-item.width/2-1.5,item.y-item.height/2-1.5];
+
+                    ctx.beginPath();
+                    ctx.fillStyle = "#00ff99";
+                    var contin = true;
+                    while (contin) {
+                        ctx.rect(...point1,3,3);
+                        ctx.rect(...point2,3,3);
+
+                        if (point1[0] > item.x+item.width/2-20) point1[1] += 25;
+                        else point1[0] += 25;
+                        if (point2[1] > item.y+item.height/2-20) point2[0] += 25;
+                        else point2[1] += 25;
+
+                        if (point1[1] > item.y+item.height/2-25 && point2[0] > item.x+item.width/2-25) contin = false;
+                    }
+                    ctx.rect(...point1,3,3);
+                    ctx.rect(...point2,3,3);
+
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.fillStyle = "#00ff9933";
+                    ctx.rect(item.x-item.width/2, item.y-item.height/2,item.width,item.height);
+                    ctx.fill();
+
+                    return;
+                }
+
+                ctx.strokeStyle = "#999";
+                if (item.reset) ctx.strokeStyle = "#ff0"; 
+                if (item.ice) ctx.strokeStyle = "#0ff";
+                if (item.metal) ctx.strokeStyle += "55";  
+                ctx.fillStyle = "#99999933";
+                item.width -= 3;
+                item.height -= 3;
+                ctx.beginPath();
+                ctx.rect(item.x-item.width/2, item.y-item.height/2,item.width,item.height);
+                ctx.fill();
+                if (item.glass || item.oneWay) {
+                    ctx.beginPath();
+                    ctx.moveTo(item.x-item.width/2, item.y-item.height/2+5);
+                    ctx.lineTo(item.x-item.width/2, item.y-item.height/2);
+                    ctx.lineTo(item.x-item.width/2+5, item.y-item.height/2);
+
+                    ctx.moveTo(item.x+item.width/2, item.y-item.height/2+5);
+                    ctx.lineTo(item.x+item.width/2, item.y-item.height/2);
+                    ctx.lineTo(item.x+item.width/2-5, item.y-item.height/2);
+
+                    ctx.moveTo(item.x+item.width/2, item.y+item.height/2-5);
+                    ctx.lineTo(item.x+item.width/2, item.y+item.height/2);
+                    ctx.lineTo(item.x+item.width/2-5, item.y+item.height/2);
+
+                    ctx.moveTo(item.x-item.width/2, item.y+item.height/2-5);
+                    ctx.lineTo(item.x-item.width/2, item.y+item.height/2);
+                    ctx.lineTo(item.x-item.width/2+5, item.y+item.height/2);
+
+                    if (item.oneWay) {
+                        if (item.oneWay == "-y") {
+                            ctx.moveTo(item.x-item.width/2, item.y-item.height/2);
+                            ctx.lineTo(item.x+item.width/2, item.y-item.height/2)
+                        } else if (item.oneWay == "y") {
+                            ctx.moveTo(item.x-item.width/2, item.y+item.height/2);
+                            ctx.lineTo(item.x+item.width/2, item.y+item.height/2)
+                        } else if (item.oneWay == "-x") {
+                            ctx.moveTo(item.x-item.width/2, item.y-item.height/2);
+                            ctx.lineTo(item.x-item.width/2, item.y+item.height/2)
+                        } else if (item.oneWay == "x") {
+                            ctx.moveTo(item.x+item.width/2, item.y-item.height/2);
+                            ctx.lineTo(item.x+item.width/2, item.y+item.height/2)
+                        }
+                    }
+                }
+                ctx.stroke();
+
+                if (i > 1 && !item.metal) {
+                    ctx.beginPath();
+                    ctx.strokeStyle += "77"; 
+                    const gridSize = 10;
+                    if (item.width >= item.height) {
+                        const amount = Math.floor(item.height/gridSize);
+                        const offset = item.height%gridSize;
+                        for (var i = 1; i < amount; i++) {
+                            ctx.moveTo(item.x-item.width/2+gridSize, item.y-item.height/2+i*gridSize+offset/2);
+                            ctx.lineTo(item.x+item.width/2-gridSize, item.y-item.height/2+i*gridSize+offset/2);
+                        }
+                    } 
+                    if (item.width <= item.height) {
+                        const amount = Math.floor(item.width/gridSize);
+                        const offset = item.width%gridSize;
+                        for (var i = 1; i < amount; i++) {
+                            ctx.moveTo(item.x-item.width/2+i*gridSize+offset/2, item.y-item.height/2+gridSize, );
+                            ctx.lineTo(item.x-item.width/2+i*gridSize+offset/2, item.y+item.height/2-gridSize, );
+                        }
+                    }
+                    ctx.stroke();
+                }
+
+                item.width += 3;
+                item.height += 3;
+                
+                if (item.red !== undefined) {
+                    ctx.strokeStyle = "#b00";
+                    ctx.fillStyle = "#bb000030";
+                    const size = (Math.min(item.width, item.height)-10)*(1-item.red)+10
+
+                    ctx.beginPath();
+                    ctx.rect(item.x-item.width/2+size/2, item.y-item.height/2+size/2, item.width-size, item.height-size);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    if (grapple.connected) { if (
+                        grapple.x >= item.x-item.width/2 && 
+                        grapple.x <= item.x+item.width/2 && 
+                        grapple.y >= item.y-item.height/2 && 
+                        grapple.y <= item.y+item.height/2
+                    ) {
+                        item.red -= 0.01;
+                        if (item.red < 0) {
+                            item.red = 0;
+                            grapple.connected = false;
+                            grapple.visible = false;
+                        }
+                    } else {
+                        item.red += 0.003;
+                        if (item.red > 1) item.red = 1;
+                    }} else {
+                        item.red += 0.003;
+                        if (item.red > 1) item.red = 1;
+                    }
+                }
+            } )
+        }
+
+        function sceneLoader() {
+            const oldOffset = posOffset;
+            let updateScenes = false;
+            if (player.y < 400) {
+                updateScenes = true;
+                posOffset += 400-player.y;
+
+                grapple.y += 400-player.y;
+                player.y = 400;
+            } else if (player.y > 800) {
+                updateScenes = true;
+                posOffset += 800-player.y;
+
+                grapple.y += 800-player.y;
+                player.y = 800;
+            }
+            if (updateScenes) {
+                const moveAmount = oldOffset-posOffset
+
+                platforms.forEach((platform, i) => { if (i > 1) {
+                    platform.y -= moveAmount;
+                }});
+            }
+        }
+
+        if (navigator.userAgent.toLowerCase().includes("firefox")) startAnimating(60);
+        else setInterval( () => { tickloop() }, 16.66);
+    </script>
+</body>
+</html>
