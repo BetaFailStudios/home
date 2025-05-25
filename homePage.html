@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetaFail Studios</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
+    <link rel="icon" href="betafail.png">
+</head>
+<body>
+    <style>
+        body {
+            background-color: #222;
+            margin: auto;
+            height: 100%;
+            overflow: hidden;
+            cursor: none;
+        }
+        .share-tech-regular {
+            font-family: "Share Tech", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+    </style>
+    <canvas onmousemove="xy(event)" id="gameScreen" width="1500" height="1000"></canvas>
+    <p id="fps">60</p>
+    <script>
+        //canvas or gamescreen
+        var canvas = document.getElementById("gameScreen");
+        //context, for drawing
+        var ctx = canvas.getContext("2d");
+
+        ctx.lineWidth = 3;
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        //settings canvas size and scale
+        var screenScale = window.innerWidth/1500;
+        if (window.innerHeight/1000 < screenScale) screenScale = window.innerHeight/1000;
+
+        canvas.translateOffset = [ (window.innerWidth-1500*screenScale)/2, (window.innerHeight-1000*screenScale)/2 ];
+
+        ctx.translate((window.innerWidth-1500*screenScale)/2, (window.innerHeight-1000*screenScale)/2);
+
+        ctx.scale(screenScale, screenScale);
+
+        var stop = false;
+        var frameCount = 0;
+        //var $results = $("#results");
+        var fps, fpsInterval, startTime, now, then, elapsed;
+
+        // the animation loop calculates time elapsed since the last loop
+        // and only draws if your specified fps interval is achieved
+
+        function animate() {
+
+            // request another frame
+
+            requestAnimationFrame(animate);
+
+            // calc elapsed time since last loop
+
+            now = Date.now();
+            elapsed = now - then;
+
+            // if enough time has elapsed, draw the next frame
+
+            if (elapsed > fpsInterval) {
+
+                // Get ready for next frame by setting then=now, but also adjust for your
+                // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+                then = now - (elapsed % fpsInterval);
+
+                // Put your drawing code here
+                tickloop();
+            }
+        }
+
+        //resizing
+        window.addEventListener("resize", (  ) => {
+            ctx.resetTransform();
+
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            //settings canvas size and scale
+            screenScale = window.innerWidth/1500;
+            if (window.innerHeight/1000 < screenScale) screenScale = window.innerHeight/1000;
+
+            canvas.translateOffset = [ (window.innerWidth-1500*screenScale)/2, (window.innerHeight-1000*screenScale)/2 ];
+            
+            ctx.translate((window.innerWidth-1500*screenScale)/2, (window.innerHeight-1000*screenScale)/2);
+
+            ctx.scale(screenScale, screenScale);
+
+            ctx.lineWidth = 3;
+        });
+        
+        let mouseX = 0;
+        let mouseY = 0;
+
+        window.addEventListener('mousedown', function (e) {
+            const key = "mouse";
+            if (!keys.includes(key)) keys.push(key);
+
+            if (mouseX > 50 && mouseX < 300 && mouseY > 500 && mouseY < 750) {
+                window.location.href = "https://www.betafailstudios.com/hip-to-be-squared";
+            }
+        }, false);
+        window.oncontextmenu = () => {
+            return false;
+        }
+        window.addEventListener('mouseup', function (e) {
+            const key = "mouse";
+            while (keys.includes(key)) {
+                keys.splice(keys.indexOf(key), 1);
+            }
+        }, false);
+        function xy(e) {
+            mouseX = e.x/screenScale - canvas.translateOffset[0]/screenScale;
+            mouseY = e.y/screenScale - canvas.translateOffset[1]/screenScale;
+        }
+
+        // initialize the timer variables and start the animation
+
+        function startAnimating(fps) {
+            fpsInterval = 1000 / fps;
+            then = Date.now();
+            startTime = then;
+            animate();
+        }
+
+        var filterStrength = 10; //used  to be 20
+        var frameTime = 0, lastLoop = new Date, thisLoop;
+        var fpsOut = document.getElementById('fps');
+
+        // Report the fps only every second, to only lightly affect measurements
+        setInterval(function(){
+            fpsOut.innerHTML = (1000/frameTime).toFixed(1);
+            game.fps = Math.max(30, Number(fpsOut.innerHTML));
+        },1000);
+
+        const keys = [];
+
+        //detect keypresses
+        window.addEventListener('keydown', function (e) { if (!e.repeat) {
+            const key = e.key.toLowerCase();
+            if (!keys.includes(key) && !game.menu) keys.push(key);
+        }}, false);
+        window.addEventListener('keyup', function (e) {
+            const key = e.key.toLowerCase();
+            while (keys.includes(key)) {
+                keys.splice(keys.indexOf(key), 1);
+            }
+        }, false);
+
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+
+        let BFStudios = new Image();
+        BFStudios.src = "betafailStudios.png";
+
+        let htbs = new Image();
+        htbs.src = "htbs.png";
+
+        function tickloop() {
+            //check frameRate
+            var thisFrameTime = (thisLoop=new Date) - lastLoop;
+            frameTime += (thisFrameTime - frameTime) / filterStrength;
+            lastLoop = thisLoop;
+
+            ctx.beginPath();
+            ctx.fillStyle = "#000";
+            ctx.rect(-1000,-1000,3500,3000);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.drawImage(BFStudios, 0, 0);
+            ctx.drawImage(htbs, 50, 500, 250, 250);
+
+            if (mouseX > 50 && mouseX < 300 && mouseY > 500 && mouseY < 750) {
+                ctx.beginPath();
+                ctx.strokeStyle = "#fff";
+                ctx.strokeRect(45, 495, 260, 260);
+            }
+
+            ctx.beginPath();
+            ctx.fillStyle = "#fff";
+            ctx.font = "125px share tech";
+            ctx.fillText("BetaFail Studios", 800, 150);
+            ctx.font = "50px share tech";
+            ctx.fillText("Hip to be Squared", 175, 800);
+
+            //render the mouse
+            ctx.beginPath();
+            ctx.fillStyle = "#fff";
+            ctx.strokeStyle = "#000";
+            ctx.moveTo(mouseX,mouseY);
+            ctx.lineTo(mouseX+15,mouseY+2);
+            ctx.lineTo(mouseX+2,mouseY+15);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        if (navigator.userAgent.toLowerCase().includes("firefox")) startAnimating(60);
+        else setInterval( () => { tickloop() }, 16.66);
+    </script>
+</body>
+</html>
