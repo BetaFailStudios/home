@@ -1,0 +1,1209 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower of Graplink</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
+</head>
+<body>
+    <style>
+        body {
+            background-color: #222;
+            margin: auto;
+            height: 100%;
+            overflow: hidden;
+            cursor: none;
+        }
+        .share-tech-regular {
+            font-family: "Share Tech", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+    </style>
+    
+    <canvas id="gameScreen" width="1500" height="1000"></canvas>
+    <p id="fps">60</p>
+    <script>
+
+        const scenes = [
+            `
+            [{"x":750,"y":925,"width":1300,"height":100},{"x":150,"y":800,"width":100,"height":100},{"x":450,"y":650,"width":250,"height":50},{"x":825,"y":525,"width":250,"height":50},{"x":1200,"y":400,"width":250,"height":50},{"x":825,"y":275,"width":250,"height":50},{"x":450,"y":150,"width":250,"height":50},{"x":350,"y":25,"width":50,"height":50}]
+            `,
+            `
+            [{"x":200,"y":950,"width":200,"height":50},{"x":125,"y":825,"width":50,"height":50},{"x":300,"y":700,"width":50,"height":50},{"x":125,"y":575,"width":50,"height":50},{"x":300,"y":200,"width":50,"height":400}]
+            `,
+            `
+            [{"x":437.5,"y":950,"width":225,"height":50},{"x":800,"y":475,"width":100,"height":100},{"x":1237.5,"y":850,"width":325,"height":50},{"x":212.5,"y":600,"width":225,"height":50},{"x":1175,"y":400,"width":100,"height":50},{"x":1275,"y":162.5,"width":50,"height":75},{"x":1225,"y":75,"width":150,"height":50}]
+            `,
+            `
+            [{"x":437.5,"y":950,"width":225,"height":50},{"x":775,"y":350,"width":50,"height":650},{"x":1287.5,"y":675,"width":225,"height":50},{"x":962.5,"y":375,"width":275,"height":50},{"x":1075,"y":450,"width":50,"height":50}]
+            `,
+            `
+            [{"x":200,"y":950,"width":200,"height":50},{"x":1300,"y":725,"width":200,"height":50},{"x":725,"y":50,"width":1250,"height":50},{"x":200,"y":325,"width":200,"height":50},{"x":1375,"y":200,"width":50,"height":50},{"x":700,"y":475,"width":100,"height":100}]
+            `,  
+            `
+            [{"x":112.5,"y":500,"width":25,"height":950,"metal":true},{"x":200,"y":962.5,"width":100,"height":25,"metal":true},{"x":525,"y":837.5,"width":300,"height":25,"metal":true},{"x":1212.5,"y":737.5,"width":275,"height":25,"metal":true},{"x":662.5,"y":562.5,"width":125,"height":25,"metal":true},{"x":200,"y":462.5,"width":100,"height":25,"metal":true},{"x":312.5,"y":150,"width":25,"height":250,"metal":true},{"x":550,"y":37.5,"width":400,"height":25,"metal":true},{"x":1387.5,"y":475,"width":25,"height":900,"metal":true}]
+            `,  
+            `
+            [{"x":1312.5,"y":962.5,"width":175,"height":25,"metal":true},{"x":1387.5,"y":762.5,"width":25,"height":325},{"x":650,"y":812.5,"width":200,"height":25,"metal":true},{"x":1112.5,"y":612.5,"width":175,"height":25,"metal":true},{"x":562.5,"y":675,"width":25,"height":200},{"x":1212.5,"y":487.5,"width":25,"height":175,"metal":true},{"x":1125,"y":37.5,"width":200,"height":25,"metal":true}]
+            `,  
+            `
+            [{"x":425,"y":962.5,"width":650,"height":25},{"x":575,"y":425,"width":150,"height":150,"metal":true},{"x":737.5,"y":387.5,"width":125,"height":25},{"x":1250,"y":562.5,"width":300,"height":25,"metal":true},{"x":362.5,"y":37.5,"width":75,"height":25,"metal":true}]
+            `,  
+            `
+            [{"x":700,"y":962.5,"width":400,"height":25,"metal":true},{"x":700,"y":937.5,"width":400,"height":25,"ice":true},{"x":1112.5,"y":487.5,"width":125,"height":25},{"x":512.5,"y":237.5,"width":125,"height":25,"metal":true},{"x":1387.5,"y":675,"width":25,"height":550,"metal":true}]
+            `,  
+            `
+            [{"x":837.5,"y":875,"width":25,"height":200},{"x":150,"y":712.5,"width":100,"height":25,"metal":true},{"x":612.5,"y":587.5,"width":225,"height":25,"ice":true},{"x":937.5,"y":262.5,"width":125,"height":125}]
+            `,
+            //10
+            `
+            [{"x":112.5,"y":500,"width":25,"height":1000,"metal":true},{"x":1387.5,"y":500,"width":25,"height":1000,"metal":true},{"x":250,"y":962.5,"width":200,"height":25,"ice":true},{"x":687.5,"y":562.5,"width":125,"height":125,"ice":true},{"x":1262.5,"y":662.5,"width":175,"height":25,"ice":true},{"x":687.5,"y":112.5,"width":125,"height":125,"ice":true},{"x":1075,"y":62.5,"width":550,"height":25,"metal":true},{"x":162.5,"y":237.5,"width":25,"height":25,"metal":true}]
+            `,
+            //10    
+            `
+            [{"x":200,"y":712.5,"width":200,"height":25,"metal":true},{"x":750,"y":112.5,"width":200,"height":25,"metal":true},{"x":750,"y":87.5,"width":200,"height":25,"ice":true},{"x":950,"y":350,"width":100,"height":100}]
+            `,
+            `
+            [{"x":762.5,"y":612.5,"width":75,"height":75},{"x":1300,"y":312.5,"width":200,"height":25},{"x":112.5,"y":762.5,"width":25,"height":25},{"x":637.5,"y":300,"width":25,"height":200,"metal":true}]
+            `,
+            `
+            [{"x":1387.5,"y":962.5,"width":25,"height":25},{"x":612.5,"y":537.5,"width":25,"height":175},{"x":537.5,"y":312.5,"width":325,"height":25},{"x":737.5,"y":350,"width":25,"height":100},{"x":237.5,"y":37.5,"width":275,"height":25},{"x":1287.5,"y":337.5,"width":225,"height":125,"metal":true}]
+            `,
+            `
+            [{"x":1162.5,"y":112.5,"width":475,"height":25},{"x":200,"y":687.5,"width":200,"height":25},{"x":812.5,"y":512.5,"width":175,"height":25}]
+            `,
+            `
+            [{"x":1125,"y":587.5,"width":200,"height":25,"metal":true},{"x":787.5,"y":37.5,"width":375,"height":25},{"x":212.5,"y":225,"width":225,"height":50,"metal":true}]
+            `,
+            `
+            [{"x":1250,"y":762.5,"width":300,"height":25,"glass":true},{"x":1375,"y":812.5,"width":50,"height":25},{"x":375,"y":212.5,"width":150,"height":25,"metal":true},{"x":850,"y":287.5,"width":250,"height":25,"glass":true}]
+            `,
+            `
+            [{"x":650,"y":37.5,"width":200,"height":25,"metal":true},{"x":1300,"y":887.5,"width":200,"height":25,"metal":true},{"x":1125,"y":587.5,"width":150,"height":25,"glass":true},{"x":737.5,"y":187.5,"width":25,"height":225,"metal":true}]
+            `,
+            `
+            [{"x":750,"y":712.5,"width":1300,"height":25,"glass":true},{"x":212.5,"y":537.5,"width":225,"height":25,"metal":true},{"x":312.5,"y":625,"width":25,"height":100,"metal":true},{"x":1275,"y":262.5,"width":250,"height":25,"metal":true},{"x":800,"y":62.5,"width":200,"height":25,"glass":true}]
+            `,
+            `
+            [{"x":275,"y":687.5,"width":350,"height":25,"metal":true},{"x":962.5,"y":212.5,"width":225,"height":25,"metal":true}]
+            `,
+            //20
+            `
+            [{"x":712.5,"y":787.5,"width":75,"height":75,"glass":true},{"x":712.5,"y":712.5,"width":125,"height":25,"metal":true},{"x":987.5,"y":150,"width":25,"height":200,"metal":true},{"x":1075,"y":12.5,"width":200,"height":25,"metal":true},{"x":1162.5,"y":150,"width":25,"height":200,"metal":true},{"x":1075,"y":100,"width":100,"height":100,"glass":true}]
+            `,
+            //20
+            `
+            [{"x":437.5,"y":475,"width":25,"height":150,"glass":true},{"x":187.5,"y":12.5,"width":175,"height":25,"metal":true},{"x":387.5,"y":500,"width":25,"height":200,"metal":true},{"x":487.5,"y":500,"width":25,"height":200,"metal":true}]
+            `,
+            `
+            [{"x":287.5,"y":425,"width":25,"height":300,"metal":true},{"x":350,"y":237.5,"width":150,"height":25},{"x":350,"y":37.5,"width":200,"height":25,"glass":true,"reset":true,"metal":true}]
+            `,
+            `
+            [{"x":750,"y":587.5,"width":250,"height":25,"ice":true},{"x":912.5,"y":625,"width":25,"height":100,"metal":true},{"x":587.5,"y":62.5,"width":275,"height":25,"metal":true},{"x":112.5,"y":137.5,"width":25,"height":225,"glass":true,"reset":true,"metal":true}]
+            `,
+            `
+            [{"x":662.5,"y":825,"width":25,"height":300,"reset":true,"metal":true},{"x":1387.5,"y":587.5,"width":25,"height":775,"reset":true,"metal":true},{"x":837.5,"y":112.5,"width":25,"height":175,"reset":true,"metal":true},{"x":112.5,"y":175,"width":25,"height":300,"reset":true,"metal":true}]
+            `,
+            `
+            [{"x":237.5,"y":662.5,"width":25,"height":525,"reset":true,"metal":true},{"x":150,"y":912.5,"width":100,"height":25,"reset":true,"metal":true},{"x":150,"y":412.5,"width":100,"height":25,"reset":true,"metal":true},{"x":687.5,"y":362.5,"width":25,"height":525,"reset":true,"metal":true},{"x":1387.5,"y":350,"width":25,"height":650,"reset":true,"metal":true}]
+            `,
+            `
+            [{"x":112.5,"y":500,"width":25,"height":1000,"metal":true},{"x":1387.5,"y":500,"width":25,"height":1000,"metal":true},{"x":750,"y":500,"width":50,"height":50,"glass":true,"reset":true},{"x":250,"y":250,"width":50,"height":50,"glass":true,"reset":true}]
+            `,
+            `
+            [{"x":112.5,"y":500,"width":25,"height":1000,"metal":true},{"x":1387.5,"y":500,"width":25,"height":1000,"metal":true},{"x":225,"y":875,"width":50,"height":50,"glass":true,"reset":true},{"x":625,"y":725,"width":50,"height":50,"glass":true,"reset":true},{"x":1075,"y":450,"width":50,"height":50,"glass":true,"reset":true},{"x":350,"y":150,"width":50,"height":50,"glass":true,"reset":true}]
+            `,
+            `
+            [{"x":112.5,"y":500,"width":25,"height":1000,"metal":true},{"x":1387.5,"y":500,"width":25,"height":1000,"metal":true},{"x":1000,"y":712.5,"width":250,"height":25,"glass":true,"reset":true},{"x":375,"y":200,"width":50,"height":50,"glass":true,"reset":true}]
+            `,
+            `
+            [{"x":112.5,"y":500,"width":25,"height":1000,"metal":true},{"x":1387.5,"y":500,"width":25,"height":1000,"metal":true},{"x":762.5,"y":187.5,"width":275,"height":25},{"x":762.5,"y":912.5,"width":225,"height":25,"glass":true,"reset":true}]
+            `,
+            //30
+            `
+            [{"x":387.5,"y":962.5,"width":575,"height":25,"metal":true},{"x":1112.5,"y":962.5,"width":575,"height":25,"metal":true},{"x":112.5,"y":462.5,"width":25,"height":925,"metal":true,"ice":true},{"x":1387.5,"y":462.5,"width":25,"height":925,"metal":true,"ice":true},{"x":162.5,"y":450,"width":25,"height":200,"reset":true},{"x":162.5,"y":275,"width":25,"height":100,"metal":true,"ice":true},{"x":300,"y":187.5,"width":300,"height":25,"metal":true,"ice":true},{"x":787.5,"y":87.5,"width":25,"height":175,"metal":true,"ice":true},{"x":1087.5,"y":62.5,"width":525,"height":25,"glass":true},{"x":1087.5,"y":12.5,"width":525,"height":25,"metal":true,"ice":true},{"x":262.5,"y":912.5,"width":225,"height":25,"reset":true}]
+            `,
+            //30
+            `
+            [{"x":112.5,"y":487.5,"width":25,"height":975,"metal":true,"ice":true},{"x":1387.5,"y":487.5,"width":25,"height":975,"metal":true,"ice":true},{"x":162.5,"y":850,"width":25,"height":250,"reset":true,"metal":true},{"x":362.5,"y":725,"width":25,"height":200,"reset":true,"metal":true},{"x":162.5,"y":687.5,"width":25,"height":25,"metal":true,"ice":true},{"x":362.5,"y":587.5,"width":25,"height":25,"metal":true,"ice":true},{"x":662.5,"y":437.5,"width":25,"height":225,"reset":true,"metal":true},{"x":662.5,"y":287.5,"width":25,"height":25,"metal":true,"ice":true},{"x":1125,"y":12.5,"width":150,"height":25,"glass":true}]
+            `,
+            `
+            [{"x":800,"y":587.5,"width":300,"height":25,"metal":true},{"x":112.5,"y":487.5,"width":25,"height":975,"metal":true,"ice":true},{"x":1387.5,"y":487.5,"width":25,"height":975,"metal":true,"ice":true},{"x":1212.5,"y":487.5,"width":125,"height":25,"glass":true},{"x":1337.5,"y":87.5,"width":25,"height":125,"reset":true},{"x":437.5,"y":712.5,"width":25,"height":475,"metal":true},{"x":662.5,"y":725,"width":25,"height":200,"metal":true}]
+            `,
+            `
+            [{"x":812.5,"y":687.5,"width":375,"height":25,"glass":true,"reset":true},{"x":550,"y":87.5,"width":350,"height":25,"metal":true}]
+            `,
+            `
+            [{"x":1087.5,"y":962.5,"width":175,"height":25,"glass":true},{"x":1300,"y":487.5,"width":200,"height":25,"glass":true,"reset":true,"metal":true},{"x":1150,"y":187.5,"width":150,"height":25,"glass":true}]
+            `,
+            `
+            [{"x":1250,"y":500,"width":100,"height":100,"glass":true,"reset":true}]
+            `,
+            `
+            [{"x":1325,"y":737.5,"width":150,"height":25,"reset":true},{"x":1075,"y":737.5,"width":250,"height":25,"glass":true}]
+            `,
+            `
+            [{"x":212.5,"y":987.5,"width":225,"height":25},{"x":737.5,"y":987.5,"width":225,"height":25,"glass":true},{"x":200,"y":62.5,"width":200,"height":25,"glass":true,"reset":true}]
+            `,
+            `
+            [{"x":1387.5,"y":562.5,"width":25,"height":25,"metal":true},{"x":112.5,"y":100,"width":25,"height":200,"reset":true,"metal":true}]
+            `,
+            `
+            [{"x":112.5,"y":587.5,"width":25,"height":175,"reset":true,"metal":true},{"x":162.5,"y":300,"width":25,"height":200,"reset":true,"metal":true},{"x":112.5,"y":37.5,"width":25,"height":75,"reset":true,"metal":true},{"x":112.5,"y":887.5,"width":25,"height":125,"reset":true,"metal":true}]
+            `,
+            //40
+            `
+            [{"x":162.5,"y":812.5,"width":25,"height":275,"reset":true,"metal":true},{"x":337.5,"y":562.5,"width":25,"height":225,"reset":true,"metal":true},{"x":187.5,"y":200,"width":25,"height":250,"reset":true,"metal":true}]
+            `,
+            //40
+            `
+            [{"x":1387.5,"y":887.5,"width":25,"height":175,"reset":true,"metal":true},{"x":1387.5,"y":500,"width":25,"height":150,"reset":true,"metal":true},{"x":1387.5,"y":150,"width":25,"height":250,"reset":true,"metal":true}]
+            `,
+            `
+            [{"x":1237.5,"y":850,"width":25,"height":250,"reset":true,"metal":true},{"x":937.5,"y":612.5,"width":25,"height":25,"reset":true,"metal":true},{"x":787.5,"y":437.5,"width":25,"height":25,"reset":true,"metal":true},{"x":537.5,"y":287.5,"width":25,"height":25,"reset":true,"metal":true},{"x":362.5,"y":162.5,"width":25,"height":25,"reset":true,"metal":true},{"x":187.5,"y":62.5,"width":25,"height":25,"reset":true,"metal":true}]
+            `,
+            `
+            [{"x":700,"y":987.5,"width":1200,"height":25,"reset":true},{"x":575,"y":612.5,"width":350,"height":25,"metal":true},{"x":662.5,"y":587.5,"width":125,"height":25,"reset":true},{"x":950,"y":337.5,"width":700,"height":25,"metal":true},{"x":1137.5,"y":575,"width":25,"height":250,"metal":true,"ice":true},{"x":112.5,"y":475,"width":25,"height":950,"metal":true,"ice":true},{"x":1337.5,"y":637.5,"width":75,"height":25,"glass":true,"reset":true},{"x":462.5,"y":225,"width":25,"height":350,"metal":true,"ice":true},{"x":187.5,"y":962.5,"width":125,"height":25,"metal":true},{"x":1225,"y":637.5,"width":150,"height":25,"metal":true,"ice":true},{"x":412.5,"y":387.5,"width":25,"height":25,"reset":true},{"x":800,"y":12.5,"width":1100,"height":25,"metal":true},{"x":312.5,"y":112.5,"width":25,"height":25},{"x":1387.5,"y":425,"width":25,"height":850,"metal":true,"ice":true},{"x":587.5,"y":300,"width":25,"height":400,"metal":true,"ice":true},{"x":900,"y":112.5,"width":600,"height":25,"metal":true,"ice":true},{"x":1112.5,"y":162.5,"width":25,"height":25},{"x":425,"y":487.5,"width":300,"height":25,"metal":true},{"x":262.5,"y":650,"width":25,"height":500,"metal":true,"ice":true},{"x":262.5,"y":100,"width":25,"height":150,"oneWay":"-x","metal":true},{"x":325,"y":162.5,"width":100,"height":25,"glass":true,"metal":true},{"x":262.5,"y":287.5,"width":25,"height":225,"ice":true,"oneWay":"-x","metal":true}]
+            `,
+            `
+            [{"x":112.5,"y":487.5,"width":25,"height":975,"metal":true,"ice":true},{"x":675,"y":337.5,"width":100,"height":25,"glass":true},{"x":1387.5,"y":325,"width":25,"height":650,"metal":true,"ice":true},{"x":1187.5,"y":387.5,"width":25,"height":425,"metal":true,"ice":true},{"x":1237.5,"y":687.5,"width":325,"height":25,"metal":true},{"x":675,"y":687.5,"width":800,"height":25,"glass":true,"metal":true},{"x":1362.5,"y":537.5,"width":25,"height":25,"metal":true},{"x":1212.5,"y":362.5,"width":25,"height":25,"metal":true},{"x":1362.5,"y":187.5,"width":25,"height":25,"metal":true},{"x":1100,"y":187.5,"width":150,"height":25,"metal":true,"ice":true},{"x":650,"y":187.5,"width":750,"height":25,"glass":true,"metal":true},{"x":262.5,"y":437.5,"width":25,"height":875,"ice":true,"metal":true},{"x":287.5,"y":787.5,"width":25,"height":175,"metal":true}]
+            `,
+            `
+            [{"x":112.5,"y":487.5,"width":25,"height":975,"metal":true,"ice":true},{"x":637.5,"y":12.5,"width":675,"height":25,"metal":true,"ice":true},{"x":487.5,"y":962.5,"width":325,"height":25,"glass":true},{"x":487.5,"y":987.5,"width":375,"height":25,"glass":true,"reset":true,"metal":true},{"x":262.5,"y":487.5,"width":25,"height":975,"metal":true,"ice":true},{"x":1337.5,"y":487.5,"width":25,"height":25,"metal":true,"ice":true},{"x":1387.5,"y":500,"width":25,"height":1000,"metal":true,"ice":true},{"x":1012.5,"y":637.5,"width":175,"height":25,"glass":true,"metal":true},{"x":1062.5,"y":362.5,"width":25,"height":25,"metal":true,"ice":true},{"x":1337.5,"y":262.5,"width":25,"height":25,"metal":true,"ice":true},{"x":1062.5,"y":137.5,"width":25,"height":25,"metal":true,"ice":true},{"x":1337.5,"y":37.5,"width":25,"height":25,"metal":true,"ice":true},{"x":1012.5,"y":300,"width":25,"height":600,"metal":true,"ice":true},{"x":1037.5,"y":612.5,"width":75,"height":25,"ice":true},{"x":1362.5,"y":637.5,"width":25,"height":175,"metal":true},{"x":562.5,"y":525,"width":25,"height":200,"metal":true},{"x":600,"y":387.5,"width":100,"height":25,"metal":true}]
+            `,
+            `
+            [{"x":262.5,"y":575,"width":25,"height":800,"metal":true,"ice":true},{"x":187.5,"y":187.5,"width":125,"height":25,"glass":true,"metal":true},{"x":1012.5,"y":675,"width":25,"height":600,"metal":true,"ice":true},{"x":1387.5,"y":487.5,"width":25,"height":975,"metal":true,"ice":true},{"x":1062.5,"y":912.5,"width":25,"height":25,"metal":true,"ice":true},{"x":1337.5,"y":787.5,"width":25,"height":25,"metal":true,"ice":true},{"x":1062.5,"y":662.5,"width":25,"height":25,"metal":true,"ice":true},{"x":1337.5,"y":537.5,"width":25,"height":25,"metal":true,"ice":true},{"x":1062.5,"y":412.5,"width":25,"height":25,"metal":true,"ice":true},{"x":987.5,"y":675,"width":25,"height":600,"reset":true,"metal":true},{"x":512.5,"y":262.5,"width":25,"height":525,"metal":true,"ice":true},{"x":387.5,"y":512.5,"width":225,"height":25,"glass":true,"metal":true},{"x":375,"y":12.5,"width":250,"height":25,"metal":true,"ice":true},{"x":187.5,"y":312.5,"width":125,"height":25,"glass":true},{"x":112.5,"y":487.5,"width":25,"height":975,"metal":true,"ice":true},{"x":262.5,"y":100,"width":25,"height":100,"ice":true,"oneWay":"-x","metal":true},{"x":512.5,"y":550,"width":25,"height":50,"glass":true,"reset":true},{"x":387.5,"y":462.5,"width":175,"height":25,"glass":true,"reset":true}]
+            `,
+            `
+            [{"x":600,"y":962.5,"width":150,"height":25,"oneWay":"y","reset":true},{"x":950,"y":787.5,"width":200,"height":25,"oneWay":"y","reset":true},{"x":562.5,"y":412.5,"width":125,"height":25,"oneWay":"y","reset":true},{"x":1000,"y":62.5,"width":200,"height":25,"oneWay":"y","reset":true},{"x":562.5,"y":437.5,"width":225,"height":25,"glass":true,"metal":true},{"x":950,"y":812.5,"width":300,"height":25,"glass":true,"metal":true},{"x":1000,"y":87.5,"width":300,"height":25,"glass":true,"metal":true},{"x":950,"y":987.5,"width":900,"height":25,"oneWay":"y","metal":true},{"x":262.5,"y":412.5,"width":25,"height":825,"ice":true,"oneWay":"-x","metal":true},{"x":112.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true}]
+            `,
+            `
+            [{"x":112.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1175,"y":262.5,"width":350,"height":25,"oneWay":"-y"},{"x":1387.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1362.5,"y":862.5,"width":25,"height":175,"metal":true},{"x":262.5,"y":487.5,"width":25,"height":975,"ice":true,"oneWay":"-x","metal":true}]
+            `,
+            `
+            [{"x":112.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1175,"y":262.5,"width":350,"height":25,"oneWay":"-y"},{"x":1387.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1362.5,"y":862.5,"width":25,"height":175,"metal":true},{"x":262.5,"y":487.5,"width":25,"height":975,"ice":true,"oneWay":"-x","metal":true},{"x":1175,"y":237.5,"width":350,"height":25,"glass":true,"metal":true},{"x":775,"y":87.5,"width":150,"height":25,"glass":true}]
+            `,
+            //50
+            `
+            [{"x":825,"y":962.5,"width":1150,"height":25,"oneWay":"-y","metal":true},{"x":462.5,"y":212.5,"width":25,"height":25,"metal":true},{"x":1387.5,"y":550,"width":25,"height":750,"ice":true,"metal":true},{"x":112.5,"y":837.5,"width":25,"height":275,"ice":true,"metal":true},{"x":700,"y":712.5,"width":1150,"height":25,"oneWay":"-y","metal":true}]
+            `,
+            //50
+            `
+            [{"x":1237.5,"y":587.5,"width":25,"height":225,"oneWay":"-x","reset":true,"metal":true},{"x":937.5,"y":387.5,"width":25,"height":225,"oneWay":"-x","reset":true,"metal":true},{"x":637.5,"y":150,"width":25,"height":250,"oneWay":"-x","reset":true,"metal":true},{"x":287.5,"y":12.5,"width":375,"height":25,"oneWay":"-y","reset":true},{"x":287.5,"y":37.5,"width":375,"height":25,"glass":true,"metal":true}]
+            `,
+            `
+            [{"x":637.5,"y":387.5,"width":25,"height":225,"glass":true,"reset":true,"metal":true},{"x":900,"y":225,"width":50,"height":50,"glass":true},{"x":1300,"y":212.5,"width":200,"height":25,"metal":true},{"x":637.5,"y":137.5,"width":25,"height":275,"metal":true},{"x":1012.5,"y":512.5,"width":775,"height":25,"oneWay":"y","metal":true}]
+            `,
+            `
+            [{"x":162.5,"y":250,"width":25,"height":200,"reset":true,"metal":true},{"x":462.5,"y":962.5,"width":725,"height":25,"oneWay":"y","metal":true},{"x":762.5,"y":412.5,"width":75,"height":25,"glass":true},{"x":1287.5,"y":12.5,"width":225,"height":25,"metal":true}]
+            `,
+            `
+            [{"x":1112.5,"y":237.5,"width":575,"height":25,"oneWay":"y","metal":true},{"x":787.5,"y":425,"width":25,"height":400,"metal":true},{"x":1112.5,"y":612.5,"width":575,"height":25,"glass":true,"metal":true},{"x":1287.5,"y":987.5,"width":225,"height":25,"reset":true},{"x":837.5,"y":525,"width":25,"height":100,"glass":true},{"x":1112.5,"y":525,"width":25,"height":150,"glass":true,"metal":true},{"x":737.5,"y":350,"width":25,"height":100,"glass":true,"reset":true,"metal":true}]
+            `,
+            `
+            [{"x":1262.5,"y":150,"width":25,"height":300,"metal":true},{"x":762.5,"y":812.5,"width":175,"height":25,"oneWay":"y"},{"x":500,"y":712.5,"width":200,"height":25,"glass":true,"reset":true,"metal":true}]
+            `,
+            `
+            [{"x":800,"y":962.5,"width":200,"height":25},{"x":212.5,"y":662.5,"width":25,"height":225,"glass":true,"metal":true},{"x":287.5,"y":762.5,"width":125,"height":25,"glass":true,"metal":true},{"x":362.5,"y":662.5,"width":25,"height":225,"glass":true,"metal":true},{"x":287.5,"y":562.5,"width":125,"height":25,"glass":true,"metal":true},{"x":287.5,"y":737.5,"width":125,"height":25,"glass":true,"reset":true},{"x":587.5,"y":487.5,"width":125,"height":25,"glass":true,"reset":true},{"x":912.5,"y":337.5,"width":125,"height":25,"glass":true,"reset":true},{"x":1200,"y":37.5,"width":50,"height":25},{"x":587.5,"y":512.5,"width":125,"height":25,"glass":true,"metal":true},{"x":912.5,"y":362.5,"width":125,"height":25,"glass":true,"metal":true},{"x":987.5,"y":262.5,"width":25,"height":225,"glass":true,"metal":true},{"x":912.5,"y":162.5,"width":125,"height":25,"glass":true,"metal":true},{"x":837.5,"y":262.5,"width":25,"height":225,"glass":true,"metal":true},{"x":662.5,"y":412.5,"width":25,"height":225,"glass":true,"metal":true},{"x":587.5,"y":312.5,"width":125,"height":25,"glass":true,"metal":true},{"x":512.5,"y":412.5,"width":25,"height":225,"glass":true,"metal":true}]
+            `,
+            `
+            [{"x":400,"y":587.5,"width":600,"height":25,"glass":true,"reset":true},{"x":1062.5,"y":187.5,"width":675,"height":25,"glass":true,"reset":true},{"x":200,"y":37.5,"width":200,"height":25,"glass":true,"reset":true},{"x":850,"y":37.5,"width":1100,"height":25,"glass":true,"metal":true},{"x":412.5,"y":187.5,"width":625,"height":25,"glass":true,"metal":true},{"x":1050,"y":587.5,"width":700,"height":25,"glass":true,"metal":true},{"x":750,"y":562.5,"width":1300,"height":25,"glass":true,"metal":true},{"x":750,"y":162.5,"width":1300,"height":25,"glass":true,"metal":true},{"x":750,"y":12.5,"width":1300,"height":25,"glass":true,"metal":true}]
+            `,
+            `
+            [{"x":750,"y":687.5,"width":1300,"height":25,"glass":true,"metal":true},{"x":750,"y":337.5,"width":1300,"height":25,"glass":true,"metal":true},{"x":750,"y":12.5,"width":1300,"height":25,"glass":true,"metal":true},{"x":412.5,"y":37.5,"width":625,"height":25,"glass":true,"metal":true},{"x":1150,"y":37.5,"width":500,"height":25,"glass":true,"metal":true},{"x":1362.5,"y":362.5,"width":75,"height":25,"glass":true,"metal":true},{"x":637.5,"y":362.5,"width":1075,"height":25,"glass":true,"metal":true},{"x":200,"y":712.5,"width":200,"height":25,"glass":true,"metal":true},{"x":962.5,"y":712.5,"width":875,"height":25,"glass":true,"metal":true},{"x":412.5,"y":712.5,"width":225,"height":25,"glass":true,"reset":true},{"x":1250,"y":362.5,"width":150,"height":25,"glass":true,"reset":true},{"x":812.5,"y":37.5,"width":175,"height":25,"glass":true,"reset":true}]
+            `,
+            `
+            [{"x":750,"y":687.5,"width":1300,"height":25,"glass":true,"metal":true},{"x":750,"y":337.5,"width":1300,"height":25,"glass":true,"metal":true},{"x":837.5,"y":712.5,"width":75,"height":25,"glass":true,"reset":true},{"x":562.5,"y":362.5,"width":75,"height":25,"glass":true,"reset":true},{"x":1137.5,"y":37.5,"width":75,"height":25,"glass":true,"reset":true},{"x":450,"y":712.5,"width":700,"height":25,"glass":true,"metal":true},{"x":1137.5,"y":712.5,"width":525,"height":25,"glass":true,"metal":true},{"x":1000,"y":362.5,"width":800,"height":25,"glass":true,"metal":true},{"x":312.5,"y":362.5,"width":425,"height":25,"glass":true,"metal":true},{"x":600,"y":37.5,"width":1000,"height":25,"glass":true,"metal":true},{"x":1287.5,"y":37.5,"width":225,"height":25,"glass":true,"metal":true},{"x":587.5,"y":12.5,"width":975,"height":25,"oneWay":"-y","metal":true},{"x":1300,"y":12.5,"width":200,"height":25,"oneWay":"-y","metal":true}]
+            `,
+            //60
+            `
+            [{"x":1412.5,"y":500,"width":25,"height":950,"ice":true,"metal":true},{"x":87.5,"y":500,"width":25,"height":950,"ice":true,"metal":true},{"x":1262.5,"y":487.5,"width":25,"height":25,"metal":true},{"x":712.5,"y":187.5,"width":25,"height":25},{"x":1262.5,"y":575,"width":25,"height":150,"reset":true}]
+            `,
+            //60
+            `
+            [{"x":1412.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":87.5,"y":212.5,"width":25,"height":375,"ice":true,"metal":true},{"x":737.5,"y":587.5,"width":25,"height":225,"glass":true,"reset":true,"metal":true},{"x":962.5,"y":462.5,"width":75,"height":25,"glass":true},{"x":462.5,"y":137.5,"width":125,"height":25,"oneWay":"-y"}]
+            `,
+            `
+            [{"x":312.5,"y":462.5,"width":25,"height":175,"metal":true},{"x":87.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1412.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":300,"y":775,"width":50,"height":200,"reset":true,"metal":true},{"x":437.5,"y":625,"width":125,"height":500,"noControl":true},{"x":875,"y":487.5,"width":150,"height":25,"glass":true,"metal":true},{"x":875,"y":412.5,"width":100,"height":25,"oneWay":"-y","reset":true},{"x":687.5,"y":387.5,"width":275,"height":25,"metal":true},{"x":562.5,"y":550,"width":25,"height":300,"metal":true},{"x":937.5,"y":412.5,"width":25,"height":125,"glass":true,"metal":true},{"x":725,"y":362.5,"width":350,"height":25,"oneWay":"-y","metal":true},{"x":912.5,"y":362.5,"width":25,"height":25,"glass":true,"metal":true}]
+            `,
+            `
+            [{"x":1337.5,"y":62.5,"width":125,"height":25,"metal":true},{"x":812.5,"y":987.5,"width":175,"height":25,"glass":true},{"x":812.5,"y":612.5,"width":175,"height":25,"glass":true,"reset":true,"metal":true},{"x":87.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1412.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":962.5,"y":225,"width":25,"height":450,"metal":true},{"x":987.5,"y":462.5,"width":75,"height":25}]
+            `,
+            `
+            [{"x":187.5,"y":400,"width":25,"height":750,"reset":true,"metal":true},{"x":187.5,"y":787.5,"width":25,"height":25},{"x":787.5,"y":12.5,"width":1225,"height":25,"oneWay":"y","reset":true,"metal":true},{"x":1387.5,"y":487.5,"width":25,"height":925,"reset":true,"metal":true},{"x":1137.5,"y":87.5,"width":25,"height":125,"reset":true,"metal":true},{"x":1137.5,"y":612.5,"width":25,"height":675,"reset":true,"metal":true},{"x":887.5,"y":275,"width":25,"height":500,"reset":true,"metal":true},{"x":887.5,"y":812.5,"width":25,"height":275,"reset":true,"metal":true},{"x":412.5,"y":62.5,"width":25,"height":75,"reset":true,"metal":true},{"x":412.5,"y":600,"width":25,"height":700,"reset":true,"metal":true},{"x":612.5,"y":125,"width":25,"height":200,"reset":true,"metal":true},{"x":612.5,"y":650,"width":25,"height":600,"reset":true,"metal":true},{"x":1262.5,"y":500,"width":125,"height":850,"noControl":true},{"x":1012.5,"y":500,"width":125,"height":850,"noControl":true},{"x":512.5,"y":500,"width":75,"height":850,"noControl":true},{"x":300,"y":500,"width":100,"height":850,"noControl":true},{"x":762.5,"y":350,"width":25,"height":600,"reset":true,"metal":true},{"x":750,"y":500,"width":150,"height":850,"noControl":true},{"x":762.5,"y":750,"width":25,"height":150,"oneWay":"-x","reset":true,"metal":true},{"x":700,"y":962.5,"width":1100,"height":25,"oneWay":"y","metal":true},{"x":125,"y":37.5,"width":100,"height":25,"oneWay":"-y","reset":true}]
+            `,
+            `
+            [{"x":375,"y":412.5,"width":550,"height":25,"oneWay":"y","metal":true},{"x":750,"y":412.5,"width":150,"height":25},{"x":1137.5,"y":437.5,"width":25,"height":275,"ice":true,"metal":true},{"x":1287.5,"y":412.5,"width":225,"height":25,"oneWay":"y","metal":true},{"x":937.5,"y":412.5,"width":175,"height":25,"oneWay":"y","metal":true},{"x":1337.5,"y":12.5,"width":175,"height":25,"metal":true},{"x":1137.5,"y":212.5,"width":75,"height":25,"oneWay":"y","metal":true},{"x":912.5,"y":225,"width":25,"height":300,"oneWay":"-x","metal":true},{"x":1262.5,"y":50,"width":25,"height":50,"metal":true},{"x":662.5,"y":312.5,"width":25,"height":125,"ice":true,"metal":true},{"x":662.5,"y":187.5,"width":75,"height":25,"oneWay":"y","metal":true}]
+            `,
+            `
+            [{"x":550,"y":437.5,"width":300,"height":25,"glass":true},{"x":912.5,"y":112.5,"width":275,"height":25,"glass":true,"reset":true,"metal":true},{"x":112.5,"y":362.5,"width":25,"height":275,"glass":true,"reset":true,"metal":true}]
+            `,
+            `
+            [{"x":850,"y":562.5,"width":100,"height":25,"glass":true},{"x":475,"y":562.5,"width":250,"height":25,"glass":true,"reset":true,"metal":true},{"x":1000,"y":287.5,"width":200,"height":25,"glass":true,"reset":true,"metal":true},{"x":1237.5,"y":37.5,"width":175,"height":25,"glass":true}]
+            `,
+            `
+            [{"x":1312.5,"y":962.5,"width":175,"height":25,"glass":true,"reset":true,"metal":true},{"x":912.5,"y":525,"width":25,"height":150,"glass":true,"reset":true,"metal":true},{"x":812.5,"y":412.5,"width":125,"height":25,"glass":true},{"x":812.5,"y":262.5,"width":125,"height":25,"glass":true,"reset":true,"metal":true},{"x":812.5,"y":37.5,"width":125,"height":25,"glass":true}]
+            `,
+            `
+            [{"x":112.5,"y":500,"width":25,"height":950,"glass":true,"reset":true,"metal":true}]
+            `,
+            //70
+            `
+            [{"x":187.5,"y":837.5,"width":175,"height":25,"glass":true},{"x":800,"y":462.5,"width":200,"height":25,"glass":true,"reset":true,"metal":true},{"x":975,"y":637.5,"width":200,"height":25,"glass":true},{"x":1387.5,"y":125,"width":25,"height":200,"glass":true,"reset":true,"metal":true}]
+            `,
+            //70
+            `
+            [{"x":1012.5,"y":937.5,"width":225,"height":25,"glass":true},{"x":1387.5,"y":487.5,"width":25,"height":275,"glass":true,"reset":true,"metal":true},{"x":762.5,"y":150,"width":25,"height":250,"glass":true,"reset":true,"metal":true},{"x":350,"y":312.5,"width":200,"height":25,"glass":true}]
+            `,
+            `
+            [{"x":212.5,"y":887.5,"width":225,"height":25,"glass":true,"reset":true,"metal":true},{"x":212.5,"y":812.5,"width":225,"height":25,"glass":true},{"x":1050,"y":362.5,"width":200,"height":25,"glass":true},{"x":737.5,"y":287.5,"width":275,"height":25,"glass":true,"reset":true,"metal":true}]
+            `,
+            `
+            [{"x":1387.5,"y":475,"width":25,"height":300,"glass":true,"reset":true,"metal":true},{"x":762.5,"y":137.5,"width":25,"height":225,"glass":true,"reset":true,"metal":true},{"x":550,"y":37.5,"width":200,"height":25,"glass":true}]
+            `,
+            `
+            [{"x":1150,"y":762.5,"width":250,"height":25,"glass":true},{"x":1387.5,"y":162.5,"width":25,"height":275,"glass":true,"reset":true,"metal":true},{"x":700,"y":787.5,"width":200,"height":25,"glass":true,"reset":true,"metal":true},{"x":112.5,"y":750,"width":25,"height":200,"glass":true,"reset":true,"metal":true}]
+            `,
+            `
+            [{"x":750,"y":512.5,"width":1200,"height":925,"noControl":true},{"x":262.5,"y":475,"width":25,"height":900,"reset":true,"metal":true},{"x":1262.5,"y":475,"width":25,"height":900,"reset":true,"metal":true}]
+            `,
+            `
+            [{"x":750,"y":962.5,"width":450,"height":25,"glass":true,"reset":true},{"x":750,"y":562.5,"width":350,"height":25,"glass":true,"reset":true},{"x":762.5,"y":162.5,"width":225,"height":25,"glass":true,"reset":true}]
+            `,
+            `
+            [{"x":287.5,"y":762.5,"width":125,"height":25,"glass":true,"reset":true},{"x":712.5,"y":437.5,"width":175,"height":25,"glass":true,"reset":true},{"x":1225,"y":62.5,"width":200,"height":25,"glass":true,"reset":true}]
+            `,
+            `
+            [{"x":812.5,"y":662.5,"width":175,"height":25,"glass":true,"reset":true},{"x":425,"y":287.5,"width":150,"height":25,"glass":true,"reset":true},{"x":1100,"y":37.5,"width":300,"height":25,"glass":true,"reset":true}]
+            `,
+            `
+            [{"x":387.5,"y":487.5,"width":25,"height":525,"glass":true,"reset":true},{"x":562.5,"y":37.5,"width":925,"height":25,"oneWay":"-y","metal":true}]
+            `,
+            //80
+            `
+            [{"x":312.5,"y":837.5,"width":325,"height":25,"reset":true,"glass":true},{"x":875,"y":212.5,"width":300,"height":25,"red":1,"glass":true}]
+            `,
+            //80
+            `
+            [{"x":1300,"y":962.5,"width":200,"height":25,"reset":true,"metal":true},{"x":812.5,"y":412.5,"width":275,"height":25,"red":1,"oneWay":"-y"},{"x":812.5,"y":12.5,"width":175,"height":25,"reset":true,"glass":true,"metal":true}]
+            `,
+            `
+            [{"x":412.5,"y":712.5,"width":75,"height":75,"reset":true,"red":1,"glass":true},{"x":1012.5,"y":37.5,"width":75,"height":75,"reset":true,"red":1,"glass":true}]
+            `,
+            `
+            [{"x":437.5,"y":712.5,"width":75,"height":75,"reset":true,"red":1,"glass":true},{"x":1037.5,"y":37.5,"width":75,"height":75,"reset":true,"red":1,"glass":true}]
+            `,
+            `
+            [{"x":687.5,"y":962.5,"width":1175,"height":25,"oneWay":"y","metal":true},{"x":1262.5,"y":287.5,"width":25,"height":325,"reset":true,"glass":true,"metal":true},{"x":212.5,"y":425,"width":25,"height":650,"metal":true},{"x":912.5,"y":325,"width":25,"height":450,"metal":true, "oneWay": "x"},{"x":912.5,"y":750,"width":25,"height":400,"glass":true,"metal":true},{"x":812.5,"y":87.5,"width":1225,"height":25,"oneWay":"y","metal":true},{"x":200,"y":775,"width":50,"height":50,"red":1},{"x":437.5,"y":787.5,"width":25,"height":325,"oneWay":"x","metal":true},{"x":1262.5,"y":712.5,"width":25,"height":475,"metal":true},{"x":437.5,"y":362.5,"width":25,"height":475,"reset":true,"glass":true,"metal":true},{"x":775,"y":325,"width":50,"height":50,"red":1},{"x":137.5,"y":112.5,"width":125,"height":25,"oneWay":"-y","metal":true}]
+            `,
+            `
+            [{"x":787.5,"y":587.5,"width":125,"height":25,"ice":true,"metal":true},{"x":637.5,"y":825,"width":25,"height":300,"reset":true,"glass":true,"metal":true},{"x":537.5,"y":637.5,"width":875,"height":25,"oneWay":"y","metal":true},{"x":1025,"y":650,"width":50,"height":50,"red":1,"glass":true},{"x":300,"y":300,"width":50,"height":50,"red":1,"glass":true},{"x":875,"y":287.5,"width":1050,"height":25,"oneWay":"y","metal":true},{"x":87.5,"y":300,"width":25,"height":600,"ice":true,"metal":true},{"x":1412.5,"y":500,"width":25,"height":1000,"ice":true,"metal":true},{"x":112.5,"y":300,"width":25,"height":200,"reset":true,"metal":true},{"x":112.5,"y":100,"width":25,"height":200,"ice":true,"metal":true},{"x":787.5,"y":137.5,"width":25,"height":275,"oneWay":"-x","metal":true},{"x":1125,"y":25,"width":50,"height":50,"red":1}]
+            `,
+            `
+            [{"x":787.5,"y":825,"width":25,"height":350,"reset":true,"glass":true,"metal":true},{"x":600,"y":637.5,"width":1000,"height":25,"oneWay":"y","metal":true},{"x":1112.5,"y":800,"width":25,"height":350,"metal":true},{"x":1175,"y":637.5,"width":100,"height":25,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1387.5,"y":737.5,"width":25,"height":125,"oneWay":"-x","metal":true},{"x":687.5,"y":612.5,"width":125,"height":25,"reset":true,"glass":true},{"x":1387.5,"y":400,"width":25,"height":200,"metal":true},{"x":825,"y":12.5,"width":350,"height":25,"red":1,"oneWay":"-y"},{"x":1000,"y":237.5,"width":750,"height":25,"oneWay":"y","metal":true}]
+            `,
+            `
+            [{"x":825,"y":987.5,"width":350,"height":25,"glass":true,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":112.5,"y":625,"width":25,"height":150,"ice":true,"metal":true},{"x":112.5,"y":775,"width":25,"height":150},{"x":825,"y":312.5,"width":300,"height":25,"red":1,"oneWay":"-y"},{"x":587.5,"y":550,"width":25,"height":200,"reset":true,"glass":true,"metal":true}]
+            `,
+            `
+            [{"x":87.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":687.5,"y":362.5,"width":225,"height":25,"red":1,"oneWay":"-y"},{"x":812.5,"y":375,"width":25,"height":50,"glass":true,"metal":true},{"x":462.5,"y":637.5,"width":225,"height":25,"reset":true,"glass":true,"metal":true},{"x":762.5,"y":987.5,"width":225,"height":25,"oneWay":"-y"},{"x":687.5,"y":387.5,"width":225,"height":25,"glass":true,"metal":true},{"x":112.5,"y":675,"width":25,"height":150,"metal":true},{"x":112.5,"y":312.5,"width":25,"height":575,"ice":true,"metal":true}]
+            `,
+            `
+            [{"x":87.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":112.5,"y":737.5,"width":25,"height":225},{"x":112.5,"y":475,"width":25,"height":300,"ice":true,"metal":true},{"x":550,"y":337.5,"width":800,"height":25,"oneWay":"y","metal":true},{"x":1150,"y":500,"width":50,"height":50,"red":1,"glass":true},{"x":1062.5,"y":337.5,"width":175,"height":25,"metal":true},{"x":1162.5,"y":400,"width":25,"height":150,"metal":true},{"x":762.5,"y":562.5,"width":25,"height":275,"reset":true,"glass":true,"metal":true},{"x":600,"y":262.5,"width":100,"height":25,"glass":true,"reset":true}]
+            `,
+            //90
+            `
+            [{"x":87.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":262.5,"y":712.5,"width":25,"height":275,"red":1},{"x":312.5,"y":412.5,"width":25,"height":325,"ice":true,"oneWay":"-x","metal":true},{"x":337.5,"y":412.5,"width":25,"height":325,"ice":true,"oneWay":"x","metal":true},{"x":575,"y":12.5,"width":950,"height":25,"oneWay":"y","metal":true},{"x":850,"y":587.5,"width":1100,"height":25,"glass":true,"metal":true},{"x":650,"y":275,"width":50,"height":50,"reset":true,"red":1,"glass":true},{"x":662.5,"y":137.5,"width":25,"height":225,"metal":true},{"x":1175,"y":537.5,"width":150,"height":25,"glass":true},{"x":200,"y":262.5,"width":150,"height":25,"reset":true,"glass":true,"metal":true},{"x":1300,"y":137.5,"width":150,"height":25,"oneWay":"-y","metal":true},{"x":287.5,"y":687.5,"width":25,"height":225,"ice":true,"metal":true}]
+            `,
+            //90
+            `
+            [{"x":87.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"ice":true,"metal":true},{"x":337.5,"y":825,"width":25,"height":200,"reset":true,"oneWay":"x","metal":true},{"x":1050,"y":537.5,"width":350,"height":25,"red":1,"oneWay":"-y"},{"x":750,"y":312.5,"width":1300,"height":25,"glass":true,"metal":true},{"x":1050,"y":337.5,"width":300,"height":25,"reset":true,"glass":true,"metal":true},{"x":512.5,"y":62.5,"width":275,"height":25,"red":1,"oneWay":"-y"}]
+            `,
+            `
+            [{"x":87.5,"y":500,"width":25,"height":950,"ice":true,"metal":true},{"x":1412.5,"y":112.5,"width":25,"height":175,"ice":true,"metal":true},{"x":337.5,"y":587.5,"width":25,"height":225,"reset":true,"oneWay":"x"},{"x":362.5,"y":712.5,"width":125,"height":25,"glass":true,"metal":true},{"x":312.5,"y":587.5,"width":25,"height":225,"glass":true,"metal":true},{"x":1412.5,"y":862.5,"width":25,"height":225,"ice":true,"metal":true},{"x":175,"y":62.5,"width":150,"height":25,"reset":true,"glass":true,"metal":true},{"x":400,"y":412.5,"width":300,"height":25,"metal":true},{"x":400,"y":387.5,"width":300,"height":25,"ice":true}]
+            `,
+            `
+            [{"x":1412.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":87.5,"y":425,"width":25,"height":800,"ice":true,"metal":true},{"x":87.5,"y":925,"width":25,"height":150},{"x":587.5,"y":750,"width":25,"height":200,"reset":true,"glass":true,"metal":true},{"x":975,"y":600,"width":50,"height":50,"red":1},{"x":975,"y":500,"width":50,"height":150,"metal":true}]
+            `,
+            `
+            [{"x":87.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1412.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":762.5,"y":562.5,"width":225,"height":25,"reset":true,"glass":true,"metal":true},{"x":1212.5,"y":437.5,"width":75,"height":25,"red":1,"oneWay":"-y"},{"x":1387.5,"y":550,"width":25,"height":150,"oneWay":"-x","metal":true},{"x":150,"y":987.5,"width":100,"height":25,"oneWay":"-y","metal":true},{"x":612.5,"y":912.5,"width":225,"height":25,"red":1,"oneWay":"-y"},{"x":1212.5,"y":412.5,"width":125,"height":25,"glass":true,"metal":true},{"x":962.5,"y":150,"width":25,"height":250,"reset":true,"oneWay":"x","metal":true},{"x":687.5,"y":212.5,"width":175,"height":25,"glass":true},{"x":712.5,"y":237.5,"width":225,"height":25,"glass":true,"metal":true}]
+            `,
+            `
+            [{"x":87.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1412.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":150,"y":987.5,"width":100,"height":25,"metal":true},{"x":1100,"y":812.5,"width":150,"height":25,"metal":true},{"x":1000,"y":300,"width":50,"height":50,"red":1,"glass":true},{"x":1187.5,"y":537.5,"width":425,"height":25,"glass":true,"metal":true},{"x":1362.5,"y":487.5,"width":75,"height":25,"metal":true}]
+            `,
+            `
+            [{"x":1412.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":87.5,"y":875,"width":25,"height":250,"glass":true,"metal":true},{"x":87.5,"y":687.5,"width":25,"height":125,"ice":true,"oneWay":"x"},{"x":87.5,"y":325,"width":25,"height":600,"ice":true,"metal":true},{"x":562.5,"y":500,"width":25,"height":150,"reset":true,"glass":true,"metal":true},{"x":862.5,"y":262.5,"width":125,"height":25,"red":1,"oneWay":"-y"},{"x":1362.5,"y":437.5,"width":75,"height":25,"metal":true}]
+            `,
+            `
+            [{"x":850,"y":962.5,"width":200,"height":25,"reset":true,"glass":true,"metal":true},{"x":87.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1412.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":700,"y":475,"width":50,"height":50,"red":1,"glass":true},{"x":662.5,"y":587.5,"width":25,"height":325,"metal":true},{"x":625,"y":675,"width":50,"height":50,"red":1,"glass":true},{"x":362.5,"y":437.5,"width":475,"height":25,"oneWay":"y","metal":true},{"x":625,"y":437.5,"width":50,"height":25,"metal":true},{"x":575,"y":737.5,"width":150,"height":25,"glass":true,"metal":true},{"x":137.5,"y":737.5,"width":25,"height":225,"reset":true,"metal":true},{"x":825,"y":187.5,"width":200,"height":25,"reset":true,"glass":true,"metal":true},{"x":1237.5,"y":62.5,"width":175,"height":25,"red":1,"oneWay":"-y"}]
+            `,
+            `
+            [{"x":1412.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":87.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1387.5,"y":587.5,"width":25,"height":225,"reset":true,"glass":true,"metal":true},{"x":750,"y":350,"width":50,"height":50,"red":1,"glass":true},{"x":150,"y":537.5,"width":100,"height":25,"metal":true},{"x":112.5,"y":250,"width":25,"height":150,"metal":true},{"x":112.5,"y":100,"width":25,"height":150,"ice":true,"metal":true}]
+            `,
+            `
+            [{"x":87.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true},{"x":1412.5,"y":412.5,"width":25,"height":775,"ice":true,"metal":true},{"x":112.5,"y":737.5,"width":25,"height":225},{"x":112.5,"y":512.5,"width":25,"height":225,"ice":true,"metal":true},{"x":512.5,"y":637.5,"width":25,"height":175,"reset":true,"glass":true,"metal":true},{"x":1137.5,"y":537.5,"width":225,"height":25,"red":1,"oneWay":"-y"},{"x":1200,"y":787.5,"width":400,"height":25,"glass":true,"metal":true},{"x":550,"y":125,"width":50,"height":50,"red":1,"oneWay":"-y"},{"x":712.5,"y":12.5,"width":1275,"height":25,"oneWay":"-y","metal":true},{"x":787.5,"y":187.5,"width":25,"height":175,"reset":true,"glass":true,"metal":true}]
+            `,
+            `
+            [{"x":1337.5,"y":950,"width":25,"height":100,"metal":true},{"x":750,"y":987.5,"width":500,"height":25,"reset":true,"oneWay":"-y"},{"x":750,"y":587.5,"width":500,"height":25,"reset":true,"oneWay":"-y"},{"x":750,"y":187.5,"width":500,"height":25,"reset":true,"oneWay":"-y"}]
+            `,
+            `
+            [{"x":750,"y":500,"width":50,"height":750,"reset":true,"glass":true},{"x":750,"y":12.5,"width":500,"height":25,"reset":true,"oneWay":"-y"}]
+            `
+        ]
+
+        let loadedScenes = [ {}, {}, {} ];
+
+        //canvas or gamescreen
+        var canvas = document.getElementById("gameScreen");
+        //context, for drawing
+        var ctx = canvas.getContext("2d");
+
+        var stop = false;
+        var frameCount = 0;
+        //var $results = $("#results");
+        var fps, fpsInterval, startTime, now, then, elapsed;
+
+
+        // initialize the timer variables and start the animation
+
+        function startAnimating(fps) {
+            fpsInterval = 1000 / fps;
+            then = Date.now();
+            startTime = then;
+            animate();
+        }
+
+        // the animation loop calculates time elapsed since the last loop
+        // and only draws if your specified fps interval is achieved
+
+        function animate() {
+
+            // request another frame
+
+            requestAnimationFrame(animate);
+
+            // calc elapsed time since last loop
+
+            now = Date.now();
+            elapsed = now - then;
+
+            // if enough time has elapsed, draw the next frame
+
+            if (elapsed > fpsInterval) {
+
+                // Get ready for next frame by setting then=now, but also adjust for your
+                // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+                then = now - (elapsed % fpsInterval);
+
+                // Put your drawing code here
+                tickloop();
+            }
+        }
+        
+        //settings canvas size and scale
+        var screenScale = window.innerWidth/canvas.width
+        if (window.innerHeight/canvas.height < screenScale) screenScale = window.innerHeight/canvas.height;
+
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+
+        ctx.translate((window.innerWidth-1500*screenScale)/2, (window.innerHeight-1000*screenScale)/2);
+        
+        ctx.scale(screenScale, screenScale);
+
+        var filterStrength = 10; //used  to be 20
+        var frameTime = 0, lastLoop = new Date, thisLoop;
+        var fpsOut = document.getElementById('fps');
+
+        // Report the fps only every second, to only lightly affect measurements
+        setInterval(function(){
+            fpsOut.innerHTML = (1000/frameTime).toFixed(1);
+            game.fps = Math.max(30, Number(fpsOut.innerHTML));
+        },1000);
+
+        const keys = [];
+        let keyBuffer = [];
+
+        //detect keypresses
+        window.addEventListener('keydown', function (e) { if (!e.repeat) {
+            const key = e.key.toLowerCase();
+            if (!keys.includes(key)) keys.push(key);
+            if (!keyBuffer.includes(key)) keyBuffer.push(key);
+        }}, false);
+        window.addEventListener('keyup', function (e) {
+            const key = e.key.toLowerCase();
+            while (keys.includes(key)) {
+                keys.splice(keys.indexOf(key), 1);
+            } 
+            while (keyBuffer.includes(key)) {
+                keyBuffer.splice(keyBuffer.indexOf(key), 1);
+            } 
+            if (key == "x" && grapple.connected) {
+                grapple.connected = false;
+                grapple.visible = false;
+            } 
+        }, false);
+
+        window.addEventListener("beforeunload", function(e){
+            if (scenePos >= 0 && scenePos <= 100 && (scenePos < 100 || posOffset < 0)) { 
+                localStorage.setItem( "scenePos", JSON.stringify( scenePos ) );
+                localStorage.setItem( "player", JSON.stringify( { x: player.x, y: player.y } ) );
+                localStorage.setItem( "posOffset", JSON.stringify( posOffset ) );
+            }
+        });
+        ctx.lineWidth = 3;
+
+        const game = {
+            fps: 60,
+            gravity: 1,
+            controls: { x: 0, y: 0 },
+            speedCap: 100, friction: 0.02, groundFriction: 0.2, capFriction: 0.2, jumpStrength: 17,
+        }
+
+        const player = {
+            size: 50, rotation: 0, subRotation: 0, coyoteTime: 0, wallCoyoteTime: 0, xHit: 0,
+            x: 750, y: 700, vx: 0, vy: 0, ice: false, wallJumpStrength: 0.5, lastTouchIce: false
+        }
+
+        const grapple = {
+            x: 750, y: 500, vx: 0, vy: 0, length: 0, maxLength: 500, minLength: 100,
+            connected: false, visible: false, speed: 5, left: 0, cooldown: 0
+        }
+
+        let scenePos = 0;
+        let posOffset = 0;
+
+        let platforms = [
+            {x:1450,y:500,width:50,height:2000},
+            {x:50,y:500,width:50,height:2000}, ...JSON.parse(scenes[scenePos]),
+        ]
+
+        if (localStorage.getItem("player")) {
+            player.x = JSON.parse(localStorage.getItem("player")).x;
+            player.y = JSON.parse(localStorage.getItem("player")).y;
+        }
+        if (localStorage.getItem("scenePos")) scenePos = JSON.parse(localStorage.getItem("scenePos"));
+        if (localStorage.getItem("posOffset")) posOffset = JSON.parse(localStorage.getItem("posOffset"));
+
+        platforms.splice(2);
+        if (scenes[scenePos-1]) {
+            const tempPlatforms = JSON.parse(scenes[scenePos-1])
+
+            tempPlatforms.forEach((platform, i) => {
+                platform.y += posOffset + 1000;
+            });
+
+            platforms.push(...tempPlatforms)
+            loadedScenes[0] = {id: scenePos-1, platforms: tempPlatforms};
+        }
+        if (scenes[scenePos]) {
+            const tempPlatforms = JSON.parse(scenes[scenePos])
+
+            tempPlatforms.forEach((platform, i) => {
+                platform.y += posOffset;
+            });
+
+            platforms.push(...tempPlatforms)
+            loadedScenes[1] = {id: scenePos, platforms: tempPlatforms};
+        }
+        if (scenes[scenePos+1]) {
+            const tempPlatforms = JSON.parse(scenes[scenePos+1])
+
+            tempPlatforms.forEach((platform, i) => {
+                platform.y += posOffset - 1000;
+            });
+
+            platforms.push(...tempPlatforms)
+            loadedScenes[2] = {id: scenePos+1, platforms: tempPlatforms};
+        }
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+
+        function tickloop() {
+            //check frameRate
+            var thisFrameTime = (thisLoop=new Date) - lastLoop;
+            frameTime += (thisFrameTime - frameTime) / filterStrength;
+            lastLoop = thisLoop;
+            
+            ctx.fillStyle = "#222";
+            ctx.fillRect(-1000,-1000,3500,3000);
+
+            game.controls = { x: 0, y: 0 };
+
+            platformTick();
+
+            grappleTick();
+
+            playerTick();
+
+            //draw Wall Numbers
+            ctx.beginPath();
+            ctx.font = "25px share tech";
+            ctx.fillStyle = "#fff";
+            ctx.fillText(scenePos, 50, 500+posOffset);
+
+            if (scenePos == 0) {
+                ctx.beginPath();
+                ctx.strokeStyle = "#fff";
+
+                ctx.strokeRect(200,910+posOffset, 35, 35);
+                ctx.strokeRect(250,910+posOffset, 35, 35);
+
+                ctx.strokeRect(400,895+posOffset, 25, 25);
+                ctx.strokeRect(365,930+posOffset, 25, 25);
+                ctx.strokeRect(400,930+posOffset, 25, 25);
+                ctx.strokeRect(435,930+posOffset, 25, 25);
+
+                ctx.beginPath();
+
+                ctx.moveTo(210, 920+posOffset);
+                ctx.lineTo(225, 920+posOffset);
+                ctx.lineTo(210, 935+posOffset);
+                ctx.lineTo(225, 935+posOffset);
+
+                ctx.moveTo(260, 920+posOffset);
+                ctx.lineTo(275, 935+posOffset);
+                ctx.moveTo(275, 920+posOffset);
+                ctx.lineTo(260, 935+posOffset);
+
+                ctx.stroke();
+            } else if (scenePos == 13 || scenePos == 14) {
+                ctx.strokeStyle = "#fff";
+                ctx.fillStyle = "#99999999";
+
+                ctx.strokeRect(1335,315+posOffset+1000*(scenePos == 14), 40, 40);
+
+                ctx.beginPath();
+
+                ctx.moveTo(1345, 325+posOffset+1000*(scenePos == 14));
+                ctx.lineTo(1365, 345+posOffset+1000*(scenePos == 14));
+                ctx.moveTo(1365, 325+posOffset+1000*(scenePos == 14));
+                ctx.lineTo(1345, 345+posOffset+1000*(scenePos == 14));
+
+                ctx.stroke();
+
+                ctx.beginPath();
+                
+                ctx.strokeRect(1235,310+posOffset+1000*(scenePos == 14), 25, 25);
+                ctx.strokeRect(1200,345+posOffset+1000*(scenePos == 14), 25, 25);
+                ctx.fillRect(1235,345+posOffset+1000*(scenePos == 14), 25, 25);
+                ctx.strokeRect(1235,345+posOffset+1000*(scenePos == 14), 25, 25);
+                ctx.strokeRect(1270,345+posOffset+1000*(scenePos == 14), 25, 25);
+            } else if (scenePos == 14) {
+            }
+
+            sceneLoader();
+        }
+
+        function playerTick() {
+            player.rotation += 0.025;
+            player.subRotation += 0.003;
+            //draw the player
+            ctx.strokeStyle = `rgba(255, 255, 255, ${player.wallJumpStrength})`;
+            ctx.fillStyle = "#ffffff33";
+            ctx.beginPath();
+            ctx.moveTo(player.x-player.size*0.4, player.y-player.size*0.5+1.5);
+            ctx.lineTo(player.x+player.size*0.4, player.y-player.size*0.5+1.5);
+            ctx.moveTo(player.x-player.size*0.4, player.y+player.size*0.5-1.5);
+            ctx.lineTo(player.x+player.size*0.4, player.y+player.size*0.5-1.5);
+            ctx.moveTo(player.x-player.size*0.5+1.5, player.y-player.size*0.4);
+            ctx.lineTo(player.x-player.size*0.5+1.5, player.y+player.size*0.4);
+            ctx.moveTo(player.x+player.size*0.5-1.5, player.y-player.size*0.4);
+            ctx.lineTo(player.x+player.size*0.5-1.5, player.y+player.size*0.4);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            for(var i = 0; i < Math.PI*2; i += Math.PI/4) ctx.lineTo( player.x+Math.sin(player.subRotation+i)*player.size*0.4, player.y-Math.cos(player.subRotation+i)*player.size*0.4 );
+            ctx.closePath();
+            ctx.stroke();
+
+            //inside
+            ctx.fillStyle = `rgba(255, 255, 255, ${grapple.left*player.wallJumpStrength})`;
+            ctx.beginPath();
+            ctx.moveTo( player.x + Math.sin( player.subRotation + player.rotation ) * player.size*0.4, player.y + Math.cos( player.subRotation + player.rotation ) * player.size*0.4 );
+            ctx.lineTo( player.x + Math.sin( player.subRotation - player.rotation + Math.PI / 2 ) * player.size*0.4, player.y + Math.cos( player.subRotation - player.rotation + Math.PI / 2 ) * player.size*0.4 );
+            ctx.lineTo( player.x + Math.sin( player.subRotation + player.rotation - Math.PI / 2 ) * player.size*0.4, player.y + Math.cos( player.subRotation + player.rotation - Math.PI / 2 ) * player.size*0.4 );
+            ctx.lineTo( player.x + Math.sin( player.subRotation - player.rotation + Math.PI ) * player.size*0.4, player.y + Math.cos( player.subRotation - player.rotation + Math.PI ) * player.size*0.4 );
+            ctx.closePath();
+            ctx.fill();
+
+            playerControls();
+            
+            player.x += player.vx; player.y += player.vy;
+            
+            checkPlayerCollisions();
+
+            player.vy += game.gravity;
+            player.vx *= 1-game.friction;
+            player.vy *= 1-game.friction;
+
+            //soft speed cap
+            if ( Math.hypot(player.vx, player.vy) > game.speedCap ) {
+                player.vx *= 1-game.capFriction;
+                player.vy *= 1-game.capFriction;
+            }
+        }
+
+        function checkPlayerCollisions() {
+            player.noControl = false;
+            let otherTouch = false;
+            let iceTouch = false;
+            let xFriction = false;
+            let yFriction = false;
+            platforms.forEach( (platform) => {
+                if ( 
+                    player.x+player.size/2 >= platform.x-platform.width/2 && player.x-player.size/2 <= platform.x+platform.width/2 &&
+                    player.y+player.size/2 >= platform.y-platform.height/2 && player.y-player.size/2 <= platform.y+platform.height/2
+                ) {
+                    if (platform.reset && !grapple.connected) {
+                        player.wallJumpStrength = 1;
+                        grapple.left = 1;
+                    }
+                    if (platform.noControl) player.noControl = true;
+                    if (platform.ice) iceTouch = true;
+                    if (!platform.glass && !platform.noControl) {
+                        if (!platform.ice) otherTouch = true;
+
+                        const diff = { x: platform.x-platform.width/2-(player.x+player.size/2), 
+                            y: platform.y-platform.height/2-player.y-player.size/2 }
+
+                        const otherX = platform.x+platform.width/2-player.x+player.size/2;
+                        const otherY = platform.y+platform.height/2-player.y+player.size/2;
+                        if (Math.abs(otherX) < Math.abs(diff.x)) diff.x = otherX;
+                        if (Math.abs(otherY) < Math.abs(diff.y)) diff.y = otherY;
+                        
+                        let collisionDirection = "";
+
+                        if (Math.abs(diff.y) < Math.abs(diff.x)) collisionDirection = "y";
+                        else collisionDirection = "x";
+
+                        if (diff[collisionDirection] < 0) collisionDirection = "-" + collisionDirection;
+
+                        if (platform.oneWay) if (collisionDirection != platform.oneWay || player["v"+platform.oneWay.at(-1)]*(1-2*platform.oneWay.includes("-")) > 0) collisionDirection = "";
+
+                        if (collisionDirection.includes("x")) if ( ! (Math.sign(diff.x) == -Math.sign(player.vx) ) ) collisionDirection = "";
+                        if (collisionDirection.includes("y")) if ( ! (Math.sign(diff.y) == -Math.sign(player.vy) ) ) collisionDirection = "";
+
+                        if (collisionDirection.includes("y")) {
+                            if (diff.y) player.y = platform.y + (platform.height/2+player.size/2) * Math.sign(diff.y);
+                            
+                            player.vy = 0;
+
+                            if (player.y < platform.y) {
+                                player.coyoteTime = 0.1;
+                                player.wallJumpStrength = 1;
+                                player.ice = true;
+                                if (!grapple.connected) grapple.left = 1;
+                            }
+
+                            if (Math.sign(player.vx) != Math.sign(game.controls.x) && !platform.ice) xFriction = 1-game.groundFriction;
+                        } else if (collisionDirection.includes("x")) {
+                            if (diff.x) player.x = platform.x + (platform.width/2+player.size/2) * Math.sign(diff.x);
+                            
+                            player.vx = 0;
+
+                            player.xHit = 1-2*(player.x < platform.x);
+                            if (player.vy > 0 && !platform.ice) yFriction = 1-2*game.groundFriction;
+
+                            player.wallCoyoteTime = 0.1;
+                        }
+                    }
+                }
+            } );
+
+            if (player.wallCoyoteTime <= 0) {
+                player.xHit = 0;
+                if (player.coyoteTime <= 0) player.ice = false;
+            }
+            if (player.coyoteTime <= 0 || player.wallCoyoteTime <= 0) {
+                if (/*!iceTouch && */otherTouch) player.ice = false;
+                else if (iceTouch && !otherTouch) player.ice = true;
+            }
+
+            if (xFriction) player.vx *= xFriction;
+            if (yFriction) player.vy *= yFriction;
+            //else player.ice = false;
+        }
+
+        function playerControls() {
+            if ((keys.includes("arrowright") - keys.includes("arrowleft")) || (keys.includes("arrowdown") - keys.includes("arrowup"))) {
+                game.controls = {
+                    x: keys.includes("arrowright") - keys.includes("arrowleft"), y: keys.includes("arrowdown") - keys.includes("arrowup"),
+                }
+            }
+
+            if (!player.noControl) {
+                if (game.controls.x) player.vx += game.controls.x*0.6*( 0.1 + 0.9*!(player.ice && !player.xHit) );
+                if (game.controls.y > 0) player.vy += 1/3;
+                else player.vy -= 1/3;
+            }
+
+            if (player.coyoteTime > 0) player.coyoteTime -= 1/game.fps;
+            if (player.wallCoyoteTime > 0) player.wallCoyoteTime -= 1/game.fps;
+            if (grapple.cooldown > 0) grapple.cooldown -= 1/game.fps;
+            if (keyBuffer.includes("z")) {
+                let didJump = false;
+                if (player.coyoteTime > 0) {
+                    player.coyoteTime = 0;
+                    if (player.vy > -game.jumpStrength) player.vy = -game.jumpStrength;
+                    didJump = true;
+                } else if (player.xHit) {
+                    const jumpStrength = -game.jumpStrength*0.9*player.wallJumpStrength*( 0.3 + 0.7*!player.ice )
+                    player.vx = player.xHit*game.jumpStrength*0.55;
+                    if (player.vy > jumpStrength) player.vy = jumpStrength;
+                    player.wallJumpStrength *= 0.9;
+                    didJump = true;
+                }
+
+                if (didJump) while (keyBuffer.includes("z")) {
+                    keyBuffer.splice(keyBuffer.indexOf("z"), 1);
+                    grapple.cooldown = 0.1;
+                } 
+            }
+
+            if (keyBuffer.includes("x") && !grapple.connected && (game.controls.x || game.controls.y) && grapple.left > 0) {
+                var oriAangle = Math.atan(game.controls.x/game.controls.y) + Math.PI*(game.controls.y < 0);
+                if (game.controls.y == 0) oriAangle = game.controls.x*Math.PI/2;
+            
+                let noHit = true;
+                const angleRez = Math.PI/30;
+                for (var i = 0; i < 12 && noHit; i++) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#ffffff09";
+                    ctx.moveTo(player.x, player.y);
+                    let angle = oriAangle;
+
+                    if (i == 1) angle -= angleRez;
+                    else if (i == 3) angle += angleRez;
+                    else if (i == 4) angle -= angleRez*2;
+                    else if (i == 5) angle += angleRez*2;
+                    else if (i == 6) angle -= angleRez*3;
+                    else if (i == 7) angle += angleRez*3;
+                    else if (i == 8) angle -= angleRez*4;
+                    else if (i == 9) angle += angleRez*4;
+                    else if (i == 10) angle -= angleRez*5;
+                    else if (i == 11) angle += angleRez*5;
+
+                    grapple.vx = grapple.speed*Math.sin(angle);
+                    grapple.vy = grapple.speed*Math.cos(angle);
+
+                    grapple.x = player.x;
+                    grapple.y = player.y;
+
+                    let contin = true;
+                    while (contin) {
+                        grapple.x += grapple.vx;
+                        grapple.y += grapple.vy;
+                        const dist = Math.hypot(player.x-grapple.x, player.y-grapple.y);
+                        let angle = Math.atan( (player.x-grapple.x) / (player.y-grapple.y) ) + Math.PI * (player.y > grapple.y);
+                        if (player.y == grapple.y) angle = -Math.sign(player.x-grapple.x)*Math.PI/2;
+
+                        if (dist > grapple.maxLength) {
+                            grapple.visible = false;
+                            contin = false;
+                        } else platforms.forEach( (platform) => {
+                            if ( grapple.x >= platform.x-platform.width/2 && grapple.x <= platform.x+platform.width/2 && 
+                                grapple.y >= platform.y-platform.height/2 && grapple.y <= platform.y+platform.height/2 && !platform.noControl) if (platform.metal ) { 
+                                grapple.visible = false;
+                                contin = false;
+                            } else {
+                                noHit = false;
+                                if (!platform.reset) grapple.left--;
+                                player.wallJumpStrength = 1;
+                                contin = false;
+
+                                contin = false;
+                                if (dist < grapple.minLength && grapple.cooldown <= 0) {
+                                    grapple.length = grapple.minLength*2;
+
+                                    const playerSpeed = Math.hypot(player.vx, player.vy);
+                                    const cosineSimilarity = ( player.vx * Math.sin(angle) + player.vy * Math.cos(angle)) / playerSpeed; 
+
+                                    player.vx -= Math.sin(angle)*30 + Math.sin(angle)*playerSpeed*cosineSimilarity;
+                                    player.vy -= Math.cos(angle)*30 + Math.cos(angle)*playerSpeed*cosineSimilarity;
+                                    player.coyoteTime = 0;
+                                    player.wallCoyoteTime = 0;
+                                } else grapple.length = dist;
+                                grapple.connected = true;
+                                grapple.visible = true;
+
+                                const diff = { x: platform.x-platform.width/2-grapple.x, 
+                                    y: platform.y-platform.height/2-grapple.y }
+
+                                const otherX = platform.x+platform.width/2-grapple.x;
+                                const otherY = platform.y+platform.height/2-grapple.y;
+                                if (Math.abs(otherX) < Math.abs(diff.x)) diff.x = otherX;
+                                if (Math.abs(otherY) < Math.abs(diff.y)) diff.y = otherY;
+
+                                if (Math.abs(diff.y) < Math.abs(diff.x)) {
+                                    if (diff.y) grapple.y = platform.y + (platform.height/2) * Math.sign(diff.y);
+                                    if (Math.sign(diff.y != Math.sign(grapple.vy) )) grapple.vy = 0;
+                                } else {
+                                    if (diff.x) grapple.x = platform.x + (platform.width/2) * Math.sign(diff.x);
+                                    if (Math.sign(diff.x != Math.sign(grapple.vx) )) grapple.vx = 0;
+                                }
+                            }
+                        } );
+                    }
+                    ctx.lineTo(grapple.x, grapple.y);
+                    //ctx.stroke();
+                }
+
+                if (!noHit) while (keyBuffer.includes("x")) {
+                    keyBuffer.splice(keyBuffer.indexOf("x"), 1);
+                } else {
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#ffffff09";
+                    ctx.arc(player.x, player.y, grapple.maxLength, Math.PI/2-oriAangle-angleRez*5, Math.PI/2-oriAangle+angleRez*5);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function grappleTick() {
+            if (grapple.connected) {
+                grapple.visible = true;
+                const dist = Math.hypot(player.x-grapple.x, player.y-grapple.y);
+                if (dist > grapple.length+1) {
+                    let angle = Math.atan( (player.x-grapple.x) / (player.y-grapple.y) ) + Math.PI * (player.y > grapple.y);
+                    if (player.y == grapple.y) angle = -Math.sign(player.x-grapple.x)*Math.PI/2;
+                    const moveDist = grapple.length-dist;
+
+                    player.x -= Math.sin(angle)*moveDist;
+                    player.y -= Math.cos(angle)*moveDist;
+
+                    const playerSpeed = Math.hypot(player.vx, player.vy);
+                    let playerAngle;
+
+                    let cosineSimilarity = ( Math.sin(angle+Math.PI/2) * player.vx + Math.cos(angle+Math.PI/2) * player.vy ) / playerSpeed;
+                    //reduces centrifugal friction
+                    if (Math.abs(cosineSimilarity) > 0.9) cosineSimilarity = Math.sign(cosineSimilarity) * (1-0.25*(1-Math.abs(cosineSimilarity)) );
+
+                    if (cosineSimilarity > 0) playerAngle = angle + Math.PI/2;
+                    else playerAngle = angle - Math.PI/2;
+
+                    player.vx = Math.sin(playerAngle)*playerSpeed*Math.abs(cosineSimilarity);
+                    player.vy = Math.cos(playerAngle)*playerSpeed*Math.abs(cosineSimilarity);
+
+                    player.wallJumpStrength = 1;
+                }
+            }
+
+            if (grapple.visible) {
+                const dist = Math.hypot(player.x-grapple.x, player.y-grapple.y);
+                let angle = Math.atan( (player.x-grapple.x) / (player.y-grapple.y) ) + Math.PI * (player.y > grapple.y);
+                if (player.y == grapple.y) angle = -Math.sign(player.x-grapple.x)*Math.PI/2;
+                const zigZag = (grapple.length-dist)/grapple.length * 10 * grapple.connected;
+                const moveDist = dist/10;
+
+                ctx.strokeStyle = "#fff";
+                ctx.beginPath();
+                ctx.moveTo(player.x, player.y);
+                for (var i = 1; i < 10; i++) ctx.lineTo( player.x + Math.sin(angle)*i*moveDist + Math.sin(angle+Math.PI/2)*(1-2*(i%2))*zigZag, player.y + Math.cos(angle)*i*moveDist + Math.cos(angle+Math.PI/2)*(1-2*(i%2))*zigZag );
+                ctx.lineTo(grapple.x, grapple.y);
+                ctx.stroke();
+            }
+        }
+
+        function platformTick() {
+            platforms.forEach( (item, i) => {
+                if (item.noControl) {
+                    const point1 = [25+item.x-item.width/2,item.y-item.height/2];
+                    const point2 = [item.x-item.width/2,25+item.y-item.height/2];
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#00ff0044";
+
+                    ctx.rect(item.x-item.width/2,item.y-item.height/2,1,1);
+                    ctx.rect(item.x+item.width/2,item.y+item.height/2,1,1);
+
+                    var contin = true;
+                    while (contin) {
+                        ctx.moveTo(...point1);
+                        ctx.lineTo(...point2);
+
+                        if (point1[0] > item.x+item.width/2-20) point1[1] += 25;
+                        else point1[0] += 25;
+                        if (point2[1] > item.y+item.height/2-20) point2[0] += 25;
+                        else point2[1] += 25;
+
+                        if (point1[1] > item.y+item.height/2-25 && point2[0] > item.x+item.width/2-25) contin = false;
+                    }
+
+                    ctx.stroke();
+
+                    return;
+                }
+
+                ctx.strokeStyle = "#999";
+                if (item.reset) ctx.strokeStyle = "#ff0"; 
+                if (item.ice) ctx.strokeStyle = "#0ff";
+                if (item.metal) ctx.strokeStyle += "55";  
+                ctx.fillStyle = "#99999933";
+                item.width -= 3;
+                item.height -= 3;
+                ctx.beginPath();
+                ctx.rect(item.x-item.width/2, item.y-item.height/2,item.width,item.height);
+                ctx.fill();
+                if (item.glass || item.oneWay) {
+                    ctx.beginPath();
+                    ctx.moveTo(item.x-item.width/2, item.y-item.height/2+5);
+                    ctx.lineTo(item.x-item.width/2, item.y-item.height/2);
+                    ctx.lineTo(item.x-item.width/2+5, item.y-item.height/2);
+
+                    ctx.moveTo(item.x+item.width/2, item.y-item.height/2+5);
+                    ctx.lineTo(item.x+item.width/2, item.y-item.height/2);
+                    ctx.lineTo(item.x+item.width/2-5, item.y-item.height/2);
+
+                    ctx.moveTo(item.x+item.width/2, item.y+item.height/2-5);
+                    ctx.lineTo(item.x+item.width/2, item.y+item.height/2);
+                    ctx.lineTo(item.x+item.width/2-5, item.y+item.height/2);
+
+                    ctx.moveTo(item.x-item.width/2, item.y+item.height/2-5);
+                    ctx.lineTo(item.x-item.width/2, item.y+item.height/2);
+                    ctx.lineTo(item.x-item.width/2+5, item.y+item.height/2);
+
+                    if (item.oneWay) {
+                        if (item.oneWay == "-y") {
+                            ctx.moveTo(item.x-item.width/2, item.y-item.height/2);
+                            ctx.lineTo(item.x+item.width/2, item.y-item.height/2)
+                        } else if (item.oneWay == "y") {
+                            ctx.moveTo(item.x-item.width/2, item.y+item.height/2);
+                            ctx.lineTo(item.x+item.width/2, item.y+item.height/2)
+                        } else if (item.oneWay == "-x") {
+                            ctx.moveTo(item.x-item.width/2, item.y-item.height/2);
+                            ctx.lineTo(item.x-item.width/2, item.y+item.height/2)
+                        } else if (item.oneWay == "x") {
+                            ctx.moveTo(item.x+item.width/2, item.y-item.height/2);
+                            ctx.lineTo(item.x+item.width/2, item.y+item.height/2)
+                        }
+                    }
+                }
+                ctx.stroke();
+
+                if (i > 1 && !item.metal) {
+                    ctx.beginPath();
+                    ctx.strokeStyle += "77"; 
+                    const gridSize = 10;
+                    if (item.width >= item.height) {
+                        const amount = Math.floor(item.height/gridSize);
+                        const offset = item.height%gridSize;
+                        for (var i = 1; i < amount; i++) {
+                            ctx.moveTo(item.x-item.width/2+gridSize, item.y-item.height/2+i*gridSize+offset/2);
+                            ctx.lineTo(item.x+item.width/2-gridSize, item.y-item.height/2+i*gridSize+offset/2);
+                        }
+                    } 
+                    if (item.width <= item.height) {
+                        const amount = Math.floor(item.width/gridSize);
+                        const offset = item.width%gridSize;
+                        for (var i = 1; i < amount; i++) {
+                            ctx.moveTo(item.x-item.width/2+i*gridSize+offset/2, item.y-item.height/2+gridSize, );
+                            ctx.lineTo(item.x-item.width/2+i*gridSize+offset/2, item.y+item.height/2-gridSize, );
+                        }
+                    }
+                    ctx.stroke();
+                }
+
+                item.width += 3;
+                item.height += 3;
+                
+                if (item.red !== undefined) {
+                    ctx.strokeStyle = "#b00";
+                    ctx.fillStyle = "#bb000030";
+                    const size = (Math.min(item.width, item.height)-10)*(1-item.red)+10
+
+                    ctx.beginPath();
+                    ctx.rect(item.x-item.width/2+size/2, item.y-item.height/2+size/2, item.width-size, item.height-size);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    if (grapple.connected) { if (
+                        grapple.x >= item.x-item.width/2 && 
+                        grapple.x <= item.x+item.width/2 && 
+                        grapple.y >= item.y-item.height/2 && 
+                        grapple.y <= item.y+item.height/2
+                    ) {
+                        item.red -= 0.01;
+                        if (item.red < 0) {
+                            item.red = 0;
+                            grapple.connected = false;
+                            grapple.visible = false;
+                        }
+                    } else {
+                        item.red += 0.003;
+                        if (item.red > 1) item.red = 1;
+                    }} else {
+                        item.red += 0.003;
+                        if (item.red > 1) item.red = 1;
+                    }
+                }
+            } )
+        }
+
+        function sceneLoader() {
+            const oldOffset = posOffset;
+            let updateScenes = false;
+            if (player.y < 400) {
+                updateScenes = true;
+                posOffset += 400-player.y;
+
+                grapple.y += 400-player.y;
+                player.y = 400;
+            } else if (player.y > 800) {
+                updateScenes = true;
+                posOffset += 800-player.y;
+
+                grapple.y += 800-player.y;
+                player.y = 800;
+            }
+            if (updateScenes) {
+                const moveAmount = oldOffset-posOffset
+
+                platforms.forEach((platform, i) => { if (i > 1) {
+                    platform.y -= moveAmount;
+                }});
+
+                if (Math.abs(Math.round(posOffset/1000))) {
+                    const sceneMove = Math.round(posOffset/1000);
+                    scenePos += sceneMove;
+                    posOffset -= Math.round(posOffset/1000)*1000;
+
+                    let newLoadedScenes = Object.assign([], loadedScenes);
+                    if (sceneMove > 0) newLoadedScenes = [newLoadedScenes[1], newLoadedScenes[2], false];
+                    else newLoadedScenes = [false, newLoadedScenes[0], newLoadedScenes[1]];
+                    let newPlatforms = [];
+                    if (scenes[scenePos-1] && !newLoadedScenes[0]) {
+                        const tempPlatforms = JSON.parse(scenes[scenePos-1])
+
+                        tempPlatforms.forEach((platform, i) => {
+                            platform.y += posOffset + 1000;
+                        });
+
+                        newPlatforms.push(...tempPlatforms);
+                        newLoadedScenes[0] = {id: scenePos-1, platforms: tempPlatforms};
+                    } else if (newLoadedScenes[0].platforms) newPlatforms.push(...newLoadedScenes[0].platforms);
+                    if (newLoadedScenes[1].platforms) newPlatforms.push(...newLoadedScenes[1].platforms);
+                    if (!scenes[scenePos+1]) {
+                        scenes.push(generateScene());
+                    }
+                    if (scenes[scenePos+1] && !newLoadedScenes[2]) {
+                        const tempPlatforms = JSON.parse(scenes[scenePos+1])
+
+                        tempPlatforms.forEach((platform, i) => {
+                            platform.y += posOffset - 1000;
+                        });
+
+                        newPlatforms.push(...tempPlatforms);
+                        newLoadedScenes[2] = {id: scenePos+1, platforms: tempPlatforms};
+                    } else if (newLoadedScenes[2].platforms) newPlatforms.push(...newLoadedScenes[2].platforms);
+                    platforms.splice(2);
+                    platforms.push(...newPlatforms);
+                    loadedScenes = newLoadedScenes;
+                }
+
+                if (scenePos >= 0 && scenePos <= 100 && (scenePos < 100 || posOffset < 0)) { 
+                    localStorage.setItem( "scenePos", JSON.stringify( scenePos ) );
+                    localStorage.setItem( "player", JSON.stringify( { x: player.x, y: player.y } ) );
+                    localStorage.setItem( "posOffset", JSON.stringify( posOffset ) );
+                }
+            }
+        }
+
+        function generateScene() {
+            const scene = [];
+            
+            let platformCount = 3 + Math.floor((Math.random()*10)**5/10000);
+            
+            //top + bottom + randomModifier
+            //top
+            switch(Math.floor(Math.random()*4)) {
+                case 0: 
+                    scene.push(...JSON.parse(`
+                    [{"x":500,"y":262.5,"width":800,"height":25,"glass":true,"metal":true},{"x":950,"y":262.5,"width":100,"height":25,"reset":true,"glass":true},{"x":1200,"y":262.5,"width":400,"height":25,"glass":true,"metal":true}]
+                    `));
+                    break;
+                case 1: 
+                    scene.push(...JSON.parse(`
+                    [{"x":1237.5,"y":337.5,"width":25,"height":475,"oneWay":"x","metal":true},{"x":1187.5,"y":87.5,"width":125,"height":25,"oneWay":"-y","metal":true},{"x":1162.5,"y":562.5,"width":125,"height":25,"oneWay":"-y","metal":true}]
+                    `));
+                    break;
+                case 2: 
+                    scene.push(...JSON.parse(`
+                    [{"x":750,"y":312.5,"width":250,"height":25,"red":1,"oneWay":"-y"},{"x":750,"y":12.5,"width":200,"height":25,"reset":true,"glass":true,"metal":true}]
+                    `));
+                    break;
+                case 3: 
+                    scene.push(...JSON.parse(`
+                    [{"x":1087.5,"y":350,"width":25,"height":250,"oneWay":"x"},{"x":1037.5,"y":237.5,"width":75,"height":25,"glass":true},{"x":425,"y":187.5,"width":100,"height":25,"oneWay":"-y","metal":true}]
+                    `));
+                    break;
+            }
+            //bottom
+            switch(Math.floor(Math.random()*5)) {
+                case 0: 
+                    scene.push(...JSON.parse(`
+                    [{"x":750,"y":962.5,"width":1300,"height":25,"reset":true,"glass":true}]
+                    `));
+                    break;
+                case 1: 
+                    scene.push(...JSON.parse(`
+                    [{"x":262.5,"y":862.5,"width":325,"height":25,"oneWay":"-y","metal":true},{"x":837.5,"y":662.5,"width":175,"height":25,"oneWay":"-y","metal":true}]
+                    `));
+                    break;
+                case 2: 
+                    scene.push(...JSON.parse(`
+                    [{"x":137.5,"y":987.5,"width":125,"height":25,"metal":true},{"x":675,"y":525,"width":50,"height":50,"red":1,"glass":true},{"x":1375,"y":587.5,"width":100,"height":25,"metal":true}]
+                    `));
+                    break;
+                case 3: 
+                    scene.push(...JSON.parse(`
+                    [{"x":525,"y":712.5,"width":200,"height":25,"glass":true,"metal":true},{"x":525,"y":687.5,"width":150,"height":25,"reset":true,"glass":true}]
+                    `));
+                    break;
+                case 4: 
+                    scene.push(...JSON.parse(`
+                    [{"x":487.5,"y":837.5,"width":25,"height":175}]
+                    `));
+                    break;
+            }
+            //modifier
+            switch(Math.floor(Math.random()*5)) {
+                case 0: 
+                    scene.push(...JSON.parse(`
+                    [{"x":750,"y":512.5,"width":1300,"height":25,"glass":true,"metal":true}]
+                    `));
+                    break;
+                case 1: 
+                    scene.push(...JSON.parse(`
+                    [{"x":87.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true}]
+                    `));
+                    break;
+                case 2: 
+                    scene.push(...JSON.parse(`
+                    [{"x":1412.5,"y":512.5,"width":25,"height":975,"ice":true,"metal":true}]
+                    `));
+                    break;
+                case 3: 
+                    scene.push(...JSON.parse(`
+                    [{"x":487.5,"y":512.5,"width":725,"height":25,"metal":true,"oneWay":"y"}]
+                    `));
+                    break;
+                case 4: 
+                    scene.push(...JSON.parse(`
+                    [{"x":1012.5,"y":512.5,"width":725,"height":25,"metal":true,"oneWay":"y"}]
+                    `));
+                    break;
+            }
+
+            return JSON.stringify(scene);
+        }
+
+        if (navigator.userAgent.toLowerCase().includes("firefox")) startAnimating(60);
+        else setInterval( () => { tickloop() }, 16.66);
+    </script>
+</body>
+</html>
