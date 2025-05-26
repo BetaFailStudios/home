@@ -3527,6 +3527,15 @@
                             
                             break;
                         }
+                        case "0": {
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/1.5, item.size/5);
+                            ctx.rect(Xoffset-item.size/3,-item.offset+item.size/2-item.size/10,item.size/1.5, item.size/6);
+
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/5, item.size);
+                            ctx.rect(Xoffset+item.size/3-item.size/5,-item.offset-item.size/2,item.size/5, item.size);
+                            
+                            break;
+                        }
                         case ".": {
                             ctx.rect(Xoffset-item.size/10,-item.offset+item.size/2-item.size/5,item.size/5,item.size/5);
                             break;
