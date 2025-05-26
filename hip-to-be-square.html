@@ -3430,29 +3430,124 @@
         }
 
         function handleDmgNums() {
-            const lW = ctx.lineWidth;
             ctx.fillStyle = "#000";
             ctx.strokeStyle = "#fff";
 
             dmgNumbers.forEach((item) => {
+                const LW = ctx.lineWidth;
+                ctx.lineWidth = item.size/10;
                 ctx.save();
                 ctx.beginPath();
                 ctx.translate(item.x, Math.max(item.size, item.y-item.offset)+item.offset);
                 ctx.rotate(item.angle);
-                ctx.font = Math.floor(item.size) + "px share tech";
-                ctx.lineWidth = item.size/100;
-                ctx.strokeText(item.damage, 0, -item.offset);
-                ctx.fillText(item.damage, 0, -item.offset);
+
+                let Xoffset = -item.size*String(item.damage).length/2;
+                for(var i = 0; i < String(item.damage).length; i++) {
+                    switch(String(item.damage)[i]) {
+                        case "1": {
+                            ctx.rect(Xoffset-item.size/10,-item.offset-item.size/2,item.size/5,item.size);
+                            break;
+                        }
+                        case "2": {
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/1.5, item.size/5);
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/10,item.size/1.5, item.size/5);
+                            ctx.rect(Xoffset-item.size/3,-item.offset+item.size/2-item.size/10,item.size/1.5, item.size/6);
+
+                            ctx.rect(Xoffset+item.size/3-item.size/5,-item.offset-item.size/2,item.size/5, item.size/2);
+                            ctx.rect(Xoffset-item.size/3,-item.offset,item.size/5, item.size/2);
+                            
+                            break;
+                        }
+                        case "3": {
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/1.5, item.size/5);
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/10,item.size/1.5, item.size/5);
+                            ctx.rect(Xoffset-item.size/3,-item.offset+item.size/2-item.size/10,item.size/1.5, item.size/6);
+
+                            ctx.rect(Xoffset+item.size/3-item.size/5,-item.offset-item.size/2,item.size/5, item.size);
+                            
+                            break;
+                        }
+                        case "4": {
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/10,item.size/1.5, item.size/5);
+
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/5, item.size/2);
+                            ctx.rect(Xoffset+item.size/3-item.size/5,-item.offset-item.size/2,item.size/5, item.size);
+                            
+                            break;
+                        }
+                        case "5": {
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/1.5, item.size/5);
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/10,item.size/1.5, item.size/5);
+                            ctx.rect(Xoffset-item.size/3,-item.offset+item.size/2-item.size/10,item.size/1.5, item.size/6);
+
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/5, item.size/2);
+                            ctx.rect(Xoffset+item.size/3-item.size/5,-item.offset,item.size/5, item.size/2);
+                            
+                            break;
+                        }
+                        case "6": {
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/1.5, item.size/5);
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/10,item.size/1.5, item.size/5);
+                            ctx.rect(Xoffset-item.size/3,-item.offset+item.size/2-item.size/10,item.size/1.5, item.size/6);
+
+                            ctx.rect(Xoffset-item.size/3,-item.offset,item.size/5, item.size/2);
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/5, item.size/2);
+                            ctx.rect(Xoffset+item.size/3-item.size/5,-item.offset,item.size/5, item.size/2);
+                            
+                            break;
+                        }
+                        case "7": {
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/1.5, item.size/5);
+
+                            ctx.moveTo(Xoffset+item.size/3-item.size/5,-item.offset-item.size/2+item.size/5);
+                            ctx.lineTo(Xoffset+item.size/3,-item.offset-item.size/2+item.size/5);
+                            ctx.lineTo(Xoffset-item.size/3+item.size/5,-item.offset+item.size/2);
+                            ctx.lineTo(Xoffset-item.size/3,-item.offset+item.size/2);
+                            ctx.closePath();
+                            
+                            break;
+                        }
+                        case "8": {
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/1.5, item.size/5);
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/10,item.size/1.5, item.size/5);
+                            ctx.rect(Xoffset-item.size/3,-item.offset+item.size/2-item.size/10,item.size/1.5, item.size/6);
+
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/5, item.size);
+                            ctx.rect(Xoffset+item.size/3-item.size/5,-item.offset-item.size/2,item.size/5, item.size);
+                            
+                            break;
+                        }
+                        case "9": {
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/1.5, item.size/5);
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/10,item.size/1.5, item.size/5);
+                            ctx.rect(Xoffset-item.size/3,-item.offset+item.size/2-item.size/10,item.size/1.5, item.size/6);
+
+                            ctx.rect(Xoffset-item.size/3,-item.offset-item.size/2,item.size/5, item.size/2);
+                            ctx.rect(Xoffset+item.size/3-item.size/5,-item.offset-item.size/2,item.size/5, item.size);
+                            
+                            break;
+                        }
+                        case ".": {
+                            ctx.rect(Xoffset-item.size/10,-item.offset+item.size/2-item.size/5,item.size/5,item.size/5);
+                            break;
+                        }
+                    }
+                    Xoffset += item.size
+                }
+
+                ctx.stroke();
+                ctx.fill();
+
                 ctx.restore();
 
                 item.framesLeft--;
 
                 item.size *= 1-(2/game.fps);
+
+                ctx.lineWidth = LW;
             });
 
             dmgNumbers = dmgNumbers.filter((item) => item.framesLeft > 0);
-
-            ctx.lineWidth = lW;
         }
 
         function createDrawInput(obj, seconds, type) {
