@@ -44,7 +44,7 @@
                 game.playing = !game.playing;
                 game.menu = "pause";
             }
-            //if (e.key == "r") enemys = [];
+            if (e.key == "r") enemys = [];
         }, false);
         window.addEventListener('keyup', function (e) {
             while (keys.includes(e.key.toLowerCase())) {
@@ -1037,6 +1037,113 @@
                     },
                 ],
             },
+/*DB*/      {
+                name: "Double Barrel",
+                subText: "",
+                description: ["Two bursts of four shots"],
+                upgradeFunction() {
+                    baseStats.fireRate = 2;
+                    baseStats.damage = 3.5;
+                    baseStats.bloom = Math.PI/8;
+                    baseStats.spread = Math.PI/3;
+                    baseStats.projectiles = 4;
+                    baseStats.bursts = 1;
+                    baseStats.bulletSize = 15;
+                    baseStats.bulletLifeTime = 1.5;
+                    baseStats.bulletSpeed = 4;
+                },
+
+                children: [
+                    {
+                        name: "Double Barrel+",
+                        subText: "Big Shots",
+                        description: ["+50% bullet size", "+20% damage"],
+                        upgradeFunction() {
+                            baseStats.bulletSize *= 1.5;
+                            baseStats.damage *= 1.2;
+                        },
+
+                        children: [
+                            {
+                                name: "Double Barrel+",
+                                subText: "Blunderbuss",
+                                description: ["+4 Projectiles", "-20% Damage & Size"],
+                                upgradeFunction() {
+                                    baseStats.projectiles += 4;
+                                    baseStats.damage *= 0.8;
+                                    baseStats.bulletSize *= 0.8;
+                                }
+                            }
+                        ]
+                    },{
+                        name: "Double Barrel+",
+                        subText: "Extra Ammo",
+                        description: ["+2 Projectiles"],
+                        upgradeFunction() {
+                            baseStats.projectiles += 2;
+                        },
+
+                        children: [
+                            {
+                                name: "Double Barrel+",
+                                subText: "Extra Barrel",
+                                description: ["+1 Burst"],
+                                upgradeFunction() {
+                                    baseStats.bursts += 1;
+                                }
+                            }
+                        ]
+                    },
+                ],
+            },
+/*SH*/      {
+                name: "Sledge Hammer",
+                subText: "",
+                description: ["Slow fire-rate weapon", "Extra-High damage Melee"],
+                upgradeFunction() {
+                    baseStats.fireRate = 1.7;
+                    baseStats.damage = 25;
+                    baseStats.bloom = Math.PI/5;
+                    baseStats.spread = Math.PI/3;
+                    baseStats.projectiles = 1;
+                    baseStats.pierce = 2;
+                    baseStats.bulletSize = 75;
+                    baseStats.bulletLifeTime = 0.5;
+                    baseStats.bulletSpeed = 0;
+                },
+
+                children: [
+                    {
+                        name: "Sledge Hammer+",
+                        subText: "Large Strike",
+                        description: ["+50% bullet size", "+20% damage"],
+                        upgradeFunction() {
+                            baseStats.bulletSize *= 1.5;
+                            baseStats.damage *= 1.2;
+                        },
+
+                        children: [
+                            {
+                                name: "Sledge Hammer+",
+                                subText: "City Smash",
+                                description: ["+100% bullet size", "+50% damage"],
+                                upgradeFunction() {
+                                    baseStats.bulletSize *= 2;
+                                    baseStats.damage *= 1.5;
+                                }
+                            },{
+                                name: "Sledge Hammer+",
+                                subText: "Precise Hit",
+                                description: ["-70% bullet size", "+250% damage"],
+                                upgradeFunction() {
+                                    baseStats.bulletSize *= 0.3;
+                                    baseStats.damage *= 2.5;
+                                }
+                            }
+                        ]
+                    }
+                ],
+            },
         ];
         
         const allBulletMods = [
@@ -1718,7 +1825,7 @@
                             if (baseStats.weapon == "Pistol Pistol") {
                                 fire(-15, Math.random()*10-10);
                                 fire(15, Math.random()*10-10);
-                            } else fire(0, 0);
+                            } else fire(0, 0+50*(baseStats.weapon == "Sledge Hammer"));
                             if (player.burstsLeft > 0 && baseStats.bulletMod != "Big Boi") {
                                 player.frTimer += baseStats.fireRate*statMult.fireRate * game.fps / 10;
                                 player.burstsLeft--;
@@ -3759,6 +3866,45 @@
 
                     return;
                 }
+                case "Double Barrel": { 
+                    ctx.fillStyle = "#444444";
+                    ctx.strokeStyle = "#000000";
+                    ctx.moveTo(0,-item.size/2);
+                    ctx.lineTo(item.size/2/1.41,-item.size/2/1.41);
+                    ctx.lineTo(item.size/2,0);
+                    ctx.lineTo(item.size/2/1.41,item.size/2/1.41);
+                    ctx.lineTo(0,item.size/2);
+                    ctx.lineTo(-item.size/2/1.41,item.size/2/1.41);
+                    ctx.lineTo(-item.size/2,0);
+                    ctx.lineTo(-item.size/2/1.41,-item.size/2/1.41);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+
+                    return;
+                }
+                case "Sledge Hammer": { 
+                    ctx.fillStyle = "#ff442299";
+                    ctx.strokeStyle = "#000000";
+                    for (var i = 0; i < 2; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(0,-item.size/2);
+                        ctx.lineTo(item.size/2/1.41,-item.size/2/1.41);
+                        ctx.lineTo(item.size/2,0);
+                        ctx.lineTo(item.size/2/1.41,item.size/2/1.41);
+                        ctx.lineTo(0,item.size/2);
+                        ctx.lineTo(-item.size/2/1.41,item.size/2/1.41);
+                        ctx.lineTo(-item.size/2,0);
+                        ctx.lineTo(-item.size/2/1.41,-item.size/2/1.41);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                        
+                        ctx.scale(0.6,0.6);
+                    }
+
+                    return;
+                }
                 case "explosion": {
                     ctx.rotate(Math.PI/4);
                     ctx.fillStyle = "#ffff8877";
@@ -4361,6 +4507,78 @@
                 ctx.fill();
                 ctx.stroke();
 */
+                ctx.restore();
+
+                return;
+            }
+            if (name == "Double Barrel" || name == "Double Barrel+") {
+                if (!angle) ctx.rotate(-Math.PI/8);
+    
+                for(var a = 0; a < 2; a++) {
+                    ctx.beginPath();
+                    ctx.fillStyle = "#999999";
+                    ctx.strokeStyle = "#000000";
+                    ctx.moveTo(-20,10);
+                    ctx.lineTo(-30,0);
+                    ctx.lineTo(-20,-10);
+                    ctx.lineTo(20,-10);
+                    ctx.lineTo(30,0);
+                    ctx.lineTo(20,10);
+                    ctx.closePath();
+                    ctx.moveTo(-20,-10);
+                    ctx.lineTo(-10,0);
+                    ctx.lineTo(-20,10);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    ctx.translate(10,5);
+                }
+
+                ctx.beginPath();
+                ctx.fillStyle = "#752900";
+                ctx.strokeStyle = "#000000";
+
+                ctx.moveTo(-40,-10);
+                ctx.lineTo(-30,-5);
+                ctx.lineTo(-50,15);
+                ctx.lineTo(-60,10);
+                ctx.closePath();
+
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.restore();
+
+                return;
+            }
+            if (name == "Sledge Hammer" || name == "Sledge Hammer+") {
+                ctx.rotate(-Math.PI/4);
+                if (angle) ctx.translate(0, -100);
+
+                ctx.beginPath();
+                ctx.fillStyle = "#990";
+                ctx.lineTo(-5,-40);
+                ctx.lineTo(-5,50);
+                ctx.lineTo(5,50);
+                ctx.lineTo(5,-40);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.fillStyle = "#333";
+                ctx.moveTo(-15,-40);
+                ctx.lineTo(-17,-42);
+                ctx.lineTo(-17,-50);
+                ctx.lineTo(-15,-52);
+                ctx.lineTo(15,-52);
+                ctx.lineTo(17,-50);
+                ctx.lineTo(17,-42);
+                ctx.lineTo(15,-40);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
                 ctx.restore();
 
                 return;
@@ -4970,10 +5188,10 @@
         //   ||               S T A R T U P               ||
         //   ||===========================================||
         
-        if (true) tickLoop();
+        if (false) tickLoop();
         else {
             // 0: upgrades, 1: bullets, 2: enemys
-            const show = 0;
+            const show = 1;
             if (show == 0) {
                 upgradeImage(100,100,0,"Gatling Gun", 0, false, 1);
                 upgradeImage(250,100,0,"Floor Cannon", 0, false, 1);
@@ -4984,6 +5202,8 @@
                 upgradeImage(1000,100,0,"Rubber Ball", 0, false, 1);
                 upgradeImage(1150,100,0,"Honed Katana", 0, false, 1);
                 upgradeImage(1300,100,0,"High Decibal", 0, false, 1);
+                upgradeImage(1450,100,0,"Double Barrel", 0, false, 1);
+                upgradeImage(1600,100,0,"Sledge Hammer", 0, false, 1);
 
                 upgradeImage(100,400,0,"Big Bomb", 0, false, 1);
                 upgradeImage(250,400,0,"Barcode Scanner", 0, false, 1);
@@ -5006,8 +5226,8 @@
                 upgradeImage(400,800,0,"Energy Drink", 0, false, 1);
                 upgradeImage(550,800,0,"Healing Sign", 0, false, 1);
             } else if (show == 1) {
-                ctx.translate(100,100);
-                bulletImage({type: "Honed Katana", size: 150, dir: 0}, 0);
+                ctx.translate(300,300);
+                bulletImage({type: "Sledge Hammer", size: 150, dir: 0}, 0);
             } else if (show == 2) {
                 ctx.translate(100,100);
                 enemyImage({type: "def", size: 20, dir: 0}, 0);
