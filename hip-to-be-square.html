@@ -3529,10 +3529,21 @@
         }
 
         function createDmgNum(x, y, dmg, offset) {
+            let extras = 0;
+            dmgNumbers = dmgNumbers.filter((item) => {
+                if (Math.abs(item.damage/dmg) < 1.3 && Math.abs(item.damage/dmg) > 0.7) {
+                    extras += item.extras+1;
+
+                    if (item.damage > dmg) dmg = item.damage;
+
+                    return false;
+                } else return true;
+            });
+
             const seconds = 0.5;
             const size = Math.min(500, Math.max(30, dmg/(waveNum+1)*10) );
             dmgNumbers.push({
-                x: Math.max(size, Math.min(canvas.width-size, x)), y: Math.max(size, Math.min(canvas.height-size, y)), damage: Math.ceil(dmg*10)/10, framesLeft: Math.ceil(game.fps*seconds), size: size, angle: Math.PI/2*Math.random()- Math.PI/4, offset: offset
+                x: Math.max(size, Math.min(canvas.width-size, x)), y: Math.max(size, Math.min(canvas.height-size, y)), damage: Math.ceil(dmg*10)/10, framesLeft: Math.ceil(game.fps*seconds), size: size, angle: Math.PI/2*Math.random()- Math.PI/4, offset: offset, extras: extras
             });
         }
 
@@ -3541,6 +3552,9 @@
             ctx.strokeStyle = "#fff";
 
             dmgNumbers.forEach((item) => {
+                let damage = String(item.damage);
+                if (item.extras) damage += "x" + ( item.extras + 1 );
+
                 const LW = ctx.lineWidth;
                 ctx.lineWidth = item.size/10;
                 ctx.save();
@@ -3548,9 +3562,9 @@
                 ctx.translate(item.x, Math.max(item.size, item.y-item.offset)+item.offset);
                 ctx.rotate(item.angle);
 
-                let Xoffset = -item.size*String(item.damage).length/2;
-                for(var i = 0; i < String(item.damage).length; i++) {
-                    switch(String(item.damage)[i]) {
+                let Xoffset = -item.size*damage.length/2;
+                for(var i = 0; i < damage.length; i++) {
+                    switch(damage[i]) {
                         case "1": {
                             ctx.rect(Xoffset-item.size/10,-item.offset-item.size/2,item.size/5,item.size);
                             break;
@@ -3645,6 +3659,21 @@
                         }
                         case ".": {
                             ctx.rect(Xoffset-item.size/10,-item.offset+item.size/2-item.size/5,item.size/5,item.size/5);
+                            break;
+                        }
+                        case "x": {
+                            ctx.moveTo(Xoffset-item.size/3,-item.offset-item.size/2+item.size/5);
+                            ctx.lineTo(Xoffset-item.size/3+item.size/5,-item.offset-item.size/2+item.size/5);
+                            ctx.lineTo(Xoffset+item.size/3,-item.offset+item.size/2);
+                            ctx.lineTo(Xoffset+item.size/3-item.size/5,-item.offset+item.size/2);
+                            ctx.closePath();
+
+                            ctx.moveTo(Xoffset+item.size/3-item.size/5,-item.offset-item.size/2+item.size/5);
+                            ctx.lineTo(Xoffset+item.size/3,-item.offset-item.size/2+item.size/5);
+                            ctx.lineTo(Xoffset-item.size/3+item.size/5,-item.offset+item.size/2);
+                            ctx.lineTo(Xoffset-item.size/3,-item.offset+item.size/2);
+                            ctx.closePath();
+                            
                             break;
                         }
                     }
