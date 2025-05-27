@@ -1717,18 +1717,6 @@
                                 ctx.fillStyle = "#dddddd";
                                 ctx.font = "30px share tech";
                                 ctx.fillText("FPS: " + game.fps, canvas.width-140, 100);
-
-                                var counter = {x: 0, y: 0}
-                                upgradesChosen.forEach((item, i) => {
-                                    if (item[2] != " ") {
-                                        upgradeImage(50+counter.x*70, 50+counter.y*70, 0, item, 0, false, 0.35);
-                                        counter.y++;
-                                        if (counter.y > 9) {
-                                            counter.y = 0;
-                                            counter.x++;
-                                        }
-                                    }
-                                });
                             } else if (game.menu == "death") {
                                 ctx.beginPath();
                                 ctx.strokeStyle = "#000000";
@@ -1791,12 +1779,26 @@
                                 ctx.beginPath();
                                 ctx.fillStyle = "#dddddd";
                                 ctx.font = "30px share tech";
-                                ctx.fillText(`Highest Damage: ${Math.floor(game.highestDamage*10)/10}`, canvas.width/2, canvas.height/2-50);
-                                ctx.fillText(`Damage: ${baseStats.damage*statMult.damage}`, canvas.width/2, canvas.height/2);
-                                ctx.fillText(`Firerate: ${1/(baseStats.fireRate*statMult.fireRate)}/s`, canvas.width/2, canvas.height/2+50);
+                                ctx.fillText(`Highest Damage: ${game.highestDamage.toFixed(1)}`, canvas.width/2, canvas.height/2-50);
+                                ctx.fillText(`Damage: ${(baseStats.damage*statMult.damage).toFixed(1)}`, canvas.width/2, canvas.height/2);
+                                ctx.fillText(`Firerate: ${(1/(baseStats.fireRate*statMult.fireRate)).toFixed(1)}/s`, canvas.width/2, canvas.height/2+50);
                                 ctx.fillText(`Projectiles: ${baseStats.projectiles+statMult.projectiles}`, canvas.width/2, canvas.height/2+100);
                                 ctx.fillText(`Bursts: ${baseStats.bursts+statMult.bursts}`, canvas.width/2, canvas.height/2+150);
                                 
+                            }
+
+                            if (game.menu != "main" && !game.subMenu) {
+                                var counter = {x: 0, y: 0}
+                                upgradesChosen.forEach((item, i) => {
+                                    if (item[2] != " ") {
+                                        upgradeImage(50+counter.x*70, 50+counter.y*70, 0, item, 0, false, 0.35);
+                                        counter.y++;
+                                        if (counter.y > 9) {
+                                            counter.y = 0;
+                                            counter.x++;
+                                        }
+                                    }
+                                });
                             }
                         }
                     });
@@ -1896,7 +1898,19 @@
                     ctx.fillStyle = "#d0d0d0";
                     ctx.strokeStyle = "#000000";
                     ctx.font = "40px share tech";
-                    ctx.fillText( "Choose", canvas.width/2+350, 100,);
+                    ctx.fillText( "Choose", canvas.width/2+350, 100);
+                    
+                    var counter = {x: 0, y: 0}
+                    upgradesChosen.forEach((item, i) => {
+                        if (item[2] != " ") {
+                            upgradeImage(50+counter.x*70, 50+counter.y*70, 0, item, 0, false, 0.35);
+                            counter.y++;
+                            if (counter.y > 9) {
+                                counter.y = 0;
+                                counter.x++;
+                            }
+                        }
+                    });
                 }
                 
                 //check enemys
