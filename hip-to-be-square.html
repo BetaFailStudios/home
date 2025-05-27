@@ -2335,6 +2335,7 @@
             }
             
             if (alive == false && bullet.explode) {
+                if (bullet.type == "Sledge Hammer") bullet.size *= 0.3;
                 if (bullet.type == "Honed Katana") bullet.size *= 0.2;
                 if (bullet.type == "High Decibal") bullet.size *= 0.07;
                 createBullet({type: "explosion", x: bullet.x, y: bullet.y, speed: 0, size: bullet.size*baseStats.explode.size, damage: bullet.damage*baseStats.explode.damage}, {});
