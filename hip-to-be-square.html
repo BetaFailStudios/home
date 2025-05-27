@@ -3826,9 +3826,14 @@
                     ctx.beginPath();
                     ctx.fillStyle = "#c02222";
                     ctx.strokeStyle = "#000000";
-                    ctx.arc(-item.size*1,-item.size*1.11, item.size, 0, 0.84);
-                    ctx.arc(0,0, item.size/2, -Math.PI/4*3, -Math.PI/4, true);
-                    ctx.arc(item.size*1,-item.size*1.11, item.size, Math.PI-0.84, Math.PI);
+                    ctx.moveTo(0,-item.size*1.11);
+                    ctx.lineTo(-item.size/2*0.4,-item.size*0.4);
+                    ctx.lineTo(-item.size/2,0);
+                    ctx.lineTo(-item.size/2*0.7,item.size/2*0.7);
+                    ctx.lineTo(0,item.size/2);
+                    ctx.lineTo(item.size/2*0.7,item.size/2*0.7);
+                    ctx.lineTo(item.size/2,0);
+                    ctx.lineTo(item.size/2*0.4,-item.size*0.4);
                     ctx.closePath();
                     ctx.fill();
                     ctx.stroke();
@@ -3837,9 +3842,14 @@
 
                     ctx.beginPath();
                     ctx.fillStyle = "#ff6a00";
-                    ctx.arc(-item.size*0.25,-item.size*0.2775, item.size/4, 0, 0.84);
-                    ctx.arc(0,0, item.size/8, -Math.PI/4*3, -Math.PI/4, true);
-                    ctx.arc(item.size*0.25,-item.size*0.2775, item.size/4, Math.PI-0.84, Math.PI);
+                    ctx.moveTo(0,-item.size/2);
+                    ctx.lineTo(-item.size/4*0.4,-item.size/2*0.4);
+                    ctx.lineTo(-item.size/4,0);
+                    ctx.lineTo(-item.size/4*0.7,item.size/4*0.7);
+                    ctx.lineTo(0,item.size/4);
+                    ctx.lineTo(item.size/4*0.7,item.size/4*0.7);
+                    ctx.lineTo(item.size/4,0);
+                    ctx.lineTo(item.size/4*0.4,-item.size/2*0.4);
                     ctx.closePath();
                     ctx.fill();
 
@@ -5270,7 +5280,7 @@
                 upgradeImage(550,800,0,"Healing Sign", 0, false, 1);
             } else if (show == 1) {
                 ctx.translate(300,300);
-                bulletImage({type: "Sledge Hammer", size: 150, dir: 0}, 0);
+                bulletImage({type: "Gas Tank", size: 150, dir: 0}, 0);
             } else if (show == 2) {
                 ctx.translate(100,100);
                 enemyImage({type: "def", size: 20, dir: 0}, 0);
