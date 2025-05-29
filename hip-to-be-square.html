@@ -552,6 +552,36 @@
                     },
                 ],
             },
+/*LB*/      {
+                name: "Hard Sheild",
+                subText: "",
+                description: ["10% Damage Reduction"],
+                upgradeFunction() {
+                    statMult.dmgReduct = 0.1;
+                },
+
+                children: [
+                    {
+                        name: "Hard Sheild+",
+                        subText: "More Sheild",
+                        description: ["25% Damage Reduction"],
+                        upgradeFunction() {
+                            statMult.dmgReduct = 0.25;
+                        },
+
+                        children: [
+                            {
+                                name: "Hard Sheild+",
+                                subText: "Toughness",
+                                description: ["50% Damage Reduction"],
+                                upgradeFunction() { 
+                                    statMult.dmgReduct = 0.5;
+                                }
+                            }
+                        ]
+                    },
+                ],
+            },
         ];
         const singletonUpgrades = [
 /*BC*/      {
@@ -2606,7 +2636,7 @@
                             
                             break;
                         } case "1": {
-                            createEnemy({type: "BigBoi", ai: "orbit", x: canvas.width/2-200+400*a, y: -500, health: 10000, acc: 3, maxSpeed: 3, size: 700, hitDamage: 15});
+                            createEnemy({type: "BigBoi", ai: "orbit", x: canvas.width/2-200+400*a, y: -500, health: 12500, acc: 3, maxSpeed: 3, size: 1200, hitDamage: 15});
                             
                             break;
                         }
@@ -2961,7 +2991,8 @@
                     if (Math.hypot(player.x-enemy.x, player.y-enemy.y) <= (enemy.size/2 + baseStats.size*statMult.size)) {
                         var angle = Math.atan((enemy.x-player.x)/(enemy.y-player.y)) + Math.PI*(enemy.y>player.y);
                         if (player.iFrames <= 0) {
-                            player.health -= enemy.hitDamage;
+                            if (statMult.dmgReduct )player.health -= enemy.hitDamage*statMult.dmgReduct;
+                            else player.health -= enemy.hitDamage;
                             player.iFrames += baseStats.iFrames*statMult.iFrames;
                         }
                         enemy.dir += Math.PI - (enemy.dir-angle)*2;
@@ -5309,6 +5340,41 @@
 
                 return;
             }
+            if (name == "Hard Sheild" || name == "Hard Sheild+") {
+                if (!angle) ctx.rotate(-Math.PI/8);
+
+                ctx.beginPath();
+                ctx.fillStyle = "#555";
+                ctx.strokeStyle = "#000000";
+                ctx.arc(20,-50,20,0,Math.PI);
+                ctx.arc(-20,-50,20,0,Math.PI);
+                ctx.lineTo(-40,0)
+                ctx.lineTo(-30,30)
+                ctx.lineTo(0,50)
+                ctx.lineTo(30,30)
+                ctx.lineTo(40,0);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.fillStyle = "#999";
+                ctx.strokeStyle = "#000000";
+                ctx.arc(15,-25,15,0,Math.PI);
+                ctx.arc(-15,-25,15,0,Math.PI);
+                ctx.lineTo(-30,0)
+                ctx.lineTo(-20,20)
+                ctx.lineTo(0,35)
+                ctx.lineTo(20,20)
+                ctx.lineTo(30,0);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.restore();
+
+                return;
+            }
             //     |----------------------------------------------|
             //     |                   Singletons                 |
             //     |----------------------------------------------|
@@ -5537,6 +5603,7 @@
                 upgradeImage(850,700,0,"Smooth Barrel", 0, false, 1);
                 upgradeImage(1000,700,0,"Piercing Rounds", 0, false, 1);
                 upgradeImage(1150,700,0,"Lightning Jar", 0, false, 1);
+                upgradeImage(1300,700,0,"Hard Sheild", 0, false, 1);
 
                 upgradeImage(100,800,0,"Big Cheese", 0, false, 1);
                 upgradeImage(250,800,0,"Tight Boots", 0, false, 1);
