@@ -44,7 +44,10 @@
                 game.playing = !game.playing;
                 game.menu = "pause";
             }
-            //if (e.key == "r") enemys = [];
+            if (e.key == "r" && false) {
+                game.enemiesAlive = 0;
+                enemys = [];
+            }
         }, false);
         window.addEventListener('keyup', function (e) {
             while (keys.includes(e.key.toLowerCase())) {
@@ -501,6 +504,54 @@
                     },
                 ],
             },
+/*LB*/      {
+                name: "Lightning Jar",
+                subText: "",
+                description: ["On enemy death","a random enemy","is dealt 25% of the","dead enemy's health"],
+                upgradeFunction() {
+                    statMult.lightning = 0.50;
+                    statMult.lightningNum = 1;
+                },
+
+                children: [
+                    {
+                        name: "Lightning Jar+",
+                        subText: "More lightning",
+                        description: ["+1 Enemy effected"],
+                        upgradeFunction() {
+                            statMult.lightningNum += 1;
+                        },
+
+                        children: [
+                            {
+                                name: "Lightning Jar+",
+                                subText: "Frayed Lightning",
+                                description: ["+1 Enemy effected"],
+                                upgradeFunction() { 
+                                   statMult.lightningNum += 1;
+                                }
+                            }
+                        ]
+                    },{
+                        name: "Lightning Jar+",
+                        subText: "Aggresive Lightning",
+                        description: ["50% of enemy health"],
+                        upgradeFunction() {
+                            statMult.lightning = 0.5;
+                        },
+                        children: [
+                            {
+                                name: "Lightning Jar+",
+                                subText: "ThunderBolt",
+                                description: ["75% of enemy health"],
+                                upgradeFunction() {
+                                    statMult.lightning = 0.75;
+                                }
+                            }
+                        ]
+                    },
+                ],
+            },
         ];
         const singletonUpgrades = [
 /*BC*/      {
@@ -926,7 +977,7 @@
                 description: ["Medium fire-rate weapon", "High damage Melee"],
                 upgradeFunction() {
                     baseStats.fireRate = 1;
-                    baseStats.damage = 16;
+                    baseStats.damage = 12.5;
                     baseStats.bloom = Math.PI/5;
                     baseStats.spread = Math.PI/3;
                     baseStats.projectiles = 1;
@@ -984,7 +1035,7 @@
                 description: ["Bullets are soundwaves", "that grow in size"],
                 upgradeFunction() {
                     baseStats.fireRate = 0.9;
-                    baseStats.damage = 7;
+                    baseStats.damage = 5.5;
                     baseStats.bloom = Math.PI/10;
                     baseStats.spread = Math.PI/3;
                     baseStats.projectiles = 1;
@@ -1102,7 +1153,7 @@
                 description: ["Slow fire-rate weapon", "Extra-High damage Melee"],
                 upgradeFunction() {
                     baseStats.fireRate = 1.7;
-                    baseStats.damage = 25;
+                    baseStats.damage = 22.5;
                     baseStats.bloom = Math.PI/5;
                     baseStats.spread = Math.PI/3;
                     baseStats.projectiles = 1;
@@ -1481,7 +1532,8 @@
             menu: "main",
             subMenu: false,
             select: 0,
-            highestDamage: 0
+            highestDamage: 0,
+            enemiesAlive: 0
         }
 
         if (localStorage.getItem("motionBlur")) localStorage.setItem("motionBlur", "true");
@@ -2373,6 +2425,8 @@
                     cDist = dist;
                     closest = i2;
                 } else if (dist <= 0 && !bullet.ignoreEnemys.includes(i2) && enemy2.health > 0) {
+                    enemy2.lastHit = "bullet";
+
                     if (baseStats.overflow && !overflow && enemy2.health < bullet.damage) {
                         var tempBullet = Object.assign({}, bullet);
                         tempBullet.damage -= enemy2.health;
@@ -2729,6 +2783,8 @@
         }
 
         function createEnemy(spawnStats) {
+            game.enemiesAlive++;
+
             if (!spawnStats.x) spawnStats.x = 0;
             if (!spawnStats.y) spawnStats.y = 0;
             if (!spawnStats.speed) spawnStats.speed = 1/1000;
@@ -2778,7 +2834,8 @@
 
                         tickMove.x *= 0.97;
                         tickMove.y *= 0.97;
-                    } else {
+                    } 
+                    else {
                         //borders
                         if (enemy.x-enemy.size/2 < 0 && tickMove.x < 0 ) {
                             tickMove.x *= -1;
@@ -2888,7 +2945,26 @@
                     if (enemy.health <= 0) alive = false;
 
                     if (!alive) {
+                        game.enemiesAlive--;
+
                         enemys[i] = false;
+
+                        if (enemy.lastHit != "lightning" && game.enemiesAlive && statMult.lightning) {
+                            const otherRandom = [];
+
+                            for (var i = 0; i < statMult.lightningNum && game.enemiesAlive > i; i++) {
+                                let random = 0;
+                                while (!enemys[random] || otherRandom.includes(random)) random++;
+
+                                otherRandom.push(random);
+
+                                enemys[random].health -= enemy.healthMax*statMult.lightning;
+                                enemys[random].dmgThisFrame += enemy.healthMax*statMult.lightning;
+                                enemys[random].lastHit = "lightning";
+
+                                createDrawInput({x: enemys[random].x, y: enemys[random].y, dmg: enemy.healthMax*statMult.lightning}, 0.3, "lightning");
+                            }
+                        }
 
                         createDrawInput({type: enemy.type, x: enemy.x, y: enemy.y, vx: enemy.speed*Math.sin(enemy.dir), vy: enemy.speed*Math.cos(enemy.dir), dir: enemy.dir, size: enemy.size}, 0.3, "enemy");
                         
@@ -3761,6 +3837,26 @@
                     ctx.stroke();
 
                     item.obj.size *= 0.8;
+                } else if (item.type == "lightning") {
+                    if (!item.obj.alpha) item.obj.alpha = 1;
+                    else item.obj.alpha *= 0.8;
+
+                    ctx.lineWidth += 7;
+
+                    ctx.globalAlpha = item.obj.alpha;
+
+                    ctx.strokeStyle = "#09f";
+
+                    ctx.beginPath();
+                    ctx.moveTo(item.x, item.y);
+                    for (var i = 1; item.obj.y-i*40 > -40; i++) {
+                        ctx.lineTo(item.obj.x-i+Math.random()*2*i, item.obj.y-i*40);
+                    }
+                    ctx.stroke();
+
+                    ctx.globalAlpha = 1;       
+
+                    ctx.lineWidth -= 7;
                 } else {
                     draw(item.type, [item.obj]);
 
@@ -5130,6 +5226,65 @@
 
                 return;
             }
+            if (name == "Lightning Jar" || name == "Lightning Jar+") {
+                if (!angle) ctx.rotate(-Math.PI/8);
+
+                ctx.beginPath();
+                ctx.fillStyle = "#bbb";
+                ctx.strokeStyle = "#000000";
+                ctx.rect(-30,-40,60,80);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.lineWidth += 3;
+
+                ctx.beginPath();
+                ctx.strokeStyle = "#059";
+                ctx.moveTo(15,-40);
+                ctx.lineTo(10,-20);
+                ctx.lineTo(20,0);
+                ctx.lineTo(10,20);
+                ctx.lineTo(25,40);
+                ctx.moveTo(10,-20);
+                ctx.lineTo(-15,20);
+                ctx.lineTo(-25,40);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.strokeStyle = "#09f";
+                ctx.moveTo(-25,-40);
+                ctx.lineTo(0,-20);
+                ctx.lineTo(-15,0);
+                ctx.lineTo(-15,20);
+                ctx.lineTo(-5,40);
+                ctx.moveTo(-15,0);
+                ctx.lineTo(-5,20);
+                ctx.lineTo(20,40);
+                ctx.stroke();
+
+                ctx.lineWidth -= 3;
+
+                ctx.beginPath();
+                ctx.fillStyle = "#333";
+                ctx.strokeStyle = "#000000";
+                ctx.rect(-32.5,-47.5,65,15);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.fillStyle = "#ffffff44";
+                ctx.rect(-30,-32.5,20,72.5);
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.fillStyle = "#00000044";
+                ctx.rect(10,-32.5,20,72.5);
+                ctx.fill();
+
+                ctx.restore();
+
+                return;
+            }
             //     |----------------------------------------------|
             //     |                   Singletons                 |
             //     |----------------------------------------------|
@@ -5246,7 +5401,7 @@
         if (true) tickLoop();
         else {
             // 0: upgrades, 1: bullets, 2: enemys
-            const show = 1;
+            const show = 0;
             if (show == 0) {
                 upgradeImage(100,100,0,"Gatling Gun", 0, false, 1);
                 upgradeImage(250,100,0,"Floor Cannon", 0, false, 1);
@@ -5275,6 +5430,7 @@
                 upgradeImage(700,700,0,"Health Tracker", 0, false, 1);
                 upgradeImage(850,700,0,"Smooth Barrel", 0, false, 1);
                 upgradeImage(1000,700,0,"Piercing Rounds", 0, false, 1);
+                upgradeImage(1150,700,0,"Lightning Jar", 0, false, 1);
 
                 upgradeImage(100,800,0,"Big Cheese", 0, false, 1);
                 upgradeImage(250,800,0,"Tight Boots", 0, false, 1);
