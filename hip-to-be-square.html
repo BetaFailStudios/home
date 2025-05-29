@@ -598,6 +598,30 @@
                     children = false;
                 },
             },
+/*SO*/      {
+                name: "Saw Off",
+                subText: "Singleton",
+                description: ["+15% damage", "-25% accuracy"],
+                upgradeFunction() {
+                    statMult.damage *= 1.15;
+
+                    statMult.bloom /= 0.75;
+
+                    children = false;
+                },
+            },
+/*MM*/      {
+                name: "Mitosis Miosis",
+                subText: "Singleton",
+                description: ["+1 Projectile", "-15% bullet size"],
+                upgradeFunction() {
+                    statMult.projectiles++;
+
+                    statMult.bulletSize *= 0.85;
+
+                    children = false;
+                },
+            },
         ];
 
         allUpgrades.push(...singletonUpgrades);
@@ -5378,9 +5402,91 @@
                 return;
             }
             if (name == "Healing Sign") {
-                if (!angle) ctx.rotate(-Math.PI/16 + Math.PI/2);
+                if (!angle) ctx.rotate(-Math.PI/16);
 
                     draw("healthPickup", [{x: 0, y: 0, size: 10}]);
+
+                ctx.restore();
+
+                return;
+            }
+            if (name == "Saw Off") {
+                if (!angle) ctx.rotate(-Math.PI/16);
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#000";
+                    ctx.fillStyle = "#aaa";
+                    ctx.moveTo(-50,20);
+                    ctx.lineTo(-40,30);
+                    ctx.lineTo(-30,20);
+                    ctx.lineTo(-20,30);
+                    ctx.lineTo(-10,20);
+                    ctx.lineTo(0,30);
+                    ctx.lineTo(10,20);
+                    ctx.lineTo(20,30);
+                    ctx.lineTo(30,20);
+                    ctx.lineTo(30,-10);
+                    ctx.lineTo(-50,-10);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.fillStyle = "#ccc";
+                    ctx.moveTo(-10,18);
+                    ctx.lineTo(0,28);
+                    ctx.lineTo(10,18);
+                    ctx.lineTo(-10,-8);
+                    ctx.lineTo(-30,-8);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.fillStyle = "#752900";
+                    ctx.rect(25,-15, 20, 45);
+                    ctx.fill();
+                    ctx.stroke();
+
+                ctx.restore();
+
+                return;
+            }
+            if (name == "Mitosis Miosis") {
+                if (!angle) ctx.rotate(-Math.PI/16);
+
+                ctx.beginPath();
+                ctx.strokeStyle = "#000";
+                ctx.fillStyle = "#bbb";
+                ctx.moveTo(-60, 0);
+                ctx.arc(0,30,60,-Math.PI*0.7,-Math.PI*0.3);
+                ctx.lineTo(60, 0);
+                ctx.arc(0,-30,60,Math.PI*0.3,Math.PI*0.7);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.fillStyle = "#07d";
+                ctx.arc(0,0,25,Math.PI*2,0);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.lineWidth = 6;
+
+                ctx.beginPath();
+                ctx.fillStyle = "#cc0";
+                ctx.arc(-7,3,10,Math.PI*2,0);
+                ctx.arc(7,-3,10,Math.PI*2,0);
+                ctx.stroke();
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.fillStyle = "#660";
+                ctx.arc(-7,3,4,Math.PI*2,0);
+                ctx.arc(7,-3,4,Math.PI*2,0);
+                ctx.fill();
+
+                ctx.lineWidth = 3;
 
                 ctx.restore();
 
@@ -5436,6 +5542,8 @@
                 upgradeImage(250,800,0,"Tight Boots", 0, false, 1);
                 upgradeImage(400,800,0,"Energy Drink", 0, false, 1);
                 upgradeImage(550,800,0,"Healing Sign", 0, false, 1);
+                upgradeImage(700,800,0,"Saw Off", 0, false, 1);
+                upgradeImage(850,800,0,"Mitosis Miosis", 0, false, 1);
             } else if (show == 1) {
                 ctx.translate(300,300);
                 bulletImage({type: "Gas Tank", size: 150, dir: 0}, 0);
