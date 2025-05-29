@@ -44,7 +44,7 @@
                 game.playing = !game.playing;
                 game.menu = "pause";
             }
-            if (e.key == "r" && false) {
+            if (e.key == "r" && true) {
                 game.enemiesAlive = 0;
                 enemys = [];
             }
@@ -2850,7 +2850,7 @@
             if (!spawnStats.dir) spawnStats.dir = Math.atan((spawnStats.x-player.x)/(spawnStats.y-player.y)) + Math.PI*(spawnStats.y<player.y);
             if (!spawnStats.size) spawnStats.size = 20;
             if (!spawnStats.health) spawnStats.health = 10;
-            if (waveNum > 40) spawnStats.health *= 1.2^(waveNum-40);
+            if (waveNum > 40) spawnStats.health *= 1.6^(waveNum-40);
             if (!spawnStats.healthMax) spawnStats.healthMax = spawnStats.health;
             if (!spawnStats.hitDamage) spawnStats.hitDamage = 5;
             if (!spawnStats.ai) spawnStats.ai = "orbit";
