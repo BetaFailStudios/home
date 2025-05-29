@@ -2991,7 +2991,7 @@
                     if (Math.hypot(player.x-enemy.x, player.y-enemy.y) <= (enemy.size/2 + baseStats.size*statMult.size)) {
                         var angle = Math.atan((enemy.x-player.x)/(enemy.y-player.y)) + Math.PI*(enemy.y>player.y);
                         if (player.iFrames <= 0) {
-                            if (statMult.dmgReduct )player.health -= enemy.hitDamage*statMult.dmgReduct;
+                            if (statMult.dmgReduct )player.health -= enemy.hitDamage*(1-statMult.dmgReduct);
                             else player.health -= enemy.hitDamage;
                             player.iFrames += baseStats.iFrames*statMult.iFrames;
                         }
