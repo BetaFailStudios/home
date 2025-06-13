@@ -92,6 +92,22 @@
                 `
                 [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":875,"y":287.5,"width":1050,"height":25,"metal":true},{"x":637.5,"y":762.5,"width":1025,"height":25,"oneWay":"y","metal":true},{"x":362.5,"y":212.5,"width":25,"height":125,"metal":true},{"x":475,"y":162.5,"width":200,"height":25,"metal":true},{"x":975,"y":-75,"width":50,"height":50},{"x":1200,"y":-87.5,"width":350,"height":25,"winCon":true},{"x":1412.5,"y":-125,"width":25,"height":250,"metal":true},{"x":750,"y":-237.5,"width":1300,"height":25,"metal":true},{"x":87.5,"y":-125,"width":25,"height":250,"metal":true},{"x":962.5,"y":-162.5,"width":25,"height":125,"metal":true},{"x":1062.5,"y":312.5,"width":125,"height":25,"reset":true},{"x":437.5,"y":312.5,"width":125,"height":25}]
                 `
+            ],[
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":387.5,"y":962.5,"width":225,"height":25,"reset":true},{"x":1262.5,"y":375,"width":25,"height":250,"oneWay":"x","metal":true},{"x":1212.5,"y":237.5,"width":125,"height":25,"metal":true},{"x":687.5,"y":312.5,"width":225,"height":25},{"x":87.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":625,"y":-650,"width":50,"height":50,"reset":true},{"x":1212.5,"y":-362.5,"width":175,"height":25},{"x":1212.5,"y":-337.5,"width":225,"height":25,"metal":true},{"x":750,"y":-987.5,"width":1300,"height":25,"metal":true},{"x":1412.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":1387.5,"y":-812.5,"width":25,"height":275,"winCon":true},{"x":137.5,"y":-137.5,"width":75,"height":25,"metal":true},{"x":162.5,"y":-75,"width":25,"height":100,"metal":true},{"x":137.5,"y":-12.5,"width":75,"height":25,"metal":true}]
+                `
+            ],[
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1075,"y":400,"width":50,"height":50,"reset":true,"glass":true},{"x":525,"y":587.5,"width":200,"height":25,"reset":true},{"x":525,"y":612.5,"width":200,"height":25,"metal":true},{"x":262.5,"y":37.5,"width":25,"height":275,"oneWay":"-x","metal":true},{"x":775,"y":-400,"width":50,"height":50,"reset":true,"glass":true},{"x":1362.5,"y":-662.5,"width":25,"height":375,"winCon":true},{"x":1412.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":750,"y":-987.5,"width":1300,"height":25,"metal":true},{"x":87.5,"y":-500,"width":25,"height":1000,"metal":true}]
+                `
+            ],[
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1025,"y":287.5,"width":200,"height":25,"metal":true},{"x":1012.5,"y":262.5,"width":175,"height":25,"reset":true},{"x":1412.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":87.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":1000,"y":-250,"width":50,"height":50},{"x":912.5,"y":325,"width":25,"height":150,"metal":true},{"x":475,"y":-162.5,"width":250,"height":25,"metal":true},{"x":237.5,"y":-475,"width":25,"height":250,"oneWay":"-x","metal":true},{"x":550,"y":-775,"width":50,"height":50},{"x":862.5,"y":-812.5,"width":25,"height":325,"metal":true},{"x":750,"y":-987.5,"width":1300,"height":25,"metal":true},{"x":562.5,"y":-887.5,"width":25,"height":125,"winCon":true},{"x":237.5,"y":775,"width":25,"height":100,"oneWay":"-x","metal":true},{"x":387.5,"y":712.5,"width":325,"height":25},{"x":412.5,"y":737.5,"width":325,"height":25,"metal":true}]
+                `
+            ],[
+                `
+                [{"x":750,"y":987.5,"width":1350,"height":25,"metal":true},{"x":1062.5,"y":162.5,"width":275,"height":25,"reset":true},{"x":725,"y":-575,"width":50,"height":50,"glass":true},{"x":1387.5,"y":-737.5,"width":25,"height":375,"winCon":true},{"x":750,"y":-987.5,"width":1300,"height":25,"metal":true},{"x":87.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":1412.5,"y":-500,"width":25,"height":1000,"metal":true},{"x":87.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":1412.5,"y":487.5,"width":25,"height":975,"metal":true},{"x":662.5,"y":437.5,"width":275,"height":25,"reset":true,"glass":true}]
+                `
             ],
         ]
 
@@ -357,8 +373,8 @@
                 }
 
                 sceneSets.forEach( (item,i) => {
-                    const x = 50+i%20*70;
-                    const y = 50+Math.floor(i/20)*70;
+                    const x = canvas.width/2-25-350+i%10*70;
+                    const y = 50+Math.floor(i/10)*100;
 
                     ctx.beginPath();
                     ctx.fillStyle = "#555"
