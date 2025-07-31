@@ -138,6 +138,11 @@
                 while (Math.abs(mouse.wheelOffset+Math.PI*2) < Math.abs(mouse.wheelOffset)) mouse.wheelOffset += Math.PI*2;
             }
 
+            if (mouse.selected == "ignition") {
+                car.running = !car.running;
+                game.timerCounting = true;
+            }
+
             if (game.status == "choosing") chooseChoice();
         }, false);
         window.addEventListener('mouseup', function (e) {
@@ -409,7 +414,6 @@
                     ctx.stroke();
                     ctx.fillStyle = "#333";
                     ctx.fill();
-
 
                     if (!timer) {
                         ctx.beginPath();
@@ -733,6 +737,68 @@
                 },
                 chooseFunction() {
                     stats.noHands = true;
+                }
+            },
+            {
+                name: "Offroad Cruisin'",
+                desc: "No speed penalty on offroad if the engine is off",
+                drawFunction(timer) {
+                    ctx.beginPath();
+                    ctx.arc(-30,0,50,0,Math.PI*2, true);
+                    let num = 0;
+                    for(var i = 0; i <= Math.PI*2; i += Math.PI/18) {
+                        num++;
+                        ctx.lineTo(-30+(100-20*(num == 3))*Math.cos(i),(100-20*(num == 3))*Math.sin(i));
+                        if (num == 3) num = 0;
+                    }
+                    ctx.strokeStyle = "#666";
+                    ctx.stroke();
+                    ctx.fillStyle = "#333";
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(90,0);
+                    ctx.lineTo(150,0);
+                    ctx.moveTo(80,-40);
+                    ctx.lineTo(140,-40);
+                    ctx.moveTo(80,40);
+                    ctx.lineTo(140,40);
+                    ctx.moveTo(50,-80);
+                    ctx.lineTo(110,-80);
+                    ctx.moveTo(50,80);
+                    ctx.lineTo(110,80);
+                    ctx.strokeStyle = "#999";
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.arc(-30,0,25,0,Math.PI*2);
+                    
+                    ctx.fillStyle = "#922";
+                    ctx.fill();
+                    ctx.strokeStyle = "#222";
+                    ctx.stroke();
+
+                    ctx.beginPath();
+
+                    ctx.moveTo(-30-10*(1-2*car.running),-10);
+                    ctx.lineTo(-30+10*(1-2*car.running),10);
+
+                    ctx.strokeStyle = "#666";
+                    ctx.stroke();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.strokeStyle = "#333";
+                        ctx.fillStyle = "#666";
+                        ctx.strokeText("Offroad",0,-150);
+                        ctx.fillText("Offroad",0,-150);
+                        ctx.strokeText("Cruisin'",0,150);
+                        ctx.fillText("Cruisin'",0,150);
+                    }
+                },
+                chooseFunction() {
+                    stats.offroadCruise = true;
                 }
             },
         ]
@@ -1143,14 +1209,14 @@
                     ctx.rotate(-Math.PI/6);
 
                     ctx.beginPath();
-                    ctx.rect(50,-15,100,30);
+                    ctx.rect(50,-15,80,30);
                     ctx.strokeStyle = "#333";
                     ctx.stroke();
                     ctx.fillStyle = "#999";
                     ctx.fill();
                     ctx.beginPath();
-                    ctx.rect(-150,-30,200,60);
-                    ctx.rect(140,-20,20,40);
+                    ctx.rect(-120,-30,170,60);
+                    ctx.rect(120,-20,20,40);
                     ctx.strokeStyle = "#333";
                     ctx.stroke();
                     ctx.fillStyle = "#69c";
@@ -1159,9 +1225,9 @@
                     ctx.restore();
 
                     ctx.beginPath();
-                    ctx.arc(0,0,120,0,Math.PI*2);
-                    ctx.moveTo(-80, -80);
-                    ctx.lineTo(80, 80);
+                    ctx.arc(0,0,100,0,Math.PI*2);
+                    ctx.moveTo(-65, -65);
+                    ctx.lineTo(65, 65);
                     
                     ctx.strokeStyle = "#900";
                     ctx.lineWidth = game.defaultLineWidth*2;
@@ -1408,7 +1474,7 @@
                 }
             },
             {
-                name: "Faulty Brake Discs",
+                name: "Old Discs",
                 desc: "Braking and reversing compromised, reduced acceleration",
                 drawFunction(timer) {
                     ctx.beginPath();
@@ -1433,15 +1499,81 @@
                         ctx.font = "50px Jura";
                         ctx.strokeStyle = "#333";
                         ctx.fillStyle = "#666";
-                        ctx.strokeText("Faulty",0,-150);
-                        ctx.fillText("Faulty",0,-150);
-                        ctx.strokeText("Brake Discs",0,150);
-                        ctx.fillText("Brake Discs",0,150);
+                        ctx.strokeText("Old",0,-150);
+                        ctx.fillText("Old",0,-150);
+                        ctx.strokeText("Discs",0,150);
+                        ctx.fillText("Discs",0,150);
                     }
                 },
                 chooseFunction() {
                     stats.noBrake = true;
                     stats.acceleration *= 0.8;
+                }
+            },
+            {
+                name: "Failing Engine",
+                desc: "The engine turns off every once and a while",
+                drawFunction(timer) {
+                    ctx.save();
+                    ctx.rotate(-Math.PI/12);
+
+                    ctx.beginPath();
+                    ctx.rect(-120,-80,240,160);
+                    ctx.strokeStyle = "#333";
+                    ctx.stroke();
+                    ctx.fillStyle = "#999";
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.rect(-115,-15,230,30);
+                    ctx.strokeStyle = "#666"
+                    ctx.stroke();
+                    ctx.fillStyle = "#444";
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.arc(-75,-50,20,0,Math.PI*2);
+                    ctx.moveTo(20,-50);
+                    ctx.arc(0,-50,20,0,Math.PI*2);
+                    ctx.moveTo(95,-50);
+                    ctx.arc(75,-50,20,0,Math.PI*2);
+                    ctx.moveTo(-55,50);
+                    ctx.arc(-75,50,20,0,Math.PI*2);
+                    ctx.moveTo(20,50);
+                    ctx.arc(0,50,20,0,Math.PI*2);
+                    ctx.moveTo(95,50);
+                    ctx.arc(75,50,20,0,Math.PI*2);
+                    ctx.strokeStyle = "#333"
+                    ctx.stroke();
+                    ctx.fillStyle = "#222";
+                    ctx.fill();
+
+                    ctx.restore();
+
+                    ctx.beginPath();
+                    ctx.arc(0,0,100,0,Math.PI*2);
+                    ctx.moveTo(-65, -65);
+                    ctx.lineTo(65, 65);
+                    
+                    ctx.strokeStyle = "#900";
+                    ctx.lineWidth = game.defaultLineWidth*2;
+                    ctx.stroke();
+                    ctx.strokeStyle = "#c00";
+                    ctx.lineWidth = game.defaultLineWidth;
+                    ctx.stroke();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.strokeStyle = "#333";
+                        ctx.fillStyle = "#666";
+                        ctx.strokeText("Failing",0,-150);
+                        ctx.fillText("Failing",0,-150);
+                        ctx.strokeText("Engine",0,150);
+                        ctx.fillText("Engine",0,150);
+                    }
+                },
+                chooseFunction() {
+                    stats.engineFailure = true;
                 }
             },
         ]
@@ -1469,7 +1601,7 @@
         }
 
         const game = { 
-            gravity: 0, fps: 60, zoom: 50, xOffset: 0, yOffset: 0, xVOffset: 0, yVOffset: 0, timeToStart: 60,
+            gravity: 0, fps: 60, zoom: 50, xOffset: 0, yOffset: 0, xVOffset: 0, yVOffset: 0,
             renderType: "2d", defaultLineWidth: 10, timer: 0, timerMax: 4000, timerCounting: false, status: "driving",
         };
         generateChoices();
@@ -1480,7 +1612,8 @@
             speed: 0,
             speedAngle: Math.PI/2,
             angle: Math.PI/2,
-            wheel: 0
+            wheel: 0,
+            running: false,
         }
 
         let road = [];
@@ -1492,6 +1625,7 @@
 
         function tickloop() {
             if (Math.random() < 0.0015 && stats.sweaty) mouse.selected = false;
+            if (Math.random() < 0.0010 && stats.engineFailure) car.running = false;
 
             ctx.save();
 
@@ -1537,11 +1671,9 @@
                 drawTimer();
 
                 checkCollision();
+                
+                drive();
 
-                if (game.timeToStart > 0) game.timeToStart--;
-                else drive();
-
-                if (car.speed) game.timerCounting = true;
                 if (game.timerCounting) game.timer++;
             }
 
@@ -1797,10 +1929,10 @@
             car.x += Math.cos(car.speedAngle)*car.speed;
             car.y += Math.sin(car.speedAngle)*car.speed;
 
-            if ( ( keys.includes("w") || keys.includes(" ") ) && car.speed > -stats.topSpeed * ( 1 + 0.5 * !!(stats.noHands && mouse.selected != "wheel") ) ) {
+            if ( car.running && ( keys.includes("w") || keys.includes(" ") ) && car.speed > -stats.topSpeed * ( 1 + 0.5 * !!(stats.noHands && mouse.selected != "wheel") ) ) {
                 car.speed -= stats.acceleration * (1 + 2*(car.speed > 0) ) * ( 1 + 1 * !!(stats.noHands && mouse.selected != "wheel") );
-            } else car.speed *= 0.98;
-            if ( ( keys.includes("s") || keys.includes("shift") ) && car.speed < stats.topSpeed/5 && !stats.noBrake) {
+            } else car.speed *= 0.997;
+            if ( car.running && ( keys.includes("s") || keys.includes("shift") ) && car.speed < stats.topSpeed/5 && !stats.noBrake) {
                 car.speed += stats.acceleration * (1 + 2*(car.speed < 0) );
             }
 
@@ -1883,7 +2015,7 @@
                 }
             })
 
-            if (!touching && Math.abs(car.speed) > stats.offroadMaxSpeed) {
+            if (!touching && Math.abs(car.speed) > stats.offroadMaxSpeed && !(stats.offroadCruise && !stats.running)) {
                 car.speed *= 1-stats.offroadSpeedLoss/stats.inertia;
             }
         }
@@ -1953,8 +2085,35 @@
             ctx.beginPath();
             ctx.moveTo(0,0);
             ctx.lineTo(Math.cos(speedAngle)*35, Math.sin(speedAngle)*35);
+
+            ctx.stroke();
+
+            ctx.restore();
+
+            //ignition
+            ctx.save();
             
+            ctx.translate(70,350);
+
+            ctx.beginPath();
+            ctx.arc(0,0,25,0,Math.PI*2);
+            
+            if (car.running) ctx.fillStyle = "#292";
+            else ctx.fillStyle = "#922";
             ctx.fill();
+            ctx.strokeStyle = "#222";
+            if (mouse.selected == "ignition") ctx.strokeStyle = "#666";
+            else if (mouse.hover == "ignition") ctx.strokeStyle = "#444";
+            ctx.stroke();
+
+            ctx.beginPath();
+
+            ctx.moveTo(-10*(1-2*car.running),-10);
+            ctx.lineTo(10*(1-2*car.running),10);
+
+            ctx.strokeStyle = "#666";
+            if (mouse.selected == "ignition") ctx.strokeStyle = "#ccc";
+            else if (mouse.hover == "ignition") ctx.strokeStyle = "#999";
             ctx.stroke();
 
             ctx.restore();
@@ -2203,6 +2362,9 @@
             if (wheelHypot > 150 && wheelHypot < 230) {
                 mouse.hover = "wheel";
                 return;
+            } else if (Math.hypot(mouse.x-70, mouse.y-350) < 50) {
+                mouse.hover = "ignition";
+                return;
             }
 
             mouse.hover = false;
@@ -2328,6 +2490,7 @@
                 car.wheel = 0;
                 car.angle = Math.PI/2;
                 car.speedAngle = Math.PI/2;
+                car.running = false;
 
                 game.status = "driving";
 
@@ -2335,7 +2498,6 @@
 
                 game.timer = 0;
                 game.timerCounting = false;
-                game.timeToStart = 60;
                 game.timerMax *= 0.98;
 
                 if (stats.wind) stats.windAngle = Math.PI*2*Math.random();
@@ -2370,14 +2532,14 @@
             calculateRoadPoints();
         }
 
-        if (true) {
+        if (1) {
             generatePlatformRoad(stats.roadLength/stats.roadSize)
 
             if (navigator.userAgent.toLowerCase().includes("firefox")) startAnimating(60);
             else setInterval( () => { tickloop() }, 16.66);
         } else setInterval( () => {
             drawSkybox();
-            drawDash()
+            drawDash();
 
             ctx.beginPath();
             ctx.fillStyle = "#ffffff33";
@@ -2391,7 +2553,7 @@
             
             generatePlatformRoad(stats.roadLength/stats.roadSize);
 
-            unStackablePunishments[6].drawFunction()
+            unStackablePerks[5].drawFunction()
         },100)
     </script>
 </body>
