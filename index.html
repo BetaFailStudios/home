@@ -117,6 +117,10 @@
             if (mouseX > 650 && mouseX < 900 && mouseY > 500 && mouseY < 750) {
                 window.location.href = "graplink/tower.html";
             }
+
+            if (mouseX > 950 && mouseX < 1200 && mouseY > 500 && mouseY < 750) {
+                window.location.href = "subliminal-stickshift/substick.html";
+            }
         }, false);
         window.oncontextmenu = () => {
             return false;
@@ -180,6 +184,9 @@
         let levels = new Image();
         levels.src = "levels.png";
 
+        let subliminal = new Image();
+        subliminal.src = "subliminal.png";
+
         function tickloop() {
             //check frameRate
             var thisFrameTime = (thisLoop=new Date) - lastLoop;
@@ -194,8 +201,9 @@
             ctx.beginPath();
             ctx.drawImage(BFStudios, 0, 0);
             ctx.drawImage(htbs, 50, 500, 250, 250);
-            ctx.drawImage(tower, 650, 500, 250, 250);
             ctx.drawImage(levels, 350, 500, 250, 250);
+            ctx.drawImage(tower, 650, 500, 250, 250);
+            ctx.drawImage(subliminal, 950, 500, 250, 250);
 
             if (mouseX > 50 && mouseX < 300 && mouseY > 500 && mouseY < 750) {
                 ctx.beginPath();
@@ -222,6 +230,15 @@
                 ctx.fillStyle = "#fff";
                 ctx.font = "50px share tech";
                 ctx.fillText("Tower of Graplink", 775, 800);
+            }
+
+            if (mouseX > 950 && mouseX < 1200 && mouseY > 500 && mouseY < 750) {
+                ctx.beginPath();
+                ctx.strokeStyle = "#fff";
+                ctx.strokeRect(945, 495, 260, 260);
+                ctx.fillStyle = "#fff";
+                ctx.font = "50px share tech";
+                ctx.fillText("SubLiminal StickShift", 1075, 800);
             }
 
             ctx.beginPath();
