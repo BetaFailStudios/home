@@ -1576,6 +1576,59 @@
                     stats.engineFailure = true;
                 }
             },
+            {
+                name: "Oil Spills",
+                desc: "Oil spills on the road",
+                drawFunction(timer) {
+                    ctx.save();
+                    ctx.rotate(Math.PI/12);
+                    
+                    ctx.save();
+                    ctx.scale(1,0.5);
+
+                    ctx.beginPath();
+                    ctx.arc(0,180,60,0,Math.PI);
+                    ctx.rect(-60,-180,120,360);
+                    ctx.strokeStyle = "#222";
+                    ctx.stroke();
+                    ctx.fillStyle = "#444";
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(0,-180,60,0,Math.PI*2);
+                    ctx.strokeStyle = "#222";
+                    ctx.stroke();
+                    ctx.fillStyle = "#444";
+                    ctx.fill();
+
+                    ctx.restore();
+                    
+                    ctx.beginPath();
+                    ctx.beginPath();
+                    ctx.arc(80,-50,80,Math.PI,Math.PI*3/4, true);
+                    ctx.arc(0,30,40,0,Math.PI);
+                    ctx.arc(-80,-50,80,Math.PI/4, 0, true);
+                    ctx.strokeStyle = "#222";
+                    ctx.stroke();
+                    ctx.fillStyle = "#000";
+                    ctx.fill();
+
+                    ctx.restore();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.strokeStyle = "#000";
+                        ctx.fillStyle = "#222";
+                        ctx.strokeText("Oil",0,-150);
+                        ctx.fillText("Oil",0,-150);
+                        ctx.strokeText("Spills",0,150);
+                        ctx.fillText("Spills",0,150);
+                    }
+                },
+                chooseFunction() {
+                    stats.oilslick = true;
+                }
+            },
         ]
 
         let choices = [];
@@ -1742,7 +1795,7 @@
                 const size = Math.hypot( road.size, road.size );// * (1 - 2*(road.pothole == true));
 
                 const points = [];
-                points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4), final: road.final, finalPothole: road.finalPothole } );
+                points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4), final: road.final, finalPothole: road.finalPothole, finalOilslick: road.finalOilslick } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/2 + Math.PI/4) } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI + Math.PI/4) } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI*3/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI*3/2 + Math.PI/4) } );
@@ -1750,8 +1803,8 @@
                 roadDrawPoints.push(points);
             });
             road.forEach((roadItem, i) => {
-                if (!road[i+1] || !road[i+3] || roadItem.pothole || i%2 == 0) return;
-                if (road[i+1].pothole) return;
+                if (!road[i+1] || !road[i+3] || roadItem.pothole || roadItem.oilslick || i%2 == 0) return;
+                if (road[i+1].pothole || road[i+1].oilslick) return;
 
                 const diff = { x: road[i+1].x - roadItem.x, y: road[i+1].y - roadItem.y }
 
@@ -1860,6 +1913,17 @@
             
                     ctx.beginPath();
                 }
+
+                if (points[0].finalOilslick) {
+                    ctx.fillStyle = "#00000099";
+                    ctx.strokeStyle = "#111";
+                    ctx.lineWidth = game.defaultLineWidth/3;
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.lineWidth = game.defaultLineWidth;
+            
+                    ctx.beginPath();
+                }
                 
                 if (points[0].stripe) {
 
@@ -1958,7 +2022,7 @@
 
             car.wheel = Math.max(-1,Math.min(1,car.wheel));
 
-            car.angle += Math.PI/60/30 * car.wheel * car.speed;// * 1/(1+Math.abs(car.speed**2/30));
+            car.angle += Math.PI/60/30 * car.wheel * car.speed * (1 - 0.5*car.oilslick);// * 1/(1+Math.abs(car.speed**2/30));
             car.angle = car.angle%(Math.PI*2);
 
             //changing speedAngle
@@ -1978,17 +2042,22 @@
                 //angleDiff = Math.sign(angleDiff) * Math.PI/car.speed;
             }
 
-            car.speedAngle += angleDiff;
+            car.speedAngle += angleDiff * (1-0.75*car.oilslick);
 
             if (stats.wind) {
                 let angleDiff = car.angle-stats.windAngle;
 
                 car.angle += (Math.PI/300) * stats.windForce * Math.sin( angleDiff )/stats.inertia * Math.abs(Math.sin(game.timer/1000*Math.PI*2.12) * (0.5+0.5*Math.sin(game.timer/1000*Math.PI*10.3124)));
             }
+            if (car.pothole) {
+                car.angle += car.pothole*Math.PI/100;
+            }
         }
 
         function checkCollision() {
             let touching = false;
+            car.pothole = false;
+            car.oilslick = false;
             road.forEach((road, i)=> {
                 if (Math.hypot(road.x-car.x, road.y-car.y) > road.size*2) return;
 
@@ -2001,7 +2070,13 @@
                 const diffNeededCos = Math.abs(Math.cos(intAngle))**-1*road.size;
                 if (diffNeededCos < diffNeeded) diffNeeded = diffNeededCos;
                 if (Math.hypot(road.x-car.x,road.y-car.y) < diffNeeded) {
-                    if (road.pothole) touching = false;
+                    if (road.oilslick) {
+                        car.oilslick = true;
+                    } else if (road.pothole) {
+                        touching = false;
+
+                        car.pothole = Math.sign(road.angle);
+                    }
                     else touching = true;
 
                     if (road.final) {
@@ -2524,15 +2599,21 @@
 
             if (stats.potholes) {
                 road.forEach((roadItem, i) => {if ((Math.random() < 0.10) && i <= road.length-3) {
-                    road.push( {x: roadItem.x - roadItem.size+roadItem.size/5 + (roadItem.size-roadItem.size/5)*2*Math.random(), y: roadItem.y - roadItem.size/2 + roadItem.size*Math.random(), size: roadItem.size/5, angle: Math.PI*Math.random(), pothole: true } );
+                    road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*2*Math.random(), size: roadItem.size/5, angle: Math.PI*Math.random()-Math.PI/2, pothole: true } );
                 } } );
                 road[road.length-1].finalPothole = true
+            }
+            if (stats.oilslick) {
+                road.forEach((roadItem, i) => {if ((Math.random() < 0.05) && i <= road.length-3) {
+                    road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*Math.random(), size: roadItem.size*3, angle: Math.PI*Math.random()-Math.PI/2, oilslick: true } );
+                } } );
+                road[road.length-1].finalOilslick = true
             }
 
             calculateRoadPoints();
         }
 
-        if (1) {
+        if (0) {
             generatePlatformRoad(stats.roadLength/stats.roadSize)
 
             if (navigator.userAgent.toLowerCase().includes("firefox")) startAnimating(60);
@@ -2553,7 +2634,7 @@
             
             generatePlatformRoad(stats.roadLength/stats.roadSize);
 
-            unStackablePerks[5].drawFunction()
+            unStackablePunishments[8].drawFunction()
         },100)
     </script>
 </body>
