@@ -4,7 +4,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jura:wght@700&display=swap" rel="stylesheet">
-    <link rel="icon" href="../betafail.png">
 </head>
 <body>
     <style>
@@ -1619,7 +1618,8 @@
                 roadDrawPoints.push(points);
             });
             road.forEach((roadItem, i) => {
-                if (!road[i+1] || roadItem.pothole || i%2 == 0) return;
+                if (!road[i+1] || !road[i+3] || roadItem.pothole || i%2 == 0) return;
+                if (road[i+1].pothole) return;
 
                 const diff = { x: road[i+1].x - roadItem.x, y: road[i+1].y - roadItem.y }
 
@@ -2369,6 +2369,8 @@
 
             calculateRoadPoints();
         }
+
+        stats.potholes = true;
 
         if (true) {
             generatePlatformRoad(stats.roadLength/stats.roadSize)
