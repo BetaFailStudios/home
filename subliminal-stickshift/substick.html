@@ -1667,14 +1667,17 @@
             angle: Math.PI/2,
             wheel: 0,
             running: false,
+            wiper: 0,
         }
+        
+        let windshield = [];
 
         let road = [];
 
         let roadDrawPoints = [];
 
         const clouds = [];
-        for(var i = 0; i < Math.PI*2; i += Math.PI/20*(1+0.5*Math.random())) clouds.push( {angle: i, size: 500+50*Math.random(), y: -800-75*Math.random()} );
+        for(var i = 0; i < Math.PI*2; i += Math.PI/100*(1+0.5*Math.random())) clouds.push( {angle: i, size: 100+50*Math.random(), y: -400-75*Math.random()} );
 
         function tickloop() {
             if (Math.random() < 0.0015 && stats.sweaty) mouse.selected = false;
@@ -1795,7 +1798,7 @@
                 const size = Math.hypot( road.size, road.size );// * (1 - 2*(road.pothole == true));
 
                 const points = [];
-                points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4), final: road.final, finalPothole: road.finalPothole, finalOilslick: road.finalOilslick } );
+                points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4), final: road.final, finalPothole: road.finalPothole, finalOilslick: road.finalOilslick, finalMud: road.finalMud } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/2 + Math.PI/4) } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI + Math.PI/4) } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI*3/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI*3/2 + Math.PI/4) } );
@@ -1803,8 +1806,8 @@
                 roadDrawPoints.push(points);
             });
             road.forEach((roadItem, i) => {
-                if (!road[i+1] || !road[i+3] || roadItem.pothole || roadItem.oilslick || i%2 == 0) return;
-                if (road[i+1].pothole || road[i+1].oilslick) return;
+                if (!road[i+1] || !road[i+3] || roadItem.pothole || roadItem.oilslick || roadItem.mud || i%2 == 0) return;
+                if (road[i+1].pothole || road[i+1].oilslick || road[i+1].mud) return;
 
                 const diff = { x: road[i+1].x - roadItem.x, y: road[i+1].y - roadItem.y }
 
@@ -1835,6 +1838,7 @@
             ctx.beginPath();
             ctx.fillStyle = "#999";
             ctx.strokeStyle = "#ccc";
+            ctx.rect(-1000,-600,2000,200);
             clouds.forEach((cloud) => {
                 let angleDiff = car.angle-cloud.angle;
 
@@ -1847,8 +1851,11 @@
                     angleDiff = car.angle-cloud.angle;
                 }
 
-                ctx.moveTo(-angleDiff*2000+cloud.size, cloud.y)
-                ctx.arc(-angleDiff*2000, cloud.y, cloud.size, 0, Math.PI*2);
+                ctx.moveTo(-angleDiff*2000+cloud.size, cloud.y);
+                ctx.lineTo(-angleDiff*2000+cloud.size*0.5, cloud.y+cloud.size*0.9);
+                ctx.lineTo(-angleDiff*2000, cloud.y+cloud.size);
+                ctx.lineTo(-angleDiff*2000-cloud.size*0.5, cloud.y+cloud.size*0.9);
+                ctx.lineTo(-angleDiff*2000-cloud.size, cloud.y);
             })
 
             ctx.stroke();
@@ -1879,12 +1886,18 @@
                     ctx.beginPath();
                 }
 
-                if (Math.hypot(points[0].x-car.x, points[0].y-car.y) < 15000 || !(points[0].pothole || points[0].stripe)) points.forEach((point, i) => {
+                if (Math.hypot(points[0].x-car.x, points[0].y-car.y) < 15000 || points[0].final || (!(points[0].pothole || points[0].oilslick || points[0].mud || points[0].stripe) && pI%20 == 0)) points.forEach((point, i) => {
+
                     const originalY = ((point.y-car.y) * Math.cos(angle) - (point.x-car.x) * Math.sin(angle))+400;
                     let x = (point.x-car.x) * Math.cos(angle) + (point.y-car.y) * Math.sin(angle);
 
                     const y = -calculateHorizonY(-originalY, -horizon);
                     x = ( ( y-horizon ) / 50 ) * x;
+
+                    if (!points[0].final && Math.hypot(points[0].x-car.x, points[0].y-car.y) > 15000 && !(points[0].pothole || points[0].oilslick || points[0].mud || points[0].stripe) && pI%20 == 0) {
+                        if (i) return;
+                        else ctx.lineTo(x,y);
+                    }
 
                     if (!i) ctx.moveTo( x, y );
                     else ctx.lineTo( x, y );
@@ -1917,6 +1930,17 @@
                 if (points[0].finalOilslick) {
                     ctx.fillStyle = "#00000099";
                     ctx.strokeStyle = "#111";
+                    ctx.lineWidth = game.defaultLineWidth/3;
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.lineWidth = game.defaultLineWidth;
+            
+                    ctx.beginPath();
+                }
+
+                if (points[0].finalMud) {
+                    ctx.fillStyle = "#532";
+                    ctx.strokeStyle = "#321";
                     ctx.lineWidth = game.defaultLineWidth/3;
                     ctx.fill();
                     ctx.stroke();
@@ -1979,16 +2003,6 @@
             return horizon-100000/(x+500);
         }
 
-        function drawCar2D() {
-            //draws the car in the middle
-            ctx.beginPath();
-            ctx.strokeStyle = "#888";
-            ctx.fillStyle = "#479";
-            ctx.rect(-10,-15-100,20,30);
-            ctx.stroke();
-            ctx.fill();
-        }
-
         function drive() {
             car.x += Math.cos(car.speedAngle)*car.speed;
             car.y += Math.sin(car.speedAngle)*car.speed;
@@ -2018,6 +2032,27 @@
                 if (Math.abs(angleDiff) > stats.turnSpeed) angleDiff = Math.sign(angleDiff)*stats.turnSpeed;
 
                 car.wheel -= -(angleDiff) / (Math.PI*5/2);
+            } else if (mouse.selected == "wiper") {
+                const oldWiperAngle = -Math.PI*11/10*car.wiper+Math.PI/20;
+
+                let diff = (mouse.x + 425 + 250 * (car.wiper))/250;
+
+                diff = Math.max(-1/15,Math.min(1/15,diff));
+
+                car.wiper -= diff;
+
+                car.wiper = Math.max(0,Math.min(1,car.wiper));
+
+                const wiperAngle = -Math.PI*11/10*car.wiper+Math.PI/20;
+
+                windshield = windshield.filter( (item) => {
+                    let angle = Math.atan( (item.y-300)/item.x )-Math.PI*(item.x < 0);
+                    if (!item.x) angle = -Math.PI/2;
+                    if ((angle > oldWiperAngle && angle < wiperAngle) || (angle < oldWiperAngle && angle > wiperAngle)) item.durability--;
+
+                    if (item.durability <= 0) return false;
+                    return true;
+                } )
             }
 
             car.wheel = Math.max(-1,Math.min(1,car.wheel));
@@ -2039,7 +2074,6 @@
 
             if (Math.abs(angleDiff) > Math.abs(stats.requiredDriftAngle/car.speed)) {
                 angleDiff *= stats.driftGrip;
-                //angleDiff = Math.sign(angleDiff) * Math.PI/car.speed;
             }
 
             car.speedAngle += angleDiff * (1-0.75*car.oilslick);
@@ -2049,12 +2083,14 @@
 
                 car.angle += (Math.PI/300) * stats.windForce * Math.sin( angleDiff )/stats.inertia * Math.abs(Math.sin(game.timer/1000*Math.PI*2.12) * (0.5+0.5*Math.sin(game.timer/1000*Math.PI*10.3124)));
             }
+
             if (car.pothole) {
                 car.angle += car.pothole*Math.PI/100;
             }
         }
 
         function checkCollision() {
+            let mud = false;
             let touching = false;
             car.pothole = false;
             car.oilslick = false;
@@ -2072,6 +2108,8 @@
                 if (Math.hypot(road.x-car.x,road.y-car.y) < diffNeeded) {
                     if (road.oilslick) {
                         car.oilslick = true;
+                    } else if (road.mud) {
+                        mud = true;
                     } else if (road.pothole) {
                         touching = false;
 
@@ -2093,133 +2131,219 @@
             if (!touching && Math.abs(car.speed) > stats.offroadMaxSpeed && !(stats.offroadCruise && !stats.running)) {
                 car.speed *= 1-stats.offroadSpeedLoss/stats.inertia;
             }
+
+            if (mud && !car.mud) {
+                for(var i = 0; i < 5; i++) windshield.push( { type: "mud", x: -550+1100*Math.random(), y: -300+550*Math.random(), durability: 3, maxDurability: 3 } )
+            }
+            car.mud = mud;
+
+            if (car.mud && Math.abs(car.speed) > stats.offroadMaxSpeed && !(stats.offroadCruise && !stats.running)) {
+                car.speed *= 1-0.15/stats.inertia;
+            }
         }
 
         function drawDash() {
-            ctx.beginPath();
-            const linearGradient = ctx.createLinearGradient(0, -300, 0, 500);
+            //wipers & windsheild objects
+            if (true) {
+                const wiperAngle = -Math.PI*11/10*car.wiper+Math.PI/20;
 
-            linearGradient.addColorStop(0, "#99ffff33");
-            linearGradient.addColorStop(1, "#00aaff33");
+                ctx.beginPath();
+                ctx.moveTo(0,300);
+                ctx.lineTo(Math.cos(wiperAngle)*800,300+Math.sin(wiperAngle)*800);
+                ctx.closePath();
+                ctx.strokeStyle = "#222";
+                ctx.stroke();
 
-            ctx.fillStyle = linearGradient;
+                const size = 500;
+                windshield.forEach( (item) => {
+                    switch(item.type) {
+                    case "mud": {
+                        ctx.globalAlpha = 1 - (item.maxDurability-item.durability) / item.maxDurability / 3;
 
-            //ctx.fillStyle = "#9999ff22";
-            ctx.rect(-1500,-500,3000,1000);
-            ctx.fill();
+                        ctx.beginPath();
+                        ctx.moveTo(item.x+size, item.y);
+                        ctx.lineTo(item.x+size*0.7, item.y+size*0.7);
+                        ctx.lineTo(item.x, item.y+size);
+                        ctx.lineTo(item.x-size*0.7, item.y+size*0.7);
+                        ctx.lineTo(item.x-size, item.y);
+                        ctx.lineTo(item.x-size*0.7, item.y-size*0.7);
+                        ctx.lineTo(item.x, item.y-size);
+                        ctx.lineTo(item.x+size*0.7, item.y-size*0.7);
+                        ctx.closePath();
 
-            ctx.beginPath();
-            ctx.strokeStyle = "#222";
-            ctx.fillStyle = "#664e3a";
-            ctx.moveTo(-2000, 800);
-            ctx.lineTo(-700, 300);
-            ctx.lineTo(-300, 200);
-            ctx.lineTo(300, 200);
-            ctx.lineTo(700, 300);
-            ctx.lineTo(2000, 800);
-            ctx.lineTo(2000, 1000);
-            ctx.lineTo(-2000, 1000);
-            ctx.closePath();
-            ctx.stroke();
-            ctx.fill();
+                        ctx.fillStyle = "#532";
+                        ctx.fill();
+                        ctx.strokeStyle = "#321";
+                        ctx.stroke();
 
-            ctx.beginPath();
-            ctx.moveTo(-1000, -300);
-            ctx.lineTo(-700, -400);
-            ctx.lineTo(-200, -475);
-            ctx.lineTo(200, -475);
-            ctx.lineTo(700, -400);
-            ctx.lineTo(1000, -300);
-            ctx.lineTo(1000, -1000);
-            ctx.lineTo(-1000, -1000);
-            ctx.closePath();
-            ctx.stroke();
-            ctx.fill();
+                        break;
+                        }
+                    }
+                })
+                ctx.globalAlpha = 1;
+            }
+
+            //windshield & dash
+            if (true) {
+                ctx.beginPath();
+                const linearGradient = ctx.createLinearGradient(0, -300, 0, 500);
+
+                linearGradient.addColorStop(0, "#99ffff33");
+                linearGradient.addColorStop(1, "#00aaff33");
+
+                ctx.fillStyle = linearGradient;
+
+                //ctx.fillStyle = "#9999ff22";
+                ctx.rect(-1500,-500,3000,1000);
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.strokeStyle = "#222";
+                ctx.fillStyle = "#664e3a";
+                ctx.moveTo(-2000, 800);
+                ctx.lineTo(-700, 300);
+                ctx.lineTo(-300, 200);
+                ctx.lineTo(300, 200);
+                ctx.lineTo(700, 300);
+                ctx.lineTo(2000, 800);
+                ctx.lineTo(2000, 1000);
+                ctx.lineTo(-2000, 1000);
+                ctx.closePath();
+                ctx.stroke();
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(-1000, -300);
+                ctx.lineTo(-700, -400);
+                ctx.lineTo(-200, -475);
+                ctx.lineTo(200, -475);
+                ctx.lineTo(700, -400);
+                ctx.lineTo(1000, -300);
+                ctx.lineTo(1000, -1000);
+                ctx.lineTo(-1000, -1000);
+                ctx.closePath();
+                ctx.stroke();
+                ctx.fill();
+            }
 
             //spedometer
-            ctx.save();
-            
-            ctx.translate(70,280);
+            if (true) {
+                ctx.save();
+                
+                ctx.translate(70,280);
 
-            ctx.strokeStyle = "#222";
-            ctx.fillStyle = "#444";
+                ctx.strokeStyle = "#222";
+                ctx.fillStyle = "#444";
 
-            ctx.beginPath();
-            ctx.arc(0,0,50,-Math.PI*5/4,Math.PI/4);
-            ctx.lineTo(15,25);
-            ctx.lineTo(-15,25);
-            ctx.closePath();
-            
-            ctx.fill();
-            ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(0,0,50,-Math.PI*5/4,Math.PI/4);
+                ctx.lineTo(15,25);
+                ctx.lineTo(-15,25);
+                ctx.closePath();
+                
+                ctx.fill();
+                ctx.stroke();
 
-            ctx.strokeStyle = "#a00";
+                ctx.strokeStyle = "#a00";
 
-            const speedAngle = -Math.PI*4.75/4 + Math.abs(car.speed)/100*Math.PI*5.5/4;
+                const speedAngle = -Math.PI*4.75/4 + Math.abs(car.speed)/100*Math.PI*5.5/4;
 
-            ctx.beginPath();
-            ctx.moveTo(0,0);
-            ctx.lineTo(Math.cos(speedAngle)*35, Math.sin(speedAngle)*35);
+                ctx.beginPath();
+                ctx.moveTo(0,0);
+                ctx.lineTo(Math.cos(speedAngle)*35, Math.sin(speedAngle)*35);
 
-            ctx.stroke();
+                ctx.stroke();
 
-            ctx.restore();
+                ctx.restore();
+            }
 
             //ignition
-            ctx.save();
-            
-            ctx.translate(70,350);
+            if (true) {
+                ctx.save();
+                
+                ctx.translate(70,350);
 
-            ctx.beginPath();
-            ctx.arc(0,0,25,0,Math.PI*2);
-            
-            if (car.running) ctx.fillStyle = "#292";
-            else ctx.fillStyle = "#922";
-            ctx.fill();
-            ctx.strokeStyle = "#222";
-            if (mouse.selected == "ignition") ctx.strokeStyle = "#666";
-            else if (mouse.hover == "ignition") ctx.strokeStyle = "#444";
-            ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(0,0,25,0,Math.PI*2);
+                
+                if (car.running) ctx.fillStyle = "#292";
+                else ctx.fillStyle = "#922";
+                ctx.fill();
+                ctx.strokeStyle = "#222";
+                if (mouse.selected == "ignition") ctx.strokeStyle = "#666";
+                else if (mouse.hover == "ignition") ctx.strokeStyle = "#444";
+                ctx.stroke();
 
-            ctx.beginPath();
+                ctx.beginPath();
 
-            ctx.moveTo(-10*(1-2*car.running),-10);
-            ctx.lineTo(10*(1-2*car.running),10);
+                ctx.moveTo(-10*(1-2*car.running),-10);
+                ctx.lineTo(10*(1-2*car.running),10);
 
-            ctx.strokeStyle = "#666";
-            if (mouse.selected == "ignition") ctx.strokeStyle = "#ccc";
-            else if (mouse.hover == "ignition") ctx.strokeStyle = "#999";
-            ctx.stroke();
+                ctx.strokeStyle = "#666";
+                if (mouse.selected == "ignition") ctx.strokeStyle = "#ccc";
+                else if (mouse.hover == "ignition") ctx.strokeStyle = "#999";
+                ctx.stroke();
 
-            ctx.restore();
+                ctx.restore();
+            }
+
+            //wiper control
+            if (true) {
+                ctx.beginPath();
+                ctx.rect(-700,400,300,30);
+                ctx.fillStyle = "#444";
+                ctx.fill();
+                ctx.strokeStyle = "#222";
+                ctx.stroke();
+                ctx.beginPath();
+                //-485 & -735
+                ctx.rect(-435 - 250 * (car.wiper), 390, 20, 50);
+                ctx.fillStyle = "#444";
+                ctx.fill();
+                ctx.strokeStyle = "#222";
+                if (mouse.selected == "wiper") ctx.strokeStyle = "#999";
+                else if (mouse.hover == "wiper") ctx.strokeStyle = "#666";
+                ctx.stroke();
+
+                //drawLine
+                if (mouse.selected == "wiper") {
+                    ctx.strokeStyle = "#ffffff66";
+                    ctx.beginPath();
+                    ctx.moveTo(mouse.x, mouse.y);
+                    ctx.lineTo(-425 - 250 * (car.wiper), 415);
+                    ctx.stroke();
+                }
+            }
 
             //wheel
-            ctx.save();
-            ctx.translate(-200, 250);
-            ctx.rotate(-car.wheel*Math.PI*5/2);
+            if (true) {
+                ctx.save();
+                ctx.translate(-200, 250);
+                ctx.rotate(-car.wheel*Math.PI*5/2);
 
-            ctx.strokeStyle = "#333";
-            if (mouse.selected == "wheel") ctx.strokeStyle = "#fff";
-            else if (mouse.hover == "wheel") ctx.strokeStyle = "#888";
-            ctx.fillStyle = "#ad7d53";
-            ctx.beginPath();
-            ctx.arc(0,0,200,0,Math.PI*2);
-            ctx.moveTo(-180,0);
-            ctx.arc(0,0,180,0,Math.PI*2, true);
-            ctx.rect(-190,-10,380,20);
-            ctx.rect(-10,0,20,190);
-            ctx.stroke();
-            ctx.fill();
-
-            ctx.restore();
-
-            //drawLine
-            if (mouse.selected == "wheel") {
-                ctx.strokeStyle = "#ffffff66";
+                ctx.strokeStyle = "#333";
+                if (mouse.selected == "wheel") ctx.strokeStyle = "#fff";
+                else if (mouse.hover == "wheel") ctx.strokeStyle = "#888";
+                ctx.fillStyle = "#ad7d53";
                 ctx.beginPath();
-                ctx.moveTo(mouse.x, mouse.y);
-                ctx.lineTo(-200 + Math.cos(-car.wheel*Math.PI*5/2-Math.PI/2+mouse.wheelOffset)*190, 250 + Math.sin(-car.wheel*Math.PI*5/2-Math.PI/2+mouse.wheelOffset)*190);
+                ctx.arc(0,0,200,0,Math.PI*2);
+                ctx.moveTo(-180,0);
+                ctx.arc(0,0,180,0,Math.PI*2, true);
+                ctx.rect(-190,-10,380,20);
+                ctx.rect(-10,0,20,190);
                 ctx.stroke();
+                ctx.fill();
+
+                ctx.restore();
+
+                //drawLine
+                if (mouse.selected == "wheel") {
+                    ctx.strokeStyle = "#ffffff66";
+                    ctx.beginPath();
+                    ctx.moveTo(mouse.x, mouse.y);
+                    ctx.lineTo(-200 + Math.cos(-car.wheel*Math.PI*5/2-Math.PI/2+mouse.wheelOffset)*190, 250 + Math.sin(-car.wheel*Math.PI*5/2-Math.PI/2+mouse.wheelOffset)*190);
+                    ctx.stroke();
+                }
             }
         }
 
@@ -2440,6 +2564,9 @@
             } else if (Math.hypot(mouse.x-70, mouse.y-350) < 50) {
                 mouse.hover = "ignition";
                 return;
+            } else if (Math.hypot(mouse.x+425 + 250 * (car.wiper), mouse.y-415) < 50) {
+                mouse.hover = "wiper";
+                return;
             }
 
             mouse.hover = false;
@@ -2608,6 +2735,12 @@
                     road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*Math.random(), size: roadItem.size*3, angle: Math.PI*Math.random()-Math.PI/2, oilslick: true } );
                 } } );
                 road[road.length-1].finalOilslick = true
+            }
+            if (stats.mud) {
+                road.forEach((roadItem, i) => {if ((Math.random() < 0.05) && i <= road.length-3) {
+                    road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*Math.random(), size: roadItem.size*1.4, angle: Math.PI*Math.random()-Math.PI/2, mud: true } );
+                } } );
+                road[road.length-1].finalMud = true
             }
 
             calculateRoadPoints();
