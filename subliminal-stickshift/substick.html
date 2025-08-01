@@ -1629,6 +1629,65 @@
                     stats.oilslick = true;
                 }
             },
+            {
+                name: "Muddy Road",
+                desc: "Wet mud on the road",
+                drawFunction(timer) {
+                    ctx.beginPath();
+                    ctx.moveTo(-150,100);
+                    ctx.lineTo(0,-100);
+                    ctx.lineTo(150,-100);
+                    ctx.lineTo(0,100);
+                    ctx.fillStyle = "#333"
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(-150,100);
+                    ctx.lineTo(0,-100);
+                    ctx.moveTo(150,-100);
+                    ctx.lineTo(0,100);
+                    ctx.strokeStyle = "#666"
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(-67.5,90);
+                    ctx.lineTo(-52.5, 70);
+                    ctx.moveTo(-37.5,50);
+                    ctx.lineTo(-22.5, 30);
+                    ctx.moveTo(-7.5, 10);
+                    ctx.lineTo(7.5, -10);
+                    ctx.moveTo(22.5,-30);
+                    ctx.lineTo(37.5, -50);
+                    ctx.moveTo(52.5,-70);
+                    ctx.lineTo(67.5, -90);
+                    ctx.strokeStyle = "#990"
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.arc(15,-10,65,0,Math.PI*2);
+                    ctx.strokeStyle = "#321"
+                    ctx.stroke();
+                    ctx.fillStyle = "#553322cc";
+                    ctx.fill();;
+                
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.fillStyle = "#532";
+                        ctx.strokeStyle = "#321";
+                        ctx.strokeText("Muddy",0,-150);
+                        ctx.fillText("Muddy",0,-150);
+                        ctx.strokeText("Road",0,150);
+                        ctx.fillText("Road",0,150);
+                    }
+
+                    ctx.lineWidth = game.defaultLineWidth;
+                },
+                chooseFunction() {
+                    stats.mud = true;
+                }
+            },
         ]
 
         let choices = [];
@@ -2767,7 +2826,7 @@
             
             generatePlatformRoad(stats.roadLength/stats.roadSize);
 
-            unStackablePunishments[8].drawFunction()
+            unStackablePunishments[9].drawFunction()
         },100)
     </script>
 </body>
