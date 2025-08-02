@@ -2480,7 +2480,7 @@
                 }
             })
 
-            if (!touching && Math.abs(car.speed) > stats.offroadMaxSpeed && !(stats.offroadCruise && !stats.running)) {
+            if (!touching && Math.abs(car.speed) > stats.offroadMaxSpeed && (!stats.offroadCruise || car.running)) {
                 car.speed *= 1-stats.offroadSpeedLoss/stats.inertia;
             }
 
@@ -3166,4 +3166,3 @@
     </script>
 </body>
 </html>
-
