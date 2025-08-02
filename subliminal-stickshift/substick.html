@@ -2376,8 +2376,6 @@
                 }
             })
 
-            console.log(touching)
-
             if (!touching && Math.abs(car.speed) > stats.offroadMaxSpeed && !(stats.offroadCruise && !stats.running)) {
                 car.speed *= 1-stats.offroadSpeedLoss/stats.inertia;
             }
@@ -2434,14 +2432,14 @@
                         size = item.durability / item.maxDurability;
 
                         ctx.beginPath();
-                        ctx.moveTo(item.x+70*size, item.y);
-                        ctx.lineTo(item.x+70*size*0.7, item.y+70*size*0.7);
-                        ctx.lineTo(item.x, item.y+70*size);
-                        ctx.lineTo(item.x-70*size*0.7, item.y+70*size*0.7);
-                        ctx.lineTo(item.x-70*size, item.y);
-                        ctx.lineTo(item.x-70*size*0.7, item.y-70*size*0.7);
-                        ctx.lineTo(item.x, item.y-70*size);
-                        ctx.lineTo(item.x+70*size*0.7, item.y-70*size*0.7);
+                        ctx.moveTo(item.x+110*size, item.y);
+                        ctx.lineTo(item.x+110*size*0.7, item.y+110*size*0.7);
+                        ctx.lineTo(item.x, item.y+110*size);
+                        ctx.lineTo(item.x-110*size*0.7, item.y+110*size*0.7);
+                        ctx.lineTo(item.x-110*size, item.y);
+                        ctx.lineTo(item.x-110*size*0.7, item.y-110*size*0.7);
+                        ctx.lineTo(item.x, item.y-110*size);
+                        ctx.lineTo(item.x+110*size*0.7, item.y-110*size*0.7);
                         ctx.closePath();
 
                         ctx.fillStyle = "#252";
