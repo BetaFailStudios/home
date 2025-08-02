@@ -260,7 +260,7 @@
                     ctx.lineWidth = game.defaultLineWidth;
                 },
                 chooseFunction() {
-                    stats.roadSize *= 1.25;
+                    stats.roadSize *= 1.15;
                 }
             },
             {
@@ -455,7 +455,6 @@
                     ctx.stroke();
                     ctx.fillStyle = "#999";
                     ctx.fill();
-
 
                     if (!timer) {
                         ctx.beginPath();
@@ -799,6 +798,94 @@
                 },
                 chooseFunction() {
                     stats.offroadCruise = true;
+                }
+            },
+            {
+                name: "Anti-Lock Brakes",
+                desc: "Much harder to drift and slide out",
+                drawFunction(timer) {
+                    ctx.beginPath();
+                    ctx.arc(0,0,100,0,Math.PI*2);
+                    ctx.moveTo(90,-90);
+                    ctx.arc(0,0,125,-Math.PI/4,Math.PI/4);
+                    ctx.lineTo(90,90);
+                    ctx.moveTo(-90,90);
+                    ctx.arc(0,0,125,Math.PI-Math.PI/4,Math.PI*5/4);
+                    ctx.lineTo(-90,-90);
+                    ctx.lineWidth = game.defaultLineWidth*2;
+                    ctx.strokeStyle = "#950";
+                    ctx.stroke();
+                    ctx.lineWidth = game.defaultLineWidth;
+                    ctx.strokeStyle = "#fc3";
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.font = "75px Jura";
+                    ctx.strokeStyle = "#950";
+                    ctx.fillStyle = "#fc3";
+                    ctx.strokeText("ABS",0,0);
+                    ctx.fillText("ABS",0,0);
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.strokeStyle = "#950";
+                        ctx.fillStyle = "#fc3";
+                        ctx.strokeText("Anti-Lock",0,-150);
+                        ctx.fillText("Anti-Lock",0,-150);
+                        ctx.strokeText("Brakes",0,150);
+                        ctx.fillText("Brakes",0,150);
+                    }
+                },
+                chooseFunction() {
+                    stats.requiredDriftAngle *= 3.5;
+                }
+            },
+            {
+                name: "No-Drift Wipers",
+                desc: "Extremely hard to drift on the side of your wipers",
+                drawFunction(timer) {
+                    ctx.beginPath();
+                    ctx.arc(-50,25,80,0,Math.PI*2);
+                    let num = 0;
+                    ctx.strokeStyle = "#666";
+                    ctx.stroke();
+                    ctx.fillStyle = "#333";
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.arc(-50,25,55,0,Math.PI*2);
+                    ctx.strokeStyle = "#666";
+                    ctx.stroke();
+                    ctx.fillStyle = "#999";
+                    ctx.fill();
+
+                    ctx.moveTo(-50,25);
+                    ctx.arc(-50,25,75,-Math.PI/6, -Math.PI/4, true);
+                    ctx.moveTo(-50,25);
+                    ctx.arc(-50,25,100,-Math.PI/6, -Math.PI/3, true);
+                    ctx.moveTo(-50,25);
+                    ctx.arc(-50,25,125,-Math.PI/6, -Math.PI/2, true);
+                    ctx.lineWidth = game.defaultLineWidth*2;
+                    ctx.strokeStyle = "#333";
+                    ctx.stroke();
+                    ctx.lineWidth = game.defaultLineWidth;
+                    ctx.strokeStyle = "#666";
+                    ctx.stroke();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.strokeStyle = "#333";
+                        ctx.fillStyle = "#666";
+                        ctx.strokeText("No-Drift",0,-150);
+                        ctx.fillText("No-Drift",0,-150);
+                        ctx.strokeText("Wipers",0,150);
+                        ctx.fillText("Wipers",0,150);
+                    }
+                },
+                chooseFunction() {
+                    stats.driftWiper = true;
                 }
             },
         ]
@@ -2188,7 +2275,8 @@
                 if (Math.abs(angleDiff) > stats.turnSpeed) angleDiff = Math.sign(angleDiff)*stats.turnSpeed;
 
                 car.wheel -= -(angleDiff) / (Math.PI*5/2);
-            } else if (mouse.selected == "wiper") {
+            } 
+            else if (mouse.selected == "wiper") {
                 const oldWiperAngle = -Math.PI*11/10*car.wiper+Math.PI/20;
 
                 let diff = (mouse.x + 425 + 250 * (car.wiper))/250;
@@ -2228,7 +2316,7 @@
                 angleDiff = car.angle-car.speedAngle;
             }
 
-            if (Math.abs(angleDiff) > Math.abs(stats.requiredDriftAngle/car.speed)) {
+            if (Math.abs(angleDiff) > Math.abs(stats.requiredDriftAngle/car.speed) * (1 + 19 * (stats.driftWiper && Math.sign(angleDiff) == -Math.sign(car.wiper-0.5)))) {
                 angleDiff *= stats.driftGrip;
             }
 
@@ -2944,7 +3032,7 @@
             
             generatePlatformRoad(stats.roadLength/stats.roadSize);
 
-            unStackablePunishments[11].drawFunction()
+            unStackablePerks[7].drawFunction()
         },100)
     </script>
 </body>
