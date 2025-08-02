@@ -1808,7 +1808,7 @@
                     ctx.lineWidth = game.defaultLineWidth;
                 },
                 chooseFunction() {
-                    stats.mud = true;
+                    stats.bug = true;
                 }
             },
             {
@@ -3002,8 +3002,8 @@
                 road[road.length-1].finalOilslick = true
             }
             if (stats.mud) {
-                road.forEach((roadItem, i) => {if ((Math.random() < 0.05) && i <= road.length-3) {
-                    road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*Math.random(), size: roadItem.size*0.8, angle: Math.PI*Math.random()-Math.PI/2, mud: true } );
+                road.forEach((roadItem, i) => {if ((Math.random() < 0.020) && i <= road.length-3) {
+                    road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*Math.random(), size: roadItem.size*0.6, angle: Math.PI*Math.random()-Math.PI/2, mud: true } );
                 } } );
                 road[road.length-1].finalMud = true
             }
