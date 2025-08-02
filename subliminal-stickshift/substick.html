@@ -115,7 +115,7 @@
             const key = e.key.toLowerCase();
             if (!keys.includes(key) && !game.menu) keys.push(key);
 
-            if (key == "z") platforms.splice(platforms.length-1, 1);
+            if (key == "-") stats.hueShift = !stats.hueShift;
         }}, false);
         window.addEventListener('keyup', function (e) {
             const key = e.key.toLowerCase();
@@ -269,32 +269,44 @@
                 drawFunction(timer) {
                     ctx.beginPath();
                     ctx.moveTo(-150,100);
-                    ctx.lineTo(0,-100);
-                    ctx.lineTo(150,-100);
+                    ctx.lineTo(-50,50);
+                    ctx.lineTo(25,0);
+                    ctx.lineTo(0,-50);
+                    ctx.lineTo(-150,-100);
+                    ctx.lineTo(-100,-100);
+                    ctx.lineTo(75,-50);
+                    ctx.lineTo(125,0);
+                    ctx.lineTo(100,50);
                     ctx.lineTo(0,100);
                     ctx.fillStyle = "#333"
                     ctx.fill();
 
                     ctx.beginPath();
-                    ctx.moveTo(-150,100);
-                    ctx.lineTo(0,-100);
-                    ctx.moveTo(150,-100);
-                    ctx.lineTo(0,100);
-                    ctx.strokeStyle = "#666"
+                    ctx.moveTo(-75,100);
+                    ctx.lineTo(-25,75);
+                    ctx.moveTo(25,50);
+                    ctx.lineTo(50,25);
+                    ctx.moveTo(75,0);
+                    ctx.lineTo(50,-25);
+                    ctx.moveTo(25,-50);
+                    ctx.lineTo(-30,-70);
+                    ctx.moveTo(-125,-100);
+                    ctx.lineTo(-87.5,-90);
+                    ctx.strokeStyle = "#990"
                     ctx.stroke();
 
                     ctx.beginPath();
-                    ctx.moveTo(-67.5,90);
-                    ctx.lineTo(-52.5, 70);
-                    ctx.moveTo(-37.5,50);
-                    ctx.lineTo(-22.5, 30);
-                    ctx.moveTo(-7.5, 10);
-                    ctx.lineTo(7.5, -10);
-                    ctx.moveTo(22.5,-30);
-                    ctx.lineTo(37.5, -50);
-                    ctx.moveTo(52.5,-70);
-                    ctx.lineTo(67.5, -90);
-                    ctx.strokeStyle = "#990"
+                    ctx.moveTo(-150,100);
+                    ctx.lineTo(-50,50);
+                    ctx.lineTo(25,0);
+                    ctx.lineTo(0,-50);
+                    ctx.lineTo(-150,-100);
+                    ctx.moveTo(-100,-100);
+                    ctx.lineTo(75,-50);
+                    ctx.lineTo(125,0);
+                    ctx.lineTo(100,50);
+                    ctx.lineTo(0,100);
+                    ctx.strokeStyle = "#666"
                     ctx.stroke();
 
                     ctx.beginPath();
@@ -888,6 +900,40 @@
                     stats.driftWiper = true;
                 }
             },
+            {
+                name: "Boosters",
+                desc: "Boosters spawn on the road",
+                drawFunction(timer) {
+                    ctx.beginPath();
+                    ctx.moveTo(-150,100);
+                    ctx.lineTo(0,0);
+                    ctx.lineTo(150,100);
+                    ctx.moveTo(-125,50);
+                    ctx.lineTo(0,-50);
+                    ctx.lineTo(125,50);
+                    ctx.moveTo(-100,0);
+                    ctx.lineTo(0,-100);
+                    ctx.lineTo(100,0);
+                    ctx.lineWidth = game.defaultLineWidth*2;
+                    ctx.strokeStyle = "#950";
+                    ctx.stroke();
+                    ctx.lineWidth = game.defaultLineWidth;
+                    ctx.strokeStyle = "#fc3";
+                    ctx.stroke();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.strokeStyle = "#950";
+                        ctx.fillStyle = "#fc3";
+                        ctx.strokeText("Boosters",0,150);
+                        ctx.fillText("Boosters",0,150);
+                    }
+                },
+                chooseFunction() {
+                    stats.driftWiper = true;
+                }
+            },
         ]
 
         const stackablePunishments = [
@@ -1255,6 +1301,49 @@
                 chooseFunction() {
                     stats.driftGrip *= 0.6;
                     stats.requiredDriftAngle *= 0.8;
+                }
+            },
+            {
+                name: "Road Hazards",
+                desc: "Increased road hazard chances, slightly reduces off-road speed",
+                drawFunction(timer) {
+                    ctx.beginPath();
+                    ctx.moveTo(-125,100)
+                    ctx.lineTo(125,100);
+                    ctx.lineTo(0,-100);
+                    ctx.closePath();
+                    ctx.strokeStyle = "#640";
+                    ctx.fillStyle = "#a93";
+                    ctx.stroke();
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(0,-75)
+                    ctx.lineTo(0,50);
+                    ctx.moveTo(0,75)
+                    ctx.lineTo(0,80);
+                    ctx.closePath();
+                    ctx.strokeStyle = "#333";
+                    ctx.lineWidth = game.defaultLineWidth*2;
+                    ctx.stroke();
+                    ctx.strokeStyle = "#111";
+                    ctx.lineWidth = game.defaultLineWidth;
+                    ctx.stroke();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.strokeStyle = "#640";
+                        ctx.fillStyle = "#a93";
+                        ctx.strokeText("Road",0,-150);
+                        ctx.fillText("Road",0,-150);
+                        ctx.strokeText("Hazards",0,150);
+                        ctx.fillText("Hazards",0,150);
+                    }
+                },
+                chooseFunction() {
+                    stats.roadHazardChance *= 1.7;
+                    stats.offroadSpeedLoss *= 1.4;
                 }
             },
         ]
@@ -1876,6 +1965,7 @@
             requiredDriftAngle: Math.PI/17,
             driftGrip: 0.07,
             inertia: 1,
+            roadHazardChance: 1,
         }
 
         const game = { 
@@ -1893,6 +1983,7 @@
             wheel: 0,
             running: false,
             wiper: 0,
+            booster: 0,
         }
         
         let windshield = [];
@@ -1957,8 +2048,8 @@
                 ctx.fillStyle = "#ff3";
                 ctx.strokeStyle = "#993";
                 ctx.font = "200px serif";
-                ctx.fillText("You Win", 0, 0);
                 ctx.strokeText("You Win", 0, 0);
+                ctx.fillText("You Win", 0, 0);
             } else if (game.timer > game.timerMax+300) {
                 drawTimer();
 
@@ -1966,8 +2057,8 @@
                 ctx.fillStyle = "#f33";
                 ctx.strokeStyle = "#933";
                 ctx.font = "200px serif";
-                ctx.fillText("Game Over", 0, 0);
                 ctx.strokeText("Game Over", 0, 0);
+                ctx.fillText("Game Over", 0, 0);
             } else if (game.status == "choosing") {
                 drawTimer();
                 drawChoices();
@@ -1996,7 +2087,7 @@
             ctx.fill();
 
             //render the mouse
-            if (stats.sleepy) {
+            if (stats.sleepy && game.status == "driving") {
                 ctx.fillStyle = "#000";
                 ctx.beginPath();
                 ctx.arc(0, -stats.eyePos+2000, 2000, 0, Math.PI*2, true);
@@ -2009,7 +2100,7 @@
                 ctx.fill();
 
                 stats.eyePos -= stats.eyeVel;
-                if (stats.eyePos < -600) {
+                if (stats.eyePos < -1000) {
                     stats.eyeVel = -50;
                 } else if (stats.eyePos > 1000) stats.eyePos = 1000;
             }
@@ -2045,7 +2136,7 @@
                 const size = Math.hypot( road.size, road.size );// * (1 - 2*(road.pothole == true));
 
                 const points = [];
-                points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4), road: road.road, final: road.final, finalPothole: road.finalPothole, finalOilslick: road.finalOilslick, finalMud: road.finalMud } );
+                points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4), road: road.road, final: road.final, finalPothole: road.finalPothole, finalOilslick: road.finalOilslick, finalMud: road.finalMud, finalBooster: road.finalBooster } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/2 + Math.PI/4) } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI + Math.PI/4) } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI*3/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI*3/2 + Math.PI/4) } );
@@ -2053,8 +2144,7 @@
                 roadDrawPoints.push(points);
             });
             road.forEach((roadItem, i) => {
-                if (!road[i+1] || !road[i+3] || roadItem.pothole || roadItem.oilslick || roadItem.mud || i%2 == 0) return;
-                if (road[i+1].pothole || road[i+1].oilslick || road[i+1].mud) return;
+                if (!road[i+1] || !road[i+3] || !roadItem.road || i%2 == 0) return;
 
                 const diff = { x: road[i+1].x - roadItem.x, y: road[i+1].y - roadItem.y }
 
@@ -2193,6 +2283,17 @@
             
                     ctx.beginPath();
                 }
+
+                if (points[0].finalBooster) {
+                    ctx.strokeStyle = "#fc3";
+                    ctx.fillStyle = "#c93";
+                    ctx.lineWidth = game.defaultLineWidth/3;
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.lineWidth = game.defaultLineWidth;
+            
+                    ctx.beginPath();
+                }
                 
                 if (points[0].stripe) {
 
@@ -2251,8 +2352,8 @@
             car.x += Math.cos(car.speedAngle)*car.speed;
             car.y += Math.sin(car.speedAngle)*car.speed;
 
-            if ( car.running && ( keys.includes("w") || keys.includes(" ") ) && car.speed > -stats.topSpeed * ( 1 + 0.5 * !!(stats.noHands && mouse.selected != "wheel") ) ) {
-                car.speed -= stats.acceleration * (1 + 2*(car.speed > 0) ) * ( 1 + 1 * !!(stats.noHands && mouse.selected != "wheel") );
+            if ( car.running && ( keys.includes("w") || keys.includes(" ") ) && car.speed > -stats.topSpeed * ( 1 + 0.5 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 0.5 * (car.booster/300) ) ) {
+                car.speed -= stats.acceleration * (1 + 2*(car.speed > 0) ) * ( 1 + 1 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 9 * (car.booster/300) );
             } else car.speed *= 0.997;
             if ( car.running && ( keys.includes("s") || keys.includes("shift") ) && car.speed < stats.topSpeed/5 && !stats.noBrake) {
                 car.speed += stats.acceleration * (1 + 2*(car.speed < 0) );
@@ -2333,6 +2434,8 @@
             if (car.pothole) {
                 car.angle += car.pothole*Math.PI/100;
             }
+
+            if (car.booster > 0) car.booster--;
         }
 
         function checkCollision() {
@@ -2356,6 +2459,7 @@
                 if (diffNeededCos < diffNeeded) diffNeeded = diffNeededCos;
                 if (Math.hypot(road.x-car.x,road.y-car.y) < diffNeeded) {
                     if (road.oilslick) car.oilslick = true;
+                    else if (road.booster) car.booster = 300;
                     else if (road.mud) mud = true;
                     else if (road.pothole) {
                         touching = false;
@@ -2974,7 +3078,6 @@
                 car.x = 0;
                 car.y = 0;
                 car.speed = 0;
-                car.wheel = 0;
                 car.angle = Math.PI/2;
                 car.speedAngle = Math.PI/2;
                 car.running = false;
@@ -2985,7 +3088,7 @@
 
                 game.timer = 0;
                 game.timerCounting = false;
-                game.timerMax *= 0.98;
+                game.timerMax *= 0.985;
 
                 if (stats.wind) stats.windAngle = Math.PI*2*Math.random();
 
@@ -3027,11 +3130,17 @@
                 } } );
                 road[road.length-1].finalMud = true
             }
+            if (stats.booster) {
+                road.forEach((roadItem, i) => {if ((Math.random() < 0.010) && i <= road.length-3) {
+                    road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*Math.random(), size: roadItem.size*0.2, angle: Math.PI*Math.random()-Math.PI/2, booster: true } );
+                } } );
+                road[road.length-1].finalBooster = true
+            }
 
             calculateRoadPoints();
         }
 
-        if (1) {
+        if (0) {
             generatePlatformRoad(stats.roadLength/stats.roadSize)
 
             if (navigator.userAgent.toLowerCase().includes("firefox")) startAnimating(60);
@@ -3052,7 +3161,7 @@
             
             generatePlatformRoad(stats.roadLength/stats.roadSize);
 
-            unStackablePerks[7].drawFunction()
+            stackablePunishments[6].drawFunction()
         },100)
     </script>
 </body>
