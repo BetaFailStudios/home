@@ -2250,8 +2250,6 @@
                 ctx.strokeStyle = "#222";
                 ctx.stroke();
 
-                //ctx.filter = "blur(10px)"
-
                 while (windshield.length > 200) windshield.splice(0,1);
                 windshield.forEach( (item) => {
                     switch(item.type) {
@@ -2302,8 +2300,6 @@
                     }
                 })
                 ctx.globalAlpha = 1;
-
-                ctx.filter = "blur(0px)"
             }
 
             //windshield & dash
@@ -2751,8 +2747,6 @@
                 let position = Math.round((stackablePerks.length - 1)*Math.random());
                 while (positions.includes(position)) position = Math.round((stackablePerks.length - 1)*Math.random());
                 let perk = stackablePerks[position];
-
-                console.log(perk, stackablePerks[position])
 
                 positions.push(position);
 
