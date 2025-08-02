@@ -689,8 +689,8 @@
                     }
                 },
                 chooseFunction() {
-                    stats.roadAngle *= 0.5;
-                    stats.roadSize *= 2;
+                    stats.roadAngle *= 0.65;
+                    stats.roadSize *= 1.4;
                     stats.roadLength *= 0.8;
                 }
             },
@@ -1724,6 +1724,49 @@
                     stats.mud = true;
                 }
             },
+            {
+                name: "Sleepy",
+                desc: "Every once and a while your eyes close, then re-open",
+                drawFunction(timer) {
+                    ctx.beginPath();
+                    ctx.moveTo(0,-25);
+                    ctx.lineTo(100,-25);
+                    ctx.lineTo(0,75);
+                    ctx.lineTo(100,75);
+
+                    ctx.moveTo(-50,-85);
+                    ctx.lineTo(25,-85);
+                    ctx.lineTo(-50,-10);
+                    ctx.lineTo(25,-10);
+                    
+                    ctx.moveTo(-90,-115);
+                    ctx.lineTo(-40,-115);
+                    ctx.lineTo(-90,-65);
+                    ctx.lineTo(-40,-65);
+                    ctx.lineWidth = game.defaultLineWidth*2;
+                    ctx.strokeStyle = "#226";
+                    ctx.stroke();
+                    ctx.lineWidth = game.defaultLineWidth;
+                    ctx.strokeStyle = "#449";
+                    ctx.stroke();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.fillStyle = "#449";
+                        ctx.strokeStyle = "#226";
+                        ctx.strokeText("Sleepy",0,150);
+                        ctx.fillText("Sleepy",0,150);
+                    }
+
+                    ctx.lineWidth = game.defaultLineWidth;
+                },
+                chooseFunction() {
+                    stats.sleepy = true;
+                    stats.eyePos = 1000;
+                    stats.eyeVel = -100;
+                }
+            },
         ]
 
         let choices = [];
@@ -1776,8 +1819,9 @@
 
         function tickloop() {
             if (Math.random() < 0.0015 && stats.sweaty) mouse.selected = false;
-            if (Math.random() < 0.0010 && stats.engineFailure) car.running = false;
-            if (Math.random() < 0.020 && stats.bug && game.timerCounting && game.status == "driving") windshield.push( { type: "bug", x: -400+800*Math.random(), y: -300+500*Math.random(), durability: 2, maxDurability: 2 } );
+            if (Math.random() < 0.001 && stats.engineFailure) car.running = false;
+            if (Math.random() < 0.02 && stats.bug && game.timerCounting && game.status == "driving") windshield.push( { type: "bug", x: -400+800*Math.random(), y: -300+500*Math.random(), durability: 2, maxDurability: 2 } );
+            if (Math.random() < 0.15 && stats.sleepy && game.timerCounting && game.status == "driving") stats.eyeVel++;
 
             ctx.save();
 
@@ -1861,8 +1905,24 @@
             ctx.fill();
 
             //render the mouse
+            if (stats.sleepy) {
+                ctx.fillStyle = "#000";
+                ctx.beginPath();
+                ctx.arc(0, -stats.eyePos+2000, 2000, 0, Math.PI*2, true);
+                ctx.rect(-1000, -1000, 2000, 2000);
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.arc(0, stats.eyePos-2000, 2000, 0, Math.PI*2, true);
+                ctx.rect(-1000, -1000, 2000, 2000);
+                ctx.fill();
 
-            ctx.beginPath();
+                stats.eyePos -= stats.eyeVel;
+                if (stats.eyePos < -600) {
+                    stats.eyeVel = -50;
+                } else if (stats.eyePos > 1000) stats.eyePos = 1000;
+            }
+
 
             ctx.restore();
         }
@@ -2884,7 +2944,7 @@
             
             generatePlatformRoad(stats.roadLength/stats.roadSize);
 
-            unStackablePunishments[10].drawFunction()
+            unStackablePunishments[11].drawFunction()
         },100)
     </script>
 </body>
