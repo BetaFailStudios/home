@@ -1211,7 +1211,7 @@
                         stats.wind = true;
                         stats.windForce = 0;
                     }
-                    stats.windForce += 0.3;
+                    stats.windForce += 0.15;
                 }
             },
             {
@@ -1265,7 +1265,7 @@
                 desc: "The  F O G  is here: Heavily obscures vision",
                 drawFunction(timer) {
                     ctx.beginPath();
-                    const linearGradient = ctx.createLinearGradient(0, -200, 0, 200);
+                    linearGradient = ctx.createLinearGradient(0, -200, 0, 200);
 
                     linearGradient.addColorStop(0, "#cccccc99");
                     linearGradient.addColorStop(0.1, "#cccccc");
@@ -1900,14 +1900,36 @@
         let road = [];
 
         let roadDrawPoints = [];
+            
+        const horizon = -200;
 
         const clouds = [];
         for(var i = 0; i < Math.PI*2; i += Math.PI/100*(1+0.5*Math.random())) clouds.push( {angle: i, size: 100+50*Math.random(), y: -400-75*Math.random()} );
 
+        let linearGradient;
+
+        const linearGradientBG = ctx.createLinearGradient(-2000, 0, 2000, 0);
+
+        linearGradientBG.addColorStop(0, "#000000");
+        linearGradientBG.addColorStop(0.25, "#000000");
+        linearGradientBG.addColorStop(0.26, "#00000000");
+        linearGradientBG.addColorStop(0.74, "#00000000");
+        linearGradientBG.addColorStop(0.75, "#000000");
+        linearGradientBG.addColorStop(1, "#000000");
+
+        const linearGradientBG1 = ctx.createLinearGradient(-2000, 0, 2000, 0);
+
+        linearGradientBG1.addColorStop(0, "#000000");
+        linearGradientBG1.addColorStop(0.25, "#000000");
+        linearGradientBG1.addColorStop(0.26, "#00000000");
+        linearGradientBG1.addColorStop(0.74, "#00000000");
+        linearGradientBG1.addColorStop(0.75, "#000000");
+        linearGradientBG1.addColorStop(1, "#000000");
+
         function tickloop() {
             if (Math.random() < 0.0015 && stats.sweaty) mouse.selected = false;
             if (Math.random() < 0.001 && stats.engineFailure) car.running = false;
-            if (Math.random() < 0.02 && stats.bug && game.timerCounting && game.status == "driving") windshield.push( { type: "bug", x: -400+800*Math.random(), y: -300+500*Math.random(), durability: 2, maxDurability: 2 } );
+            if (Math.random() < 0.01 && stats.bug && game.timerCounting && game.status == "driving") windshield.push( { type: "bug", x: -400+800*Math.random(), y: -300+500*Math.random(), durability: 2, maxDurability: 2 } );
             if (Math.random() < 0.15 && stats.sleepy && game.timerCounting && game.status == "driving") stats.eyeVel++;
 
             ctx.save();
@@ -1965,29 +1987,11 @@
             ctx.beginPath();
             ctx.rect(-3000,-3000,6000,6000);
 
-            const linearGradient = ctx.createLinearGradient(-2000, 0, 2000, 0);
-
-            linearGradient.addColorStop(0, "#000000");
-            linearGradient.addColorStop(0.25, "#000000");
-            linearGradient.addColorStop(0.26, "#00000000");
-            linearGradient.addColorStop(0.74, "#00000000");
-            linearGradient.addColorStop(0.75, "#000000");
-            linearGradient.addColorStop(1, "#000000");
-
-            ctx.fillStyle = linearGradient;
+            ctx.fillStyle = linearGradientBG;
 
             ctx.fill();
 
-            const linearGradient2 = ctx.createLinearGradient(0, -1200, 0, 1200);
-
-            linearGradient2.addColorStop(0, "#000000");
-            linearGradient2.addColorStop(0.25, "#000000");
-            linearGradient2.addColorStop(0.27, "#00000000");
-            linearGradient2.addColorStop(0.73, "#00000000");
-            linearGradient2.addColorStop(0.75, "#000000");
-            linearGradient2.addColorStop(1, "#000000");
-
-            ctx.fillStyle = linearGradient2;
+            ctx.fillStyle = linearGradientBG1;
 
             ctx.fill();
 
@@ -2063,11 +2067,9 @@
         }
 
         function drawSkybox() {
-            const horizon = -200;
-
             ctx.beginPath();
 
-            const linearGradient = ctx.createLinearGradient(0, -500+horizon, 0, 500+horizon);
+            linearGradient = ctx.createLinearGradient(0, -500+horizon, 0, 500+horizon);
 
             linearGradient.addColorStop(0.497, "#0099ff");
             linearGradient.addColorStop(0.503, "#003300");
@@ -2082,8 +2084,9 @@
             ctx.fillStyle = "#999";
             ctx.strokeStyle = "#ccc";
             ctx.rect(-1000,-600,2000,200);
+            let angleDiff;
             clouds.forEach((cloud) => {
-                let angleDiff = car.angle-cloud.angle;
+                angleDiff = car.angle-cloud.angle;
 
                 while (Math.abs(angleDiff-Math.PI*2) < Math.abs(angleDiff)) {
                     cloud.angle += Math.PI*2;
@@ -2106,8 +2109,6 @@
         }
 
         function drawRoadPerspective() {
-            const horizon = -200;
-
             let roadColor = "#333";
             if (stats.slipRoad) roadColor = "#344";
 
@@ -2115,6 +2116,7 @@
 
             ctx.beginPath();
             const angle = car.angle-Math.PI/2;
+            let originalY,x,y;
             roadDrawPoints.forEach((points, pI) => {
                 if (points[0].final) {
                     ctx.strokeStyle = "#666";
@@ -2131,10 +2133,10 @@
 
                 if (Math.hypot(points[0].x-car.x, points[0].y-car.y) < 15000 || points[0].final || (points[0].road && pI%20 == 0)) points.forEach((point, i) => {
 
-                    const originalY = ((point.y-car.y) * Math.cos(angle) - (point.x-car.x) * Math.sin(angle))+400;
-                    let x = (point.x-car.x) * Math.cos(angle) + (point.y-car.y) * Math.sin(angle);
+                    originalY = ((point.y-car.y) * Math.cos(angle) - (point.x-car.x) * Math.sin(angle))+400;
+                    x = (point.x-car.x) * Math.cos(angle) + (point.y-car.y) * Math.sin(angle);
 
-                    const y = -calculateHorizonY(-originalY, -horizon);
+                    y = -calculateHorizonY(-originalY, -horizon);
                     x = ( ( y-horizon ) / 50 ) * x;
 
                     if (!points[0].final && Math.hypot(points[0].x-car.x, points[0].y-car.y) > 15000 && points[0].road && pI%20 == 0) {
@@ -2204,7 +2206,7 @@
             });
 
             if (stats.fog) {
-                const linearGradient = ctx.createLinearGradient(0, -1200, 0, 800);
+                linearGradient = ctx.createLinearGradient(0, -1200, 0, 800);
 
                 linearGradient.addColorStop(0, "#77777750");
                 linearGradient.addColorStop(0.5, "#777777ff");
@@ -2241,9 +2243,8 @@
         }
 
         function calculateHorizonY(input, horizon) {
-            let x = input;
-            if (x < -499) x = -499;
-            return horizon-100000/(x+500);
+            if (input < -499) return horizon-100000/(1);
+            return horizon-100000/(input+500);
         }
 
         function drive() {
@@ -2289,8 +2290,9 @@
 
                 const wiperAngle = -Math.PI*11/10*car.wiper+Math.PI/20;
 
+                let angle; 
                 windshield = windshield.filter( (item) => {
-                    let angle = Math.atan( (item.y-300)/item.x )-Math.PI*(item.x < 0);
+                    angle = Math.atan( (item.y-300)/item.x )-Math.PI*(item.x < 0);
                     if (!item.x) angle = -Math.PI/2;
                     if ((angle > oldWiperAngle && angle < wiperAngle) || (angle < oldWiperAngle && angle > wiperAngle)) item.durability--;
 
@@ -2338,28 +2340,30 @@
             let touching = false;
             car.pothole = false;
             car.oilslick = false;
+
+            let diffNeeded, diffNeededCos, carAngle, intAngle;
+            
             road.forEach((road, i)=> {
                 if (Math.hypot(road.x-car.x, road.y-car.y) > road.size*2) return;
 
                 //road.angle --> angle to rectangle
-                let carAngle = Math.atan( (road.y-car.y) / (road.x-car.x) ) + Math.PI*(road.x > car.x);
+                carAngle = Math.atan( (road.y-car.y) / (road.x-car.x) ) + Math.PI*(road.x > car.x);
                 if (!(road.x-car.x)) carAngle = Math.PI*(road.x > car.x);
-                let intAngle = (carAngle-road.angle);
+                intAngle = (carAngle-road.angle);
 
-                let diffNeeded = Math.abs(Math.sin(intAngle))**-1*road.size;
-                const diffNeededCos = Math.abs(Math.cos(intAngle))**-1*road.size;
+                diffNeeded = Math.abs(Math.sin(intAngle))**-1*road.size;
+                diffNeededCos = Math.abs(Math.cos(intAngle))**-1*road.size;
                 if (diffNeededCos < diffNeeded) diffNeeded = diffNeededCos;
                 if (Math.hypot(road.x-car.x,road.y-car.y) < diffNeeded) {
-                    if (road.oilslick) {
-                        car.oilslick = true;
-                    } else if (road.mud) {
-                        mud = true;
-                    } else if (road.pothole) {
+                    if (road.oilslick) car.oilslick = true;
+                    else if (road.mud) mud = true;
+                    else if (road.pothole) {
                         touching = false;
 
                         car.pothole = Math.sign(road.angle);
+                    } else {
+                        touching = true;
                     }
-                    else touching = true;
 
                     if (road.final) {
                         mouse.selected = false;
@@ -2371,6 +2375,8 @@
                     }
                 }
             })
+
+            console.log(touching)
 
             if (!touching && Math.abs(car.speed) > stats.offroadMaxSpeed && !(stats.offroadCruise && !stats.running)) {
                 car.speed *= 1-stats.offroadSpeedLoss/stats.inertia;
@@ -2388,7 +2394,7 @@
 
         function drawDash() {
             //wipers & windsheild objects
-            if (true) {
+            {
                 const wiperAngle = -Math.PI*11/10*car.wiper+Math.PI/20;
 
                 ctx.beginPath();
@@ -2398,22 +2404,23 @@
                 ctx.strokeStyle = "#222";
                 ctx.stroke();
 
+                let size = 1;
+
                 while (windshield.length > 200) windshield.splice(0,1);
                 windshield.forEach( (item) => {
                     switch(item.type) {
                     case "mud": {
-                        const size = 500;
-                        ctx.globalAlpha = 1 - (item.maxDurability-item.durability) / item.maxDurability / 3;
+                        size = 1 - (item.maxDurability-item.durability) / item.maxDurability / 3;
 
                         ctx.beginPath();
-                        ctx.moveTo(item.x+size, item.y);
-                        ctx.lineTo(item.x+size*0.7, item.y+size*0.7);
-                        ctx.lineTo(item.x, item.y+size);
-                        ctx.lineTo(item.x-size*0.7, item.y+size*0.7);
-                        ctx.lineTo(item.x-size, item.y);
-                        ctx.lineTo(item.x-size*0.7, item.y-size*0.7);
-                        ctx.lineTo(item.x, item.y-size);
-                        ctx.lineTo(item.x+size*0.7, item.y-size*0.7);
+                        ctx.moveTo(item.x+450*size, item.y);
+                        ctx.lineTo(item.x+450*size*0.7, item.y+450*size*0.7);
+                        ctx.lineTo(item.x, item.y+450*size);
+                        ctx.lineTo(item.x-450*size*0.7, item.y+450*size*0.7);
+                        ctx.lineTo(item.x-450*size, item.y);
+                        ctx.lineTo(item.x-450*size*0.7, item.y-450*size*0.7);
+                        ctx.lineTo(item.x, item.y-450*size);
+                        ctx.lineTo(item.x+450*size*0.7, item.y-450*size*0.7);
                         ctx.closePath();
 
                         ctx.fillStyle = "#532";
@@ -2424,18 +2431,17 @@
                         break;
                         }
                     case "bug": {
-                        const size = 80;
-                        ctx.globalAlpha = 1 - (item.maxDurability-item.durability) / item.maxDurability / 3;
+                        size = 1 - (item.maxDurability-item.durability) / item.maxDurability / 3;
 
                         ctx.beginPath();
-                        ctx.moveTo(item.x+size, item.y);
-                        ctx.lineTo(item.x+size*0.7, item.y+size*0.7);
-                        ctx.lineTo(item.x, item.y+size);
-                        ctx.lineTo(item.x-size*0.7, item.y+size*0.7);
-                        ctx.lineTo(item.x-size, item.y);
-                        ctx.lineTo(item.x-size*0.7, item.y-size*0.7);
-                        ctx.lineTo(item.x, item.y-size);
-                        ctx.lineTo(item.x+size*0.7, item.y-size*0.7);
+                        ctx.moveTo(item.x+70*size, item.y);
+                        ctx.lineTo(item.x+70*size*0.7, item.y+70*size*0.7);
+                        ctx.lineTo(item.x, item.y+70);
+                        ctx.lineTo(item.x-70*size*0.7, item.y+70*size*0.7);
+                        ctx.lineTo(item.x-70*size, item.y);
+                        ctx.lineTo(item.x-70*size*0.7, item.y-70*size*0.7);
+                        ctx.lineTo(item.x, item.y-70);
+                        ctx.lineTo(item.x+70*size*0.7, item.y-70*size*0.7);
                         ctx.closePath();
 
                         ctx.fillStyle = "#252";
@@ -2447,13 +2453,12 @@
                         }
                     }
                 })
-                ctx.globalAlpha = 1;
             }
 
             //windshield & dash
-            if (true) {
+            {
                 ctx.beginPath();
-                const linearGradient = ctx.createLinearGradient(0, -300, 0, 500);
+                linearGradient = ctx.createLinearGradient(0, -300, 0, 500);
 
                 linearGradient.addColorStop(0, "#99ffff33");
                 linearGradient.addColorStop(1, "#00aaff33");
@@ -2494,13 +2499,10 @@
             }
 
             //spedometer
-            if (true) {
+            {
                 ctx.save();
                 
                 ctx.translate(70,280);
-
-                ctx.strokeStyle = "#222";
-                ctx.fillStyle = "#444";
 
                 ctx.beginPath();
                 ctx.arc(0,0,50,-Math.PI*5/4,Math.PI/4);
@@ -2508,6 +2510,8 @@
                 ctx.lineTo(-15,25);
                 ctx.closePath();
                 
+                ctx.strokeStyle = "#222";
+                ctx.fillStyle = "#444";
                 ctx.fill();
                 ctx.stroke();
 
@@ -2525,7 +2529,7 @@
             }
 
             //ignition
-            if (true) {
+            {
                 ctx.save();
                 
                 ctx.translate(70,350);
@@ -2555,7 +2559,7 @@
             }
 
             //wiper control
-            if (true) {
+            {
                 ctx.beginPath();
                 ctx.rect(-700,400,300,30);
                 ctx.fillStyle = "#444";
@@ -2582,8 +2586,26 @@
                 }
             }
 
+            //fps gauge
+            {
+                ctx.beginPath();
+
+                ctx.rect(-325,300, 50, 30);
+
+                ctx.strokeStyle = "#222";
+                ctx.fillStyle = "#444";
+                ctx.stroke();
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.strokeStyle = "#777";
+                ctx.fillStyle = "#999";
+                ctx.font = "20px Jura";
+                ctx.fillText(game.fps, -300,315);
+            }
+
             //wheel
-            if (true) {
+            {
                 ctx.save();
                 ctx.translate(-200, 250);
                 ctx.rotate(-car.wheel*Math.PI*5/2);
