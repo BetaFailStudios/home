@@ -1688,6 +1688,42 @@
                     stats.mud = true;
                 }
             },
+            {
+                name: "Big Bugs",
+                desc: "Bugs can splatter on your windsheild",
+                drawFunction(timer) {
+                    ctx.beginPath();
+                    ctx.arc(-75,-25,65,0,Math.PI*2);
+                    ctx.moveTo(140,-25);
+                    ctx.arc(75,-25,65,0,Math.PI*2);
+                    ctx.fillStyle = "#999";
+                    ctx.fill();
+                    ctx.strokeStyle = "#ccc";
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.arc(0,25,75,0,Math.PI*2);
+                    ctx.fillStyle = "#222";
+                    ctx.fill();
+                    ctx.strokeStyle = "#444";
+                    ctx.stroke();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.fillStyle = "#252";
+                        ctx.strokeStyle = "#232";
+                        ctx.strokeText("Big",0,-150);
+                        ctx.fillText("Big",0,-150);
+                        ctx.strokeText("Bugs",0,150);
+                        ctx.fillText("Bugs",0,150);
+                    }
+
+                    ctx.lineWidth = game.defaultLineWidth;
+                },
+                chooseFunction() {
+                    stats.mud = true;
+                }
+            },
         ]
 
         let choices = [];
@@ -1741,6 +1777,7 @@
         function tickloop() {
             if (Math.random() < 0.0015 && stats.sweaty) mouse.selected = false;
             if (Math.random() < 0.0010 && stats.engineFailure) car.running = false;
+            if (Math.random() < 0.020 && stats.bug && game.timerCounting && game.status == "driving") windshield.push( { type: "bug", x: -400+800*Math.random(), y: -300+500*Math.random(), durability: 2, maxDurability: 2 } );
 
             ctx.save();
 
@@ -1857,7 +1894,7 @@
                 const size = Math.hypot( road.size, road.size );// * (1 - 2*(road.pothole == true));
 
                 const points = [];
-                points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4), final: road.final, finalPothole: road.finalPothole, finalOilslick: road.finalOilslick, finalMud: road.finalMud } );
+                points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4), road: road.road, final: road.final, finalPothole: road.finalPothole, finalOilslick: road.finalOilslick, finalMud: road.finalMud } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/2 + Math.PI/4) } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI + Math.PI/4) } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI*3/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI*3/2 + Math.PI/4) } );
@@ -1945,7 +1982,7 @@
                     ctx.beginPath();
                 }
 
-                if (Math.hypot(points[0].x-car.x, points[0].y-car.y) < 15000 || points[0].final || (!(points[0].pothole || points[0].oilslick || points[0].mud || points[0].stripe) && pI%20 == 0)) points.forEach((point, i) => {
+                if (Math.hypot(points[0].x-car.x, points[0].y-car.y) < 15000 || points[0].final || (points[0].road && pI%20 == 0)) points.forEach((point, i) => {
 
                     const originalY = ((point.y-car.y) * Math.cos(angle) - (point.x-car.x) * Math.sin(angle))+400;
                     let x = (point.x-car.x) * Math.cos(angle) + (point.y-car.y) * Math.sin(angle);
@@ -1953,7 +1990,7 @@
                     const y = -calculateHorizonY(-originalY, -horizon);
                     x = ( ( y-horizon ) / 50 ) * x;
 
-                    if (!points[0].final && Math.hypot(points[0].x-car.x, points[0].y-car.y) > 15000 && !(points[0].pothole || points[0].oilslick || points[0].mud || points[0].stripe) && pI%20 == 0) {
+                    if (!points[0].final && Math.hypot(points[0].x-car.x, points[0].y-car.y) > 15000 && points[0].road && pI%20 == 0) {
                         if (i) return;
                         else ctx.lineTo(x,y);
                     }
@@ -2213,10 +2250,13 @@
                 ctx.strokeStyle = "#222";
                 ctx.stroke();
 
-                const size = 500;
+                //ctx.filter = "blur(10px)"
+
+                while (windshield.length > 200) windshield.splice(0,1);
                 windshield.forEach( (item) => {
                     switch(item.type) {
                     case "mud": {
+                        const size = 500;
                         ctx.globalAlpha = 1 - (item.maxDurability-item.durability) / item.maxDurability / 3;
 
                         ctx.beginPath();
@@ -2237,9 +2277,33 @@
 
                         break;
                         }
+                    case "bug": {
+                        const size = 80;
+                        ctx.globalAlpha = 1 - (item.maxDurability-item.durability) / item.maxDurability / 3;
+
+                        ctx.beginPath();
+                        ctx.moveTo(item.x+size, item.y);
+                        ctx.lineTo(item.x+size*0.7, item.y+size*0.7);
+                        ctx.lineTo(item.x, item.y+size);
+                        ctx.lineTo(item.x-size*0.7, item.y+size*0.7);
+                        ctx.lineTo(item.x-size, item.y);
+                        ctx.lineTo(item.x-size*0.7, item.y-size*0.7);
+                        ctx.lineTo(item.x, item.y-size);
+                        ctx.lineTo(item.x+size*0.7, item.y-size*0.7);
+                        ctx.closePath();
+
+                        ctx.fillStyle = "#252";
+                        ctx.fill();
+                        ctx.strokeStyle = "#232";
+                        ctx.stroke();
+
+                        break;
+                        }
                     }
                 })
                 ctx.globalAlpha = 1;
+
+                ctx.filter = "blur(0px)"
             }
 
             //windshield & dash
@@ -2775,7 +2839,7 @@
             let size = stats.roadSize;
 
             for (var i = 0; i <= Math.floor(amount); i++) {
-                road.push( {x: pos.x, y: pos.y, size: size+size*Math.random()/2, angle: Math.PI*Math.random(), final: i == Math.floor(amount)} );
+                road.push( {x: pos.x, y: pos.y, size: size+size*Math.random()/2, angle: Math.PI*Math.random(), road: true, final: i == Math.floor(amount)} );
 
                 pos.x += Math.cos(angle)*size;
                 pos.y += Math.sin(angle)*size;
@@ -2797,7 +2861,7 @@
             }
             if (stats.mud) {
                 road.forEach((roadItem, i) => {if ((Math.random() < 0.05) && i <= road.length-3) {
-                    road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*Math.random(), size: roadItem.size*1.4, angle: Math.PI*Math.random()-Math.PI/2, mud: true } );
+                    road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*Math.random(), size: roadItem.size*0.8, angle: Math.PI*Math.random()-Math.PI/2, mud: true } );
                 } } );
                 road[road.length-1].finalMud = true
             }
@@ -2826,7 +2890,7 @@
             
             generatePlatformRoad(stats.roadLength/stats.roadSize);
 
-            unStackablePunishments[9].drawFunction()
+            unStackablePunishments[10].drawFunction()
         },100)
     </script>
 </body>
