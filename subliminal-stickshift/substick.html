@@ -1949,9 +1949,13 @@
 
         const perkChoices = [ "punish", "perk", "unstackPunish", "perk", "punish", "unstackPerk", "punish", "perk", "unstackPunish", "perk", "punish", "unstackPerk", "punish", "perk", "unstackPunish", "final roads" ];
 
+        const chosenPerkDraw = [];
+
         let perkChoicePos = 0;
 
-        const chosenPerks = [];
+        const regions = [ "winter", "city" ]
+
+        let currentRegion = "normal";
 
         const stats = {
             roadLength: 80000,
@@ -1988,6 +1992,10 @@
         
         let windshield = [];
 
+        let buildings = [];
+
+        let buildingPoints = [];
+
         let road = [];
 
         let roadDrawPoints = [];
@@ -2017,10 +2025,26 @@
         linearGradientBG1.addColorStop(0.75, "#000000");
         linearGradientBG1.addColorStop(1, "#000000");
 
+        const fogGradient = ctx.createLinearGradient(0, -1200, 0, 800);
+
+        fogGradient.addColorStop(0, "#77777750");
+        fogGradient.addColorStop(0.5, "#777777ff");
+        fogGradient.addColorStop(0.51, "#777777f5");
+        fogGradient.addColorStop(0.52, "#777777f0");
+        fogGradient.addColorStop(0.55, "#777777c0");
+        fogGradient.addColorStop(0.65, "#77777760");
+        fogGradient.addColorStop(1, "#77777722");
+
         function tickloop() {
+            //sortBuildings
+            if (game.timer%10 == 0) buildingPoints.sort( (a,b) => {
+                if (Math.hypot(a[4].x-car.x,a[4].y-car.y) < Math.hypot(b[4].x-car.x,b[4].y-car.y)) return 1; 
+                else return -1; 
+            } );
+
             if (Math.random() < 0.0015 && stats.sweaty) mouse.selected = false;
             if (Math.random() < 0.001 && stats.engineFailure) car.running = false;
-            if (Math.random() < 0.02 && stats.bug && game.timerCounting && game.status == "driving") windshield.push( { type: "bug", x: -400+800*Math.random(), y: -300+500*Math.random(), durability: 2, maxDurability: 2 } );
+            if (Math.random() < 0.02 && stats.bug && game.timerCounting && game.status == "driving") windshield.push( { type: "bug", x: -600+1200*Math.random(), y: -300+500*Math.random(), durability: 2, maxDurability: 2 } );
             if (Math.random() < 0.15 && stats.sleepy && game.timerCounting && game.status == "driving") stats.eyeVel++;
 
             ctx.save();
@@ -2101,7 +2125,7 @@
 
                 stats.eyePos -= stats.eyeVel;
                 if (stats.eyePos < -1000) {
-                    stats.eyeVel = -50;
+                    stats.eyeVel = -80;
                 } else if (stats.eyePos > 1000) stats.eyePos = 1000;
             }
 
@@ -2153,6 +2177,30 @@
                 points.push( { x: roadItem.x + diff.x, y: roadItem.y + diff.y, stripe: true } );
                 
                 roadDrawPoints.push(points);
+            });
+
+            buildings.forEach((road) => {
+                const size = Math.hypot( road.size, road.size );// * (1 - 2*(road.pothole == true));
+
+                const point1 = { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4) };
+                const point1T = { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4), top: true, color: road.color };
+                const point2 = { x: road.x - size*Math.sin(road.angle + Math.PI/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/2 + Math.PI/4) };
+                const point2T = { x: road.x - size*Math.sin(road.angle + Math.PI/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/2 + Math.PI/4), top: true, color: road.color };
+                const point3 = { x: road.x - size*Math.sin(road.angle + Math.PI + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI + Math.PI/4) };
+                const point3T = { x: road.x - size*Math.sin(road.angle + Math.PI + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI + Math.PI/4) , top: true, color: road.color };
+                const point4 = { x: road.x - size*Math.sin(road.angle + Math.PI*3/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI*3/2 + Math.PI/4) };
+                const point4T = { x: road.x - size*Math.sin(road.angle + Math.PI*3/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI*3/2 + Math.PI/4), top: true, color: road.color };
+
+                buildingPoints.push( [point1T, point1, point2, point2T] );
+                buildingPoints.push( [point2T, point2, point3, point3T] );
+                buildingPoints.push( [point3T, point3, point4, point4T] );
+                buildingPoints.push( [point4T, point4, point1, point1T] );
+            });
+
+            buildingPoints.forEach( (item) => {
+                const diff = { x: item[0].x-item[1].x, y: item[0].y-item[1].y };
+
+                item.push( {x: item[1].x+diff.x, y: item[1].y+diff.y} );
             });
         }
 
@@ -2233,7 +2281,7 @@
                         if (i) return;
                         else ctx.lineTo(x,y);
                     }
-
+                    
                     if (!i) ctx.moveTo( x, y );
                     else ctx.lineTo( x, y );
 
@@ -2306,18 +2354,37 @@
                 }
             });
 
+            buildingPoints.forEach((points, pI) => {
+                ctx.beginPath();
+
+                if (Math.hypot(points[0].x-car.x, points[0].y-car.y) < 15000) points.forEach((point, i) => { 
+                    if (i === 4) return;
+                    originalY = ((point.y-car.y) * Math.cos(angle) - (point.x-car.x) * Math.sin(angle))+400;
+                    x = (point.x-car.x) * Math.cos(angle) + (point.y-car.y) * Math.sin(angle);
+
+                    y = -calculateHorizonY(-originalY, -horizon);
+                    x = ( ( y-horizon ) / 50 ) * x;
+                    
+                    if (Math.abs(y) > 6000) return;
+
+                    if (point.top) {
+                        ctx.lineTo( x, y );
+                    } else {
+                        ctx.lineTo( x, horizon - 5*(y-horizon) );
+                    }
+                });
+                ctx.closePath();
+
+                ctx.strokeStyle = "#999";
+                ctx.fillStyle = points[0].color;
+                ctx.lineWidth = game.defaultLineWidth/3;
+                ctx.stroke();
+                ctx.fill();
+                ctx.lineWidth = game.defaultLineWidth;
+            });
+
             if (stats.fog) {
-                linearGradient = ctx.createLinearGradient(0, -1200, 0, 800);
-
-                linearGradient.addColorStop(0, "#77777750");
-                linearGradient.addColorStop(0.5, "#777777ff");
-                linearGradient.addColorStop(0.51, "#777777f5");
-                linearGradient.addColorStop(0.52, "#777777f0");
-                linearGradient.addColorStop(0.55, "#777777c0");
-                linearGradient.addColorStop(0.65, "#77777760");
-                linearGradient.addColorStop(1, "#77777722");
-
-                ctx.fillStyle = linearGradient;
+                ctx.fillStyle = fogGradient;
     
                 ctx.fillRect(-1000,-500,3500,1000);
             }
@@ -2477,6 +2544,25 @@
 
                         generateChoices();
                     }
+                }
+            })
+
+            buildings.forEach((road, i)=> {
+                if (Math.hypot(road.x-car.x, road.y-car.y) > road.size*2) return;
+
+                //road.angle --> angle to rectangle
+                carAngle = Math.atan( (road.y-car.y) / (road.x-car.x) ) + Math.PI*(road.x > car.x);
+                if (!(road.x-car.x)) carAngle = Math.PI*(road.x > car.x);
+                intAngle = (carAngle-road.angle);
+
+                diffNeeded = Math.abs(Math.sin(intAngle))**-1*road.size;
+                diffNeededCos = Math.abs(Math.cos(intAngle))**-1*road.size;
+                if (diffNeededCos < diffNeeded) diffNeeded = diffNeededCos;
+                if (Math.hypot(road.x-car.x,road.y-car.y) < diffNeeded) {
+                    car.x -= Math.cos(car.speedAngle)*car.speed;
+                    car.y -= Math.sin(car.speedAngle)*car.speed;
+
+                    car.speed = 0;
                 }
             })
 
@@ -2937,8 +3023,8 @@
 
             ctx.translate(-375,-430);
             ctx.scale(0.2,0.2);
-            for (var i = 0; i < chosenPerks.length; i++) {
-                chosenPerks[i](true);
+            for (var i = 0; i < chosenPerkDraw.length; i++) {
+                chosenPerkDraw[i](true);
 
                 ctx.translate(250,0);
             }
@@ -3070,7 +3156,7 @@
 
                 choice.choice.chooseFunction();
 
-                chosenPerks.push(choice.choice.drawFunction);
+                chosenPerkDraw.push(choice.choice.drawFunction);
 
                 if (perkChoices[perkChoicePos] == "unstackPerk") unStackablePerks.splice(choice.position, 1);
                 else if (perkChoices[perkChoicePos] == "unstackPunish") unStackablePunishments.splice(choice.position, 1);
@@ -3104,37 +3190,48 @@
             let size = stats.roadSize;
 
             for (var i = 0; i <= Math.floor(amount); i++) {
-                road.push( {x: pos.x, y: pos.y, size: size+size*Math.random()/2, angle: Math.PI*Math.random(), road: true, final: i == Math.floor(amount)} );
+                road.push( {x: pos.x, y: pos.y, size: size+size*Math.random()/2, angle: Math.PI*Math.random(), road: true, final: i == Math.floor(amount), roadAngle: angle} );
 
                 pos.x += Math.cos(angle)*size;
                 pos.y += Math.sin(angle)*size;
 
-                angle += stats.roadAngle/2-stats.roadAngle*Math.random();
+                if (currentRegion == "city") { if (Math.random() < stats.roadAngle/Math.PI/7) angle += Math.PI/2-Math.PI*(Math.random() < 0.5)
+                } else angle += stats.roadAngle/2-stats.roadAngle*Math.random();
             }
 
             if (stats.potholes) {
-                road.forEach((roadItem, i) => {if ((Math.random() < 0.10) && i <= road.length-3) {
+                road.forEach((roadItem, i) => {if (roadItem.road && (Math.random() < 0.10*stats.roadHazardChance) && i <= road.length-3) {
                     road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*2*Math.random(), size: roadItem.size/5, angle: Math.PI*Math.random()-Math.PI/2, pothole: true } );
                 } } );
                 road[road.length-1].finalPothole = true
             }
             if (stats.oilslick) {
-                road.forEach((roadItem, i) => {if ((Math.random() < 0.05) && i <= road.length-3) {
+                road.forEach((roadItem, i) => {if (roadItem.road && (Math.random() < 0.05*stats.roadHazardChance) && i <= road.length-3) {
                     road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*Math.random(), size: roadItem.size*3, angle: Math.PI*Math.random()-Math.PI/2, oilslick: true } );
                 } } );
                 road[road.length-1].finalOilslick = true
             }
             if (stats.mud) {
-                road.forEach((roadItem, i) => {if ((Math.random() < 0.020) && i <= road.length-3) {
+                road.forEach((roadItem, i) => {if (roadItem.road && (Math.random() < 0.020*stats.roadHazardChance) && i <= road.length-3) {
                     road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*Math.random(), size: roadItem.size*0.6, angle: Math.PI*Math.random()-Math.PI/2, mud: true } );
                 } } );
                 road[road.length-1].finalMud = true
             }
             if (stats.booster) {
-                road.forEach((roadItem, i) => {if ((Math.random() < 0.010) && i <= road.length-3) {
+                road.forEach((roadItem, i) => {if (roadItem.road && (Math.random() < 0.010*stats.roadHazardChance) && i <= road.length-3) {
                     road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*Math.random(), size: roadItem.size*0.2, angle: Math.PI*Math.random()-Math.PI/2, booster: true } );
                 } } );
                 road[road.length-1].finalBooster = true
+            }
+            if (currentRegion == "city") {
+                buildings = [];
+                buildingPoints = [];
+
+                road.forEach((roadItem, i) => {if (roadItem.road && (Math.random() < 0.25*stats.roadHazardChance) && i <= road.length-3) {
+                    const angle = roadItem.roadAngle+Math.PI/2 + Math.PI*(Math.random() < 0.5);
+                    buildings.push( {x: roadItem.x - roadItem.size*4*Math.cos(angle), y: roadItem.y - roadItem.size*4*Math.sin(angle), size: roadItem.size, angle: roadItem.roadAngle, color: ("#" + Math.floor(Math.random()*9) + Math.floor(Math.random()*9) + Math.floor(Math.random()*9)) } );
+                    i += 3;
+                } } );
             }
 
             calculateRoadPoints();
