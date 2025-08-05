@@ -407,7 +407,7 @@
                     }
                 },
                 chooseFunction() {
-                    game.timerMax *= 1.15;
+                    stats.timerMax *= 1.15;
                 }
             },
             {
@@ -931,7 +931,7 @@
                     }
                 },
                 chooseFunction() {
-                    stats.driftWiper = true;
+                    stats.booster = true;
                 }
             },
         ]
@@ -1146,7 +1146,7 @@
                 },
                 chooseFunction() {
                     stats.roadLength *= 1.2;
-                    game.timerMax *= 1.15;
+                    stats.timerMax *= 1.15;
                 }
             },
             {
@@ -1215,7 +1215,7 @@
                     }
                 },
                 chooseFunction() {
-                    game.timerMax *= 0.92;
+                    stats.timerMax *= 0.92;
                 }
             },
             {
@@ -1948,9 +1948,9 @@
 
         let choices = [];
 
-        const perkChoices = [ "punish", "perk", "unstackPunish", "perk", "punish", "unstackPerk", "punish", "perk", "unstackPunish", "perk", "punish", "unstackPerk", "punish", "perk", "unstackPunish", "final roads" ];
+        let perkChoices = [ "punish", "perk", "unstackPunish", "perk", "punish", "unstackPerk", "punish", "perk", "unstackPunish", "perk", "punish", "unstackPerk", "punish", "perk", "unstackPunish", "final" ];
 
-        const chosenPerkDraw = [];
+        let chosenPerkDraw = [];
 
         const chosenPerk = [];
         const chosenPunish = [];
@@ -1961,9 +1961,11 @@
 
         regions.sort( () => { if (Math.random() < 0.5) return 1; else return -1; } );
 
+        regions[0] = "red carpet";
+
         let currentRegion = "normal";
 
-        const stats = {
+        let stats = {
             roadLength: 80000,
             roadSize: 200,
             roadAngle: Math.PI/20,
@@ -1976,11 +1978,12 @@
             driftGrip: 0.07,
             inertia: 1,
             roadHazardChance: 1,
+            timerMax: 4000,
         }
 
         const game = { 
             gravity: 0, fps: 60, zoom: 50, xOffset: 0, yOffset: 0, xVOffset: 0, yVOffset: 0,
-            renderType: "2d", defaultLineWidth: 10, timer: 0, timerMax: 4000, timerCounting: false, status: "driving",
+            renderType: "2d", defaultLineWidth: 10, timer: 0, timerCounting: false, status: "driving",
         };
         generateChoices();
 
@@ -2071,7 +2074,7 @@
 
             drawDash();
 
-            if (perkChoicePos == perkChoices.length-1 && game.status == "choosing") {
+            if (perkChoices[perkChoicePos] == "finish" && game.status == "choosing") {
                 drawTimer();
 
                 ctx.beginPath();
@@ -2080,7 +2083,7 @@
                 ctx.font = "200px serif";
                 ctx.strokeText("You Win", 0, 0);
                 ctx.fillText("You Win", 0, 0);
-            } else if (game.timer > game.timerMax+300) {
+            } else if (game.timer > stats.timerMax+300) {
                 drawTimer();
 
                 ctx.beginPath();
@@ -2173,8 +2176,9 @@
 
                 roadDrawPoints.push(points);
             });
-            road.forEach((roadItem, i) => {
+            if (currentRegion != "abyss" && currentRegion != "red carpet") road.forEach((roadItem, i) => {
                 if (!road[i+1] || !road[i+3] || !roadItem.road || i%2 == 0) return;
+                if (road[i].final ||  road[i+1].final) return;
 
                 const diff = { x: road[i+1].x - roadItem.x, y: road[i+1].y - roadItem.y }
 
@@ -2288,6 +2292,8 @@
         function drawRoadPerspective() {
             let roadColor = "#333";
             if (stats.slipRoad) roadColor = "#344";
+            if (currentRegion == "abyss") roadColor = "#111";
+            else if (currentRegion == "red carpet") roadColor = "#a11";
 
             ctx.save();
 
@@ -2458,7 +2464,7 @@
             car.x += Math.cos(car.speedAngle)*car.speed;
             car.y += Math.sin(car.speedAngle)*car.speed;
 
-            if ( car.running && ( keys.includes("w") || keys.includes(" ") ) && car.speed > -stats.topSpeed * ( 1 + 0.5 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 0.5 * (car.booster/300) ) ) {
+            if ( car.running && ( keys.includes("w") || keys.includes(" ") ) && car.speed > -stats.topSpeed * ( 1 + 0.25 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 0.5 * (car.booster/300) ) ) {
                 car.speed -= stats.acceleration * (1 + 2*(car.speed > 0) ) * ( 1 + 1 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 9 * (car.booster/300) );
             } else car.speed *= 0.997;
             if ( car.running && ( keys.includes("s") || keys.includes("shift") ) && car.speed < stats.topSpeed/5 && !stats.noBrake) {
@@ -2525,7 +2531,7 @@
                 angleDiff = car.angle-car.speedAngle;
             }
 
-            if (Math.abs(angleDiff) > Math.abs(stats.requiredDriftAngle/car.speed) * (1 + 19 * (stats.driftWiper && Math.sign(angleDiff) == -Math.sign(car.wiper-0.5)))) {
+            if (Math.abs(angleDiff) > Math.abs(stats.requiredDriftAngle/car.speed) && (stats.driftWiper && Math.sign(angleDiff) == -Math.sign(car.wiper-0.5))) {
                 angleDiff *= stats.driftGrip;
             }
 
@@ -2534,11 +2540,11 @@
             if (stats.wind) {
                 let angleDiff = car.angle-stats.windAngle;
 
-                car.angle += (Math.PI/300) * stats.windForce * Math.sin( angleDiff )/stats.inertia * Math.abs(Math.sin(game.timer/1000*Math.PI*2.12) * (0.5+0.5*Math.sin(game.timer/1000*Math.PI*10.3124)));
+                car.angle += (Math.PI/300) * stats.windForce * Math.sin( angleDiff )/stats.inertia * Math.abs(Math.sin(game.timer/1000*Math.PI*2.12) * (0.5+0.5*Math.sin(game.timer/1000*Math.PI*10.3124)))/20 * car.speed;
             }
 
             if (car.pothole) {
-                car.angle += car.pothole*Math.PI/100;
+                car.angle += car.pothole*Math.PI/1000 * car.speed;
             }
 
             if (car.booster > 0) car.booster--;
@@ -2886,11 +2892,11 @@
 
             ctx.beginPath();
             ctx.moveTo(-400, -375);
-            ctx.lineTo(-399 + 799*Math.min(1, game.timer/game.timerMax), -375);
+            ctx.lineTo(-399 + 799*Math.min(1, game.timer/stats.timerMax), -375);
             ctx.strokeStyle = "#393";
-            if (game.timer > game.timerMax && (game.timer/15)%2 < 1) ctx.strokeStyle = "#f33";
-            else if (game.timer > game.timerMax*7/8) ctx.strokeStyle = "#933";
-            else if (game.timer > game.timerMax*3/4) ctx.strokeStyle = "#993";
+            if (game.timer > stats.timerMax && (game.timer/15)%2 < 1) ctx.strokeStyle = "#f33";
+            else if (game.timer > stats.timerMax*7/8) ctx.strokeStyle = "#933";
+            else if (game.timer > stats.timerMax*3/4) ctx.strokeStyle = "#993";
             ctx.lineWidth = 35;
             ctx.stroke();
 
@@ -2902,6 +2908,7 @@
             ctx.lineWidth = 3;
 
             ctx.translate(-375,-430);
+            if (currentRegion == "red carpet") ctx.translate(375,0);
 
             ctx.beginPath();
             ctx.strokeStyle = "#777";
@@ -3016,7 +3023,7 @@
 
                         break;
                     }
-                    case "final roads": {
+                    case "final": {
                         ctx.fill();
                         ctx.stroke();
 
@@ -3094,7 +3101,16 @@
             ctx.strokeStyle = "#99999999";
             ctx.rect(-1000,-1000,3500,3000);
             ctx.fill();
-            ctx.strokeStyle = "#999";
+
+            if (perkChoices[perkChoicePos] == "final" || perkChoicePos == perkChoices.length) {
+                ctx.fillStyle = "#f33";
+                ctx.font = "100px serif";
+                ctx.fillText("R    E    M    O    V    E", 0, -250);
+            } else {
+                ctx.fillStyle = "#fff";
+                ctx.font = "100px serif";
+                ctx.fillText("C    H    O    O    S    E", 0, -250);
+            }
             
             choices.forEach((choice, i) => {
                 ctx.beginPath();
@@ -3179,6 +3195,24 @@
 
                 choices.push({choice: punishment, position: position})
             }
+            else if (perkChoices[perkChoicePos] == "final") for (var i = 0; i < 2 && i < chosenPunish.length; i++) {
+                let position = Math.round((chosenPunish.length - 1)*Math.random());
+                while (positions.includes(position)) position = Math.round((chosenPunish.length - 1)*Math.random());
+                let punishment = chosenPunish[position];
+
+                positions.push(position);
+
+                choices.push({choice: punishment, position: position})
+            }
+            else if (perkChoicePos == perkChoices.length) for (var i = 0; i < 2 && i < chosenPerk.length; i++) {
+                let position = Math.round((chosenPerk.length - 1)*Math.random());
+                while (positions.includes(position)) position = Math.round((chosenPerk.length - 1)*Math.random());
+                let punishment = chosenPerk[position];
+
+                positions.push(position);
+
+                choices.push({choice: punishment, position: position})
+            }
         }
 
         function chooseChoice() {
@@ -3195,8 +3229,6 @@
 
                 choice.choice.chooseFunction();
 
-                chosenPerkDraw.push(choice.choice.drawFunction);
-
                 if (perkChoices[perkChoicePos] == "unstackPerk") {
                     chosenPerk.push(choice.choice);
                     unStackablePerks.splice(choice.position, 1);
@@ -3204,7 +3236,16 @@
                 else if (perkChoices[perkChoicePos] == "unstackPunish") {
                     chosenPunish.push(choice.choice);
                     unStackablePunishments.splice(choice.position, 1);
+                } else if (perkChoices[perkChoicePos] == "final") {
+                    chosenPunish.splice(choice.position, 1);
+
+                    perkChoicePos++;
+                    generateChoices();
+
+                    return;
                 }
+
+                chosenPerkDraw.push(choice.choice.drawFunction);
 
                 car.x = 0;
                 car.y = 0;
@@ -3215,15 +3256,56 @@
 
                 game.status = "driving";
 
-                generatePlatformRoad(stats.roadLength/stats.roadSize);
-
                 game.timer = 0;
                 game.timerCounting = false;
-                game.timerMax *= 0.985;
+                stats.timerMax *= 0.985;
+
+                
+                if (perkChoicePos == perkChoices.length) {
+                    chosenPerk.splice(choice.position, 1);
+
+                    currentRegion = regions[0];
+                    regions.splice(0,1);
+
+                    perkChoicePos = 0;
+                    chosenPerkDraw = [];
+
+                    stats = {
+                        roadLength: 80000,
+                        roadSize: 200,
+                        roadAngle: Math.PI/20,
+                        acceleration: 0.05,
+                        topSpeed: 30,
+                        turnSpeed: Math.PI/25,
+                        offroadSpeedLoss: 0.2,
+                        offroadMaxSpeed: 8,
+                        requiredDriftAngle: Math.PI/17,
+                        driftGrip: 0.07,
+                        inertia: 1,
+                        roadHazardChance: 1,
+                        timerMax: 4000,
+                    }
+
+                    if (currentRegion == "city") stats.roadSize *= 1.25;
+                    if (currentRegion == "red carpet") {
+                        stats.roadLength *= 2.5;
+                        stats.timerMax *= 3;
+
+                        perkChoices = [ "finish" ];
+                    }
+
+                    chosenPerk.forEach((thing) => thing.chooseFunction());
+                    chosenPunish.forEach((thing) => thing.chooseFunction());
+                } else {
+                    perkChoicePos++;
+
+                    //generateChoices();
+                    //game.status = "choosing"
+                }
 
                 if (stats.wind) stats.windAngle = Math.PI*2*Math.random();
 
-                perkChoicePos++;
+                generatePlatformRoad(stats.roadLength/stats.roadSize);
             }
         }
 
@@ -3235,7 +3317,9 @@
             let size = stats.roadSize;
 
             for (var i = 0; i <= Math.floor(amount); i++) {
-                road.push( {x: pos.x, y: pos.y, size: size+size*Math.random()/2, angle: Math.PI*Math.random(), road: true, final: i == Math.floor(amount), roadAngle: angle} );
+                let roadAngle = Math.PI*Math.random();
+                if (currentRegion == "city" || currentRegion == "red carpet") roadAngle = angle;
+                road.push( {x: pos.x, y: pos.y, size: size+size*Math.random()/2*(currentRegion != "city" && currentRegion != "red carpet") + size/4*(currentRegion == "city" || currentRegion == "red carpet"), angle: roadAngle, road: true, final: i == Math.floor(amount), roadAngle: angle} );
 
                 pos.x += Math.cos(angle)*size * (1 + 1.2 * (currentRegion == "abyss"));
                 pos.y += Math.sin(angle)*size * (1 + 1.2 * (currentRegion == "abyss"));
@@ -3315,6 +3399,20 @@
 
             stackablePunishments[6].drawFunction()
         },100)
+    </script>
+    <script type>
+        //music handling
+        const plastick = new Audio('PlaStick.ogg');
+        plastick.loop = true;
+
+        const check = () => {
+            if (mouse.down) {
+                plastick.play();
+            } else {
+                setTimeout(check, 100);
+            }
+        };
+        check();
     </script>
 </body>
 </html>
