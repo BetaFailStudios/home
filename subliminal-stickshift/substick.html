@@ -1599,8 +1599,8 @@
                     ctx.lineWidth = game.defaultLineWidth;
                 },
                 chooseFunction() {
-                    stats.driftGrip *= 0.2;
-                    stats.requiredDriftAngle *= 0.1;
+                    stats.driftGrip *= 0.1;
+                    stats.requiredDriftAngle *= 0.07;
                     stats.slipRoad = true;
                 }
             },
@@ -3043,6 +3043,26 @@
 
                         break;
                     }
+                    case "finish": {
+                        ctx.fill();
+                        ctx.stroke();
+
+                        ctx.beginPath();
+                        
+                        ctx.moveTo(0, -13);
+                        ctx.lineTo(8, 10);
+                        ctx.lineTo(-11, -5);
+                        ctx.lineTo(11, -5);
+                        ctx.lineTo(-8, 10);
+                        ctx.closePath();
+                        
+                        ctx.fillStyle = "#ccc";
+
+                        ctx.fill();
+                        ctx.stroke();
+
+                        break;
+                    }
                 }
 
                 ctx.closePath();
@@ -3289,7 +3309,7 @@
                     if (currentRegion == "city") stats.roadSize *= 1.25;
                     if (currentRegion == "red carpet") {
                         stats.roadLength *= 2.5;
-                        stats.timerMax *= 3;
+                        stats.timerMax *= 2.75;
 
                         perkChoices = [ "finish" ];
                     }
