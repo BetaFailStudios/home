@@ -260,7 +260,7 @@
                     ctx.lineWidth = game.defaultLineWidth;
                 },
                 chooseFunction() {
-                    stats.roadSize *= 1.15;
+                    stats.roadSize *= 1.1;
                 }
             },
             {
@@ -338,7 +338,7 @@
                     ctx.lineWidth = game.defaultLineWidth;
                 },
                 chooseFunction() {
-                    stats.roadAngle *= 0.6;
+                    stats.roadAngle *= 0.8;
                 }
             },
             {
@@ -407,7 +407,7 @@
                     }
                 },
                 chooseFunction() {
-                    game.timerMax *= 1.8;
+                    game.timerMax *= 1.15;
                 }
             },
             {
@@ -439,7 +439,7 @@
                     }
                 },
                 chooseFunction() {
-                    stats.offroadSpeedLoss *= 0.4;
+                    stats.offroadSpeedLoss *= 0.35;
                 }
             },
             {
@@ -480,7 +480,7 @@
                     }
                 },
                 chooseFunction() {
-                    stats.driftGrip *= 1.4;
+                    stats.driftGrip *= 1.3;
                     stats.requiredDriftAngle *= 1.2;
                 }
             },
@@ -530,8 +530,8 @@
                     }
                 },
                 chooseFunction() {
-                    stats.acceleration *= 2.7;
-                    stats.topSpeed *= 1.2;
+                    stats.acceleration *= 3;
+                    stats.topSpeed *= 1.1;
                 }
             },
             {
@@ -572,7 +572,7 @@
                     }
                 },
                 chooseFunction() {
-                    stats.topSpeed *= 1.9;
+                    stats.topSpeed *= 1.65;
                     stats.acceleration *= 0.8;
                 }
             },
@@ -700,9 +700,9 @@
                     }
                 },
                 chooseFunction() {
-                    stats.roadAngle *= 0.65;
-                    stats.roadSize *= 1.4;
-                    stats.roadLength *= 0.8;
+                    stats.roadAngle *= 0.80;
+                    stats.roadSize *= 1.2;
+                    stats.roadLength *= 0.85;
                 }
             },
             {
@@ -1070,7 +1070,7 @@
                     ctx.lineWidth = game.defaultLineWidth;
                 },
                 chooseFunction() {
-                    stats.roadAngle *= 1.75;
+                    stats.roadAngle *= 1.45;
                 }
             },
             {
@@ -1215,7 +1215,7 @@
                     }
                 },
                 chooseFunction() {
-                    game.timerMax *= 0.93;
+                    game.timerMax *= 0.92;
                 }
             },
             {
@@ -1300,12 +1300,12 @@
                 },
                 chooseFunction() {
                     stats.driftGrip *= 0.6;
-                    stats.requiredDriftAngle *= 0.8;
+                    stats.requiredDriftAngle *= 0.75;
                 }
             },
             {
                 name: "Road Hazards",
-                desc: "Increased road hazard chances, slightly reduces off-road speed",
+                desc: "Increased road hazard chances, reduced off-road speed",
                 drawFunction(timer) {
                     ctx.beginPath();
                     ctx.moveTo(-125,100)
@@ -1599,7 +1599,7 @@
                     ctx.lineWidth = game.defaultLineWidth;
                 },
                 chooseFunction() {
-                    stats.driftGrip *= 0.3;
+                    stats.driftGrip *= 0.2;
                     stats.requiredDriftAngle *= 0.1;
                     stats.slipRoad = true;
                 }
@@ -1683,12 +1683,12 @@
                 },
                 chooseFunction() {
                     stats.noBrake = true;
-                    stats.acceleration *= 0.8;
+                    stats.acceleration *= 0.7;
                 }
             },
             {
                 name: "Failing Engine",
-                desc: "The engine turns off every once and a while",
+                desc: "The engine turns off every once and a while, reduced top speed",
                 drawFunction(timer) {
                     ctx.save();
                     ctx.rotate(-Math.PI/12);
@@ -1750,6 +1750,7 @@
                 },
                 chooseFunction() {
                     stats.engineFailure = true;
+                    stats.topSpeed *= 0.85;
                 }
             },
             {
@@ -1951,9 +1952,14 @@
 
         const chosenPerkDraw = [];
 
+        const chosenPerk = [];
+        const chosenPunish = [];
+
         let perkChoicePos = 0;
 
-        const regions = [ "winter", "city" ]
+        const regions = [ "abyss", "city" ];
+
+        regions.sort( () => { if (Math.random() < 0.5) return 1; else return -1; } );
 
         let currentRegion = "normal";
 
@@ -2042,9 +2048,9 @@
                 else return -1; 
             } );
 
-            if (Math.random() < 0.0015 && stats.sweaty) mouse.selected = false;
-            if (Math.random() < 0.001 && stats.engineFailure) car.running = false;
-            if (Math.random() < 0.02 && stats.bug && game.timerCounting && game.status == "driving") windshield.push( { type: "bug", x: -600+1200*Math.random(), y: -300+500*Math.random(), durability: 2, maxDurability: 2 } );
+            if (Math.random() < 0.003 && stats.sweaty) mouse.selected = false;
+            if (Math.random() < 0.002 && stats.engineFailure) car.running = false;
+            if (Math.random() < 0.015 && stats.bug && game.timerCounting && game.status == "driving") windshield.push( { type: "bug", x: -600+1200*Math.random(), y: -300+500*Math.random(), durability: 2, maxDurability: 2 } );
             if (Math.random() < 0.15 && stats.sleepy && game.timerCounting && game.status == "driving") stats.eyeVel++;
 
             ctx.save();
@@ -2183,13 +2189,13 @@
                 const size = Math.hypot( road.size, road.size );// * (1 - 2*(road.pothole == true));
 
                 const point1 = { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4) };
-                const point1T = { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4), top: true, color: road.color };
+                const point1T = { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4), top: true, color: road.color, size: road.height };
                 const point2 = { x: road.x - size*Math.sin(road.angle + Math.PI/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/2 + Math.PI/4) };
-                const point2T = { x: road.x - size*Math.sin(road.angle + Math.PI/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/2 + Math.PI/4), top: true, color: road.color };
+                const point2T = { x: road.x - size*Math.sin(road.angle + Math.PI/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/2 + Math.PI/4), top: true, color: road.color, size: road.height };
                 const point3 = { x: road.x - size*Math.sin(road.angle + Math.PI + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI + Math.PI/4) };
-                const point3T = { x: road.x - size*Math.sin(road.angle + Math.PI + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI + Math.PI/4) , top: true, color: road.color };
+                const point3T = { x: road.x - size*Math.sin(road.angle + Math.PI + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI + Math.PI/4) , top: true, color: road.color, size: road.height };
                 const point4 = { x: road.x - size*Math.sin(road.angle + Math.PI*3/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI*3/2 + Math.PI/4) };
-                const point4T = { x: road.x - size*Math.sin(road.angle + Math.PI*3/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI*3/2 + Math.PI/4), top: true, color: road.color };
+                const point4T = { x: road.x - size*Math.sin(road.angle + Math.PI*3/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI*3/2 + Math.PI/4), top: true, color: road.color, size: road.height };
 
                 buildingPoints.push( [point1T, point1, point2, point2T] );
                 buildingPoints.push( [point2T, point2, point3, point3T] );
@@ -2214,33 +2220,66 @@
 
             ctx.fillStyle = linearGradient;
 
+            if (currentRegion == "abyss") ctx.fillStyle = "#000";
+
             ctx.rect(-1000,-500,2000,1000);
             ctx.fill();
 
             // draw clouds
-            ctx.beginPath();
-            ctx.fillStyle = "#999";
-            ctx.strokeStyle = "#ccc";
-            ctx.rect(-1000,-600,2000,200);
-            let angleDiff;
-            clouds.forEach((cloud) => {
-                angleDiff = car.angle-cloud.angle;
-
-                while (Math.abs(angleDiff-Math.PI*2) < Math.abs(angleDiff)) {
-                    cloud.angle += Math.PI*2;
+            if (currentRegion == "abyss") {
+                ctx.beginPath();
+                ctx.fillStyle = "#102";
+                ctx.strokeStyle = "#203";
+                let angleDiff;
+                clouds.forEach((cloud) => {
                     angleDiff = car.angle-cloud.angle;
-                }
-                while (Math.abs(angleDiff+Math.PI*2) < Math.abs(angleDiff)) {
-                    cloud.angle -= Math.PI*2;
-                    angleDiff = car.angle-cloud.angle;
-                }
 
-                ctx.moveTo(-angleDiff*2000+cloud.size, cloud.y);
-                ctx.lineTo(-angleDiff*2000+cloud.size*0.5, cloud.y+cloud.size*0.9);
-                ctx.lineTo(-angleDiff*2000, cloud.y+cloud.size);
-                ctx.lineTo(-angleDiff*2000-cloud.size*0.5, cloud.y+cloud.size*0.9);
-                ctx.lineTo(-angleDiff*2000-cloud.size, cloud.y);
-            })
+                    while (Math.abs(angleDiff-Math.PI*2) < Math.abs(angleDiff)) {
+                        cloud.angle += Math.PI*2;
+                        angleDiff = car.angle-cloud.angle;
+                    }
+                    while (Math.abs(angleDiff+Math.PI*2) < Math.abs(angleDiff)) {
+                        cloud.angle -= Math.PI*2;
+                        angleDiff = car.angle-cloud.angle;
+                    }
+
+                    ctx.moveTo(-angleDiff*2000+cloud.size, -2000);
+                    ctx.lineTo(-angleDiff*2000+cloud.size, cloud.y/2+horizon);
+                    ctx.lineTo(-angleDiff*2000, cloud.y/2+cloud.size+horizon);
+                    ctx.lineTo(-angleDiff*2000-cloud.size, cloud.y/2+horizon);
+                    ctx.moveTo(-angleDiff*2000-cloud.size, -2000);
+
+                    ctx.moveTo(-angleDiff*2000+cloud.size, 2000);
+                    ctx.lineTo(-angleDiff*2000+cloud.size, -cloud.y/2+horizon);
+                    ctx.lineTo(-angleDiff*2000, -cloud.y/2-cloud.size+horizon);
+                    ctx.lineTo(-angleDiff*2000-cloud.size, -cloud.y/2+horizon);
+                    ctx.lineTo(-angleDiff*2000+cloud.size, 2000);
+                })
+            } else {
+                ctx.beginPath();
+                ctx.fillStyle = "#999";
+                ctx.strokeStyle = "#ccc";
+                ctx.rect(-1000,-600,2000,200);
+                let angleDiff;
+                clouds.forEach((cloud) => {
+                    angleDiff = car.angle-cloud.angle;
+
+                    while (Math.abs(angleDiff-Math.PI*2) < Math.abs(angleDiff)) {
+                        cloud.angle += Math.PI*2;
+                        angleDiff = car.angle-cloud.angle;
+                    }
+                    while (Math.abs(angleDiff+Math.PI*2) < Math.abs(angleDiff)) {
+                        cloud.angle -= Math.PI*2;
+                        angleDiff = car.angle-cloud.angle;
+                    }
+
+                    ctx.moveTo(-angleDiff*2000+cloud.size, cloud.y);
+                    ctx.lineTo(-angleDiff*2000+cloud.size*0.5, cloud.y+cloud.size*0.9);
+                    ctx.lineTo(-angleDiff*2000, cloud.y+cloud.size);
+                    ctx.lineTo(-angleDiff*2000-cloud.size*0.5, cloud.y+cloud.size*0.9);
+                    ctx.lineTo(-angleDiff*2000-cloud.size, cloud.y);
+                })
+            }
 
             ctx.stroke();
             ctx.fill();
@@ -2370,7 +2409,7 @@
                     if (point.top) {
                         ctx.lineTo( x, y );
                     } else {
-                        ctx.lineTo( x, horizon - 5*(y-horizon) );
+                        ctx.lineTo( x, horizon - points[0].size*(y-horizon) );
                     }
                 });
                 ctx.closePath();
@@ -3158,8 +3197,14 @@
 
                 chosenPerkDraw.push(choice.choice.drawFunction);
 
-                if (perkChoices[perkChoicePos] == "unstackPerk") unStackablePerks.splice(choice.position, 1);
-                else if (perkChoices[perkChoicePos] == "unstackPunish") unStackablePunishments.splice(choice.position, 1);
+                if (perkChoices[perkChoicePos] == "unstackPerk") {
+                    chosenPerk.push(choice.choice);
+                    unStackablePerks.splice(choice.position, 1);
+                }
+                else if (perkChoices[perkChoicePos] == "unstackPunish") {
+                    chosenPunish.push(choice.choice);
+                    unStackablePunishments.splice(choice.position, 1);
+                }
 
                 car.x = 0;
                 car.y = 0;
@@ -3192,8 +3237,8 @@
             for (var i = 0; i <= Math.floor(amount); i++) {
                 road.push( {x: pos.x, y: pos.y, size: size+size*Math.random()/2, angle: Math.PI*Math.random(), road: true, final: i == Math.floor(amount), roadAngle: angle} );
 
-                pos.x += Math.cos(angle)*size;
-                pos.y += Math.sin(angle)*size;
+                pos.x += Math.cos(angle)*size * (1 + 1.2 * (currentRegion == "abyss"));
+                pos.y += Math.sin(angle)*size * (1 + 1.2 * (currentRegion == "abyss"));
 
                 if (currentRegion == "city") { if (Math.random() < stats.roadAngle/Math.PI/7) angle += Math.PI/2-Math.PI*(Math.random() < 0.5)
                 } else angle += stats.roadAngle/2-stats.roadAngle*Math.random();
@@ -3227,11 +3272,21 @@
                 buildings = [];
                 buildingPoints = [];
 
-                road.forEach((roadItem, i) => {if (roadItem.road && (Math.random() < 0.25*stats.roadHazardChance) && i <= road.length-3) {
+                road.forEach((roadItem, i) => {if (roadItem.road && (Math.random() < 1*stats.roadHazardChance) && i <= road.length-3) {
                     const angle = roadItem.roadAngle+Math.PI/2 + Math.PI*(Math.random() < 0.5);
-                    buildings.push( {x: roadItem.x - roadItem.size*4*Math.cos(angle), y: roadItem.y - roadItem.size*4*Math.sin(angle), size: roadItem.size, angle: roadItem.roadAngle, color: ("#" + Math.floor(Math.random()*9) + Math.floor(Math.random()*9) + Math.floor(Math.random()*9)) } );
+                    buildings.push( {x: roadItem.x - roadItem.size*4*Math.cos(angle), y: roadItem.y - roadItem.size*4*Math.sin(angle), size: roadItem.size, angle: roadItem.roadAngle, color: ("#" + Math.floor(Math.random()*9) + Math.floor(Math.random()*9) + Math.floor(Math.random()*9)), height: 3 + 5*Math.random() } );
                     i += 3;
                 } } );
+
+                buildings = buildings.filter((building, i) => {
+                    let thing = true
+                    road.forEach( (road) => {if ( Math.hypot(road.x-building.x, road.y-building.y) < building.size*2.5 ) thing = false; } )
+                    buildings.forEach( (road, i2) => {if ( i != i2) if (Math.hypot(road.x-building.x, road.y-building.y) < building.size + road.size && (road.exist || i2 > i) ) thing = false; } )
+
+                    building.exist = thing;
+
+                    return thing;
+                })
             }
 
             calculateRoadPoints();
