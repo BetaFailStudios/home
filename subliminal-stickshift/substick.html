@@ -1957,7 +1957,7 @@
 
         let perkChoicePos = 0;
 
-        const regions = [ "abyss", "city" ];
+        const regions = [ "abyss", "city", "highway" ];
 
         regions.sort( () => { if (Math.random() < 0.5) return 1; else return -1; } );
 
@@ -3307,7 +3307,16 @@
                     }
 
                     if (currentRegion == "city") stats.roadSize *= 1.25;
-                    if (currentRegion == "red carpet") {
+                    else if (currentRegion == "abyss") stats.roadSize *= 0.90;
+                    else if (currentRegion == "highway") {
+                        stats.roadSize *= 1.9;
+                        stats.roadLength *= 2;
+                        stats.roadAngle *= 0.5;
+                        stats.timerMax *= 2;
+                        stats.topSpeed *= 2;
+                        stats.acceleration *= 2;
+                    }
+                    else if (currentRegion == "red carpet") {
                         stats.roadLength *= 2.5;
                         stats.timerMax *= 2.75;
 
