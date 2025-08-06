@@ -2217,8 +2217,10 @@
 
             linearGradient = ctx.createLinearGradient(0, -500+horizon, 0, 500+horizon);
 
-            linearGradient.addColorStop(0.497, "#0099ff");
-            linearGradient.addColorStop(0.503, "#003300");
+            if (currentRegion == "highway") linearGradient.addColorStop(0.497, "#001133");
+            else linearGradient.addColorStop(0.497, "#0099ff");
+            if (currentRegion == "highway") linearGradient.addColorStop(0.503, "#111");
+            else linearGradient.addColorStop(0.503, "#003300");
 
             ctx.fillStyle = linearGradient;
 
@@ -2259,7 +2261,8 @@
                 })
             } else {
                 ctx.beginPath();
-                ctx.fillStyle = "#999";
+                if (currentRegion == "highway") ctx.fillStyle = "#444";
+                else ctx.fillStyle = "#999";
                 ctx.strokeStyle = "#ccc";
                 ctx.rect(-1000,-600,2000,200);
                 let angleDiff;
@@ -3319,7 +3322,12 @@
                     }
 
                     if (currentRegion == "city") stats.roadSize *= 1.25;
-                    else if (currentRegion == "abyss") stats.roadSize *= 0.90;
+                    else if (currentRegion == "abyss") {
+                        stats.roadSize *= 0.90;
+
+                        song.src = 'The Fallen.mp3';
+                        song.play();
+                    }
                     else if (currentRegion == "highway") {
                         stats.roadSize *= 1.9;
                         stats.roadLength *= 2;
@@ -3327,6 +3335,9 @@
                         stats.timerMax *= 2;
                         stats.topSpeed *= 2;
                         stats.acceleration *= 2;
+
+                        song.src = 'TraffStick.ogg';
+                        song.play();
                     }
                     else if (currentRegion == "red carpet") {
                         stats.roadLength *= 2.5;
@@ -3443,12 +3454,12 @@
     </script>
     <script type>
         //music handling
-        const plastick = new Audio('PlaStick.ogg');
-        plastick.loop = true;
+        let song = new Audio('PlaStick.ogg');
+        song.loop = true;
 
         const check = () => {
             if (mouse.down) {
-                plastick.play();
+                song.play();
             } else {
                 setTimeout(check, 100);
             }
