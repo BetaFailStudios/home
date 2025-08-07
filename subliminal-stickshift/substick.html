@@ -1534,7 +1534,7 @@
                         stats.wind = true;
                         stats.windForce = 0;
                     }
-                    stats.windForce += 1;
+                    stats.windForce += 0.4;
                 }
             },
             {
@@ -3324,6 +3324,7 @@
                     if (currentRegion == "city") stats.roadSize *= 1.25;
                     else if (currentRegion == "abyss") {
                         stats.roadSize *= 0.90;
+                        stats.length /= 2.2;
 
                         song.src = 'The Fallen.mp3';
                         song.play();
