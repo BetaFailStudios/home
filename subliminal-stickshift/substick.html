@@ -3363,6 +3363,8 @@
 
         function generatePlatformRoad(amount) {
             road = [];
+            buildings = [];
+            buildingPoints = [];
 
             let pos = { x: 0, y: 0};
             let angle = -Math.PI/2;
@@ -3405,8 +3407,6 @@
                 road[road.length-1].finalBooster = true
             }
             if (currentRegion == "city") {
-                buildings = [];
-                buildingPoints = [];
 
                 road.forEach((roadItem, i) => {if (roadItem.road && (Math.random() < 1*stats.roadHazardChance) && i <= road.length-3) {
                     const angle = roadItem.roadAngle+Math.PI/2 + Math.PI*(Math.random() < 0.5);
