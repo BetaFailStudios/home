@@ -21,7 +21,7 @@
             font-style: normal;
         }
     </style>
-    <canvas onmousemove="xy(event)" id="gameScreen" width="1500" height="1000"></canvas>
+    <canvas onmousemove="xy(event)" id="gameScreen" width="1800" height="1000"></canvas>
     <p id="fps">60</p>
     <script>
         // initialize the timer variables and start the animation
@@ -64,7 +64,7 @@
         //context, for drawing
         var ctx = canvas.getContext("2d");
         //settings canvas size and scale
-        var screenScale = window.innerWidth/1500;
+        var screenScale = window.innerWidth/1800;
         if (window.innerHeight/1000 < screenScale) screenScale = window.innerHeight/1000;
 
         canvas.width = window.innerWidth;
@@ -79,7 +79,7 @@
             ctx.resetTransform();
 
             //settings canvas size and scale
-            screenScale = window.innerWidth/1500;
+            screenScale = window.innerWidth/1800;
             if (window.innerHeight/1000 < screenScale) screenScale = window.innerHeight/1000;
 
             canvas.width = window.innerWidth;
@@ -97,7 +97,7 @@
 
             ctx.beginPath();
             ctx.fillStyle = "#000";
-            ctx.fillRect(-1000,-1000,1500+1000,1000+1000);
+            ctx.fillRect(-1000,-1000,1800+1000,1000+1000);
 
             ctx.font = "100px serif";
         });
@@ -1359,8 +1359,18 @@
                     linearGradient.addColorStop(1, "#cccccc00");
 
                     ctx.fillStyle = linearGradient;
-                    ctx.rect(-200,-200,400,400);
+                    ctx.moveTo(-100,0);
+                    ctx.lineTo(-70,70);
+                    ctx.lineTo(0,100);
+                    ctx.lineTo(70,70);
+                    ctx.lineTo(100,0);
+                    ctx.lineTo(70,-70);
+                    ctx.lineTo(0,-100);
+                    ctx.lineTo(-70,-70);
+                    ctx.closePath();
+                    ctx.strokeStyle = "#ccc";
                     ctx.fill();
+                    ctx.stroke();
 
                     if (!timer) {
                         ctx.beginPath();
@@ -2014,22 +2024,22 @@
 
         let linearGradient;
 
-        const linearGradientBG = ctx.createLinearGradient(-2000, 0, 2000, 0);
+        const linearGradientBG = ctx.createLinearGradient(-1800, 0, 1800, 0);
 
         linearGradientBG.addColorStop(0, "#000000");
-        linearGradientBG.addColorStop(0.25, "#000000");
-        linearGradientBG.addColorStop(0.26, "#00000000");
-        linearGradientBG.addColorStop(0.74, "#00000000");
-        linearGradientBG.addColorStop(0.75, "#000000");
+        linearGradientBG.addColorStop(0.24, "#000000");
+        linearGradientBG.addColorStop(0.25, "#00000000");
+        linearGradientBG.addColorStop(0.75, "#00000000");
+        linearGradientBG.addColorStop(0.76, "#000000");
         linearGradientBG.addColorStop(1, "#000000");
 
-        const linearGradientBG1 = ctx.createLinearGradient(-2000, 0, 2000, 0);
+        const linearGradientBG1 = ctx.createLinearGradient(0, -1000, 0, 1000);
 
         linearGradientBG1.addColorStop(0, "#000000");
-        linearGradientBG1.addColorStop(0.25, "#000000");
-        linearGradientBG1.addColorStop(0.26, "#00000000");
-        linearGradientBG1.addColorStop(0.74, "#00000000");
-        linearGradientBG1.addColorStop(0.75, "#000000");
+        linearGradientBG1.addColorStop(0.24, "#000000");
+        linearGradientBG1.addColorStop(0.25, "#00000000");
+        linearGradientBG1.addColorStop(0.75, "#00000000");
+        linearGradientBG1.addColorStop(0.76, "#000000");
         linearGradientBG1.addColorStop(1, "#000000");
 
         const fogGradient = ctx.createLinearGradient(0, -1200, 0, 800);
@@ -2063,7 +2073,7 @@
 
             ctx.beginPath();
             ctx.fillStyle = "#000000";
-            ctx.rect(-1000,-1000,3500,3000);
+            ctx.rect(-1000,-1000,3500,3600);
             ctx.fill();
 
             drawSkybox();
@@ -2107,7 +2117,7 @@
             drawMouse();
 
             ctx.beginPath();
-            ctx.rect(-3000,-3000,6000,6000);
+            ctx.rect(-3600,-3000,6000,6000);
 
             ctx.fillStyle = linearGradientBG;
 
@@ -2467,7 +2477,7 @@
 
             if ( car.running && ( keys.includes("w") || keys.includes(" ") ) && car.speed > -stats.topSpeed * ( 1 + 0.25 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 0.5 * (car.booster/300) ) ) {
                 car.speed -= stats.acceleration * (1 + 2*(car.speed > 0) ) * ( 1 + 1 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 9 * (car.booster/300) );
-            } else car.speed *= 0.997;
+            } else car.speed *= 0.999;
             if ( car.running && ( keys.includes("s") || keys.includes("shift") ) && car.speed < stats.topSpeed/5 && !stats.noBrake) {
                 car.speed += stats.acceleration * (1 + 2*(car.speed < 0) );
             }
@@ -2704,9 +2714,75 @@
                 ctx.fillStyle = linearGradient;
 
                 //ctx.fillStyle = "#9999ff22";
-                ctx.rect(-1500,-500,3000,1000);
+                ctx.rect(-1800,-500,3600,1000);
                 ctx.fill();
+            }
+            
+            //upgrades
+            {
+                ctx.beginPath();
+                ctx.save();
+                ctx.translate(-500,-375);
+                ctx.scale(0.2,0.2);
 
+                chosenPunish.forEach( (thing) => {
+                    ctx.beginPath();
+                    ctx.rect(25,-500,-50,500);
+                    ctx.moveTo(-140,0);
+                    ctx.lineTo(-100,100);
+                    ctx.lineTo(0,140);
+                    ctx.lineTo(100,100);
+                    ctx.lineTo(140,0);
+                    ctx.lineTo(100,-100);
+                    ctx.lineTo(0,-140);
+                    ctx.lineTo(-100,-100);
+                    ctx.closePath();
+
+                    ctx.fillStyle = "#777";
+                    ctx.strokeStyle = "#ccc";
+
+                    ctx.stroke();
+                    ctx.fill();
+
+                    thing.drawFunction(true);
+
+                    ctx.translate(-300,50);
+                })
+
+                ctx.restore();
+                ctx.save();
+                ctx.translate(500,-375);
+                ctx.scale(0.2,0.2)
+                
+                chosenPerk.forEach( (thing) => {
+                    ctx.beginPath();
+                    ctx.rect(25,-500,-50,500);
+                    ctx.moveTo(-140,0);
+                    ctx.lineTo(-100,100);
+                    ctx.lineTo(0,140);
+                    ctx.lineTo(100,100);
+                    ctx.lineTo(140,0);
+                    ctx.lineTo(100,-100);
+                    ctx.lineTo(0,-140);
+                    ctx.lineTo(-100,-100);
+                    ctx.closePath();
+
+                    ctx.fillStyle = "#777";
+                    ctx.strokeStyle = "#ccc";
+
+                    ctx.stroke();
+                    ctx.fill();
+
+                    thing.drawFunction(true);
+
+                    ctx.translate(450,87.5);
+                })
+
+                ctx.restore();
+            }
+
+            //dash
+            {
                 ctx.beginPath();
                 ctx.strokeStyle = "#222";
                 ctx.fillStyle = "#664e3a";
@@ -2858,6 +2934,22 @@
                 ctx.arc(0,0,180,0,Math.PI*2, true);
                 ctx.rect(-190,-10,380,20);
                 ctx.rect(-10,0,20,190);
+                ctx.stroke();
+                ctx.fill();
+                
+                ctx.strokeStyle = "#333";
+                if (mouse.selected == "horn") ctx.strokeStyle = "#fff";
+                else if (mouse.hover == "horn") ctx.strokeStyle = "#888";
+                ctx.beginPath();
+                ctx.moveTo(-50,-20);
+                ctx.lineTo(-30,-40);
+                ctx.lineTo(30,-40);
+                ctx.lineTo(50,-20);
+                ctx.lineTo(50,30);
+                ctx.lineTo(30,50);
+                ctx.lineTo(-30,50);
+                ctx.lineTo(-50,30);
+                ctx.closePath();
                 ctx.stroke();
                 ctx.fill();
 
@@ -3119,6 +3211,9 @@
             if (wheelHypot > 150 && wheelHypot < 230) {
                 mouse.hover = "wheel";
                 return;
+            } else if (wheelHypot < 75) {
+                mouse.hover = "horn";
+                return;
             } else if (Math.hypot(mouse.x-70, mouse.y-350) < 50) {
                 mouse.hover = "ignition";
                 return;
@@ -3134,7 +3229,7 @@
             ctx.beginPath();
             ctx.fillStyle = "#ffffff33";
             ctx.strokeStyle = "#99999999";
-            ctx.rect(-1000,-1000,3500,3000);
+            ctx.rect(-1000,-1000,3500,3600);
             ctx.fill();
 
             if (perkChoices[perkChoicePos] == "final" || perkChoicePos == perkChoices.length) {
@@ -3439,7 +3534,7 @@
 
             ctx.beginPath();
             ctx.fillStyle = "#ffffff33";
-            ctx.rect(-1000,-1000,3500,3000);
+            ctx.rect(-1000,-1000,3500,3600);
             ctx.fill();
             ctx.beginPath();
             ctx.strokeStyle = "#999";
