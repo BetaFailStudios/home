@@ -3419,7 +3419,7 @@
                     if (currentRegion == "city") stats.roadSize *= 1.25;
                     else if (currentRegion == "abyss") {
                         stats.roadSize *= 0.90;
-                        stats.length /= 2.2;
+                        stats.roadLength /= 2.2;
 
                         song.src = 'The Fallen.mp3';
                         song.play();
@@ -3522,6 +3522,32 @@
 
             calculateRoadPoints();
         }
+    </script>
+    <script type>
+        //music handling
+        let song = new Audio('PlaStick.ogg');
+        song.loop = true;
+        let engineRev = new Audio('Engine Rev.ogg');
+        engineRev.loop = true;
+        engineRev.volume = 0.1;
+
+        const check = () => {
+            if (mouse.down) {
+                song.play();
+                engineRev.play();
+            } else {
+                setTimeout(check, 100);
+            }
+        };
+        check();
+
+        //update rev
+        setInterval(() => {
+            if (game.status == "driving") engineRev.volume = 0.1;
+            else engineRev.volume = 0;
+            engineRev.playbackRate = 1 - car.speed/30;
+            song.volume = 0.6;
+        },100)
 
         if (1) {
             generatePlatformRoad(stats.roadLength/stats.roadSize)
@@ -3546,20 +3572,6 @@
 
             stackablePunishments[6].drawFunction()
         },100)
-    </script>
-    <script type>
-        //music handling
-        let song = new Audio('PlaStick.ogg');
-        song.loop = true;
-
-        const check = () => {
-            if (mouse.down) {
-                song.play();
-            } else {
-                setTimeout(check, 100);
-            }
-        };
-        check();
     </script>
 </body>
 </html>
