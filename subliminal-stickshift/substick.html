@@ -2691,6 +2691,8 @@
             road.forEach((road, i)=> {
                 if (Math.hypot(road.x-car.x, road.y-car.y) > road.size*2) return;
 
+                if (!road.final && car.jumpPos) return;
+
                 //road.angle --> angle to rectangle
                 carAngle = Math.atan( (road.y-car.y) / (road.x-car.x) ) + Math.PI*(road.x > car.x);
                 if (!(road.x-car.x)) carAngle = Math.PI*(road.x > car.x);
@@ -2744,7 +2746,7 @@
                 }
             })
 
-            if (!touching && Math.abs(car.speed) > stats.offroadMaxSpeed && (!stats.offroadCruise || car.running)) {
+            if (!touching && Math.abs(car.speed) > stats.offroadMaxSpeed && (!stats.offroadCruise || car.running) && !car.jumpPos) {
                 car.speed *= 1-stats.offroadSpeedLoss/stats.inertia;
             }
 
@@ -3683,7 +3685,7 @@
         let engineRev = new Audio('Engine Rev.ogg');
         engineRev.loop = true;
         engineRev.volume = 0.2;
-        let horn = new Audio('horn.ogg');
+        let horn = new Audio('Horn.ogg');
         horn.loop = true;
         horn.volume = 0.75;
 
@@ -3731,4 +3733,3 @@
     </script>
 </body>
 </html>
-
