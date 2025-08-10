@@ -136,17 +136,33 @@
 
                 while (Math.abs(mouse.wheelOffset-Math.PI*2) < Math.abs(mouse.wheelOffset)) mouse.wheelOffset -= Math.PI*2;
                 while (Math.abs(mouse.wheelOffset+Math.PI*2) < Math.abs(mouse.wheelOffset)) mouse.wheelOffset += Math.PI*2;
-            }
+            } else if (mouse.selected == "radio") mouse.wheelOffset = game.audioVolume*500-250 - mouse.x+200;
 
-            if (mouse.selected == "ignition") {
+            else if (mouse.selected == "ignition") {
                 car.running = !car.running;
                 game.timerCounting = true;
+
+                if (car.running) engineRev.play();
+                else engineRev.pause();
+            }
+
+            if (mouse.selected == "horn") {
+                horn.play();
+
+                if (stats.hornJump && !car.jumpPos) {
+                    car.jumpPosVel = 60;
+                    car.jumpPos = 0;
+                }
             }
 
             if (game.status == "choosing") chooseChoice();
         }, false);
         window.addEventListener('mouseup', function (e) {
             mouse.down = false;
+
+            if (mouse.selected == "horn") {
+                horn.pause();
+            }
 
             mouse.selected = false;
         }, false);
@@ -930,6 +946,53 @@
                 },
                 chooseFunction() {
                     stats.booster = true;
+                }
+            },
+            {
+                name: "Horn Jump",
+                desc: "Honk to pop a wheelie and avoid the ground below",
+                drawFunction(timer) {
+                    ctx.beginPath();
+                    ctx.moveTo(-75,-25);
+                    ctx.lineTo(-25,-75);
+                    ctx.lineTo(-25,75);
+                    ctx.lineTo(-75,25);
+                    ctx.closePath();
+                    ctx.strokeStyle = "#950";
+                    ctx.stroke();
+                    ctx.fillStyle = "#c93";
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(0,-50);
+                    ctx.lineTo(25,0);
+                    ctx.lineTo(0,50);
+                    ctx.moveTo(25,-75);
+                    ctx.lineTo(62.5,0);
+                    ctx.lineTo(25,75);
+                    ctx.moveTo(50,-100);
+                    ctx.lineTo(100,0);
+                    ctx.lineTo(50,100);
+                    ctx.lineWidth = game.defaultLineWidth*2;
+                    ctx.strokeStyle = "#950";
+                    ctx.stroke();
+                    ctx.lineWidth = game.defaultLineWidth;
+                    ctx.strokeStyle = "#c93";
+                    ctx.stroke();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.strokeStyle = "#950";
+                        ctx.fillStyle = "#c93";
+                        ctx.strokeText("Horn",0,-150);
+                        ctx.fillText("Horn",0,-150);
+                        ctx.strokeText("Jump",0,150);
+                        ctx.fillText("Jump",0,150);
+                    }
+                },
+                chooseFunction() {
+                    stats.hornJump = true;
                 }
             },
         ]
@@ -1990,7 +2053,7 @@
         }
 
         const game = { 
-            gravity: 0, fps: 60, zoom: 50, xOffset: 0, yOffset: 0, xVOffset: 0, yVOffset: 0,
+            gravity: 0, fps: 60, zoom: 50, xOffset: 0, yOffset: 0, xVOffset: 0, yVOffset: 0, audioVolume: 0.5,
             renderType: "2d", defaultLineWidth: 10, timer: 0, timerCounting: false, status: "driving",
         };
         generateChoices();
@@ -2005,6 +2068,7 @@
             running: false,
             wiper: 0,
             booster: 0,
+            jumpPos: 0,
         }
         
         let windshield = [];
@@ -2060,9 +2124,13 @@
             } );
 
             if (Math.random() < 0.003 && stats.sweaty) mouse.selected = false;
-            if (Math.random() < 0.002 && stats.engineFailure) car.running = false;
+            if (Math.random() < 0.002 && stats.engineFailure) {
+                engineRev.pause();
+                car.running = false;
+            }
             if (Math.random() < 0.015 && stats.bug && game.timerCounting && game.status == "driving") windshield.push( { type: "bug", x: -600+1200*Math.random(), y: -300+500*Math.random(), durability: 2, maxDurability: 2 } );
             if (Math.random() < 0.15 && stats.sleepy && game.timerCounting && game.status == "driving") stats.eyeVel++;
+            if (mouse.selected == "horn" && stats.eyeVel) stats.eyeVel--;
 
             ctx.save();
 
@@ -2076,9 +2144,14 @@
             ctx.rect(-1000,-1000,3500,3600);
             ctx.fill();
 
+            ctx.save();
+            ctx.translate(0,( car.jumpPos/4 ));
+            
             drawSkybox();
 
             drawRoadPerspective();
+
+            ctx.restore();
 
             drawDash();
 
@@ -2107,7 +2180,7 @@
             else {
                 drawTimer();
 
-                checkCollision();
+                if (!car.jumpPos) checkCollision();
                 
                 drive();
 
@@ -2234,9 +2307,9 @@
 
             ctx.fillStyle = linearGradient;
 
-            if (currentRegion == "abyss") ctx.fillStyle = "#000";
+            if (currentRegion == "abyss" || currentRegion == "red carpet") ctx.fillStyle = "#000";
 
-            ctx.rect(-1000,-500,2000,1000);
+            ctx.rect(-1000,-1000,2000,2000);
             ctx.fill();
 
             // draw clouds
@@ -2269,12 +2342,47 @@
                     ctx.lineTo(-angleDiff*2000-cloud.size, -cloud.y/2+horizon);
                     ctx.lineTo(-angleDiff*2000+cloud.size, 2000);
                 })
+            } else if (currentRegion == "red carpet") {
+                ctx.beginPath();
+                let angleDiff;
+                let reverse;
+                clouds.forEach((cloud, i) => {
+                    angleDiff = car.angle-cloud.angle;
+
+                    while (Math.abs(angleDiff-Math.PI*2) < Math.abs(angleDiff)) {
+                        cloud.angle += Math.PI*2;
+                        angleDiff = car.angle-cloud.angle;
+                    }
+                    while (Math.abs(angleDiff+Math.PI*2) < Math.abs(angleDiff)) {
+                        cloud.angle -= Math.PI*2;
+                        angleDiff = car.angle-cloud.angle;
+                    }
+
+                    if (Math.abs(angleDiff) < Math.PI/2) {
+                        if (Math.sign(angleDiff) != reverse && Math.abs(angleDiff) > Math.PI/5) {
+                            ctx.moveTo(-angleDiff*2000, cloud.y/2+cloud.size+horizon);
+                            reverse = Math.sign(angleDiff);
+                        }
+                        else ctx.lineTo(-angleDiff*2000, cloud.y/2+cloud.size+horizon);
+                    }
+                })
+                ctx.strokeStyle = "#600";
+                ctx.lineWidth = game.defaultLineWidth*4;
+                ctx.stroke();
+                ctx.strokeStyle = "#900";
+                ctx.lineWidth = game.defaultLineWidth*2;
+                ctx.stroke();
+                ctx.strokeStyle = "#c00";
+                ctx.lineWidth = game.defaultLineWidth;
+                ctx.stroke();
+
+                return;
             } else {
                 ctx.beginPath();
                 if (currentRegion == "highway") ctx.fillStyle = "#444";
                 else ctx.fillStyle = "#999";
                 ctx.strokeStyle = "#ccc";
-                ctx.rect(-1000,-600,2000,200);
+                ctx.rect(-1000,-1000,2000,600);
                 let angleDiff;
                 clouds.forEach((cloud) => {
                     angleDiff = car.angle-cloud.angle;
@@ -2442,7 +2550,7 @@
             if (stats.fog) {
                 ctx.fillStyle = fogGradient;
     
-                ctx.fillRect(-1000,-500,3500,1000);
+                ctx.fillRect(-1000,-1000,3500,2000);
             }
 
             /*if (stats.wind) {
@@ -2527,7 +2635,7 @@
 
             car.wheel = Math.max(-1,Math.min(1,car.wheel));
 
-            car.angle += Math.PI/60/30 * car.wheel * car.speed * (1 - 0.5*car.oilslick);// * 1/(1+Math.abs(car.speed**2/30));
+            if (!car.jumpPos) car.angle += Math.PI/60/30 * car.wheel * car.speed * (1 - 0.5*car.oilslick);// * 1/(1+Math.abs(car.speed**2/30));
             car.angle = car.angle%(Math.PI*2);
 
             //changing speedAngle
@@ -2563,6 +2671,16 @@
             }
 
             if (car.booster > 0) car.booster--;
+            
+            if (car.jumpPos || car.jumpPosVel) {
+                car.jumpPos += car.jumpPosVel;
+                car.jumpPosVel--;
+
+                if (car.jumpPos <= 0) {
+                    car.jumpPos = false;
+                    car.jumpPosVel = false;
+                }
+            }
         }
 
         function checkCollision() {
@@ -2603,6 +2721,9 @@
                         game.status = "choosing";
 
                         generateChoices();
+
+                        engineRev.pause();
+                        horn.pause();
                     }
                 }
             })
@@ -2661,14 +2782,14 @@
                         size = item.durability / item.maxDurability;
 
                         ctx.beginPath();
-                        ctx.moveTo(item.x+450*size, item.y);
-                        ctx.lineTo(item.x+450*size*0.7, item.y+450*size*0.7);
-                        ctx.lineTo(item.x, item.y+450*size);
-                        ctx.lineTo(item.x-450*size*0.7, item.y+450*size*0.7);
-                        ctx.lineTo(item.x-450*size, item.y);
-                        ctx.lineTo(item.x-450*size*0.7, item.y-450*size*0.7);
-                        ctx.lineTo(item.x, item.y-450*size);
-                        ctx.lineTo(item.x+450*size*0.7, item.y-450*size*0.7);
+                        ctx.moveTo(item.x+350*size, item.y);
+                        ctx.lineTo(item.x+350*size*0.7, item.y+350*size*0.7);
+                        ctx.lineTo(item.x, item.y+350*size);
+                        ctx.lineTo(item.x-350*size*0.7, item.y+350*size*0.7);
+                        ctx.lineTo(item.x-350*size, item.y);
+                        ctx.lineTo(item.x-350*size*0.7, item.y-350*size*0.7);
+                        ctx.lineTo(item.x, item.y-350*size);
+                        ctx.lineTo(item.x+350*size*0.7, item.y-350*size*0.7);
                         ctx.closePath();
 
                         ctx.fillStyle = "#532";
@@ -2974,6 +3095,62 @@
                 ctx.strokeText(currentRegion.toUpperCase(), 600, -475);
                 ctx.fillText(currentRegion.toUpperCase(), 600, -475);
             } 
+        
+            //radio
+            {
+                ctx.beginPath();
+                ctx.rect(175,400,325,40);
+                ctx.fillStyle = "#222";
+                ctx.strokeStyle = "#666";
+                ctx.stroke();
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.fillStyle = "#ccc";
+                ctx.font = "20px Jura";
+                ctx.fillText(songAuthor, 350, 420);
+
+                ctx.save();
+                ctx.translate(200,420);
+                ctx.rotate((game.audioVolume-0.5)*Math.PI*3/2);
+
+                ctx.moveTo(-11,0);
+                ctx.lineTo(-8,-8);
+                ctx.lineTo(0,-11);
+                ctx.lineTo(8,-8);
+                ctx.lineTo(11, 0);
+                ctx.lineTo(8,8);
+                ctx.lineTo(0,11);
+                ctx.lineTo(-8,8);
+                ctx.closePath();
+
+                ctx.fillStyle = "#111";
+                ctx.strokeStyle = "#777";
+                if (mouse.selected == "radio") ctx.strokeStyle = "#aaa";
+                else if (mouse.hover == "radio") ctx.strokeStyle = "#888";
+
+                ctx.stroke();
+                ctx.fill();
+
+                ctx.beginPath();
+
+                ctx.moveTo(0,-5);
+                ctx.lineTo(0,-11);
+
+                ctx.strokeStyle = "#ccc";
+
+                ctx.lineWidth = game.defaultLineWidth/1.5;
+                ctx.stroke();
+                ctx.lineWidth = game.defaultLineWidth;
+
+                ctx.restore();
+
+                if (mouse.selected == "radio") {
+                    const desiredOutput = (mouse.x-200 + mouse.wheelOffset)/500 + 0.5;
+
+                    game.audioVolume = Math.min(1,Math.max(0, desiredOutput ));
+                }
+            }
         }
 
         function drawTimer() {
@@ -3220,6 +3397,9 @@
             } else if (Math.hypot(mouse.x+425 + 250 * (car.wiper), mouse.y-415) < 50) {
                 mouse.hover = "wiper";
                 return;
+            } else if (Math.hypot(mouse.x-200, mouse.y-420) < 50) {
+                mouse.hover = "radio";
+                return;
             }
 
             mouse.hover = false;
@@ -3416,13 +3596,22 @@
                         timerMax: 4000,
                     }
 
-                    if (currentRegion == "city") stats.roadSize *= 1.25;
+                    if (currentRegion == "city") {
+                        stats.roadSize *= 1.25;
+
+                        song.src = 'Stick-City.mp3';
+                        song.play();
+
+                        songAuthor = "Stick-City - BetaFail";
+                    }
                     else if (currentRegion == "abyss") {
                         stats.roadSize *= 0.90;
                         stats.roadLength /= 2.2;
 
                         song.src = 'The Fallen.mp3';
                         song.play();
+
+                        songAuthor = "The Fallen - CoolTasDude";
                     }
                     else if (currentRegion == "highway") {
                         stats.roadSize *= 1.9;
@@ -3433,10 +3622,12 @@
 
                         song.src = 'TraffStick.ogg';
                         song.play();
+
+                        songAuthor = "TraffStick - Mathieu";
                     }
                     else if (currentRegion == "red carpet") {
-                        stats.roadLength *= 2.5;
-                        stats.timerMax *= 2.75;
+                        stats.roadLength *= 3;
+                        stats.timerMax *= 3;
 
                         perkChoices = [ "finish" ];
                     }
@@ -3491,7 +3682,7 @@
             }
             if (stats.mud) {
                 road.forEach((roadItem, i) => {if (roadItem.road && (Math.random() < 0.020*stats.roadHazardChance) && i <= road.length-3) {
-                    road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*Math.random(), size: roadItem.size*0.6, angle: Math.PI*Math.random()-Math.PI/2, mud: true } );
+                    road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*Math.random(), size: roadItem.size*0.45, angle: Math.PI*Math.random()-Math.PI/2, mud: true } );
                 } } );
                 road[road.length-1].finalMud = true
             }
@@ -3523,18 +3714,23 @@
             calculateRoadPoints();
         }
     </script>
-    <script type>
+    <script>
         //music handling
         let song = new Audio('PlaStick.ogg');
         song.loop = true;
+        song.volume = 0.5;
         let engineRev = new Audio('Engine Rev.ogg');
         engineRev.loop = true;
-        engineRev.volume = 0.1;
+        engineRev.volume = 0.2;
+        let horn = new Audio('horn.ogg');
+        horn.loop = true;
+        horn.volume = 0.75;
+
+        let songAuthor = "PlaStick - BetaFail";
 
         const check = () => {
             if (mouse.down) {
                 song.play();
-                engineRev.play();
             } else {
                 setTimeout(check, 100);
             }
@@ -3543,11 +3739,12 @@
 
         //update rev
         setInterval(() => {
-            if (game.status == "driving") engineRev.volume = 0.1;
-            else engineRev.volume = 0;
-            engineRev.playbackRate = 1 - car.speed/30;
-            song.volume = 0.6;
+            engineRev.volume = 0.10;
+            engineRev.playbackRate = 1 + Math.abs(car.speed)/60;
+            song.volume = (0.6+0.4*(song.src.includes("PlaStick") || song.src.includes("Stick-City")))*game.audioVolume;
         },100)
+
+        stats.hornJump = true;
 
         if (1) {
             generatePlatformRoad(stats.roadLength/stats.roadSize)
@@ -3570,7 +3767,7 @@
             
             generatePlatformRoad(stats.roadLength/stats.roadSize);
 
-            stackablePunishments[6].drawFunction()
+            unStackablePerks[9].drawFunction()
         },100)
     </script>
 </body>
