@@ -3742,9 +3742,7 @@
             engineRev.volume = 0.10;
             engineRev.playbackRate = 1 + Math.abs(car.speed)/60;
             song.volume = (0.6+0.4*(song.src.includes("PlaStick") || song.src.includes("Stick-City")))*game.audioVolume;
-        },100)
-
-        stats.hornJump = true;
+        },100);
 
         if (1) {
             generatePlatformRoad(stats.roadLength/stats.roadSize)
@@ -3772,3 +3770,4 @@
     </script>
 </body>
 </html>
+
