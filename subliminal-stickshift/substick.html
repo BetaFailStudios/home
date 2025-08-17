@@ -2120,6 +2120,21 @@
         timerGradient.addColorStop(0, "#00000000");
         timerGradient.addColorStop(1, "#000");
 
+        const windshieldGradient = ctx.createLinearGradient(0, -300, 0, 500);
+
+        windshieldGradient.addColorStop(0, "#99ffff33");
+        windshieldGradient.addColorStop(1, "#00aaff33");
+
+        const skyboxGradient = ctx.createLinearGradient(0, -500+horizon, 0, 500+horizon);
+
+        skyboxGradient.addColorStop(0.497, "#0099ff");
+        skyboxGradient.addColorStop(0.503, "#003300");
+
+        const skyboxGradientHighway = ctx.createLinearGradient(0, -500+horizon, 0, 500+horizon);
+
+        skyboxGradientHighway.addColorStop(0.497, "#001133");
+        skyboxGradientHighway.addColorStop(0.503, "#111");
+
         function tickloop() {
             //sortBuildings
             if (game.timer%10 == 0) buildingPoints.sort( (a,b) => {
@@ -2295,14 +2310,8 @@
         function drawSkybox() {
             ctx.beginPath();
 
-            linearGradient = ctx.createLinearGradient(0, -500+horizon, 0, 500+horizon);
-
-            if (currentRegion == "highway") linearGradient.addColorStop(0.497, "#001133");
-            else linearGradient.addColorStop(0.497, "#0099ff");
-            if (currentRegion == "highway") linearGradient.addColorStop(0.503, "#111");
-            else linearGradient.addColorStop(0.503, "#003300");
-
-            ctx.fillStyle = linearGradient;
+            if (currentRegion == "highway") ctx.fillStyle = skyboxGradientHighway
+            else ctx.fillStyle = skyboxGradient;
 
             if (currentRegion == "abyss" || currentRegion == "red carpet") ctx.fillStyle = "#000";
 
@@ -2547,7 +2556,9 @@
             if (stats.fog) {
                 ctx.fillStyle = fogGradient;
     
-                ctx.fillRect(-1000,-1000,3500,2000);
+                ctx.beginPath();
+
+                ctx.fillRect(-1000,-1000,2000,2000);
             }
 
             /*if (stats.wind) {
@@ -2826,12 +2837,8 @@
             //windshield & dash
             {
                 ctx.beginPath();
-                linearGradient = ctx.createLinearGradient(0, -300, 0, 500);
 
-                linearGradient.addColorStop(0, "#99ffff33");
-                linearGradient.addColorStop(1, "#00aaff33");
-
-                ctx.fillStyle = linearGradient;
+                ctx.fillStyle = windshieldGradient;
 
                 //ctx.fillStyle = "#9999ff22";
                 ctx.rect(-1800,-500,3600,1000);
@@ -3676,6 +3683,8 @@
 
             calculateRoadPoints();
         }
+
+        
     </script>
     <script>
         //music handling
