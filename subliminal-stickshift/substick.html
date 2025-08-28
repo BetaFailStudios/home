@@ -2033,7 +2033,7 @@
 
         regions[2] = "red carpet";
 
-        let currentRegion = "rural";
+        let currentRegion = "city";
 
         let stats = {
             roadLength: 80000,
@@ -2079,6 +2079,10 @@
         let road = [];
 
         let roadDrawPoints = [];
+
+        let perspectivePoints = [];
+
+        let perspectiveBuildingPoints = [];
             
         const horizon = -200;
 
@@ -2301,9 +2305,7 @@
             });
 
             buildingPoints.forEach( (item) => {
-                const diff = { x: item[0].x-item[1].x, y: item[0].y-item[1].y };
-
-                item.push( {x: item[1].x+diff.x, y: item[1].y+diff.y} );
+                item.push( {x: item[1].x/2 + item[2].x/2, y: item[1].y/2 + item[2].y/2} );
             });
         }
 
@@ -2413,6 +2415,80 @@
             ctx.stroke();
             ctx.fill();
         }
+        
+        async function calculateRoadPerspectivePoints() {
+            perspectivePoints = [];
+            perspectiveBuildingPoints = [];
+
+            const angle = car.angle-Math.PI/2;
+
+            roadDrawPoints.forEach((points, pI) => {
+                let pointSet = [];
+                
+                if (Math.hypot(points[0].x-car.x, points[0].y-car.y) < 15000 || points[0].final || (points[0].road && pI%20 == 0)) points.forEach((point, i) => {
+
+                    originalY = ((point.y-car.y) * Math.cos(angle) - (point.x-car.x) * Math.sin(angle))+400;
+                    x = (point.x-car.x) * Math.cos(angle) + (point.y-car.y) * Math.sin(angle);
+
+                    y = -calculateHorizonY(-originalY, -horizon);
+                    x = ( ( y-horizon ) / 50 ) * x;
+
+                    if (!points[0].final && Math.hypot(points[0].x-car.x, points[0].y-car.y) > 15000 && points[0].road && pI%20 == 0) {
+                        if (i) return;
+                    }
+
+                    if (i == 0) pointSet.push([x,y,{ final: point.final, finalPothole: point.finalPothole, finalOilslick: point.finalOilslick, finalMud: point.finalMud, finalBooster: point.finalBooster, stripe: point.stripe,  }])
+                    else pointSet.push([x,y]);
+                })
+
+                if (pointSet.length) perspectivePoints.push(pointSet);
+            });
+
+            buildingPoints.forEach((points, pI) => {
+                let pointSet = [];
+                
+                let contin = 2;
+
+                points.forEach((point, i) => {
+                    //if ( i == 4 ) return;
+                    
+                    originalY = ((point.y-car.y) * Math.cos(angle) - (point.x-car.x) * Math.sin(angle))+400;
+                    let originalX = (point.x-car.x) * Math.cos(angle) + (point.y-car.y) * Math.sin(angle);
+
+                    y = -calculateHorizonY(-originalY, -horizon);
+                    x = ( ( y-horizon ) / 50 ) * originalX;
+                    
+                    if (i == 4) { 
+                        let angleDiff = Math.atan(originalY/originalX) + Math.PI * (originalX > 0) - Math.PI/2;
+                        
+                        if (Math.abs(angleDiff-Math.PI*2) < Math.abs(angleDiff)) {
+                            angleDiff -= Math.PI*2;
+                        }
+
+                        if (Math.abs(angleDiff) > Math.PI/3 || Math.hypot(originalX, originalY) > 10000 || Math.abs(x) > 1500) contin = false;
+                        if (pI == buildingPoints.length-1) console.log(contin);
+
+                        //if (Math.hypot(originalX, originalY-car.y) > 10000) contin = false;
+
+                        //if (y < horizon+10 || y > horizon+700) contin--; 
+
+                        return;
+                    }
+
+                    if (point.top) {
+                        pointSet.push([x, horizon - points[0].size * (y-horizon), point.color]);
+                    } else {
+                        pointSet.push([x,y, point.color]);
+                    }
+                })
+                
+                //if (pI == buildingPoints.length-1) console.log(contin);
+
+                if (pointSet.length && contin > 0) perspectiveBuildingPoints.push(pointSet);
+            });
+
+            requestAnimationFrame( calculateRoadPerspectivePoints );
+        }
 
         function drawRoadPerspective() {
             let roadColor = "#333";
@@ -2425,8 +2501,8 @@
             ctx.beginPath();
             const angle = car.angle-Math.PI/2;
             let originalY,x,y;
-            roadDrawPoints.forEach((points, pI) => {
-                if (points[0].final) {
+            perspectivePoints.forEach((points, pI) => {
+                if (points[0][2].final) {
                     ctx.strokeStyle = "#666";
                     ctx.fillStyle = roadColor;
                     ctx.stroke();
@@ -2439,27 +2515,15 @@
                     ctx.beginPath();
                 }
 
-                if (Math.hypot(points[0].x-car.x, points[0].y-car.y) < 15000 || points[0].final || (points[0].road && pI%20 == 0)) points.forEach((point, i) => {
+                points.forEach((point, i) => {
+                    if (!i) if (point[2].stripe) ctx.lineWidth = Math.min(15,(point[1]-horizon)/40);
 
-                    originalY = ((point.y-car.y) * Math.cos(angle) - (point.x-car.x) * Math.sin(angle))+400;
-                    x = (point.x-car.x) * Math.cos(angle) + (point.y-car.y) * Math.sin(angle);
-
-                    y = -calculateHorizonY(-originalY, -horizon);
-                    x = ( ( y-horizon ) / 50 ) * x;
-
-                    if (!points[0].final && Math.hypot(points[0].x-car.x, points[0].y-car.y) > 15000 && points[0].road && pI%20 == 0) {
-                        if (i) return;
-                        else ctx.lineTo(x,y);
-                    }
-                    
-                    if (!i) ctx.moveTo( x, y );
-                    else ctx.lineTo( x, y );
-
-                    if (points[0].stripe && !i) ctx.lineWidth = Math.min(15,(y-horizon)/40);
+                    if (!i && points.length-1) ctx.moveTo( point[0], point[1] );
+                    else ctx.lineTo( point[0], point[1] );
                 })
                 ctx.closePath();
 
-                if (points[0].final) {
+                if (points[0][2].final) {
                     ctx.fillStyle = "#393";
                     ctx.strokeStyle = "#393";
                     ctx.lineWidth = game.defaultLineWidth;
@@ -2469,7 +2533,7 @@
                     ctx.beginPath();
                 }
 
-                if (points[0].finalPothole) {
+                if (points[0][2].finalPothole) {
                     ctx.fillStyle = "#111";
                     ctx.strokeStyle = "#666";
                     ctx.lineWidth = game.defaultLineWidth/3;
@@ -2480,7 +2544,7 @@
                     ctx.beginPath();
                 }
 
-                if (points[0].finalOilslick) {
+                if (points[0][2].finalOilslick) {
                     ctx.fillStyle = "#00000099";
                     ctx.strokeStyle = "#111";
                     ctx.lineWidth = game.defaultLineWidth/3;
@@ -2491,7 +2555,7 @@
                     ctx.beginPath();
                 }
 
-                if (points[0].finalMud) {
+                if (points[0][2].finalMud) {
                     ctx.fillStyle = "#532";
                     ctx.strokeStyle = "#321";
                     ctx.lineWidth = game.defaultLineWidth/3;
@@ -2502,7 +2566,7 @@
                     ctx.beginPath();
                 }
 
-                if (points[0].finalBooster) {
+                if (points[0][2].finalBooster) {
                     ctx.strokeStyle = "#fc3";
                     ctx.fillStyle = "#c93";
                     ctx.lineWidth = game.defaultLineWidth/3;
@@ -2513,8 +2577,7 @@
                     ctx.beginPath();
                 }
                 
-                if (points[0].stripe) {
-
+                if (points[0][2].stripe) {
                     ctx.lineJoin = "miter";
                     ctx.strokeStyle = "#990";
                     ctx.stroke();
@@ -2524,29 +2587,15 @@
                 }
             });
 
-            buildingPoints.forEach((points, pI) => {
+            perspectiveBuildingPoints.forEach((points, pI) => {
                 ctx.beginPath();
-
-                if (Math.hypot(points[0].x-car.x, points[0].y-car.y) < 15000) points.forEach((point, i) => { 
-                    if (i === 4) return;
-                    originalY = ((point.y-car.y) * Math.cos(angle) - (point.x-car.x) * Math.sin(angle))+400;
-                    x = (point.x-car.x) * Math.cos(angle) + (point.y-car.y) * Math.sin(angle);
-
-                    y = -calculateHorizonY(-originalY, -horizon);
-                    x = ( ( y-horizon ) / 50 ) * x;
-                    
-                    if (Math.abs(y) > 6000) return;
-
-                    if (point.top) {
-                        ctx.lineTo( x, y );
-                    } else {
-                        ctx.lineTo( x, horizon - points[0].size*(y-horizon) );
-                    }
+                points.forEach((point, i) => {
+                    ctx.lineTo(point[0],point[1]);
                 });
                 ctx.closePath();
 
                 ctx.strokeStyle = "#999";
-                ctx.fillStyle = points[0].color;
+                ctx.fillStyle = points[0][2];
                 ctx.lineWidth = game.defaultLineWidth/3;
                 ctx.stroke();
                 ctx.fill();
@@ -2753,7 +2802,7 @@
                     car.x -= Math.cos(car.speedAngle)*car.speed;
                     car.y -= Math.sin(car.speedAngle)*car.speed;
 
-                    car.speed = 0;
+                    car.speed *= -1;
                 }
             })
 
@@ -2792,14 +2841,14 @@
                         size = item.durability / item.maxDurability;
 
                         ctx.beginPath();
-                        ctx.moveTo(item.x+350*size, item.y);
-                        ctx.lineTo(item.x+350*size*0.7, item.y+350*size*0.7);
-                        ctx.lineTo(item.x, item.y+350*size);
-                        ctx.lineTo(item.x-350*size*0.7, item.y+350*size*0.7);
-                        ctx.lineTo(item.x-350*size, item.y);
-                        ctx.lineTo(item.x-350*size*0.7, item.y-350*size*0.7);
-                        ctx.lineTo(item.x, item.y-350*size);
-                        ctx.lineTo(item.x+350*size*0.7, item.y-350*size*0.7);
+                        ctx.moveTo(item.x+300*size, item.y);
+                        ctx.lineTo(item.x+300*size*0.7, item.y+300*size*0.7);
+                        ctx.lineTo(item.x, item.y+300*size);
+                        ctx.lineTo(item.x-300*size*0.7, item.y+300*size*0.7);
+                        ctx.lineTo(item.x-300*size, item.y);
+                        ctx.lineTo(item.x-300*size*0.7, item.y-300*size*0.7);
+                        ctx.lineTo(item.x, item.y-300*size);
+                        ctx.lineTo(item.x+300*size*0.7, item.y-300*size*0.7);
                         ctx.closePath();
 
                         ctx.fillStyle = "#532";
@@ -2813,14 +2862,14 @@
                         size = item.durability / item.maxDurability;
 
                         ctx.beginPath();
-                        ctx.moveTo(item.x+110*size, item.y);
-                        ctx.lineTo(item.x+110*size*0.7, item.y+110*size*0.7);
-                        ctx.lineTo(item.x, item.y+110*size);
-                        ctx.lineTo(item.x-110*size*0.7, item.y+110*size*0.7);
-                        ctx.lineTo(item.x-110*size, item.y);
-                        ctx.lineTo(item.x-110*size*0.7, item.y-110*size*0.7);
-                        ctx.lineTo(item.x, item.y-110*size);
-                        ctx.lineTo(item.x+110*size*0.7, item.y-110*size*0.7);
+                        ctx.moveTo(item.x+90*size, item.y);
+                        ctx.lineTo(item.x+90*size*0.7, item.y+90*size*0.7);
+                        ctx.lineTo(item.x, item.y+90*size);
+                        ctx.lineTo(item.x-90*size*0.7, item.y+90*size*0.7);
+                        ctx.lineTo(item.x-90*size, item.y);
+                        ctx.lineTo(item.x-90*size*0.7, item.y-90*size*0.7);
+                        ctx.lineTo(item.x, item.y-90*size);
+                        ctx.lineTo(item.x+90*size*0.7, item.y-90*size*0.7);
                         ctx.closePath();
 
                         ctx.fillStyle = "#252";
@@ -2946,9 +2995,20 @@
                 ctx.translate(70,280);
 
                 ctx.beginPath();
-                ctx.arc(0,0,50,-Math.PI*5/4,Math.PI/4);
-                ctx.lineTo(15,25);
-                ctx.lineTo(-15,25);
+                ctx.moveTo(-25,35);
+                ctx.lineTo(-45,25);
+                ctx.lineTo(-50,0);
+                ctx.lineTo(-45,-25);
+                ctx.lineTo(-25,-45);
+                ctx.lineTo(0,-50);
+                ctx.lineTo(25,-45);
+                ctx.lineTo(45,-25);
+                ctx.lineTo(50,0);
+                ctx.lineTo(45,25);
+                ctx.lineTo(25,35);
+
+                ctx.lineTo(10,25);
+                ctx.lineTo(-10,25);
                 ctx.closePath();
                 
                 ctx.strokeStyle = "#222";
@@ -2976,7 +3036,16 @@
                 ctx.translate(70,350);
 
                 ctx.beginPath();
-                ctx.arc(0,0,25,0,Math.PI*2);
+                ctx.moveTo(-25,0);
+                ctx.lineTo(-18,-18);
+                ctx.lineTo(0,-25);
+                ctx.lineTo(18,-18);
+                ctx.lineTo(25,0);
+                ctx.lineTo(18,18);
+                ctx.lineTo(0,25);
+                ctx.lineTo(-18,18);
+                ctx.closePath();
+                //ctx.arc(0,0,25,0,Math.PI*2);
                 
                 if (car.running) ctx.fillStyle = "#292";
                 else ctx.fillStyle = "#922";
@@ -3717,7 +3786,9 @@
         },100)
 
         if (1) {
-            generatePlatformRoad(stats.roadLength/stats.roadSize)
+            generatePlatformRoad(stats.roadLength/stats.roadSize);
+
+            calculateRoadPerspectivePoints();
 
             if (navigator.userAgent.toLowerCase().includes("firefox")) startAnimating(60);
             else setInterval( () => { tickloop() }, 16.66);
