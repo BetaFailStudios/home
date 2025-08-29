@@ -2266,7 +2266,7 @@
                 const size = Math.hypot( road.size, road.size );// * (1 - 2*(road.pothole == true));
 
                 const points = [];
-                points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4), road: road.road, final: road.final, finalPothole: road.finalPothole, finalOilslick: road.finalOilslick, finalMud: road.finalMud, finalBooster: road.finalBooster } );
+                points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/4), road: road.road, override: road.final || road.finalPothole || road.finalOilslick || road.finalBooster || road.finalMud, final: road.final, finalPothole: road.finalPothole, finalOilslick: road.finalOilslick, finalMud: road.finalMud, finalBooster: road.finalBooster } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI/2 + Math.PI/4) } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI + Math.PI/4) } );
                 points.push( { x: road.x - size*Math.sin(road.angle + Math.PI*3/2 + Math.PI/4), y: road.y + size*Math.cos(road.angle + Math.PI*3/2 + Math.PI/4) } );
@@ -2425,7 +2425,7 @@
             roadDrawPoints.forEach((points, pI) => {
                 let pointSet = [];
                 
-                if (Math.hypot(points[0].x-car.x, points[0].y-car.y) < 15000 || points[0].final || (points[0].road && pI%20 == 0)) points.forEach((point, i) => {
+                if (Math.hypot(points[0].x-car.x, points[0].y-car.y) < 15000 || points[0].override || (points[0].road && pI%20 == 0)) points.forEach((point, i) => {
 
                     originalY = ((point.y-car.y) * Math.cos(angle) - (point.x-car.x) * Math.sin(angle))+400;
                     x = (point.x-car.x) * Math.cos(angle) + (point.y-car.y) * Math.sin(angle);
@@ -2487,10 +2487,12 @@
                 if (pointSet.length && contin > 0) perspectiveBuildingPoints.push(pointSet);
             });
 
-            requestAnimationFrame( calculateRoadPerspectivePoints );
+            //requestAnimationFrame( () => { calculateRoadPerspectivePoints() } );
         }
 
         function drawRoadPerspective() {
+            calculateRoadPerspectivePoints()
+
             let roadColor = "#333";
             if (stats.slipRoad) roadColor = "#344";
             if (currentRegion == "abyss") roadColor = "#111";
@@ -2610,23 +2612,67 @@
                 ctx.fillRect(-1000,-1000,2000,2000);
             }
 
-            /*if (stats.wind) {
+            if (stats.wind) {
                 let angleDiff = car.angle-stats.windAngle;
 
                 while (Math.abs(angleDiff-Math.PI*2) < Math.abs(angleDiff)) {
-                    stats.windAngle += Math.PI*2;
-                    angleDiff = wheelAngle-mouseWheelAngle;
+                    angleDiff -= Math.PI*2;
                 }
                 while (Math.abs(angleDiff+Math.PI*2) < Math.abs(angleDiff)) {
-                    stats.windAngle -= Math.PI*2;
-                    angleDiff = wheelAngle-mouseWheelAngle;
+                    angleDiff += Math.PI*2;
                 }
 
-                ctx.strokeStyle = "#ffffff55";
-                ctx.moveTo(0,0);
-                ctx.lineTo(angleDiff*100,0);
+                const force = stats.windForce * Math.sin( angleDiff )/stats.inertia * Math.abs(Math.sin(game.timer/1000*Math.PI*2.12) * (0.7+0.3*Math.sin(game.timer/1000*Math.PI*10.3124)))
+                //const force = 0.4;
+
+                if (!stats.windTally) stats.windTally = force;
+                else stats.windTally += force*100;
+
+                if (stats.windTally > 2000) stats.windTally -= 4000;
+                else if (stats.windTally < -2000) stats.windTally += 4000;
+
+                ctx.globalAlpha = Math.min(1, Math.abs(force)/2)
+
+                ctx.strokeStyle = "#fff";
+                ctx.translate(-3200,0);
+                for(var i = 0; i < 10; i++) {
+                    ctx.moveTo(stats.windTally - force*500,0);
+                    ctx.lineTo(stats.windTally + force*500,0);
+                    ctx.moveTo(stats.windTally - force*500+1000,-50);
+                    ctx.lineTo(stats.windTally + force*500+1000,-50);
+                    ctx.moveTo(stats.windTally - force*500+500,-100);
+                    ctx.lineTo(stats.windTally + force*500+500,-100);
+                    ctx.moveTo(stats.windTally - force*500-500,-150);
+                    ctx.lineTo(stats.windTally + force*500-500,-150);
+                    ctx.moveTo(stats.windTally - force*500,100);
+                    ctx.lineTo(stats.windTally + force*500,100);
+                    ctx.moveTo(stats.windTally - force*500+1000,50);
+                    ctx.lineTo(stats.windTally + force*500+1000,50);
+                    ctx.moveTo(stats.windTally - force*500+500,-200);
+                    ctx.lineTo(stats.windTally + force*500+500,-200);
+                    ctx.moveTo(stats.windTally - force*500-500,-250);
+                    ctx.lineTo(stats.windTally + force*500-500,-250);
+                    ctx.moveTo(stats.windTally - force*500,-450);
+                    ctx.lineTo(stats.windTally + force*500,-450);
+                    ctx.moveTo(stats.windTally - force*500+1000,-350);
+                    ctx.lineTo(stats.windTally + force*500+1000,-350);
+                    ctx.moveTo(stats.windTally - force*500+500,-300);
+                    ctx.lineTo(stats.windTally + force*500+500,-300);
+                    ctx.moveTo(stats.windTally - force*500-500,-400);
+                    ctx.lineTo(stats.windTally + force*500-500,-400);
+                    ctx.moveTo(stats.windTally - force*500,350);
+                    ctx.lineTo(stats.windTally + force*500,350);
+                    ctx.moveTo(stats.windTally - force*500+1000,250);
+                    ctx.lineTo(stats.windTally + force*500+1000,250);
+                    ctx.moveTo(stats.windTally - force*500+500,200);
+                    ctx.lineTo(stats.windTally + force*500+500,200);
+                    ctx.moveTo(stats.windTally - force*500-500,300);
+                    ctx.lineTo(stats.windTally + force*500-500,300);
+
+                    ctx.translate(800,0);
+                }
                 ctx.stroke();
-            }*/
+            }
 
             ctx.restore();
         }
@@ -2720,7 +2766,8 @@
             if (stats.wind) {
                 let angleDiff = car.angle-stats.windAngle;
 
-                car.angle += (Math.PI/300) * stats.windForce * Math.sin( angleDiff )/stats.inertia * Math.abs(Math.sin(game.timer/1000*Math.PI*2.12) * (0.5+0.5*Math.sin(game.timer/1000*Math.PI*10.3124)))/20 * car.speed;
+                //car.angle += (Math.PI/300) * stats.windForce * Math.sin( angleDiff )/stats.inertia * Math.abs(Math.sin(game.timer/1000*Math.PI*2.12) * (0.5+0.5*Math.sin(game.timer/1000*Math.PI*10.3124)))/20 * car.speed;
+                car.angle += (Math.PI/300) * stats.windForce * Math.sin( angleDiff )/stats.inertia * Math.abs(Math.sin(game.timer/1000*Math.PI*2.12) * (0.7+0.3*Math.sin(game.timer/1000*Math.PI*10.3124)));
             }
 
             if (car.pothole) {
@@ -3753,7 +3800,7 @@
             calculateRoadPoints();
         }
 
-        
+
     </script>
     <script>
         //music handling
