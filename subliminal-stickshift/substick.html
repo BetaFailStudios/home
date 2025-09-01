@@ -585,8 +585,8 @@
                     }
                 },
                 chooseFunction() {
-                    stats.topSpeed *= 1.65;
-                    stats.acceleration *= 0.8;
+                    stats.topSpeed *= 1.45;
+                    stats.acceleration *= 0.6;
                 }
             },
             {
@@ -649,7 +649,7 @@
                     }
                 },
                 chooseFunction() {
-                    stats.offroadSpeedLoss *= 0.25;
+                    stats.offroadSpeedLoss *= 0.15;
                     stats.offroadMaxSpeed *= 2.3;
                 }
             },
@@ -1494,7 +1494,7 @@
                     }
                 },
                 chooseFunction() {
-                    stats.turnSpeed *= 0.3;
+                    stats.turnSpeed *= 0.4;
                 }
             },
             {
@@ -1606,7 +1606,7 @@
                         stats.wind = true;
                         stats.windForce = 0;
                     }
-                    stats.windForce += 0.4;
+                    stats.windForce += 0.33;
                 }
             },
             {
@@ -2027,7 +2027,7 @@
 
         let perkChoicePos = 0;
 
-        const regions = [ "abyss", "city", "highway" ];
+        const regions = [ "abyss", "city", "highway", "canyon" ];
 
         regions.sort( () => { if (Math.random() < 0.5) return 1; else return -1; } );
 
@@ -2048,7 +2048,7 @@
             driftGrip: 0.07,
             inertia: 1,
             roadHazardChance: 1,
-            timerMax: 4000,
+            timerMax: 3500,
         }
 
         const game = { 
@@ -2134,6 +2134,11 @@
         skyboxGradient.addColorStop(0.497, "#0099ff");
         skyboxGradient.addColorStop(0.503, "#003300");
 
+        const skyboxGradientCanyon = ctx.createLinearGradient(0, -500+horizon, 0, 500+horizon);
+
+        skyboxGradientCanyon.addColorStop(0.497, "#d98341");
+        skyboxGradientCanyon.addColorStop(0.503, "#404405");
+
         const skyboxGradientHighway = ctx.createLinearGradient(0, -500+horizon, 0, 500+horizon);
 
         skyboxGradientHighway.addColorStop(0.497, "#001133");
@@ -2185,7 +2190,7 @@
                 ctx.font = "200px serif";
                 ctx.strokeText("You Win", 0, 0);
                 ctx.fillText("You Win", 0, 0);
-            } else if (game.timer > stats.timerMax+300) {
+            } else if (game.timer > stats.timerMax+100 && Math.abs(car.speed) < 1) {
                 ctx.beginPath();
                 ctx.fillStyle = "#f33";
                 ctx.strokeStyle = "#933";
@@ -2196,11 +2201,11 @@
                 drawChoices();
             }
             else {
-                if (!car.jumpPos) checkCollision();
+                checkCollision();
                 
                 drive();
 
-                if (game.timerCounting) game.timer++;
+                if (game.timerCounting && game.timer < stats.timerMax+150) game.timer++;
             }
 
             drawMouse();
@@ -2313,6 +2318,7 @@
             ctx.beginPath();
 
             if (currentRegion == "highway") ctx.fillStyle = skyboxGradientHighway
+            else if (currentRegion == "canyon") ctx.fillStyle = skyboxGradientCanyon
             else ctx.fillStyle = skyboxGradient;
 
             if (currentRegion == "abyss" || currentRegion == "red carpet") ctx.fillStyle = "#000";
@@ -2388,6 +2394,7 @@
             } else {
                 ctx.beginPath();
                 if (currentRegion == "highway") ctx.fillStyle = "#444";
+                else if (currentRegion == "canyon") ctx.fillStyle = "#a97";
                 else ctx.fillStyle = "#999";
                 ctx.strokeStyle = "#ccc";
                 ctx.rect(-1000,-1000,2000,600);
@@ -2447,32 +2454,26 @@
             buildingPoints.forEach((points, pI) => {
                 let pointSet = [];
                 
-                let contin = 2;
+                let contin = 3;
 
                 points.forEach((point, i) => {
-                    //if ( i == 4 ) return;
-                    
                     originalY = ((point.y-car.y) * Math.cos(angle) - (point.x-car.x) * Math.sin(angle))+400;
                     let originalX = (point.x-car.x) * Math.cos(angle) + (point.y-car.y) * Math.sin(angle);
 
                     y = -calculateHorizonY(-originalY, -horizon);
                     x = ( ( y-horizon ) / 50 ) * originalX;
                     
-                    if (i == 4) { 
-                        let angleDiff = Math.atan(originalY/originalX) + Math.PI * (originalX > 0) - Math.PI/2;
+                    if (i == 1 || i == 2 || i == 4) { 
+                        /*let angleDiff = Math.atan(originalY/originalX) + Math.PI * (originalX > 0) - Math.PI/2;
                         
                         if (Math.abs(angleDiff-Math.PI*2) < Math.abs(angleDiff)) {
                             angleDiff -= Math.PI*2;
                         }
 
-                        if (Math.abs(angleDiff) > Math.PI/3 || Math.hypot(originalX, originalY) > 10000 || Math.abs(x) > 1500) contin = false;
-                        if (pI == buildingPoints.length-1) console.log(contin);
+                        if (Math.abs(angleDiff) > Math.PI || Math.hypot(originalX, originalY) > 10000 || Math.abs(x) > 1500) contin--;*/
+                        if (y > 500 || Math.hypot(originalX, originalY) > 10000) contin--;
 
-                        //if (Math.hypot(originalX, originalY-car.y) > 10000) contin = false;
-
-                        //if (y < horizon+10 || y > horizon+700) contin--; 
-
-                        return;
+                        if ( i == 4 ) return;
                     }
 
                     if (point.top) {
@@ -2481,8 +2482,6 @@
                         pointSet.push([x,y, point.color]);
                     }
                 })
-                
-                //if (pI == buildingPoints.length-1) console.log(contin);
 
                 if (pointSet.length && contin > 0) perspectiveBuildingPoints.push(pointSet);
             });
@@ -2615,13 +2614,6 @@
             if (stats.wind) {
                 let angleDiff = car.angle-stats.windAngle;
 
-                while (Math.abs(angleDiff-Math.PI*2) < Math.abs(angleDiff)) {
-                    angleDiff -= Math.PI*2;
-                }
-                while (Math.abs(angleDiff+Math.PI*2) < Math.abs(angleDiff)) {
-                    angleDiff += Math.PI*2;
-                }
-
                 const force = stats.windForce * Math.sin( angleDiff )/stats.inertia * Math.abs(Math.sin(game.timer/1000*Math.PI*2.12) * (0.7+0.3*Math.sin(game.timer/1000*Math.PI*10.3124)))
                 //const force = 0.4;
 
@@ -2675,6 +2667,12 @@
             }
 
             ctx.restore();
+
+            /*buildingPoints.forEach( (building) => {
+                ctx.beginPath();
+                building.forEach((item)=> ctx.lineTo(item.x, item.y));
+                ctx.stroke();
+            })*/
         }
 
         function calculateHorizonY(input, horizon) {
@@ -2686,10 +2684,10 @@
             car.x += Math.cos(car.speedAngle)*car.speed;
             car.y += Math.sin(car.speedAngle)*car.speed;
 
-            if ( car.running && ( keys.includes("w") || keys.includes(" ") ) && car.speed > -stats.topSpeed * ( 1 + 0.25 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 0.5 * (car.booster/300) ) ) {
-                car.speed -= stats.acceleration * (1 + 2*(car.speed > 0) ) * ( 1 + 1 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 9 * (car.booster/300) );
-            } else car.speed *= 0.999;
-            if ( car.running && ( keys.includes("s") || keys.includes("shift") ) && car.speed < stats.topSpeed/5 && !stats.noBrake) {
+            if ( game.timer < stats.timerMax && !car.jumpPos && car.running && ( keys.includes("w") || keys.includes(" ") ) && car.speed > -stats.topSpeed * ( 1 + 0.35 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 0.5 * (car.booster/300) ) ) {
+                car.speed -= stats.acceleration * (1 + 2*(car.speed > 0) ) * ( 1 + 1.2 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 9 * (car.booster/300) );
+            } else car.speed *= 0.998;
+            if ( game.timer < stats.timerMax &&  car.running && ( keys.includes("s") || keys.includes("shift") ) && car.speed < stats.topSpeed/5 && !stats.noBrake) {
                 car.speed += stats.acceleration * (1 + 2*(car.speed < 0) );
             }
 
@@ -2712,7 +2710,11 @@
 
                 car.wheel -= -(angleDiff) / (Math.PI*5/2);
             } 
-            else if (mouse.selected == "wiper") {
+            else {
+                car.wheel *= 0.98;
+            }
+            
+            if (mouse.selected == "wiper") {
                 const oldWiperAngle = -Math.PI*11/10*car.wiper+Math.PI/20;
 
                 let diff = (mouse.x + 425 + 250 * (car.wiper))/250;
@@ -2834,7 +2836,7 @@
                 }
             })
 
-            buildings.forEach((road, i)=> {
+            buildings.forEach((road, i) => {
                 if (Math.hypot(road.x-car.x, road.y-car.y) > road.size*2) return;
 
                 //road.angle --> angle to rectangle
@@ -2845,25 +2847,32 @@
                 diffNeeded = Math.abs(Math.sin(intAngle))**-1*road.size;
                 diffNeededCos = Math.abs(Math.cos(intAngle))**-1*road.size;
                 if (diffNeededCos < diffNeeded) diffNeeded = diffNeededCos;
-                if (Math.hypot(road.x-car.x,road.y-car.y) < diffNeeded) {
-                    car.x -= Math.cos(car.speedAngle)*car.speed;
-                    car.y -= Math.sin(car.speedAngle)*car.speed;
+                diffNeeded = Math.hypot(road.x-car.x,road.y-car.y) - diffNeeded;
+                if (diffNeeded < 0) {
+                    car.x -= Math.cos(carAngle)*diffNeeded;
+                    car.y -= Math.sin(carAngle)*diffNeeded;
 
-                    car.speed *= -1;
+                    //repurposing variables, angle of the wall 
+                    console.log(Math.ceil(1 + carAngle/(Math.PI/2)))
+                    carAngle = road.angle + Math.PI/2 * Math.floor(0.5 + carAngle/(Math.PI/2))/*.toFixed(0)*/;
+
+                    car.speedAngle = carAngle + (carAngle-car.speedAngle) + Math.PI*(car.speed > 0);
+
+                    car.speed *= 0.95;
                 }
             })
 
-            if (!touching && Math.abs(car.speed) > stats.offroadMaxSpeed && (!stats.offroadCruise || car.running) && !car.jumpPos) {
+            if (!car.jumpPos) if (!touching && Math.abs(car.speed) > stats.offroadMaxSpeed && (!stats.offroadCruise || car.running) && !car.jumpPos) {
                 car.speed *= 1-stats.offroadSpeedLoss/stats.inertia;
             }
 
-            if (mud && !car.mud) {
+            if (!car.jumpPos) if (mud && !car.mud) {
                 for(var i = 0; i < 5; i++) windshield.push( { type: "mud", x: -550+1100*Math.random(), y: -300+550*Math.random(), durability: 3, maxDurability: 3 } )
             }
             car.mud = mud;
 
-            if (car.mud && Math.abs(car.speed) > stats.offroadMaxSpeed && !(stats.offroadCruise && !stats.running)) {
-                car.speed *= 1-0.15/stats.inertia;
+            if (!car.jumpPos) if (car.mud && Math.abs(car.speed) > stats.offroadMaxSpeed && !(stats.offroadCruise && !stats.running)) {
+                car.speed *= 1-0.03/stats.inertia;
             }
         }
 
@@ -3039,7 +3048,7 @@
             {
                 ctx.save();
                 
-                ctx.translate(70,280);
+                ctx.translate(-290,325);
 
                 ctx.beginPath();
                 ctx.moveTo(-25,35);
@@ -3147,7 +3156,7 @@
             {
                 ctx.beginPath();
 
-                ctx.rect(-325,300, 50, 30);
+                ctx.rect(-325,-500, 50, 30);
 
                 ctx.strokeStyle = "#222";
                 ctx.fillStyle = "#444";
@@ -3158,7 +3167,79 @@
                 ctx.strokeStyle = "#777";
                 ctx.fillStyle = "#999";
                 ctx.font = "20px Jura";
-                ctx.fillText(game.fps, -300,315);
+                ctx.fillText(game.fps, -300,-485);
+            }
+        
+            //gas meter
+            {
+                ctx.save();
+                ctx.translate(-110,325);
+
+                ctx.beginPath();
+                ctx.moveTo(-50,0);
+                ctx.lineTo(-45,-25);
+                ctx.lineTo(-25,-45);
+                ctx.lineTo(0,-50);
+                ctx.lineTo(25,-45);
+                ctx.lineTo(45,-25);
+                ctx.lineTo(50,0);
+                ctx.lineTo(45,25);
+                ctx.lineTo(25,45);
+                ctx.lineTo(0,50);
+                ctx.lineTo(-25,45);
+                ctx.lineTo(-45,25);
+                ctx.closePath();
+                
+                ctx.strokeStyle = "#222";
+                ctx.fillStyle = "#444";
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+
+                ctx.rect(0,-15,20,30);
+                ctx.rect(-2,15,24,5);
+                ctx.rect(16,-10,-12,10);
+                ctx.rect(20,-10,5,5);
+                ctx.rect(23,-10,5,20);
+
+                ctx.fillStyle = "#000";
+
+                ctx.fill();
+
+                ctx.beginPath();
+
+                ctx.rotate(-Math.PI/3);
+
+                ctx.rect(-40, -3, 15, 3);
+                
+                ctx.fillStyle = "#900";
+
+                ctx.fill();
+
+                ctx.beginPath();
+
+                for (var i = 0; i < 4; i++) {
+                    ctx.rotate(Math.PI/6);
+
+                    ctx.rect(-40, -3, 10, 3);
+                }
+                
+                ctx.fillStyle = "#666";
+
+                ctx.fill();
+
+                ctx.beginPath();
+
+                ctx.rotate(-Math.PI/1.5 * game.timer/stats.timerMax);
+
+                ctx.rect(-35, -3, 15, 3);
+                
+                ctx.fillStyle = "#999";
+
+                ctx.fill();
+
+                ctx.restore();
             }
 
             //wheel
@@ -3273,9 +3354,9 @@
                     game.audioVolume = Math.min(1,Math.max(0, desiredOutput ));
                 }
             }
-        
+
             //timer & upgrades
-            {
+            /*{
                 ctx.beginPath();
                 ctx.arc(250,300,65,0,Math.PI*2);
                 ctx.strokeStyle = "#666";
@@ -3285,7 +3366,7 @@
 
                 ctx.save();
 
-                ctx.clip();
+                //ctx.clip();
                 ctx.translate(200,300);
 
                 ctx.fillStyle = "#ffffff22";
@@ -3466,7 +3547,7 @@
                 else if (game.timer > stats.timerMax*3/4) ctx.strokeStyle = "#993";
                 ctx.stroke();
             }
-        }
+        */}
 
         function checkHover() {
             //wheel
@@ -3616,7 +3697,7 @@
             if (mouse.x > -600 && mouse.x < -200 && mouse.y > -200 && mouse.y < 200) {
                 choiceNum = 0;
             }
-            if (mouse.x > -200 && mouse.x < 600 && mouse.y > -200 && mouse.y < 200) {
+            if (mouse.x > 200 && mouse.x < 600 && mouse.y > -200 && mouse.y < 200) {
                 choiceNum = 1;
             }
 
@@ -3711,6 +3792,9 @@
 
                         songAuthor = "TraffStick - Mathieu";
                     }
+                    else if (currentRegion == "canyon") {
+                        stats.roadAngle *= 1.2;
+                    }
                     else if (currentRegion == "red carpet") {
                         stats.roadLength *= 3;
                         stats.timerMax *= 3;
@@ -3750,7 +3834,10 @@
                 pos.x += Math.cos(angle)*size * (1 + 1.2 * (currentRegion == "abyss"));
                 pos.y += Math.sin(angle)*size * (1 + 1.2 * (currentRegion == "abyss"));
 
-                if (currentRegion == "city") { if (Math.random() < stats.roadAngle/Math.PI/7) angle += Math.PI/2-Math.PI*(Math.random() < 0.5)
+                if (currentRegion == "city") { if (Math.random() < stats.roadAngle/Math.PI/7) {
+                    angle += Math.PI/2-Math.PI*(Math.random() < 0.5)
+                    road[road.length-1].size *= 1.25;
+                }
                 } else angle += stats.roadAngle/2-stats.roadAngle*Math.random();
             }
 
@@ -3790,6 +3877,25 @@
                     let thing = true
                     road.forEach( (road) => {if ( Math.hypot(road.x-building.x, road.y-building.y) < building.size*2.5 ) thing = false; } )
                     buildings.forEach( (road, i2) => {if ( i != i2) if (Math.hypot(road.x-building.x, road.y-building.y) < building.size + road.size && (road.exist || i2 > i) ) thing = false; } )
+
+                    building.exist = thing;
+
+                    return thing;
+                })
+            }
+            if (currentRegion == "canyon") {
+                let offset = 0;
+                road.forEach((roadItem, i) => {if (roadItem.road && i <= road.length-3 && i > offset) {
+                    const angle = roadItem.roadAngle+Math.PI/2;
+                    buildings.push( {x: roadItem.x - roadItem.size*3*Math.cos(angle), y: roadItem.y - roadItem.size*3*Math.sin(angle), size: roadItem.size*1.5, angle: roadItem.roadAngle, color: `#${(Math.random()*2+7).toFixed(0)}${(Math.random()*2+3).toFixed(0)}1`, height: 20.5+Math.random() } );
+                    const angle2 = roadItem.roadAngle+Math.PI/2 + Math.PI;
+                    buildings.push( {x: roadItem.x - roadItem.size*3*Math.cos(angle2), y: roadItem.y - roadItem.size*3*Math.sin(angle2), size: roadItem.size*1.5, angle: roadItem.roadAngle, color: `#${(Math.random()*2+7).toFixed(0)}${(Math.random()*2+3).toFixed(0)}1`, height: 20.5+Math.random() } );
+                    offset = i + 3;
+                } } );
+
+                buildings = buildings.filter((building, i) => {
+                    let thing = true
+                    road.forEach( (road) => {if ( Math.hypot(road.x-building.x, road.y-building.y) < road.size ) thing = false; } )
 
                     building.exist = thing;
 
