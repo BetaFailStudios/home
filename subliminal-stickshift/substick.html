@@ -356,67 +356,44 @@
             },
             {
                 name: "Duck Tape",
-                desc: "Increased time allotted for levels",
+                desc: "Minorly slows fuel leak",
                 drawFunction(timer) {
                     ctx.beginPath();
-                    ctx.moveTo(90,-80);
-                    ctx.lineTo(80,-90);
-                    ctx.lineTo(0,0);
+                    ctx.moveTo(80,0);
+                    ctx.lineTo(50,70);
+                    ctx.lineTo(20,80);
+                    ctx.lineTo(80,80);
+                    ctx.lineTo(80,100);
+                    ctx.lineTo(-20,100);
+                    ctx.lineTo(-90,70);
+                    ctx.lineTo(-120,0);
+                    ctx.lineTo(-90,-70);
+                    ctx.lineTo(-20,-100);
+                    ctx.lineTo(50,-70);
                     ctx.closePath();
-                    ctx.strokeStyle = "#333";
-                    ctx.stroke();
-                    ctx.fillStyle = "#666";
-                    ctx.fill();
-
-                    ctx.beginPath();
-                    ctx.moveTo(95,-75);
-                    ctx.lineTo(75,-95);
-                    ctx.lineTo(85,-105);
-                    ctx.lineTo(105,-85);
+                    ctx.moveTo(-70,0);
+                    ctx.lineTo(-55,35);
+                    ctx.lineTo(-20,50);
+                    ctx.lineTo(15,35);
+                    ctx.lineTo(30,0);
+                    ctx.lineTo(15,-35);
+                    ctx.lineTo(-20,-50);
+                    ctx.lineTo(-55,-35);
                     ctx.closePath();
-                    ctx.strokeStyle = "#333";
-                    ctx.stroke();
-                    ctx.fillStyle = "#ccc";
-                    ctx.fill();
-
-                    ctx.beginPath();
-                    ctx.arc(0,0,100,0,Math.PI*2);
-                    ctx.fillStyle = "#ffc";
-                    ctx.fill();
                     ctx.strokeStyle = "#990";
                     ctx.stroke();
-
-                    ctx.beginPath();
-                    ctx.moveTo(-30,-80);
-                    ctx.lineTo(0,0);
-                    ctx.lineTo(50,-40);
-                    ctx.strokeStyle = "#900";
-                    ctx.stroke();
-
-                    ctx.beginPath();
-                    ctx.moveTo(0, -80);
-                    ctx.lineTo(70, -10);
-                    ctx.lineTo(30, -10);
-                    ctx.lineTo(30, 70);
-                    ctx.lineTo(-30, 70);
-                    ctx.lineTo(-30, -10);
-                    ctx.lineTo(-70, -10);
-                    ctx.closePath();
-                    ctx.fillStyle = "#ffffff99";
+                    ctx.fillStyle = "#cc0";
                     ctx.fill();
-                    ctx.strokeStyle = "#33993399";
-                    ctx.stroke();
-
 
                     if (!timer) {
                         ctx.beginPath();
                         ctx.font = "50px Jura";
                         ctx.strokeStyle = "#333";
                         ctx.fillStyle = "#990";
-                        ctx.strokeText("Longer",0,-150);
-                        ctx.fillText("Longer",0,-150);
-                        ctx.strokeText("Timer",0,150);
-                        ctx.fillText("Timer",0,150);
+                        ctx.strokeText("Duck",0,-150);
+                        ctx.fillText("Duck",0,-150);
+                        ctx.strokeText("Tape",0,150);
+                        ctx.fillText("Tape",0,150);
                     }
                 },
                 chooseFunction() {
@@ -428,13 +405,21 @@
                 desc: "Reduces the deceleration speed off-road",
                 drawFunction(timer) {
                     ctx.beginPath();
-                    ctx.arc(0,0,50,0,Math.PI*2, true);
                     let num = 0;
                     for(var i = 0; i <= Math.PI*2; i += Math.PI/18) {
                         num++;
                         ctx.lineTo((100-20*(num == 3))*Math.cos(i),(100-20*(num == 3))*Math.sin(i));
                         if (num == 3) num = 0;
                     }
+                    ctx.moveTo(-50,0);
+                    ctx.lineTo(-35,35);
+                    ctx.lineTo(0,50);
+                    ctx.lineTo(35,35);
+                    ctx.lineTo(50,0);
+                    ctx.lineTo(35,-35);
+                    ctx.lineTo(0,-50);
+                    ctx.lineTo(-35,-35);
+                    ctx.closePath();
                     ctx.strokeStyle = "#666";
                     ctx.stroke();
                     ctx.fillStyle = "#333";
@@ -460,14 +445,22 @@
                 desc: "Increased Drifting friction",
                 drawFunction(timer) {
                     ctx.beginPath();
-                    ctx.arc(0,0,80,0,Math.PI*2);
+                    ctx.moveTo(-80,0);
+                    ctx.lineTo(-56,56);
+                    ctx.lineTo(0,80);
+                    ctx.lineTo(56,56);
+                    ctx.lineTo(80,0);
+                    ctx.lineTo(56,-56);
+                    ctx.lineTo(0,-80);
+                    ctx.lineTo(-56,-56);
+                    ctx.closePath();
                     let num = 0;
                     ctx.strokeStyle = "#666";
                     ctx.stroke();
                     ctx.fillStyle = "#333";
                     ctx.fill();
                     ctx.beginPath();
-                    for(var i = 0; i <= Math.PI*2; i += Math.PI/10) {
+                    for(var i = Math.PI/8; i <= Math.PI*2+Math.PI/8; i += Math.PI/4) {
                         ctx.moveTo(100*Math.cos(i),100*Math.sin(i));
                         ctx.lineTo(110*Math.cos(i),110*Math.sin(i));
                     }
@@ -475,7 +468,15 @@
                     ctx.stroke();
                     
                     ctx.beginPath();
-                    ctx.arc(0,0,55,0,Math.PI*2);
+                    ctx.moveTo(50,0);
+                    ctx.lineTo(35,35);
+                    ctx.lineTo(0,50);
+                    ctx.lineTo(-35,35);
+                    ctx.lineTo(-50,0);
+                    ctx.lineTo(-35,-35);
+                    ctx.lineTo(0,-50);
+                    ctx.lineTo(35,-35);
+                    ctx.closePath();
                     ctx.strokeStyle = "#666";
                     ctx.stroke();
                     ctx.fillStyle = "#999";
@@ -779,7 +780,6 @@
                 name: "Look Ma', No hands",
                 desc: "Increased speed while not holding the the wheel",
                 drawFunction(timer) {
-
                     //wheel
                     ctx.save();
                     ctx.rotate(Math.PI/5);
@@ -806,7 +806,6 @@
                     ctx.lineTo(0,80);
                     ctx.lineTo(55,55);
                     ctx.closePath();
-                    //ctx.arc(0,0,80,0,Math.PI*2, true);
                     ctx.rect(-90,-10,180,20);
                     ctx.rect(-10,0,20,90);
                     ctx.stroke();
@@ -1125,20 +1124,32 @@
 
                     //wheel
                     ctx.save();
-                    ctx.rotate(-Math.PI/7);
+                    ctx.rotate(Math.PI/5);
                     
+                    ctx.strokeStyle = "#333";
                     ctx.fillStyle = "#ad7d53";
                     ctx.beginPath();
-                    ctx.arc(0,0,100,0,Math.PI*2);
-                    ctx.moveTo(-80,0);
-                    ctx.arc(0,0,80,0,Math.PI*2, true);
+                    ctx.moveTo(100,0);
+                    ctx.lineTo(70,70);
+                    ctx.lineTo(0,100);
+                    ctx.lineTo(-70,70);
+                    ctx.lineTo(-100,0);
+                    ctx.lineTo(-70,-70);
+                    ctx.lineTo(0,-100);
+                    ctx.lineTo(70,-70);
+                    ctx.closePath();
+
+                    ctx.moveTo(80,0);
+                    ctx.lineTo(55,-55);
+                    ctx.lineTo(0,-80);
+                    ctx.lineTo(-55,-55);
+                    ctx.lineTo(-80,0);
+                    ctx.lineTo(-55,55);
+                    ctx.lineTo(0,80);
+                    ctx.lineTo(55,55);
+                    ctx.closePath();
                     ctx.rect(-90,-10,180,20);
                     ctx.rect(-10,0,20,90);
-                    ctx.lineWidth = game.defaultLineWidth*2;
-                    ctx.strokeStyle = "#708";
-                    ctx.stroke();
-                    ctx.lineWidth = game.defaultLineWidth;
-                    ctx.strokeStyle = "#333";
                     ctx.stroke();
                     ctx.fill();
 
@@ -1375,57 +1386,21 @@
                 }
             },
             {
-                name: "Shorter Timer",
-                desc: "Reduced time allotted for levels",
+                name: "Bigger Leak",
+                desc: "Minorly increased fuel Loss",
                 drawFunction(timer) {
                     ctx.beginPath();
-                    ctx.moveTo(90,-80);
-                    ctx.lineTo(80,-90);
-                    ctx.lineTo(0,0);
+                    let num = 0;
+                    for(var i = 0; i <= Math.PI*2; i += Math.PI/18) {
+                        num++;
+                        ctx.lineTo((40+80*(num == 1)+50*(num == 5)+20*(num == 7))*Math.cos(i),(40+80*(num == 1)+50*(num == 5)+20*(num == 7))*Math.sin(i));
+                        if (num == 8) num = 0;
+                    }
                     ctx.closePath();
                     ctx.strokeStyle = "#333";
                     ctx.stroke();
-                    ctx.fillStyle = "#666";
+                    ctx.fillStyle = "#222";
                     ctx.fill();
-
-                    ctx.beginPath();
-                    ctx.moveTo(95,-75);
-                    ctx.lineTo(75,-95);
-                    ctx.lineTo(85,-105);
-                    ctx.lineTo(105,-85);
-                    ctx.closePath();
-                    ctx.strokeStyle = "#333";
-                    ctx.stroke();
-                    ctx.fillStyle = "#ccc";
-                    ctx.fill();
-
-                    ctx.beginPath();
-                    ctx.arc(0,0,100,0,Math.PI*2);
-                    ctx.fillStyle = "#ffc";
-                    ctx.fill();
-                    ctx.strokeStyle = "#990";
-                    ctx.stroke();
-
-                    ctx.beginPath();
-                    ctx.moveTo(-30,-80);
-                    ctx.lineTo(0,0);
-                    ctx.lineTo(50,-40);
-                    ctx.strokeStyle = "#900";
-                    ctx.stroke();
-
-                    ctx.beginPath();
-                    ctx.moveTo(0, 80);
-                    ctx.lineTo(70, 10);
-                    ctx.lineTo(30, 10);
-                    ctx.lineTo(30, -70);
-                    ctx.lineTo(-30, -70);
-                    ctx.lineTo(-30, 10);
-                    ctx.lineTo(-70, 10);
-                    ctx.closePath();
-                    ctx.fillStyle = "#ffffff99";
-                    ctx.fill();
-                    ctx.strokeStyle = "#99333399";
-                    ctx.stroke();
 
 
                     if (!timer) {
@@ -1433,10 +1408,10 @@
                         ctx.font = "50px Jura";
                         ctx.strokeStyle = "#333";
                         ctx.fillStyle = "#990";
-                        ctx.strokeText("Shorter",0,-150);
-                        ctx.fillText("Shorter",0,-150);
-                        ctx.strokeText("Timer",0,150);
-                        ctx.fillText("Timer",0,150);
+                        ctx.strokeText("Bigger",0,-150);
+                        ctx.fillText("Bigger",0,-150);
+                        ctx.strokeText("Leak",0,150);
+                        ctx.fillText("Leak",0,150);
                     }
                 },
                 chooseFunction() {
@@ -1450,9 +1425,13 @@
                     ctx.beginPath();
                     ctx.save();
                     ctx.translate(-50,0);
-                    for (var i = 0; i < 4; i++) {
-                        ctx.moveTo(-100,0);
-                        ctx.arc(0,-50,50,Math.PI/2, -Math.PI/3, true);
+                    for (var i = 0; i < 3; i++) {
+                        ctx.moveTo(-50,0);
+                        ctx.lineTo(0,0);
+                        ctx.lineTo(18,-7);
+                        ctx.lineTo(25,-25);
+                        ctx.lineTo(18,-43);
+                        ctx.lineTo(0,-50);
 
                         ctx.translate(50,25);
                     }
@@ -1490,15 +1469,31 @@
                 desc: "Reduced Drifting friction",
                 drawFunction(timer) {
                     ctx.beginPath();
-                    ctx.arc(0,0,80,0,Math.PI*2);
+                    ctx.moveTo(-80,0);
+                    ctx.lineTo(-56,56);
+                    ctx.lineTo(0,80);
+                    ctx.lineTo(56,56);
+                    ctx.lineTo(80,0);
+                    ctx.lineTo(56,-56);
+                    ctx.lineTo(0,-80);
+                    ctx.lineTo(-56,-56);
+                    ctx.closePath();
                     let num = 0;
                     ctx.strokeStyle = "#666";
                     ctx.stroke();
                     ctx.fillStyle = "#333";
                     ctx.fill();
                     ctx.beginPath();
-                    ctx.arc(0,0,100,0,Math.PI*2);
-                    for(var i = 0; i <= Math.PI*2; i += Math.PI/10) {
+                    ctx.moveTo(-100,0);
+                    ctx.lineTo(-70,70);
+                    ctx.lineTo(0,100);
+                    ctx.lineTo(70,70);
+                    ctx.lineTo(100,0);
+                    ctx.lineTo(70,-70);
+                    ctx.lineTo(0,-100);
+                    ctx.lineTo(-70,-70);
+                    ctx.closePath();
+                    for(var i = Math.PI/8; i <= Math.PI*2+Math.PI/8; i += Math.PI/4) {
                         ctx.moveTo(100*Math.cos(i),100*Math.sin(i));
                         ctx.lineTo(110*Math.cos(i),110*Math.sin(i));
                     }
@@ -1506,7 +1501,15 @@
                     ctx.stroke();
                     
                     ctx.beginPath();
-                    ctx.arc(0,0,55,0,Math.PI*2);
+                    ctx.moveTo(50,0);
+                    ctx.lineTo(35,35);
+                    ctx.lineTo(0,50);
+                    ctx.lineTo(-35,35);
+                    ctx.lineTo(-50,0);
+                    ctx.lineTo(-35,-35);
+                    ctx.lineTo(0,-50);
+                    ctx.lineTo(35,-35);
+                    ctx.closePath();
                     ctx.strokeStyle = "#666";
                     ctx.stroke();
                     ctx.fillStyle = "#999";
@@ -1576,7 +1579,6 @@
                 desc: "Reduced Acceleration",
                 drawFunction(timer) {
                     ctx.beginPath();
-                    ctx.arc(0,0,100,0,Math.PI*2, true);
                     let num = 0;
                     for(var i = 0; i <= Math.PI*2; i += Math.PI/18) {
                         num++;
@@ -1587,6 +1589,15 @@
                     for(var i = 0; i <= Math.PI*2; i += Math.PI/6) {
                         ctx.lineTo(40*Math.cos(i),40*Math.sin(i));
                     }
+                    ctx.closePath();
+                    ctx.moveTo(-100,0);
+                    ctx.lineTo(-70,70);
+                    ctx.lineTo(0,100);
+                    ctx.lineTo(70,70);
+                    ctx.lineTo(100,0);
+                    ctx.lineTo(70,-70);
+                    ctx.lineTo(0,-100);
+                    ctx.lineTo(-70,-70);
                     ctx.closePath();
                     ctx.strokeStyle = "#666";
                     ctx.stroke();
@@ -1786,8 +1797,8 @@
                 drawFunction(timer) {
                     ctx.beginPath();
                     ctx.save();
-                    ctx.translate(-100,30);
-                    for (var i = 0; i < 4; i++) {
+                    ctx.translate(-75,30);
+                    for (var i = 0; i < 3; i++) {
                         ctx.moveTo(-50,0);
                         ctx.lineTo(0,0);
                         ctx.lineTo(18,-7);
@@ -1798,7 +1809,7 @@
                         ctx.translate(50,25);
                     }
                     ctx.translate(-100,-150);
-                    for (var i = 0; i < 4; i++) {
+                    for (var i = 0; i < 3; i++) {
                         ctx.moveTo(-50,0);
                         ctx.lineTo(0,0);
                         ctx.lineTo(18,-7);
@@ -1907,29 +1918,44 @@
                 desc: "Every once and a while, you lose grip",
                 drawFunction(timer) {
                     ctx.beginPath();
-                    ctx.moveTo(-60,100);
-                    ctx.lineTo(-75,0);
-                    ctx.lineTo(-70,-75);
-                    ctx.lineTo(-60,-75);
-                    ctx.lineTo(-55,-0);
-                    ctx.lineTo(-50,-90);
-                    ctx.lineTo(-40,-90);
+                    ctx.moveTo(-40,100);
+                    ctx.lineTo(-55,0);
+                    ctx.lineTo(-50,-75);
+                    ctx.lineTo(-40,-75);
                     ctx.lineTo(-35,-0);
-                    ctx.lineTo(-30,-100);
-                    ctx.lineTo(-20,-100);
+                    ctx.lineTo(-30,-90);
+                    ctx.lineTo(-20,-90);
                     ctx.lineTo(-15,-0);
-                    ctx.lineTo(-10,-90);
-                    ctx.lineTo(0,-90);
-                    ctx.lineTo(5,0);
-                    ctx.lineTo(15,30);
-                    ctx.lineTo(40,-30);
-                    ctx.lineTo(47,-27);
-                    ctx.lineTo(30,40);
-                    ctx.lineTo(10,90);
+                    ctx.lineTo(-10,-100);
+                    ctx.lineTo(0,-100);
+                    ctx.lineTo(5,-0);
+                    ctx.lineTo(10,-90);
+                    ctx.lineTo(20,-90);
+                    ctx.lineTo(25,0);
+                    ctx.lineTo(35,30);
+                    ctx.lineTo(60,-30);
+                    ctx.lineTo(67,-27);
+                    ctx.lineTo(50,40);
+                    ctx.lineTo(30,90);
                     ctx.closePath();
                     ctx.strokeStyle = "#333";
                     ctx.stroke();
                     ctx.fillStyle = "#c96";
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(-5,-5);
+                    ctx.lineTo(5,30);
+                    ctx.lineTo(20,50);
+                    ctx.lineTo(15,70);
+                    ctx.lineTo(-5,80);
+                    ctx.lineTo(-25,70);
+                    ctx.lineTo(-30,50);
+                    ctx.lineTo(-15,30);
+                    ctx.closePath();
+                    ctx.strokeStyle = "#369";
+                    ctx.stroke();
+                    ctx.fillStyle = "#69c";
                     ctx.fill();
 
                     if (!timer) {
@@ -4402,7 +4428,7 @@
             song.volume = (0.6+0.4*(song.src.includes("PlaStick") || song.src.includes("Stick-City")))*game.audioVolume;
         },100)
 
-        if (0) {
+        if (1) {
             generatePlatformRoad(stats.roadLength/stats.roadSize);
 
             calculateRoadPerspectivePoints();
@@ -4424,8 +4450,10 @@
             ctx.stroke();
             
             generatePlatformRoad(stats.roadLength/stats.roadSize);
-
-            unStackablePunishments[13].drawFunction()
+            
+            //stackablePerks[4].drawFunction();
+            stackablePunishments[7].drawFunction();
+            //unStackablePunishments[3].drawFunction()
         },100)
     </script>
 </body>
