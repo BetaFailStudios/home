@@ -1250,6 +1250,7 @@
                 name: "Curvy Roads",
                 desc: "Increase the curvature of roads",
                 drawFunction(timer) {
+                        console.log(ctx.globalAlpha, ctx.fillStyle, ctx.strokeStyle);
                     ctx.beginPath();
                     ctx.moveTo(-150,100);
                     ctx.lineTo(-50,50);
@@ -2400,7 +2401,7 @@
             },
             {
                 name: "Black Ice",
-                desc: "Inverted Steering",
+                desc: "Barely visible black ice spawns",
                 drawFunction(timer) {
                     ctx.beginPath();
                     ctx.moveTo(-100,0);
@@ -3848,30 +3849,30 @@
                 ctx.beginPath();
                 
                 perkChoices.forEach( (choice, i) => {
-                    if ( i == perkChoicePos) {
-                        ctx.strokeStyle = "#555";
-                        ctx.fill();
-                        ctx.stroke();
-
-                        ctx.beginPath();
-                        ctx.moveTo(25,0);
-                        ctx.lineTo(19,19);
-                        ctx.lineTo(0,25);
-                        ctx.lineTo(-19,19);
-                        ctx.lineTo(-25,0);
-                        ctx.lineTo(-19,-19);
-                        ctx.lineTo(0,-25);
-                        ctx.lineTo(19,-19);
-                        ctx.closePath();
-
-                        ctx.strokeStyle = "#900";
-                        ctx.fill();
-                        ctx.stroke();
-
-                        ctx.beginPath();
-                    }
-
                     if (i >= perkChoicePos) {
+                        if ( i == perkChoicePos) {
+                            ctx.strokeStyle = "#555";
+                            ctx.fill();
+                            ctx.stroke();
+
+                            ctx.beginPath();
+                            ctx.moveTo(25,0);
+                            ctx.lineTo(19,19);
+                            ctx.lineTo(0,25);
+                            ctx.lineTo(-19,19);
+                            ctx.lineTo(-25,0);
+                            ctx.lineTo(-19,-19);
+                            ctx.lineTo(0,-25);
+                            ctx.lineTo(19,-19);
+                            ctx.closePath();
+
+                            ctx.strokeStyle = "#900";
+                            ctx.fill();
+                            ctx.stroke();
+
+                            ctx.beginPath();
+                        }
+
                         ctx.moveTo(20,0);
                         ctx.lineTo(15,15);
                         ctx.lineTo(0,20);
@@ -4011,9 +4012,14 @@
                         }
                     } else if (chosenPerkDraw[i]) {
                         ctx.save();
-                        ctx.lineWidth = game.defaultLineWidth;
+
                         ctx.scale(0.2,0.2);
+                        ctx.lineWidth = game.defaultLineWidth;
                         chosenPerkDraw[i](true);
+                        ctx.beginPath();
+
+                        ctx.lineWidth = 3;
+
                         ctx.restore();
                     }
 
@@ -4350,8 +4356,8 @@
                 road[road.length-1].finalBooster = true
             }
             if (stats.bIce) {
-                road.forEach((roadItem, i) => {if (roadItem.road && (Math.random() < 0.07*stats.roadHazardChance) && i <= road.length-3) {
-                    road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*2*Math.random(), size: roadItem.size/1.25, angle: Math.PI*Math.random()-Math.PI/2, bIce: true } );
+                road.forEach((roadItem, i) => {if (roadItem.road && (Math.random() < 0.03*stats.roadHazardChance) && i <= road.length-3) {
+                    road.push( {x: roadItem.x - roadItem.size + roadItem.size*2*Math.random(), y: roadItem.y - roadItem.size + roadItem.size*2*Math.random(), size: roadItem.size*1.25, angle: Math.PI*Math.random()-Math.PI/2, bIce: true } );
                 } } );
                 road[road.length-1].finalBIce = true
             }
