@@ -3322,7 +3322,7 @@
 
                 car.wheel -= -(angleDiff) / (Math.PI*5/2);
             } else if (stats.telekinesis && ( keys.includes("d") - keys.includes("a") )) {
-                car.wheel -= 0.003*( keys.includes("d") - keys.includes("a") )*stats.turnSpeed;
+                car.wheel -= 0.01*( keys.includes("d") - keys.includes("a") )*stats.turnSpeed;
             }
             else {
                 car.wheel *= 0.98;
@@ -3381,7 +3381,7 @@
             } else {
                 if (Math.abs(angleDiff) > Math.abs(stats.requiredDriftAngle/car.speed) / ( 1 + game.audioVolume )) {
                     angleDiff *= stats.driftGrip / ( 1 + game.audioVolume );
-                    if (stats.driftBoost) stats.driftBoostCharge += Math.abs(angleDiff)*450;
+                    if (stats.driftBoost) stats.driftBoostCharge += Math.abs(angleDiff)*750;
                 } else if (stats.driftBoostCharge) {
                     car.booster = stats.driftBoostCharge;
                     stats.driftBoostCharge = 0;
