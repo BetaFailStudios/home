@@ -1270,7 +1270,8 @@
                     }
                 },
                 chooseFunction() {
-                    stats.jamin = true;
+                    stats.driftBoost = true;
+                    stats.driftBoostCharge = 0;
                 }
             },
         ]
@@ -2608,7 +2609,8 @@
                     ctx.lineWidth = game.defaultLineWidth;
                 },
                 chooseFunction() {
-                    stats.crack = 1;
+                    let pos = { x: -100 + 200*Math.random(), y: -50 + 100*Math.random() };
+                    stats.crack = [[[pos.x-25+Math.random()*50,pos.y-25+Math.random()*50],[pos.x,pos.y],[pos.x-25+Math.random()*50,pos.y-25+Math.random()*50]],[[pos.x-25+Math.random()*50,pos.y-25+Math.random()*50],[pos.x,pos.y],[pos.x-25+Math.random()*50,pos.y-25+Math.random()*50]]];
                 }
             },
         ]
@@ -2955,7 +2957,8 @@
                     ctx.lineTo(-angleDiff*2000-cloud.size, -cloud.y/2+horizon);
                     ctx.lineTo(-angleDiff*2000+cloud.size, 2000);
                 })
-            } else if (currentRegion == "red carpet") {
+            } 
+            else if (currentRegion == "red carpet") {
                 ctx.beginPath();
                 let angleDiff;
                 let reverse;
@@ -2991,7 +2994,8 @@
                 ctx.stroke();
 
                 return;
-            } else {
+            } 
+            else {
                 ctx.beginPath();
                 if (currentRegion == "highway") ctx.fillStyle = "#444";
                 else if (currentRegion == "canyon") ctx.fillStyle = "#a97";
@@ -3379,12 +3383,16 @@
             if (stats.driftWiper && Math.sign(angleDiff) == -Math.sign(car.wiper-0.5)) {
                 car.speedAngle += angleDiff
             } else {
-                if (Math.abs(angleDiff) > Math.abs(stats.requiredDriftAngle/car.speed) / ( 1 + game.audioVolume )) {
-                    angleDiff *= stats.driftGrip / ( 1 + game.audioVolume );
-                    if (stats.driftBoost) stats.driftBoostCharge += Math.abs(angleDiff)*750;
-                } else if (stats.driftBoostCharge) {
+                if (Math.abs(angleDiff) > Math.PI/15) {
+                    if (stats.driftBoost) stats.driftBoostCharge += Math.abs(angleDiff)*350;
+                }else if (stats.driftBoostCharge && car.booster < stats.driftBoostCharge) {
                     car.booster = stats.driftBoostCharge;
                     stats.driftBoostCharge = 0;
+                }
+
+                if (Math.abs(angleDiff) > Math.abs(stats.requiredDriftAngle/car.speed) / ( 1 + game.audioVolume )) {
+                    angleDiff *= stats.driftGrip / ( 1 + game.audioVolume );
+                    
                 }
 
                 car.speedAngle += angleDiff * (1-0.75*car.oilslick) * (1-0.6*car.bIce);
@@ -3566,175 +3574,46 @@
 
             //windshield crack
             if (stats.crack) {
-                ctx.lineWidth = game.defaultLineWidth/2 * stats.crack;
+                ctx.lineWidth = game.defaultLineWidth/100 * stats.crack.length;
 
                 ctx.beginPath();
-                ctx.moveTo(0,0);
-                ctx.lineTo(30,-20);
-                ctx.moveTo(0,0);
-                ctx.lineTo(-20,40);
-                ctx.moveTo(0,0);
-                ctx.lineTo(-30,-30);
-                if (stats.crack > 4) {
-                    ctx.moveTo(35,-60);
-                    ctx.lineTo(30,-20);
-                    ctx.lineTo(70,-15);
-                    ctx.moveTo(-50,45);
-                    ctx.lineTo(-20,40);
-                    ctx.lineTo(0,70);
-                    ctx.moveTo(-70,-35);
-                    ctx.lineTo(-30,-30);
-                    ctx.lineTo(-35,-70);
-                    ctx.moveTo(0,0);
-                    ctx.lineTo(40,30);
-                }
-                if (stats.crack > 8) {
-                    ctx.moveTo(35,-60);
-                    ctx.lineTo(30,-20);
-                    ctx.lineTo(70,-15);
-                    ctx.moveTo(-50,45);
-                    ctx.lineTo(-20,40);
-                    ctx.lineTo(0,70);
-                    ctx.moveTo(-70,-35);
-                    ctx.lineTo(-30,-30);
-                    ctx.lineTo(-35,-70);
-                    ctx.moveTo(0,0);
-                    ctx.lineTo(40,30);
-                }
-                if (stats.crack > 10) {
-                    ctx.moveTo(50,-85);
-                    ctx.lineTo(35,-60);
-                    ctx.lineTo(90,-70);
-                    
-                    ctx.moveTo(-120,-40);
-                    ctx.lineTo(-70,-35);
-                    ctx.lineTo(-75,-85);
-
-                    ctx.moveTo(-45,-110);
-                    ctx.lineTo(-35,-70);
-                    ctx.lineTo(-85,-75);
-                }
-                if (stats.crack > 12) {
-                    ctx.moveTo(90,-55);
-                    ctx.lineTo(70,-15);
-                    ctx.lineTo(120,-35);
-
-                    ctx.moveTo(-90,55);
-                    ctx.lineTo(-50,45);
-                    ctx.lineTo(-60,105);
-
-                    ctx.moveTo(50,75);
-                    ctx.lineTo(0,70);
-                    ctx.lineTo(-10,130);
-
-                    ctx.moveTo(90,35);
-                    ctx.lineTo(40,30);
-                    ctx.lineTo(50,90);
-                }
-                if (stats.crack > 16) {
-                    ctx.moveTo(50,-85);
-                    ctx.lineTo(200,-345);
-                    
-                    ctx.moveTo(90,-70);
-                    ctx.lineTo(390,-270);
-                    
-                    ctx.moveTo(-120,-40);
-                    ctx.lineTo(-520,-240);
-
-                    ctx.moveTo(-75,-85);
-                    ctx.lineTo(-275,-285);
-
-                    ctx.moveTo(-45,-110);
-                    ctx.lineTo(-145,-410);
-
-                    ctx.moveTo(-85,-75);
-                    ctx.lineTo(-285,-175);
-
-                    ctx.moveTo(90,-55);
-                    ctx.lineTo(290,-155);
-
-                    ctx.moveTo(120,-35);
-                    ctx.lineTo(520,-135);
-
-                    ctx.moveTo(-90,55);
-                    ctx.lineTo(-290,155);
-
-                    ctx.moveTo(-60,105);
-                    ctx.lineTo(-160,305);
-
-                    ctx.moveTo(50,75);
-                    ctx.lineTo(150,275);
-
-                    ctx.moveTo(-10,130);
-                    ctx.lineTo(-110,330);
-
-                    ctx.moveTo(90,35);
-                    ctx.lineTo(390,135);
-
-                    ctx.moveTo(50,90);
-                    ctx.lineTo(150,290);
-                }
-                if (stats.crack > 18) {
-                    ctx.moveTo(250,-545);
-                    ctx.lineTo(200,-345);
-                    ctx.lineTo(500,-445);
-                    
-                    ctx.moveTo(490,-470);
-                    ctx.lineTo(390,-270);
-                    ctx.lineTo(890,-300);
-                    
-                    ctx.moveTo(-1020,-340);
-                    ctx.lineTo(-520,-240);
-                    ctx.lineTo(-620,-540);
-
-                    ctx.moveTo(-375,-385);
-                    ctx.lineTo(-275,-285);
-                    ctx.lineTo(-475,-285);
-
-                    ctx.moveTo(-145,-610);
-                    ctx.lineTo(-145,-410);
-                    ctx.lineTo(-245,-310);
-
-                    ctx.moveTo(-485,-275);
-                    ctx.lineTo(-285,-175);
-                    ctx.lineTo(-385,-375);
-
-                    ctx.moveTo(190,-355);
-                    ctx.lineTo(290,-155);
-                    ctx.lineTo(390,-455);
-
-                    ctx.moveTo(720,-235);
-                    ctx.lineTo(520,-135);
-                    ctx.lineTo(420,-435);
-
-                    ctx.moveTo(-390,255);
-                    ctx.lineTo(-290,155);
-                    ctx.lineTo(-590,55);
-
-                    ctx.moveTo(-260,105);
-                    ctx.lineTo(-160,305);
-                    ctx.lineTo(-460,505);
-
-                    ctx.moveTo(450,175);
-                    ctx.lineTo(150,275);
-                    ctx.lineTo(250,475);
-
-                    ctx.moveTo(-310,530);
-                    ctx.lineTo(-110,330);
-                    ctx.lineTo(-510,30);
-
-                    ctx.moveTo(790,235);
-                    ctx.lineTo(390,135);
-                    ctx.lineTo(590,535);
-
-                    ctx.moveTo(450,390);
-                    ctx.lineTo(150,290);
-                    ctx.lineTo(250,90);
-                }
+                stats.crack.forEach((crack) => { crack.forEach( (pos, i) => { 
+                    if (!i) ctx.moveTo(...pos);
+                    else ctx.lineTo(...pos);
+                } ) })
                 ctx.strokeStyle = "#ccc";
                 ctx.stroke();
 
                 ctx.lineWidth = game.defaultLineWidth;
+            }
+
+            //boost lines
+            if (car.booster) {
+                const ratio = Math.max(0,50/(car.booster+1));
+                ctx.strokeStyle = "#cccccc33";
+
+                ctx.beginPath();
+                ctx.moveTo(0,500);
+                ctx.lineTo(0,100+1000*ratio);
+                ctx.moveTo(0,-500);
+                ctx.lineTo(0,-100-1000*ratio);
+                ctx.moveTo(-1000,0);
+                ctx.lineTo(-200-1000*ratio,0);
+                ctx.moveTo(1000,0);
+                ctx.lineTo(200+1000*ratio,0);
+                ctx.moveTo(1000,500);
+                ctx.lineTo(200+800*ratio,100+400*ratio);
+                ctx.moveTo(1000,-500);
+                ctx.lineTo(200+800*ratio,-100-400*ratio);
+                ctx.moveTo(-1000,500);
+                ctx.lineTo(-200-800*ratio,100+400*ratio);
+                ctx.moveTo(-1000,-500);
+                ctx.lineTo(-200-800*ratio,-100-400*ratio);
+                ctx.moveTo(-500,-500);
+                ctx.lineTo(-100-450*ratio,-200-450*ratio);
+                ctx.moveTo(500,-500);
+                ctx.lineTo(100+450*ratio,-200-450*ratio);
+                ctx.stroke();
             }
 
             //windshield & dash
@@ -4554,7 +4433,7 @@
                 game.timerCounting = false;
                 stats.timerMax *= 0.985;
 
-                if (stats.crack) stats.crack++;
+                if (stats.crack) developCrack();
 
                 if (perkChoicePos == perkChoices.length) {
                     chosenPerk.splice(choice.position, 1);
@@ -4729,6 +4608,28 @@
             }
 
             calculateRoadPoints();
+        }
+
+        function developCrack() {
+            let currentPos = stats.crack.length-1;
+            stats.crack.forEach( (crack, i) => {
+                if (i >= currentPos) return;
+
+                if (Math.random() < 10/currentPos) {
+                    stats.crack.push( [
+                        [crack[0][0]+Math.sign(crack[0][0]-crack[1][0])*(currentPos*6*Math.random()-currentPos/5),crack[0][1]+Math.sign(crack[0][1]-crack[1][1])*(currentPos*4*Math.random()-currentPos/4)],
+                        [...crack[0]],
+                        [crack[0][0]+Math.sign(crack[0][0]-crack[1][1])*(currentPos*6*Math.random()-currentPos/5),crack[0][1]+Math.sign(crack[0][1]-crack[1][1])*(currentPos*4*Math.random()-currentPos/4)]
+                    ] )
+                }
+                if (Math.random() < 10/currentPos) {
+                    stats.crack.push( [
+                        [crack[2][0]+Math.sign(crack[2][0]-crack[1][0])*(currentPos*6*Math.random()-currentPos/5),crack[2][1]+Math.sign(crack[2][1]-crack[1][1])*(currentPos*4*Math.random()-currentPos/4)],
+                        [...crack[2]],
+                        [crack[2][0]+Math.sign(crack[2][0]-crack[1][1])*(currentPos*6*Math.random()-currentPos/5),crack[2][1]+Math.sign(crack[2][1]-crack[1][1])*(currentPos*4*Math.random()-currentPos/4)]
+                    ] )
+                }
+            } )
         }
 
 
