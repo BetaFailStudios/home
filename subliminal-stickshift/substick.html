@@ -3361,7 +3361,7 @@
             car.angle = car.angle%(Math.PI*2);
 
             if (car.bIce) {
-                if (Math.abs(car.angleDiff) < Math.PI*Math.abs(car.speed)/150) car.angleDiff *= 1 + Math.abs(car.speed)/150;
+                car.angle += car.angleDiff*3;
             }
 
             //changing speedAngle
@@ -4731,7 +4731,7 @@
             calculateRoadPoints();
         }
 
-        
+
     </script>
     <script>
         //music handling
