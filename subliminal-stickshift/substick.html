@@ -2611,6 +2611,7 @@
                 chooseFunction() {
                     let pos = { x: -100 + 200*Math.random(), y: -50 + 100*Math.random() };
                     stats.crack = [[[pos.x-25+Math.random()*50,pos.y-25+Math.random()*50],[pos.x,pos.y],[pos.x-25+Math.random()*50,pos.y-25+Math.random()*50]],[[pos.x-25+Math.random()*50,pos.y-25+Math.random()*50],[pos.x,pos.y],[pos.x-25+Math.random()*50,pos.y-25+Math.random()*50]]];
+                    developCrack();
                 }
             },
         ]
@@ -3573,14 +3574,14 @@
             }
 
             //windshield crack
-            if (stats.crack) {
-                ctx.lineWidth = game.defaultLineWidth/100 * stats.crack.length;
+            if (stats.crackPath) {
+                ctx.lineWidth = Math.min(game.defaultLineWidth*1.5, game.defaultLineWidth/200 * stats.crack.length);
 
                 ctx.beginPath();
-                stats.crack.forEach((crack) => { crack.forEach( (pos, i) => { 
-                    if (!i) ctx.moveTo(...pos);
+                stats.crackPath.forEach((pos) => {
+                    if (pos[2] === true) ctx.moveTo(...pos);
                     else ctx.lineTo(...pos);
-                } ) })
+                } )
                 ctx.strokeStyle = "#ccc";
                 ctx.stroke();
 
@@ -4609,30 +4610,42 @@
 
             calculateRoadPoints();
         }
-
+        
+        let crackPreviousSelected = [];
         function developCrack() {
             let currentPos = stats.crack.length-1;
             stats.crack.forEach( (crack, i) => {
-                if (i >= currentPos) return;
+                if (i >= currentPos || crackPreviousSelected.includes[i]) return;
 
                 if (Math.random() < 10/currentPos) {
                     stats.crack.push( [
-                        [crack[0][0]+Math.sign(crack[0][0]-crack[1][0])*(currentPos*6*Math.random()-currentPos/5),crack[0][1]+Math.sign(crack[0][1]-crack[1][1])*(currentPos*4*Math.random()-currentPos/4)],
-                        [...crack[0]],
-                        [crack[0][0]+Math.sign(crack[0][0]-crack[1][1])*(currentPos*6*Math.random()-currentPos/5),crack[0][1]+Math.sign(crack[0][1]-crack[1][1])*(currentPos*4*Math.random()-currentPos/4)]
+                        [crack[0][0]+Math.sign(crack[0][0]-crack[1][0])*((currentPos+25)*4*Math.random()-(currentPos+25)/4), crack[0][1]+Math.sign(crack[0][1]-crack[1][1])*((currentPos+25)*4*Math.random()-(currentPos+25)/4), true],
+                        [crack[0][0],crack[0][1]]
                     ] )
+                    if (Math.random() < 0.4) stats.crack[stats.crack.length-1].push(
+                        [crack[0][0]+Math.sign(crack[0][0]-crack[1][0])*((currentPos+25)*4*Math.random()-(currentPos+25)/4), crack[0][1]+Math.sign(crack[0][1]-crack[1][1])*((currentPos+25)*4*Math.random()-(currentPos+25)/4)]
+                    )
+                    if (crack[2]){
+                        stats.crack.push( [
+                            [crack[2][0]+Math.sign(crack[2][0]-crack[1][0])*((currentPos+25)*4*Math.random()-(currentPos+25)/4), crack[2][1]+Math.sign(crack[2][1]-crack[1][1])*((currentPos+25)*4*Math.random()-(currentPos+25)/4), true],
+                            [crack[2][0],crack[2][1]]
+                        ] )
+                        if (Math.random() < 0.4) stats.crack[stats.crack.length-1].push(
+                            [crack[2][0]+Math.sign(crack[2][0]-crack[1][0])*((currentPos+25)*4*Math.random()-(currentPos+25)/4), crack[2][1]+Math.sign(crack[2][1]-crack[1][1])*((currentPos+25)*4*Math.random()-(currentPos+25)/4)]
+                        )
+                    }
+
+                    crackPreviousSelected.push(i);
                 }
-                if (Math.random() < 10/currentPos) {
-                    stats.crack.push( [
-                        [crack[2][0]+Math.sign(crack[2][0]-crack[1][0])*(currentPos*6*Math.random()-currentPos/5),crack[2][1]+Math.sign(crack[2][1]-crack[1][1])*(currentPos*4*Math.random()-currentPos/4)],
-                        [...crack[2]],
-                        [crack[2][0]+Math.sign(crack[2][0]-crack[1][1])*(currentPos*6*Math.random()-currentPos/5),crack[2][1]+Math.sign(crack[2][1]-crack[1][1])*(currentPos*4*Math.random()-currentPos/4)]
-                    ] )
-                }
+            } )
+
+            stats.crackPath = [];
+            stats.crack.forEach( (crack, i) => {
+                stats.crackPath.push(...crack);
             } )
         }
 
-
+        
     </script>
     <script>
         //music handling
