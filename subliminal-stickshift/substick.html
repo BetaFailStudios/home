@@ -3575,7 +3575,7 @@
 
             //windshield crack
             if (stats.crackPath) {
-                ctx.lineWidth = Math.min(game.defaultLineWidth*1.5, game.defaultLineWidth/200 * stats.crack.length);
+                ctx.lineWidth = Math.min(game.defaultLineWidth*2, game.defaultLineWidth/200 * stats.crack.length);
 
                 ctx.beginPath();
                 stats.crackPath.forEach((pos) => {
@@ -4645,7 +4645,7 @@
             } )
         }
 
-        
+
     </script>
     <script>
         //music handling
