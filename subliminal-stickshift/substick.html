@@ -3145,7 +3145,7 @@
             car.x += Math.cos(car.speedAngle)*car.speed;
             car.y += Math.sin(car.speedAngle)*car.speed;
 
-            if ( game.timer < stats.timerMax && car.running && ( keys.includes("w") || keys.includes(" ") ) && car.speed > -stats.topSpeed * ( 1 + 0.35 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 0.5 * (car.booster/300) ) ) {
+            if ( game.timer < stats.timerMax && car.running && ( keys.includes("w") || keys.includes(" ") ) && car.speed > -stats.topSpeed * ( 1 + 0.2 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 0.5 * (car.booster/300) ) ) {
                 car.speed -= stats.acceleration * (1 + 2*(car.speed > 0) ) * ( 1 + 1.2 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 9 * (car.booster/300) );
             } else car.speed *= 0.998;
             if ( game.timer < stats.timerMax &&  car.running && ( keys.includes("s") || keys.includes("shift") ) && car.speed < stats.topSpeed/5 && !stats.noBrake) {
