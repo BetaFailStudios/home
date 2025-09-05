@@ -126,6 +126,14 @@
         window.addEventListener('mousedown', function (e) {
             mouse.down = true;
 
+            if (game.menu) {
+                if (mouse.hover == "drive") {
+                    game.timer = 0;
+                    game.menu = false;
+                }
+
+                return;
+            }
             mouse.selected = mouse.hover;
             if (mouse.selected == "wheel") {
                 const wheelAngle = -car.wheel*Math.PI*5/2+Math.PI/2;
@@ -2652,7 +2660,7 @@
         }
 
         const game = {
-            menu: false,
+            menu: "main",
             gravity: 0, fps: 60, zoom: 50, xOffset: 0, yOffset: 0, xVOffset: 0, yVOffset: 0, audioVolume: 0.5,
             renderType: "2d", defaultLineWidth: 10, timer: 0, timerCounting: false, status: "driving",
         };
@@ -2772,6 +2780,12 @@
             ctx.fillStyle = "#000000";
             ctx.rect(-1000,-1000,3500,3600);
             ctx.fill();
+
+            if (game.menu) {
+                drawMenu();
+
+                return;
+            }
 
             ctx.save();
             ctx.translate(0,( car.jumpPos/4 ));
@@ -4265,23 +4279,30 @@
         }
 
         function checkHover() {
-            //wheel
-            const wheelHypot = Math.hypot(mouse.x+200, mouse.y-250);
-            if (wheelHypot > 150 && wheelHypot < 230) {
-                mouse.hover = "wheel";
-                return;
-            } else if (wheelHypot < 75) {
-                mouse.hover = "horn";
-                return;
-            } else if (Math.hypot(mouse.x-70, mouse.y-350) < 50) {
-                mouse.hover = "ignition";
-                return;
-            } else if (Math.hypot(mouse.x+425 + 250 * (car.wiper), mouse.y-415) < 50) {
-                mouse.hover = "wiper";
-                return;
-            } else if (Math.hypot(mouse.x-200, mouse.y-420) < 50) {
-                mouse.hover = "radio";
-                return;
+            if (game.menu) {
+                if (Math.hypot(mouse.x, mouse.y) < 150) {
+                    mouse.hover = "drive";
+                    return;
+                }
+            } else {
+                //wheel
+                const wheelHypot = Math.hypot(mouse.x+200, mouse.y-250);
+                if (wheelHypot > 150 && wheelHypot < 230) {
+                    mouse.hover = "wheel";
+                    return;
+                } else if (wheelHypot < 75) {
+                    mouse.hover = "horn";
+                    return;
+                } else if (Math.hypot(mouse.x-70, mouse.y-350) < 50) {
+                    mouse.hover = "ignition";
+                    return;
+                } else if (Math.hypot(mouse.x+425 + 250 * (car.wiper), mouse.y-415) < 50) {
+                    mouse.hover = "wiper";
+                    return;
+                } else if (Math.hypot(mouse.x-200, mouse.y-420) < 50) {
+                    mouse.hover = "radio";
+                    return;
+                }
             }
 
             mouse.hover = false;
@@ -4663,6 +4684,167 @@
             } )
         }
 
+        function drawMenu() {
+            game.timer++;
+
+            ctx.beginPath();
+            ctx.rect(-1000,-500,2000,1000);
+            ctx.fillStyle = "#300";
+            ctx.filter = "hue-rotate(" + game.timer/3 + "deg)"
+            ctx.fill();
+            ctx.filter = "none";
+
+            ctx.save();
+            ctx.rotate(-Math.PI/10*Math.sin(game.timer/100));
+            ctx.save();
+            let xPos = -1000+(game.timer*5)%(stackablePerks.length*400)-(stackablePerks.length*400);
+            ctx.translate(xPos, -550);
+            for (var i = 0; i < 3; i++) stackablePerks.forEach( (item, i2) => {
+                if (Math.abs(xPos) < 1100) item.drawFunction(true);
+                ctx.translate(400,0);
+                xPos += 400;
+            } );
+            ctx.restore();
+            ctx.save();
+            xPos = -1000+(game.timer*5)%(unStackablePerks.length*400)-(unStackablePerks.length*400) + 250;
+            ctx.translate(xPos, -250);
+            for (var i = 0; i < 3; i++) unStackablePerks.forEach( (item, i2) => {
+                if (Math.abs(xPos) < 1100) item.drawFunction(true);
+                ctx.translate(400,0);
+                xPos += 400;
+            } );
+            ctx.restore();
+            ctx.save();
+            xPos = -1000+(game.timer*5)%(unStackablePunishments.length*400)-(unStackablePunishments.length*400) + 100;
+            ctx.translate(xPos, 250);
+            for (var i = 0; i < 3; i++) unStackablePunishments.forEach( (item, i2) => {
+                if (Math.abs(xPos) < 1100) item.drawFunction(true);
+                ctx.translate(400,0);
+                xPos += 400;
+            } );
+            ctx.restore();
+            ctx.save();
+            xPos = -1000+(game.timer*5)%(stackablePunishments.length*400)-(stackablePunishments.length*400) + 350;
+            ctx.translate(xPos, 550);
+            for (var i = 0; i < 3; i++) stackablePunishments.forEach( (item, i2) => {
+                if (Math.abs(xPos) < 1100) item.drawFunction(true);
+                ctx.translate(400,0);
+                xPos += 400;
+            } );
+            ctx.restore();
+            ctx.restore();
+
+            ctx.save();
+            ctx.rotate(Math.PI/10*Math.sin(game.timer/100));
+
+            ctx.strokeStyle = "#333";
+            ctx.fillStyle = "#ad7d53";
+            ctx.beginPath();
+            ctx.arc(0,0,400,0,Math.PI*2);
+            ctx.moveTo(-180,0);
+            ctx.arc(0,0,350,0,Math.PI*2, true);
+            ctx.rect(-375,-25,750,50);
+            ctx.rect(-25,0,50,375);
+            ctx.stroke();
+            ctx.fill();
+            
+            //reuse of variables
+            xPos = 1 + 0.2*(mouse.hover == "drive");
+            ctx.strokeStyle = "#333";
+            ctx.beginPath();
+            ctx.moveTo(-100*xPos,-40*xPos);
+            ctx.lineTo(-60*xPos,-80*xPos);
+            ctx.lineTo(60*xPos,-80*xPos);
+            ctx.lineTo(100*xPos,-40*xPos);
+            ctx.lineTo(100*xPos,60*xPos);
+            ctx.lineTo(60*xPos,100*xPos);
+            ctx.lineTo(-60*xPos,100*xPos);
+            ctx.lineTo(-100*xPos,60*xPos);
+            ctx.closePath();
+            ctx.stroke();
+            ctx.fill();
+
+            ctx.beginPath();
+
+            ctx.strokeStyle = "#222";
+            ctx.fillStyle = "#f90";
+            ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
+            ctx.font = "70px Jura"
+            ctx.rotate(-Math.PI/2);
+
+            ctx.rotate(Math.PI/11);
+            ctx.strokeText("S",0,-300);
+            ctx.fillText("S",0,-300);
+            ctx.rotate(Math.PI/11);
+            ctx.strokeText("U",0,-300);
+            ctx.fillText("U",0,-300);
+            ctx.rotate(Math.PI/11);
+            ctx.strokeText("B",0,-300);
+            ctx.fillText("B",0,-300);
+            ctx.rotate(Math.PI/11);
+            ctx.strokeText("L",0,-300);
+            ctx.fillText("L",0,-300);
+            ctx.rotate(Math.PI/11);
+            ctx.strokeText("I",0,-300);
+            ctx.fillText("I",0,-300);
+            ctx.rotate(Math.PI/11);
+            ctx.strokeText("M",0,-300);
+            ctx.fillText("M",0,-300);
+            ctx.rotate(Math.PI/11);
+            ctx.strokeText("I",0,-300);
+            ctx.fillText("I",0,-300);
+            ctx.rotate(Math.PI/11);
+            ctx.strokeText("N",0,-300);
+            ctx.fillText("N",0,-300);
+            ctx.rotate(Math.PI/11);
+            ctx.strokeText("A",0,-300);
+            ctx.fillText("A",0,-300);
+            ctx.rotate(Math.PI/11);
+            ctx.strokeText("L",0,-300);
+            ctx.fillText("L",0,-300);
+            ctx.rotate(Math.PI/11);
+            ctx.rotate(-Math.PI/12);
+            ctx.strokeText("S",0,300);
+            ctx.fillText("S",0,300);
+            ctx.rotate(-Math.PI/12);
+            ctx.strokeText("T",0,300);
+            ctx.fillText("T",0,300);
+            ctx.rotate(-Math.PI/12);
+            ctx.strokeText("I",0,300);
+            ctx.fillText("I",0,300);
+            ctx.rotate(-Math.PI/12);
+            ctx.strokeText("C",0,300);
+            ctx.fillText("C",0,300);
+            ctx.rotate(-Math.PI/12);
+            ctx.strokeText("K",0,300);
+            ctx.fillText("K",0,300);
+            ctx.rotate(-Math.PI/6);
+            ctx.strokeText("S",0,300);
+            ctx.fillText("S",0,300);
+            ctx.rotate(-Math.PI/12);
+            ctx.strokeText("H",0,300);
+            ctx.fillText("H",0,300);
+            ctx.rotate(-Math.PI/12);
+            ctx.strokeText("I",0,300);
+            ctx.fillText("I",0,300);
+            ctx.rotate(-Math.PI/12);
+            ctx.strokeText("F",0,300);
+            ctx.fillText("F",0,300);
+            ctx.rotate(-Math.PI/12);
+            ctx.strokeText("T",0,300);
+            ctx.fillText("T",0,300);
+            ctx.rotate(-Math.PI/12);
+            ctx.rotate(Math.PI/2);
+            ctx.font = (60 + 10*(mouse.hover == "drive")) + "px Jura"
+            ctx.strokeText("DRIVE",0,10);
+            ctx.fillText("DRIVE",0,10);
+
+            ctx.filter = "none";
+
+            ctx.restore();
+
+            drawMouse();
+        }
 
         
     </script>
@@ -4712,10 +4894,6 @@
             ctx.rect(-1000,-1000,3500,3600);
             ctx.fill();
             ctx.beginPath();
-            ctx.strokeStyle = "#999";
-            ctx.rect(-200, -200, 400, 400);
-            ctx.fill();
-            ctx.stroke();
             
             generatePlatformRoad(stats.roadLength/stats.roadSize);
             
