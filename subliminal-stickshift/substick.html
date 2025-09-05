@@ -24,62 +24,49 @@
     <canvas onmousemove="xy(event)" id="gameScreen" width="1800" height="1000"></canvas>
     <p id="fps">60</p>
     <script>
-        // initialize the timer variables and start the animation
+        //setup
+        {
+            // initialize the timer variables and start the animation
 
-        function startAnimating(fps) {
-            fpsInterval = 1000 / fps;
-            then = Date.now();
-            startTime = then;
-            animate();
-        }
-
-        // the animation loop calculates time elapsed since the last loop
-        // and only draws if your specified fps interval is achieved
-
-        function animate() {
-
-            // request another frame
-
-            requestAnimationFrame(animate);
-
-            // calc elapsed time since last loop
-
-            now = Date.now();
-            elapsed = now - then;
-
-            // if enough time has elapsed, draw the next frame
-
-            if (elapsed > fpsInterval) {
-
-                // Get ready for next frame by setting then=now, but also adjust for your
-                // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
-                then = now - (elapsed % fpsInterval);
-
-                // Put your drawing code here
-                tickloop();
+            function startAnimating(fps) {
+                fpsInterval = 1000 / fps;
+                then = Date.now();
+                startTime = then;
+                animate();
             }
-        }
-        //canvas or gamescreen
-        var canvas = document.getElementById("gameScreen");
-        //context, for drawing
-        var ctx = canvas.getContext("2d");
-        //settings canvas size and scale
-        var screenScale = window.innerWidth/1800;
-        if (window.innerHeight/1000 < screenScale) screenScale = window.innerHeight/1000;
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+            // the animation loop calculates time elapsed since the last loop
+            // and only draws if your specified fps interval is achieved
 
-        ctx.translate(window.innerWidth/2, window.innerHeight/2);
+            function animate() {
 
-        ctx.scale(screenScale, screenScale);
+                // request another frame
 
-        //resizing
-        window.addEventListener("resize", (  ) => {
-            ctx.resetTransform();
+                requestAnimationFrame(animate);
 
+                // calc elapsed time since last loop
+
+                now = Date.now();
+                elapsed = now - then;
+
+                // if enough time has elapsed, draw the next frame
+
+                if (elapsed > fpsInterval) {
+
+                    // Get ready for next frame by setting then=now, but also adjust for your
+                    // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+                    then = now - (elapsed % fpsInterval);
+
+                    // Put your drawing code here
+                    tickloop();
+                }
+            }
+            //canvas or gamescreen
+            var canvas = document.getElementById("gameScreen");
+            //context, for drawing
+            var ctx = canvas.getContext("2d");
             //settings canvas size and scale
-            screenScale = window.innerWidth/1800;
+            var screenScale = window.innerWidth/1800;
             if (window.innerHeight/1000 < screenScale) screenScale = window.innerHeight/1000;
 
             canvas.width = window.innerWidth;
@@ -89,18 +76,34 @@
 
             ctx.scale(screenScale, screenScale);
 
-            ctx.lineWidth = 10;
-            ctx.textBaseline = 'middle';
-            ctx.textAlign = 'center';
-            ctx.lineJoin = "round";
-            ctx.lineCap = "round";
+            //resizing
+            window.addEventListener("resize", (  ) => {
+                ctx.resetTransform();
 
-            ctx.beginPath();
-            ctx.fillStyle = "#000";
-            ctx.fillRect(-1000,-1000,1800+1000,1000+1000);
+                //settings canvas size and scale
+                screenScale = window.innerWidth/1800;
+                if (window.innerHeight/1000 < screenScale) screenScale = window.innerHeight/1000;
 
-            ctx.font = "100px serif";
-        });
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                ctx.translate(window.innerWidth/2, window.innerHeight/2);
+
+                ctx.scale(screenScale, screenScale);
+
+                ctx.lineWidth = 10;
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = 'center';
+                ctx.lineJoin = "round";
+                ctx.lineCap = "round";
+
+                ctx.beginPath();
+                ctx.fillStyle = "#000";
+                ctx.fillRect(-1000,-1000,1800+1000,1000+1000);
+
+                ctx.font = "100px serif";
+            });
+        }
 
         const mouse = {
             x: 0,
@@ -127,10 +130,22 @@
             mouse.down = true;
 
             if (game.menu) {
-                if (mouse.hover == "drive") {
-                    game.timer = 0;
-                    game.menu = false;
+                if (game.menu == "main") {
+                    if (mouse.hover == "drive") {
+                        game.timer = 0;
+                        game.menu = false;
+                    } else if (mouse.hover == "menu1") {
+                        game.menu = "settings";
+                    }
+                } else if (game.menu == "settings") {
+                    if (mouse.hover == "menu1") {
+                        game.menu = "main";
+                        game.subMenu = false;
+                    } else if (mouse.hover == "menu1") {
+                        game.menu = "settings";
+                    }
                 }
+                mouse.hover = false;
 
                 return;
             }
@@ -2660,7 +2675,7 @@
         }
 
         const game = {
-            menu: "main",
+            menu: "main", previousMenu: "main", transitionTicks: 0,
             gravity: 0, fps: 60, zoom: 50, xOffset: 0, yOffset: 0, xVOffset: 0, yVOffset: 0, audioVolume: 0.5,
             renderType: "2d", defaultLineWidth: 10, timer: 0, timerCounting: false, status: "driving",
         };
@@ -4280,9 +4295,47 @@
 
         function checkHover() {
             if (game.menu) {
-                if (Math.hypot(mouse.x, mouse.y) < 150) {
-                    mouse.hover = "drive";
-                    return;
+                if (game.menu == "main") {
+                    if (Math.hypot(mouse.x-200, mouse.y) < 150) {
+                        mouse.hover = "drive";
+                        return;
+                    } else if (mouse.x < -200) {
+                        if (mouse.y < -230 && mouse.y > -360) {
+                            mouse.hover = "menu1";
+                            return;
+                        } else if (mouse.y < -80 && mouse.y > -210) {
+                            mouse.hover = "menu2";
+                            return;
+                        } else if (mouse.y < 60 && mouse.y > -60) {
+                            mouse.hover = "menu3";
+                            return;
+                        } else if (mouse.y < 210 && mouse.y > 80) {
+                            mouse.hover = "menu4";
+                            return;
+                        } else if (mouse.y < 360 && mouse.y > 230) {
+                            mouse.hover = "menu5";
+                            return;
+                        }
+                    }
+                } else if (game.menu == "settings") {
+                    if (mouse.x > -100) {
+                        if (mouse.y < -230 && mouse.y > -360) {
+                            mouse.hover = "menu1";
+                            return;
+                        } else if (mouse.y < -80 && mouse.y > -210) {
+                            mouse.hover = "menu2";
+                            return;
+                        } else if (mouse.y < 60 && mouse.y > -60) {
+                            mouse.hover = "menu3";
+                            return;
+                        } else if (mouse.y < 210 && mouse.y > 80) {
+                            mouse.hover = "menu4";
+                            return;
+                        } else if (mouse.y < 360 && mouse.y > 230) {
+                            mouse.hover = "menu5";
+                            return;
+                        }
+                    }
                 }
             } else {
                 //wheel
@@ -4695,16 +4748,8 @@
             ctx.filter = "none";
 
             ctx.save();
+            ctx.scale(1.2,1.2)
             ctx.rotate(-Math.PI/10*Math.sin(game.timer/100));
-            ctx.save();
-            let xPos = -1000+(game.timer*5)%(stackablePerks.length*400)-(stackablePerks.length*400);
-            ctx.translate(xPos, -550);
-            for (var i = 0; i < 3; i++) stackablePerks.forEach( (item, i2) => {
-                if (Math.abs(xPos) < 1100) item.drawFunction(true);
-                ctx.translate(400,0);
-                xPos += 400;
-            } );
-            ctx.restore();
             ctx.save();
             xPos = -1000+(game.timer*5)%(unStackablePerks.length*400)-(unStackablePerks.length*400) + 250;
             ctx.translate(xPos, -250);
@@ -4723,18 +4768,10 @@
                 xPos += 400;
             } );
             ctx.restore();
-            ctx.save();
-            xPos = -1000+(game.timer*5)%(stackablePunishments.length*400)-(stackablePunishments.length*400) + 350;
-            ctx.translate(xPos, 550);
-            for (var i = 0; i < 3; i++) stackablePunishments.forEach( (item, i2) => {
-                if (Math.abs(xPos) < 1100) item.drawFunction(true);
-                ctx.translate(400,0);
-                xPos += 400;
-            } );
-            ctx.restore();
             ctx.restore();
 
             ctx.save();
+            ctx.translate(200-700*(game.menu == "settings"),0);
             ctx.rotate(Math.PI/10*Math.sin(game.timer/100));
 
             ctx.strokeStyle = "#333";
@@ -4842,6 +4879,94 @@
             ctx.filter = "none";
 
             ctx.restore();
+
+            ctx.beginPath();
+            ctx.strokeStyle = "#333";
+            ctx.fillStyle = "#ad7d53";
+            ctx.moveTo(-700*(game.menu == "settings")-(mouse.hover == "menu1" && game.menu == "main")*50 + 200+450*Math.cos(-Math.PI+Math.PI*2.8/16), 450*Math.sin(-Math.PI+Math.PI*2.8/16));
+            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu1" && game.menu == "main")*50 + 200,0,450,-Math.PI+Math.PI*2.8/16,-Math.PI+Math.PI*4.5/16);
+            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu1" && game.menu == "main")*50 - 300,0,450,-Math.PI+Math.PI*4.5/16,-Math.PI+Math.PI*2.8/16,true);
+            ctx.closePath();
+            ctx.moveTo(-700*(game.menu == "settings")-(mouse.hover == "menu2" && game.menu == "main")*50 + 200+450*Math.cos(-Math.PI+Math.PI/16), 450*Math.sin(-Math.PI+Math.PI/16));
+            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu2" && game.menu == "main")*50 + 200,0,450,-Math.PI+Math.PI/16,-Math.PI+Math.PI*2.5/16);
+            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu2" && game.menu == "main")*50 - 300,0,450,-Math.PI+Math.PI*2.5/16,-Math.PI+Math.PI/16,true);
+            ctx.closePath();
+            ctx.moveTo(-700*(game.menu == "settings")-(mouse.hover == "menu3" && game.menu == "main")*50 + 200+450*Math.cos(-Math.PI-Math.PI*0.7/16), 450*Math.sin(-Math.PI-Math.PI*0.7/16));
+            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu3" && game.menu == "main")*50 + 200,0,450,-Math.PI-Math.PI*0.7/16,-Math.PI+Math.PI*0.7/16);
+            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu3" && game.menu == "main")*50 - 300,0,450,-Math.PI+Math.PI*0.7/16,-Math.PI-Math.PI*0.7/16,true);
+            ctx.closePath();
+            ctx.moveTo(-700*(game.menu == "settings")-(mouse.hover == "menu4" && game.menu == "main")*50 + 200+450*Math.cos(-Math.PI-Math.PI*2.5/16), 450*Math.sin(-Math.PI-Math.PI*2.5/16));
+            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu4" && game.menu == "main")*50 + 200,0,450,-Math.PI-Math.PI*2.5/16,-Math.PI-Math.PI/16);
+            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu4" && game.menu == "main")*50 - 300,0,450,-Math.PI-Math.PI/16,-Math.PI-Math.PI*2.5/16,true);
+            ctx.closePath();
+            ctx.moveTo(-700*(game.menu == "settings")-(mouse.hover == "menu5" && game.menu == "main")*50 + 200+450*Math.cos(-Math.PI-Math.PI*4.5/16), 450*Math.sin(-Math.PI-Math.PI*4.5/16));
+            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu5" && game.menu == "main")*50 - 300,0,450,-Math.PI-Math.PI*4.5/16,-Math.PI-Math.PI*2.8/16);
+            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu5" && game.menu == "main")*50 + 200,0,450,-Math.PI-Math.PI*2.8/16,-Math.PI-Math.PI*4.5/16,true);
+            ctx.closePath();
+            ctx.stroke();
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.strokeStyle = "#222";
+            ctx.fillStyle = "#f90";
+            ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
+            ctx.font = "70px Jura";
+            ctx.strokeText("Settings",-700*(game.menu == "settings")-400-(mouse.hover == "menu1")*50,-300);
+            ctx.fillText("Settings",-700*(game.menu == "settings")-400-(mouse.hover == "menu1")*50,-300);
+            ctx.strokeText("Unlocks",-700*(game.menu == "settings")-475-(mouse.hover == "menu2")*50,-150);
+            ctx.fillText("Unlocks",-700*(game.menu == "settings")-475-(mouse.hover == "menu2")*50,-150);
+            ctx.strokeText("Discord",-700*(game.menu == "settings")-500-(mouse.hover == "menu3")*50,0);
+            ctx.fillText("Discord",-700*(game.menu == "settings")-500-(mouse.hover == "menu3")*50,0);
+            ctx.strokeText("Credits",-700*(game.menu == "settings")-475-(mouse.hover == "menu4")*50,150);
+            ctx.fillText("Credits",-700*(game.menu == "settings")-475-(mouse.hover == "menu4")*50,150);
+            ctx.strokeText("Quit",-700*(game.menu == "settings")-400-(mouse.hover == "menu5")*50,300);
+            ctx.fillText("Quit",-700*(game.menu == "settings")-400-(mouse.hover == "menu5")*50,300);
+            ctx.filter = "none";
+
+            if (game.menu == "settings") {
+                ctx.beginPath();
+                ctx.strokeStyle = "#333";
+                ctx.fillStyle = "#ad7d53";
+                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu1")*50 + 200+450*Math.cos(-Math.PI*4.5/16), 450*Math.sin(-Math.PI*4.5/16));
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu1")*50 + 700,0,450,-Math.PI*4.5/16,-Math.PI*2.8/16);
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu1")*50 + 200,0,450,-Math.PI*2.8/16,-Math.PI*4.5/16,true);
+                ctx.closePath();
+                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu2")*50 + 200+450*Math.cos(-Math.PI*2.5/16), 450*Math.sin(-Math.PI*2.5/16));
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu2")*50 + 200,0,450,-Math.PI*2.5/16,-Math.PI/16);
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu2")*50 + 400,0,450,-Math.PI/16,-Math.PI*2.5/16,true);
+                ctx.closePath();
+                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu3")*50 + 200+450*Math.cos(-Math.PI*0.7/16), 450*Math.sin(-Math.PI*0.7/16));
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu3")*50 + 200,0,450,-Math.PI*0.7/16,Math.PI*0.7/16);
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu3")*50 + 400,0,450,Math.PI*0.7/16,-Math.PI*0.7/16,true);
+                ctx.closePath();
+                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu4")*50 + 200+450*Math.cos(Math.PI/16), 450*Math.sin(Math.PI/16));
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu4")*50 + 200,0,450,Math.PI/16,Math.PI*2.5/16);
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu4")*50 + 400,0,450,Math.PI*2.5/16,Math.PI/16,true);
+                ctx.closePath();
+                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu5")*50 + 200+450*Math.cos(Math.PI*2.8/16), 450*Math.sin(Math.PI*2.8/16));
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu5")*50 + 200,0,450,Math.PI*2.8/16,Math.PI*4.5/16);
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu5")*50 + 400,0,450,Math.PI*4.5/16,Math.PI*2.8/16,true);
+                ctx.closePath();
+                ctx.stroke();
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.strokeStyle = "#222";
+                ctx.fillStyle = "#f90";
+                ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
+                ctx.font = "70px Jura";
+                ctx.strokeText("Back",-700*(game.menu == "settings")+800+(mouse.hover == "menu1" || game.subMenu == "video")*50,-300);
+                ctx.fillText("Back",-700*(game.menu == "settings")+800+(mouse.hover == "menu1" || game.subMenu == "video")*50,-300);
+                ctx.strokeText("VID",-700*(game.menu == "settings")+725+(mouse.hover == "menu2" || game.subMenu == "video")*50,-150);
+                ctx.fillText("VID",-700*(game.menu == "settings")+725+(mouse.hover == "menu2" || game.subMenu == "video")*50,-150);
+                ctx.strokeText("AUD",-700*(game.menu == "settings")+750+(mouse.hover == "menu3" || game.subMenu == "video")*50,0);
+                ctx.fillText("AUD",-700*(game.menu == "settings")+750+(mouse.hover == "menu3" || game.subMenu == "video")*50,0);
+                ctx.strokeText("GAM",-700*(game.menu == "settings")+725+(mouse.hover == "menu4" || game.subMenu == "video")*50,150);
+                ctx.fillText("GAM",-700*(game.menu == "settings")+725+(mouse.hover == "menu4" || game.subMenu == "video")*50,150);
+                ctx.strokeText("CHT",-700*(game.menu == "settings")+640+(mouse.hover == "menu5" || game.subMenu == "video")*50,300);
+                ctx.fillText("CHT",-700*(game.menu == "settings")+640+(mouse.hover == "menu5" || game.subMenu == "video")*50,300);
+            ctx.filter = "none";
+            }
 
             drawMouse();
         }
