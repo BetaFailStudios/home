@@ -2651,7 +2651,8 @@
             timerMax: 4300,
         }
 
-        const game = { 
+        const game = {
+            menu: false,
             gravity: 0, fps: 60, zoom: 50, xOffset: 0, yOffset: 0, xVOffset: 0, yVOffset: 0, audioVolume: 0.5,
             renderType: "2d", defaultLineWidth: 10, timer: 0, timerCounting: false, status: "driving",
         };
@@ -2758,7 +2759,7 @@
             }
             if (Math.random() < 0.015 && stats.bug && game.timerCounting && game.status == "driving") windshield.push( { type: "bug", x: -600+1200*Math.random(), y: -300+500*Math.random(), durability: 2, maxDurability: 2 } );
             if (Math.random() < 0.15 && stats.sleepy && game.timerCounting && game.status == "driving") stats.eyeVel++;
-            if (mouse.selected == "horn" && stats.eyeVel) stats.eyeVel--;
+            if (mouse.selected == "horn" && stats.eyeVel > -20 && stats.eyePos < 200) stats.eyeVel -= 2;
 
             ctx.save();
 
@@ -2787,14 +2788,14 @@
                 ctx.beginPath();
                 ctx.fillStyle = "#ff3";
                 ctx.strokeStyle = "#993";
-                ctx.font = "200px serif";
+                ctx.font = "200px Jura";
                 ctx.strokeText("You Win", 0, 0);
                 ctx.fillText("You Win", 0, 0);
             } else if (game.timer > stats.timerMax+100 && Math.abs(car.speed) < 1) {
                 ctx.beginPath();
                 ctx.fillStyle = "#f33";
                 ctx.strokeStyle = "#933";
-                ctx.font = "200px serif";
+                ctx.font = "200px Jura";
                 ctx.strokeText("Game Over", 0, 0);
                 ctx.fillText("Game Over", 0, 0);
             } else if (game.status == "choosing") {
@@ -2821,17 +2822,35 @@
 
             ctx.fill();
 
-            //render the mouse
             if (stats.sleepy && game.status == "driving") {
                 ctx.fillStyle = "#000";
                 ctx.beginPath();
-                ctx.arc(0, -stats.eyePos+2000, 2000, 0, Math.PI*2, true);
-                ctx.rect(-1000, -1000, 2000, 2000);
+                ctx.moveTo(1000,-1000);
+                ctx.lineTo(-1000,-1000);
+                ctx.lineTo(-1000,-stats.eyePos+300);
+                ctx.lineTo(-850,-stats.eyePos+200);
+                ctx.lineTo(-400,-stats.eyePos+50);
+                ctx.lineTo(-100,-stats.eyePos+5);
+                ctx.lineTo(0,-stats.eyePos);
+                ctx.lineTo(100,-stats.eyePos+5);
+                ctx.lineTo(400,-stats.eyePos+50);
+                ctx.lineTo(850,-stats.eyePos+200);
+                ctx.lineTo(1000,-stats.eyePos+300);
+                ctx.closePath();
                 ctx.fill();
                 
-                ctx.beginPath();
-                ctx.arc(0, stats.eyePos-2000, 2000, 0, Math.PI*2, true);
-                ctx.rect(-1000, -1000, 2000, 2000);
+                ctx.moveTo(1000,1000);
+                ctx.lineTo(-1000,1000);
+                ctx.lineTo(-1000,stats.eyePos-300);
+                ctx.lineTo(-850,stats.eyePos-200);
+                ctx.lineTo(-400,stats.eyePos-50);
+                ctx.lineTo(-100,stats.eyePos-5);
+                ctx.lineTo(0,stats.eyePos);
+                ctx.lineTo(100,stats.eyePos-5);
+                ctx.lineTo(400,stats.eyePos-50);
+                ctx.lineTo(850,stats.eyePos-200);
+                ctx.lineTo(1000,stats.eyePos-300);
+                ctx.closePath();
                 ctx.fill();
 
                 stats.eyePos -= stats.eyeVel;
@@ -2839,7 +2858,6 @@
                     stats.eyeVel = -100;
                 } else if (stats.eyePos > 1000) stats.eyePos = 1000;
             }
-
 
             ctx.restore();
         }
@@ -4646,6 +4664,7 @@
         }
 
 
+        
     </script>
     <script>
         //music handling
