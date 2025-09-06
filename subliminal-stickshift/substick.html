@@ -141,8 +141,17 @@
                     if (mouse.hover == "menu1") {
                         game.menu = "main";
                         game.subMenu = false;
-                    } else if (mouse.hover == "menu1") {
-                        game.menu = "settings";
+                    } else if (mouse.hover) game.subMenu = mouse.hover;
+                    else {
+                        /*ctx.moveTo(300,-75);
+                        ctx.lineTo(700,-75);
+                        ctx.moveTo(325,100);
+                        ctx.lineTo(725,100);
+                        ctx.moveTo(250,275);
+                        ctx.lineTo(650,275);*/
+                        if (mouse.x > 250 && mouse.x < 750 && mouse.y > -100 && mouse.y < -50) game.masterVolume = Math.min(1,Math.max(0,(mouse.x-300)/400)).toFixed(2);
+                        else if (mouse.x > 275 && mouse.x < 775 && mouse.y > 75 && mouse.y < 125) game.musicVolume = Math.min(1,Math.max(0,(mouse.x-325)/400)).toFixed(2);
+                        else if (mouse.x > 200 && mouse.x < 700 && mouse.y > 250 && mouse.y < 300) game.sfxVolume = Math.min(1,Math.max(0,(mouse.x-250)/400)).toFixed(2);
                     }
                 }
                 mouse.hover = false;
@@ -198,6 +207,11 @@
 
             if (game.status == "driving") checkHover();
         }
+
+        //saving settings
+        window.addEventListener("beforeunload", function(e) {
+            localStorage.setItem("SlSsGameSettings", JSON.stringify( { master: game.masterVolume, music: game.musicVolume, sfx: game.sfxVolume } ));
+        })
 
         // initialize the timer variables and start the animation
 
@@ -738,36 +752,6 @@
                 name: "EZ Drive",
                 desc: "Wider, straighter, and Shorter roads",
                 drawFunction(timer) {
-                    ctx.beginPath();
-                    ctx.moveTo(-150,100);
-                    ctx.lineTo(0,-100);
-                    ctx.lineTo(150,-100);
-                    ctx.lineTo(0,100);
-                    ctx.fillStyle = "#333"
-                    ctx.fill();
-
-                    ctx.beginPath();
-                    ctx.moveTo(-150,100);
-                    ctx.lineTo(0,-100);
-                    ctx.moveTo(150,-100);
-                    ctx.lineTo(0,100);
-                    ctx.strokeStyle = "#666"
-                    ctx.stroke();
-
-                    ctx.beginPath();
-                    ctx.moveTo(-67.5,90);
-                    ctx.lineTo(-52.5, 70);
-                    ctx.moveTo(-37.5,50);
-                    ctx.lineTo(-22.5, 30);
-                    ctx.moveTo(-7.5, 10);
-                    ctx.lineTo(7.5, -10);
-                    ctx.moveTo(22.5,-30);
-                    ctx.lineTo(37.5, -50);
-                    ctx.moveTo(52.5,-70);
-                    ctx.lineTo(67.5, -90);
-                    ctx.strokeStyle = "#990"
-                    ctx.stroke();
-
                     ctx.save();
 
                     ctx.rotate(Math.PI/10);
@@ -778,6 +762,8 @@
                     ctx.fillText("EZ",0,0);
                     ctx.beginPath();
                     ctx.rect(-100,-62.5,200,125)
+                    ctx.fillStyle = "#00ff0040";
+                    ctx.fill();
                     ctx.stroke();
 
                     ctx.restore();
@@ -1697,7 +1683,7 @@
                     }
                 },
                 chooseFunction() {
-                    stats.roadHazardChance *= 1.7;
+                    stats.roadHazardChance *= 1.3;
                     stats.offroadSpeedLoss *= 1.4;
                 }
             },
@@ -1842,7 +1828,7 @@
                     }
                 },
                 chooseFunction() {
-                    stats.turnSpeed *= 0.4;
+                    stats.turnSpeed *= 0.25;
                 }
             },
             {
@@ -2664,7 +2650,7 @@
             roadAngle: Math.PI/20,
             acceleration: 0.05,
             topSpeed: 30,
-            turnSpeed: Math.PI/25,
+            turnSpeed: Math.PI/20,
             offroadSpeedLoss: 0.2,
             offroadMaxSpeed: 8,
             requiredDriftAngle: Math.PI/17,
@@ -2676,9 +2662,20 @@
 
         const game = {
             menu: "main", previousMenu: "main", transitionTicks: 0,
-            gravity: 0, fps: 60, zoom: 50, xOffset: 0, yOffset: 0, xVOffset: 0, yVOffset: 0, audioVolume: 0.5,
+            gravity: 0, fps: 60, zoom: 50, xOffset: 0, yOffset: 0, xVOffset: 0, yVOffset: 0, audioVolume: 0.75,
             renderType: "2d", defaultLineWidth: 10, timer: 0, timerCounting: false, status: "driving",
+
+            masterVolume: 0.75, sfxVolume: 1, musicVolume: 1,
         };
+
+        if (localStorage.getItem("SlSsGameSettings")) {
+            const settings = JSON.parse(localStorage.getItem("SlSsGameSettings"));
+
+            if (settings.master) game.masterVolume = settings.master;
+            if (settings.music) game.musicVolue = settings.music;
+            if (settings.sfx) game.sfxVolue = settings.sfx;
+        }
+
         generateChoices();
 
         const car = {
@@ -4322,7 +4319,7 @@
                         if (mouse.y < -230 && mouse.y > -360) {
                             mouse.hover = "menu1";
                             return;
-                        } else if (mouse.y < -80 && mouse.y > -210) {
+                        } else if (mouse.x < 200) { if (mouse.y < -80 && mouse.y > -210) {
                             mouse.hover = "menu2";
                             return;
                         } else if (mouse.y < 60 && mouse.y > -60) {
@@ -4334,7 +4331,7 @@
                         } else if (mouse.y < 360 && mouse.y > 230) {
                             mouse.hover = "menu5";
                             return;
-                        }
+                        } }
                     }
                 }
             } else {
@@ -4752,7 +4749,7 @@
             ctx.rotate(-Math.PI/10*Math.sin(game.timer/100));
             ctx.save();
             xPos = -1000+(game.timer*5)%(unStackablePerks.length*400)-(unStackablePerks.length*400) + 250;
-            ctx.translate(xPos, -250);
+            ctx.translate(xPos, -300);
             for (var i = 0; i < 3; i++) unStackablePerks.forEach( (item, i2) => {
                 if (Math.abs(xPos) < 1100) item.drawFunction(true);
                 ctx.translate(400,0);
@@ -4761,7 +4758,7 @@
             ctx.restore();
             ctx.save();
             xPos = -1000+(game.timer*5)%(unStackablePunishments.length*400)-(unStackablePunishments.length*400) + 100;
-            ctx.translate(xPos, 250);
+            ctx.translate(xPos, 300);
             for (var i = 0; i < 3; i++) unStackablePunishments.forEach( (item, i2) => {
                 if (Math.abs(xPos) < 1100) item.drawFunction(true);
                 ctx.translate(400,0);
@@ -4772,6 +4769,20 @@
 
             ctx.save();
             ctx.translate(200-700*(game.menu == "settings"),0);
+
+            ctx.beginPath();
+            ctx.arc(0,0,game.timer%500,0,Math.PI*2);
+            ctx.moveTo(game.timer%500+500,0);
+            ctx.arc(0,0,game.timer%500+500,0,Math.PI*2);
+            ctx.moveTo(game.timer%500+1000,0);
+            ctx.arc(0,0,game.timer%500+1000,0,Math.PI*2);
+            ctx.moveTo(game.timer%500+1500,0);
+            ctx.arc(0,0,game.timer%500+1500,0,Math.PI*2);
+            ctx.strokeStyle = "#00000099";
+            ctx.lineWidth = game.defaultLineWidth*20;
+            ctx.stroke();
+            ctx.lineWidth = game.defaultLineWidth;
+
             ctx.rotate(Math.PI/10*Math.sin(game.timer/100));
 
             ctx.strokeStyle = "#333";
@@ -4928,24 +4939,24 @@
                 ctx.strokeStyle = "#333";
                 ctx.fillStyle = "#ad7d53";
                 ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu1")*50 + 200+450*Math.cos(-Math.PI*4.5/16), 450*Math.sin(-Math.PI*4.5/16));
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu1")*50 + 700,0,450,-Math.PI*4.5/16,-Math.PI*2.8/16);
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu1")*50 + 1100,0,450,-Math.PI*4.5/16,-Math.PI*2.8/16);
                 ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu1")*50 + 200,0,450,-Math.PI*2.8/16,-Math.PI*4.5/16,true);
                 ctx.closePath();
-                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu2")*50 + 200+450*Math.cos(-Math.PI*2.5/16), 450*Math.sin(-Math.PI*2.5/16));
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu2")*50 + 200,0,450,-Math.PI*2.5/16,-Math.PI/16);
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu2")*50 + 400,0,450,-Math.PI/16,-Math.PI*2.5/16,true);
+                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu2" || game.subMenu == "menu2")*50 + 200+450*Math.cos(-Math.PI*2.5/16), 450*Math.sin(-Math.PI*2.5/16));
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu2" || game.subMenu == "menu2")*50 + 200,0,450,-Math.PI*2.5/16,-Math.PI/16);
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu2" || game.subMenu == "menu2")*50 + 400,0,450,-Math.PI/16,-Math.PI*2.5/16,true);
                 ctx.closePath();
-                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu3")*50 + 200+450*Math.cos(-Math.PI*0.7/16), 450*Math.sin(-Math.PI*0.7/16));
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu3")*50 + 200,0,450,-Math.PI*0.7/16,Math.PI*0.7/16);
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu3")*50 + 400,0,450,Math.PI*0.7/16,-Math.PI*0.7/16,true);
+                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu3" || game.subMenu == "menu3")*50 + 200+450*Math.cos(-Math.PI*0.7/16), 450*Math.sin(-Math.PI*0.7/16));
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu3" || game.subMenu == "menu3")*50 + 200,0,450,-Math.PI*0.7/16,Math.PI*0.7/16);
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu3" || game.subMenu == "menu3")*50 + 400,0,450,Math.PI*0.7/16,-Math.PI*0.7/16,true);
                 ctx.closePath();
-                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu4")*50 + 200+450*Math.cos(Math.PI/16), 450*Math.sin(Math.PI/16));
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu4")*50 + 200,0,450,Math.PI/16,Math.PI*2.5/16);
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu4")*50 + 400,0,450,Math.PI*2.5/16,Math.PI/16,true);
+                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu4" || game.subMenu == "menu4")*50 + 200+450*Math.cos(Math.PI/16), 450*Math.sin(Math.PI/16));
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu4" || game.subMenu == "menu4")*50 + 200,0,450,Math.PI/16,Math.PI*2.5/16);
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu4" || game.subMenu == "menu4")*50 + 400,0,450,Math.PI*2.5/16,Math.PI/16,true);
                 ctx.closePath();
-                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu5")*50 + 200+450*Math.cos(Math.PI*2.8/16), 450*Math.sin(Math.PI*2.8/16));
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu5")*50 + 200,0,450,Math.PI*2.8/16,Math.PI*4.5/16);
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu5")*50 + 400,0,450,Math.PI*4.5/16,Math.PI*2.8/16,true);
+                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu5" || game.subMenu == "menu5")*50 + 200+450*Math.cos(Math.PI*2.8/16), 450*Math.sin(Math.PI*2.8/16));
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu5" || game.subMenu == "menu5")*50 + 200,0,450,Math.PI*2.8/16,Math.PI*4.5/16);
+                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu5" || game.subMenu == "menu5")*50 + 400,0,450,Math.PI*4.5/16,Math.PI*2.8/16,true);
                 ctx.closePath();
                 ctx.stroke();
                 ctx.fill();
@@ -4955,17 +4966,76 @@
                 ctx.fillStyle = "#f90";
                 ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
                 ctx.font = "70px Jura";
-                ctx.strokeText("Back",-700*(game.menu == "settings")+800+(mouse.hover == "menu1" || game.subMenu == "video")*50,-300);
-                ctx.fillText("Back",-700*(game.menu == "settings")+800+(mouse.hover == "menu1" || game.subMenu == "video")*50,-300);
-                ctx.strokeText("VID",-700*(game.menu == "settings")+725+(mouse.hover == "menu2" || game.subMenu == "video")*50,-150);
-                ctx.fillText("VID",-700*(game.menu == "settings")+725+(mouse.hover == "menu2" || game.subMenu == "video")*50,-150);
-                ctx.strokeText("AUD",-700*(game.menu == "settings")+750+(mouse.hover == "menu3" || game.subMenu == "video")*50,0);
-                ctx.fillText("AUD",-700*(game.menu == "settings")+750+(mouse.hover == "menu3" || game.subMenu == "video")*50,0);
-                ctx.strokeText("GAM",-700*(game.menu == "settings")+725+(mouse.hover == "menu4" || game.subMenu == "video")*50,150);
-                ctx.fillText("GAM",-700*(game.menu == "settings")+725+(mouse.hover == "menu4" || game.subMenu == "video")*50,150);
-                ctx.strokeText("CHT",-700*(game.menu == "settings")+640+(mouse.hover == "menu5" || game.subMenu == "video")*50,300);
-                ctx.fillText("CHT",-700*(game.menu == "settings")+640+(mouse.hover == "menu5" || game.subMenu == "video")*50,300);
-            ctx.filter = "none";
+                ctx.strokeText("Back",-700*(game.menu == "settings")+1000+(mouse.hover == "menu1")*50,-300);
+                ctx.fillText("Back",-700*(game.menu == "settings")+1000+(mouse.hover == "menu1")*50,-300);
+                ctx.strokeText("VID",-700*(game.menu == "settings")+725+(mouse.hover == "menu2" || game.subMenu == "menu2")*50,-150);
+                ctx.fillText("VID",-700*(game.menu == "settings")+725+(mouse.hover == "menu2" || game.subMenu == "menu2")*50,-150);
+                ctx.strokeText("AUD",-700*(game.menu == "settings")+750+(mouse.hover == "menu3" || game.subMenu == "menu3")*50,0);
+                ctx.fillText("AUD",-700*(game.menu == "settings")+750+(mouse.hover == "menu3" || game.subMenu == "menu3")*50,0);
+                ctx.strokeText("GAM",-700*(game.menu == "settings")+725+(mouse.hover == "menu4" || game.subMenu == "menu4")*50,150);
+                ctx.fillText("GAM",-700*(game.menu == "settings")+725+(mouse.hover == "menu4" || game.subMenu == "menu4")*50,150);
+                ctx.strokeText("CHT",-700*(game.menu == "settings")+640+(mouse.hover == "menu5" || game.subMenu == "menu5")*50,300);
+                ctx.fillText("CHT",-700*(game.menu == "settings")+640+(mouse.hover == "menu5" || game.subMenu == "menu5")*50,300);
+                ctx.filter = "none";
+
+                if (game.subMenu) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#333";
+                    ctx.fillStyle = "#ad7d53";
+                    ctx.moveTo(-700*(game.menu == "settings") + 475+450*Math.cos(-Math.PI*2.5/16), 450*Math.sin(-Math.PI*2.5/16));
+                    ctx.arc(-700*(game.menu == "settings") + 475,0,450,-Math.PI*2.5/16,Math.PI*4.5/16);
+                    ctx.arc(-700*(game.menu == "settings") + 1100,0,450,Math.PI*4.5/16,-Math.PI*2.5/16,true);
+                    ctx.closePath();
+                    ctx.stroke();
+                    ctx.fill();
+
+                    if (game.subMenu == "menu2") {
+                        ctx.beginPath();
+                        ctx.strokeStyle = "#222";
+                        ctx.fillStyle = "#f90";
+                        ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
+                        ctx.font = "40px Jura";
+                        ctx.strokeText("Ctrl +/-",500,-150);
+                        ctx.fillText("Ctrl +/-",500,-150);
+                        ctx.font = "30px Jura";
+                        ctx.strokeText("decrease/increase resolution",525,-100);
+                        ctx.fillText("decrease/increase resolution",525,-100);
+                        ctx.filter = "none";
+                    } else if (game.subMenu == "menu3") {
+                        ctx.beginPath();
+                        ctx.strokeStyle = "#222";
+                        ctx.fillStyle = "#f90";
+                        ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
+                        ctx.font = "60px Jura";
+                        ctx.strokeText("Master",500,-150);
+                        ctx.fillText("Master",500,-150);
+                        ctx.strokeText("Music",525,25);
+                        ctx.fillText("Music",525,25);
+                        ctx.strokeText("Sfx",450,200);
+                        ctx.fillText("Sfx",450,200);
+
+                        ctx.beginPath();
+                        ctx.moveTo(300,-75);
+                        ctx.lineTo(700,-75);
+                        ctx.moveTo(325,100);
+                        ctx.lineTo(725,100);
+                        ctx.moveTo(250,275);
+                        ctx.lineTo(650,275);
+                        ctx.moveTo(300+400*game.masterVolume,-85);
+                        ctx.lineTo(300+400*game.masterVolume,-65);
+                        ctx.moveTo(325+400*game.musicVolume,90);
+                        ctx.lineTo(325+400*game.musicVolume,110);
+                        ctx.moveTo(250+400*game.sfxVolume,265);
+                        ctx.lineTo(250+400*game.sfxVolume,285);
+                        ctx.lineWidth = game.defaultLineWidth*2;
+                        ctx.stroke();
+                        ctx.lineWidth = game.defaultLineWidth;
+                        ctx.strokeStyle = ctx.fillStyle;
+                        ctx.stroke();
+                        
+                        ctx.filter = "none";
+                    }
+                }
             }
 
             drawMouse();
@@ -4991,16 +5061,17 @@
             if (mouse.down) {
                 song.play();
             } else {
-                setTimeout(check, 100);
+                setTimeout(check, 200);
             }
         };
         check();
 
         //update rev
         setInterval(() => {
-            engineRev.volume = 0.10;
+            engineRev.volume = 0.10*game.masterVolume*game.sfxVolume;
+            horn.volume = 0.75*game.masterVolume*game.sfxVolume;
             engineRev.playbackRate = 1 + Math.abs(car.speed)/60;
-            song.volume = (0.6+0.4*(song.src.includes("PlaStick") || song.src.includes("Stick-City")))*game.audioVolume;
+            song.volume = (0.6+0.4*(song.src.includes("PlaStick") || song.src.includes("Stick-City")))*game.audioVolume*game.masterVolume*game.musicVolume;
         },100)
 
         if (1) {
