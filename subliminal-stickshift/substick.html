@@ -103,6 +103,10 @@
 
                 ctx.font = "100px serif";
             });
+            
+            canvas.addEventListener("click", async () => {
+                await canvas.requestPointerLock();
+            });
         }
 
         const mouse = {
@@ -208,8 +212,8 @@
             return false;
         }
         function xy(e) {
-            mouse.x = e.x/screenScale - (window.innerWidth)/2/screenScale;
-            mouse.y = e.y/screenScale - (window.innerHeight)/2/screenScale;
+            mouse.x += (e.movementX)/screenScale * (1 - 0.65*(stats.relaxMuscle && !game.menu));
+            mouse.y += (e.movementY)/screenScale * (1 - 0.65*(stats.relaxMuscle && !game.menu));
 
             if (game.status == "driving") checkHover();
         }
@@ -2783,6 +2787,128 @@
                     developCrack();
                 }
             },
+            {
+                name: "Heavy Handed",
+                desc: "Slowed cursor movement & it falls downward",
+                drawFunction(timer) {
+                    ctx.beginPath();
+                    ctx.moveTo(-40,100);
+                    ctx.lineTo(-55,0);
+                    ctx.lineTo(-50,-75);
+                    ctx.lineTo(-40,-75);
+                    ctx.lineTo(-35,-0);
+                    ctx.lineTo(-30,-90);
+                    ctx.lineTo(-20,-90);
+                    ctx.lineTo(-15,-0);
+                    ctx.lineTo(-10,-100);
+                    ctx.lineTo(0,-100);
+                    ctx.lineTo(5,-0);
+                    ctx.lineTo(10,-90);
+                    ctx.lineTo(20,-90);
+                    ctx.lineTo(25,0);
+                    ctx.lineTo(35,30);
+                    ctx.lineTo(60,-30);
+                    ctx.lineTo(67,-27);
+                    ctx.lineTo(50,40);
+                    ctx.lineTo(30,90);
+                    ctx.closePath();
+                    ctx.strokeStyle = "#222";
+                    ctx.lineWidth = game.defaultLineWidth*2;
+                    ctx.stroke();
+                    ctx.strokeStyle = "#333";
+                    ctx.lineWidth = game.defaultLineWidth;
+                    ctx.stroke();
+                    ctx.fillStyle = "#555";
+                    ctx.fill();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.fillStyle = "#666";
+                        ctx.strokeStyle = "#333";
+                        ctx.strokeText("Heavy",0,-150);
+                        ctx.fillText("Heavy",0,-150);
+                        ctx.strokeText("Handed",0,150);
+                        ctx.fillText("Handed",0,150);
+                    }
+
+                    ctx.lineWidth = game.defaultLineWidth;
+                },
+                chooseFunction() {
+                    stats.heavyHanded = true;
+                }
+            },
+            {
+                name: "Relaxed Muscles",
+                desc: "Slowed cursor movement & it falls downward",
+                drawFunction(timer) {
+                    ctx.save();
+                    ctx.rotate(-Math.PI/6);
+                    ctx.beginPath();
+                    ctx.moveTo(-80,0);
+                    ctx.lineTo(-40,20);
+                    ctx.lineTo(0,25);
+                    ctx.lineTo(40,20);
+                    ctx.lineTo(80,0);
+                    ctx.lineTo(40,-20);
+                    ctx.lineTo(0,-25);
+                    ctx.lineTo(-40,-20);
+                    ctx.closePath();
+                    ctx.strokeStyle = "#c33";
+                    ctx.stroke();
+                    ctx.fillStyle = "#f66";
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(-80,0);
+                    ctx.lineTo(-40,12.5);
+                    ctx.lineTo(0,17.5);
+                    ctx.lineTo(40,12.5);
+                    ctx.lineTo(80,0);
+                    ctx.lineTo(40,-12.5);
+                    ctx.lineTo(0,-17.5);
+                    ctx.lineTo(-40,-12.5);
+                    ctx.closePath();
+                    ctx.moveTo(-80,0);
+                    ctx.lineTo(80,0);
+                    ctx.lineWidth = game.defaultLineWidth/3;
+                    ctx.strokeStyle = "#c33";
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(-100,0);
+                    ctx.lineTo(-60,10);
+                    ctx.lineTo(-60,-10);
+                    ctx.closePath();
+                    ctx.moveTo(100,0);
+                    ctx.lineTo(60,10);
+                    ctx.lineTo(60,-10);
+                    ctx.closePath();
+                    ctx.lineWidth = game.defaultLineWidth;
+                    ctx.strokeStyle = "#c66";
+                    ctx.stroke();
+                    ctx.fillStyle = "#f99";
+                    ctx.fill();
+
+                    ctx.restore();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.fillStyle = "#f66";
+                        ctx.strokeStyle = "#c33";
+                        ctx.strokeText("Relaxed",0,-150);
+                        ctx.fillText("Relaxed",0,-150);
+                        ctx.strokeText("Muscles",0,150);
+                        ctx.fillText("Muscles",0,150);
+                    }
+
+                    ctx.lineWidth = game.defaultLineWidth;
+                },
+                chooseFunction() {
+                    stats.relaxMuscle = true;
+                }
+            },
         ]
 
         let choices = [];
@@ -3063,6 +3189,9 @@
         }
 
         function drawMouse() {
+            mouse.x = Math.min(Math.max(-1000,mouse.x),1000);
+            mouse.y = Math.min(Math.max(-500,mouse.y),500);
+            
             ctx.beginPath();
             ctx.fillStyle = "#777";
             ctx.strokeStyle = "#ccc";
@@ -3516,6 +3645,8 @@
         }
 
         function drive() {
+            if (stats.heavyHanded) mouse.y += 1.5;
+
             car.x += Math.cos(car.speedAngle)*car.speed;
             car.y += Math.sin(car.speedAngle)*car.speed;
 
@@ -5400,9 +5531,9 @@
             generatePlatformRoad(stats.roadLength/stats.roadSize);
             
             //stackablePerks[4].drawFunction();
-            unStackablePerks[14].drawFunction();
+            //unStackablePerks[14].drawFunction();
             //stackablePunishments[7].drawFunction();
-            //unStackablePunishments[14].drawFunction()
+            //unStackablePunishments[16].drawFunction()
         },100)
     </script>
 </body>
