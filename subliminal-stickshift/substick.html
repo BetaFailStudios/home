@@ -118,7 +118,10 @@
             const key = e.key.toLowerCase();
             if (!keys.includes(key) && !game.menu) keys.push(key);
 
-            if (key == "-") stats.hueShift = !stats.hueShift;
+            if (key == "escape" && !game.menu) game.menu = "pause";
+            else if (key == "escape" && game.menu == "pause") game.menu = false;
+            
+            console.log(game.menu)
         }}, false);
         window.addEventListener('keyup', function (e) {
             const key = e.key.toLowerCase();
@@ -152,6 +155,12 @@
                         if (mouse.x > 250 && mouse.x < 750 && mouse.y > -100 && mouse.y < -50) game.masterVolume = Math.min(1,Math.max(0,(mouse.x-300)/400)).toFixed(2);
                         else if (mouse.x > 275 && mouse.x < 775 && mouse.y > 75 && mouse.y < 125) game.musicVolume = Math.min(1,Math.max(0,(mouse.x-325)/400)).toFixed(2);
                         else if (mouse.x > 200 && mouse.x < 700 && mouse.y > 250 && mouse.y < 300) game.sfxVolume = Math.min(1,Math.max(0,(mouse.x-250)/400)).toFixed(2);
+                    }
+                } else if (game.menu == "pause") {
+                    if (mouse.hover == "menu1") {
+                        game.menu = false;
+                    } else if (mouse.hover == "menu2") {
+                        window.location.reload();
                     }
                 }
                 mouse.hover = false;
@@ -2663,7 +2672,7 @@
         const game = {
             menu: "main", previousMenu: "main", transitionTicks: 0,
             gravity: 0, fps: 60, zoom: 50, xOffset: 0, yOffset: 0, xVOffset: 0, yVOffset: 0, audioVolume: 0.75,
-            renderType: "2d", defaultLineWidth: 10, timer: 0, timerCounting: false, status: "driving",
+            renderType: "2d", defaultLineWidth: 10, timer: 0, rgbTimer: 0, timerCounting: false, status: "driving",
 
             masterVolume: 0.75, sfxVolume: 1, musicVolume: 1,
         };
@@ -2795,6 +2804,17 @@
 
             if (game.menu) {
                 drawMenu();
+
+                ctx.beginPath();
+                ctx.rect(-3600,-3000,6000,6000);
+
+                ctx.fillStyle = linearGradientBG;
+
+                ctx.fill();
+
+                ctx.fillStyle = linearGradientBG1;
+
+                ctx.fill();
 
                 return;
             }
@@ -4333,6 +4353,14 @@
                             return;
                         } }
                     }
+                } else if (game.menu == "pause") {
+                    if (mouse.y < -50 && mouse.y > -150) {
+                        mouse.hover = "menu1";
+                        return;
+                    } else if (mouse.y < 150 && mouse.y > 50) {
+                        mouse.hover = "menu2";
+                        return;
+                    }
                 }
             } else {
                 //wheel
@@ -4735,20 +4763,55 @@
         }
 
         function drawMenu() {
-            game.timer++;
+            game.rgbTimer++;
+            if (game.rgbTimer > 1000000) game.rgbTimer -= 500*Math.PI;
+
+            if (game.menu == "pause") {
+                drawSkybox();
+                drawRoadPerspective();
+                drawDash();
+
+                ctx.beginPath();
+                ctx.fillStyle = "#00000099";
+                ctx.rect(-2000,-1000,4000,2000);
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.strokeStyle = "#333";
+                ctx.fillStyle = "#ad7d53"; 
+                ctx.rect(-250-100*(mouse.hover == "menu1"),-150,500+200*(mouse.hover == "menu1"),100);
+                ctx.rect(-250-100*(mouse.hover == "menu2"),50,500+200*(mouse.hover == "menu2"),100);
+                ctx.stroke();
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.strokeStyle = "#222";
+                ctx.fillStyle = "#f90";
+                ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
+                ctx.font = "70px Jura";
+                ctx.strokeText("Resume",0,-100);
+                ctx.fillText("Resume",0,-100);
+                ctx.strokeText("Main Menu",0,100);
+                ctx.fillText("Main Menu",0,100);
+                ctx.filter = "none";
+
+                drawMouse();
+
+                return;
+            }
 
             ctx.beginPath();
             ctx.rect(-1000,-500,2000,1000);
             ctx.fillStyle = "#300";
-            ctx.filter = "hue-rotate(" + game.timer/3 + "deg)"
+            ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)"
             ctx.fill();
             ctx.filter = "none";
 
             ctx.save();
             ctx.scale(1.2,1.2)
-            ctx.rotate(-Math.PI/10*Math.sin(game.timer/100));
+            ctx.rotate(-Math.PI/10*Math.sin(game.rgbTimer/100));
             ctx.save();
-            xPos = -1000+(game.timer*5)%(unStackablePerks.length*400)-(unStackablePerks.length*400) + 250;
+            xPos = -1000+(game.rgbTimer*5)%(unStackablePerks.length*400)-(unStackablePerks.length*400) + 250;
             ctx.translate(xPos, -300);
             for (var i = 0; i < 3; i++) unStackablePerks.forEach( (item, i2) => {
                 if (Math.abs(xPos) < 1100) item.drawFunction(true);
@@ -4757,7 +4820,7 @@
             } );
             ctx.restore();
             ctx.save();
-            xPos = -1000+(game.timer*5)%(unStackablePunishments.length*400)-(unStackablePunishments.length*400) + 100;
+            xPos = -1000+(game.rgbTimer*5)%(unStackablePunishments.length*400)-(unStackablePunishments.length*400) + 100;
             ctx.translate(xPos, 300);
             for (var i = 0; i < 3; i++) unStackablePunishments.forEach( (item, i2) => {
                 if (Math.abs(xPos) < 1100) item.drawFunction(true);
@@ -4771,19 +4834,19 @@
             ctx.translate(200-700*(game.menu == "settings"),0);
 
             ctx.beginPath();
-            ctx.arc(0,0,game.timer%500,0,Math.PI*2);
-            ctx.moveTo(game.timer%500+500,0);
-            ctx.arc(0,0,game.timer%500+500,0,Math.PI*2);
-            ctx.moveTo(game.timer%500+1000,0);
-            ctx.arc(0,0,game.timer%500+1000,0,Math.PI*2);
-            ctx.moveTo(game.timer%500+1500,0);
-            ctx.arc(0,0,game.timer%500+1500,0,Math.PI*2);
+            ctx.arc(0,0,game.rgbTimer%500,0,Math.PI*2);
+            ctx.moveTo(game.rgbTimer%500+500,0);
+            ctx.arc(0,0,game.rgbTimer%500+500,0,Math.PI*2);
+            ctx.moveTo(game.rgbTimer%500+1000,0);
+            ctx.arc(0,0,game.rgbTimer%500+1000,0,Math.PI*2);
+            ctx.moveTo(game.rgbTimer%500+1500,0);
+            ctx.arc(0,0,game.rgbTimer%500+1500,0,Math.PI*2);
             ctx.strokeStyle = "#00000099";
             ctx.lineWidth = game.defaultLineWidth*20;
             ctx.stroke();
             ctx.lineWidth = game.defaultLineWidth;
 
-            ctx.rotate(Math.PI/10*Math.sin(game.timer/100));
+            ctx.rotate(Math.PI/10*Math.sin(game.rgbTimer/100));
 
             ctx.strokeStyle = "#333";
             ctx.fillStyle = "#ad7d53";
@@ -4816,7 +4879,7 @@
 
             ctx.strokeStyle = "#222";
             ctx.fillStyle = "#f90";
-            ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
+            ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
             ctx.font = "70px Jura"
             ctx.rotate(-Math.PI/2);
 
@@ -4920,7 +4983,7 @@
             ctx.beginPath();
             ctx.strokeStyle = "#222";
             ctx.fillStyle = "#f90";
-            ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
+            ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
             ctx.font = "70px Jura";
             ctx.strokeText("Settings",-700*(game.menu == "settings")-400-(mouse.hover == "menu1")*50,-300);
             ctx.fillText("Settings",-700*(game.menu == "settings")-400-(mouse.hover == "menu1")*50,-300);
@@ -4997,9 +5060,13 @@
                         ctx.font = "40px Jura";
                         ctx.strokeText("Ctrl +/-",500,-150);
                         ctx.fillText("Ctrl +/-",500,-150);
+                        ctx.strokeText("F11",525,0);
+                        ctx.fillText("F11",525,0);
                         ctx.font = "30px Jura";
                         ctx.strokeText("decrease/increase resolution",525,-100);
                         ctx.fillText("decrease/increase resolution",525,-100);
+                        ctx.strokeText("Toggle fullscreen",525,50);
+                        ctx.fillText("Toggle fullscreen",525,50);
                         ctx.filter = "none";
                     } else if (game.subMenu == "menu3") {
                         ctx.beginPath();
