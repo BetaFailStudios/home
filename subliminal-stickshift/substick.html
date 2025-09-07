@@ -122,7 +122,7 @@
             const key = e.key.toLowerCase();
             if (!keys.includes(key) && !game.menu) keys.push(key);
 
-            if (key == "escape" && !game.menu) game.menu = "pause";
+            if (key == "escape" && !game.menu && game.status == "driving") game.menu = "pause";
             else if (key == "escape" && game.menu == "pause") game.menu = false;
         }}, false);
         window.addEventListener('keyup', function (e) {
@@ -212,8 +212,19 @@
             return false;
         }
         function xy(e) {
-            mouse.x += (e.movementX)/screenScale * (1 - 0.65*(!!stats.relaxMuscle && !game.menu));
-            mouse.y += (e.movementY)/screenScale * (1 - 0.65*(!!stats.relaxMuscle && !game.menu));
+            let moveX = (e.movementX)/screenScale;
+            let moveY = (e.movementY)/screenScale;
+
+            if (stats.relaxMuscle && !game.menu) {
+                let speed = Math.hypot(moveX, moveY);
+                if (speed > 25) {
+                    moveX *= 25/speed;
+                    moveY *= 25/speed;
+                }
+            }
+
+            mouse.x += moveX;
+            mouse.y += moveY;
 
             if (game.status == "driving") checkHover();
         }
@@ -2789,7 +2800,7 @@
             },
             {
                 name: "Heavy Handed",
-                desc: "Slowed cursor movement",
+                desc: "Your cursor slowly falls downard",
                 drawFunction(timer) {
                     ctx.beginPath();
                     ctx.moveTo(-40,100);
@@ -2840,7 +2851,7 @@
             },
             {
                 name: "Relaxed Muscles",
-                desc: "Your cursor slowly falls downard",
+                desc: "Cursor movement velocity is fixed",
                 drawFunction(timer) {
                     ctx.save();
                     ctx.rotate(-Math.PI/6);
@@ -4925,6 +4936,7 @@
 
                 if (perkChoicePos == perkChoices.length) {
                     chosenPerk.splice(choice.position, 1);
+                    if (choice.choice.name == "Windsheild Crack") stats.crack = undefined;
 
                     currentRegion = regions[0];
                     regions.splice(0,1);
@@ -5478,7 +5490,7 @@
             drawMouse();
         }
 
-        
+        stats.relaxMuscle = true;
     </script>
     <script>
         //music handling
