@@ -212,8 +212,8 @@
             return false;
         }
         function xy(e) {
-            mouse.x += (e.movementX)/screenScale * (1 - 0.65*(stats.relaxMuscle && !game.menu));
-            mouse.y += (e.movementY)/screenScale * (1 - 0.65*(stats.relaxMuscle && !game.menu));
+            mouse.x += (e.movementX)/screenScale * (1 - 0.65*(!!stats.relaxMuscle && !game.menu));
+            mouse.y += (e.movementY)/screenScale * (1 - 0.65*(!!stats.relaxMuscle && !game.menu));
 
             if (game.status == "driving") checkHover();
         }
