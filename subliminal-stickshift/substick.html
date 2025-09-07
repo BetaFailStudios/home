@@ -120,8 +120,6 @@
 
             if (key == "escape" && !game.menu) game.menu = "pause";
             else if (key == "escape" && game.menu == "pause") game.menu = false;
-            
-            console.log(game.menu)
         }}, false);
         window.addEventListener('keyup', function (e) {
             const key = e.key.toLowerCase();
@@ -146,12 +144,6 @@
                         game.subMenu = false;
                     } else if (mouse.hover) game.subMenu = mouse.hover;
                     else {
-                        /*ctx.moveTo(300,-75);
-                        ctx.lineTo(700,-75);
-                        ctx.moveTo(325,100);
-                        ctx.lineTo(725,100);
-                        ctx.moveTo(250,275);
-                        ctx.lineTo(650,275);*/
                         if (mouse.x > 250 && mouse.x < 750 && mouse.y > -100 && mouse.y < -50) game.masterVolume = Math.min(1,Math.max(0,(mouse.x-300)/400)).toFixed(2);
                         else if (mouse.x > 275 && mouse.x < 775 && mouse.y > 75 && mouse.y < 125) game.musicVolume = Math.min(1,Math.max(0,(mouse.x-325)/400)).toFixed(2);
                         else if (mouse.x > 200 && mouse.x < 700 && mouse.y > 250 && mouse.y < 300) game.sfxVolume = Math.min(1,Math.max(0,(mouse.x-250)/400)).toFixed(2);
@@ -178,22 +170,27 @@
                 while (Math.abs(mouse.wheelOffset-Math.PI*2) < Math.abs(mouse.wheelOffset)) mouse.wheelOffset -= Math.PI*2;
                 while (Math.abs(mouse.wheelOffset+Math.PI*2) < Math.abs(mouse.wheelOffset)) mouse.wheelOffset += Math.PI*2;
             } else if (mouse.selected == "radio") mouse.wheelOffset = game.audioVolume*500-250 - mouse.x+200;
-
             else if (mouse.selected == "ignition") {
                 car.running = !car.running;
                 game.timerCounting = true;
 
                 if (car.running) engineRev.play();
                 else engineRev.pause();
-            }
-
-            if (mouse.selected == "horn") {
+            }else if (mouse.selected == "horn") {
                 horn.play();
 
                 if (stats.hornJump && !car.jumpPos) {
                     car.jumpPosVel = 60;
                     car.jumpPos = 0;
                 }
+            } else if (mouse.selected == "blinkerR") {
+                if (car.blinker == "r") car.blinker = false; 
+                else car.blinker = "r";
+            } else if (mouse.selected == "blinkerL") {
+                if (car.blinker == "l") car.blinker = false; 
+                else car.blinker = "l";
+            } else if (mouse.selected == "hazard") {
+                car.hazard = !car.hazard; 
             }
 
             if (game.status == "choosing") chooseChoice();
@@ -1292,6 +1289,141 @@
                     stats.driftBoostCharge = 0;
                 }
             },
+            {
+                name: "Particle Accelerator",
+                desc: "Braking while accelerating removes max speed and reduces steering",
+                drawFunction(timer) {
+                    ctx.beginPath();
+                    ctx.moveTo(50,0);
+                    ctx.lineTo(35,35);
+                    ctx.lineTo(0,50);
+                    ctx.lineTo(-35,35);
+                    ctx.lineTo(-50,0);
+                    ctx.lineTo(-35,-35);
+                    ctx.lineTo(0,-50);
+                    ctx.lineTo(35,-35);
+                    ctx.closePath();
+                    ctx.strokeStyle = "#c77";
+                    ctx.fillStyle = "#f99";
+                    ctx.stroke();
+                    ctx.fill();
+
+                    ctx.save();
+                    ctx.rotate(Math.PI/6);
+                    ctx.beginPath();
+                    for(var i = 0; i < 3; i++) {
+                        ctx.rotate(Math.PI/3);
+
+                        ctx.moveTo(65,0);
+                        ctx.lineTo(40,105);
+                        ctx.lineTo(0,130);
+                        ctx.lineTo(-40,105);
+                        ctx.lineTo(-65,0);
+                        ctx.lineTo(-40,-105);
+                        ctx.lineTo(0,-130);
+                        ctx.lineTo(40,-105);
+                        ctx.closePath();
+                    }
+                    ctx.strokeStyle = "#222";
+                    ctx.stroke();
+                    ctx.strokeStyle = "#222";
+                    ctx.lineWidth = game.defaultLineWidth/2;
+                    ctx.stroke();
+                    ctx.lineWidth = game.defaultLineWidth;
+                    ctx.restore();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.strokeStyle = "#c77";
+                        ctx.fillStyle = "#f99";
+                        ctx.strokeText("Particle",0,-150);
+                        ctx.fillText("Particle",0,-150);
+                        ctx.strokeText("Accelerator",0,150);
+                        ctx.fillText("Accelerator",0,150);
+                    }
+                },
+                chooseFunction() {
+                    stats.partAcc = true;
+                }
+            },
+            {
+                name: "Regenerative Brakes",
+                desc: "Braking charges a boost that is released after",
+                drawFunction(timer) {
+                    ctx.beginPath();
+                    ctx.moveTo(80,0);
+                    ctx.lineTo(55,55);
+                    ctx.lineTo(0,80);
+                    ctx.lineTo(-55,55);
+                    ctx.lineTo(-80,0);
+                    ctx.lineTo(-55,-55);
+                    ctx.lineTo(0,-80);
+                    ctx.lineTo(55,-55);
+                    ctx.closePath();
+                    ctx.strokeStyle = "#333";
+                    ctx.stroke();
+                    ctx.fillStyle = "#999";
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(-90,35);
+                    ctx.lineTo(-100,0);
+                    ctx.lineTo(-70,-70);
+                    ctx.lineTo(0,-100);
+                    ctx.lineTo(35,-90);
+                    ctx.closePath();
+
+                    ctx.moveTo(20,0);
+                    ctx.lineTo(14,14);
+                    ctx.lineTo(0,20);
+                    ctx.lineTo(-14,14);
+                    ctx.lineTo(-20,0);
+                    ctx.lineTo(-14,-14);
+                    ctx.lineTo(0,-20);
+                    ctx.lineTo(14,-14);
+                    ctx.closePath();
+                    ctx.closePath();
+                    ctx.strokeStyle = "#333";
+                    ctx.stroke();
+                    ctx.fillStyle = "#222";
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(100,0);
+                    ctx.lineTo(70,70);
+                    ctx.lineTo(0,100);
+                    ctx.lineTo(-70,70);
+                    ctx.lineTo(-100,0);
+                    ctx.lineTo(-70,-70);
+                    ctx.lineTo(0,-100);
+                    ctx.lineTo(70,-70);
+                    ctx.lineTo(65,-90);
+                    ctx.moveTo(70,-70);
+                    ctx.lineTo(50,-60);
+                    
+                    ctx.strokeStyle = "#090";
+                    ctx.lineWidth = game.defaultLineWidth*2;
+                    ctx.stroke();
+                    ctx.strokeStyle = "#0c0";
+                    ctx.lineWidth = game.defaultLineWidth;
+                    ctx.stroke();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.strokeStyle = "#090";
+                        ctx.fillStyle = "#0c0";
+                        ctx.strokeText("Regenerative",0,-150);
+                        ctx.fillText("Regenerative",0,-150);
+                        ctx.strokeText("Brakes",0,150);
+                        ctx.fillText("Brakes",0,150);
+                    }
+                },
+                chooseFunction() {
+                    stats.regenBrake = true;
+                }
+            },
         ]
 
         const stackablePunishments = [
@@ -2078,7 +2210,6 @@
                     ctx.strokeStyle = "#369";
                     ctx.stroke();
                     ctx.fillStyle = "#69c";
-                    ctx.fill();
 
                     if (!timer) {
                         ctx.beginPath();
@@ -2136,6 +2267,26 @@
                     ctx.stroke();
                     ctx.fillStyle = "#222";
                     ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(100,0);
+                    ctx.lineTo(70,70);
+                    ctx.lineTo(0,100);
+                    ctx.lineTo(-70,70);
+                    ctx.lineTo(-100,0);
+                    ctx.lineTo(-70,-70);
+                    ctx.lineTo(0,-100);
+                    ctx.lineTo(70,-70);
+                    ctx.closePath();
+                    ctx.moveTo(-65, -65);
+                    ctx.lineTo(65, 65);
+                    
+                    ctx.strokeStyle = "#900";
+                    ctx.lineWidth = game.defaultLineWidth*2;
+                    ctx.stroke();
+                    ctx.strokeStyle = "#c00";
+                    ctx.lineWidth = game.defaultLineWidth;
+                    ctx.stroke();
 
                     if (!timer) {
                         ctx.beginPath();
@@ -2696,7 +2847,10 @@
             wheel: 0,
             running: false,
             wiper: 0,
+            blinker: false,
+            hazard: false,
             booster: 0,
+            brakeBoost: 0,
             jumpPos: 0,
         }
         
@@ -3365,11 +3519,26 @@
             car.x += Math.cos(car.speedAngle)*car.speed;
             car.y += Math.sin(car.speedAngle)*car.speed;
 
-            if ( game.timer < stats.timerMax && car.running && ( keys.includes("w") || keys.includes(" ") ) && car.speed > -stats.topSpeed * ( 1 + 0.2 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 0.5 * (car.booster/300) ) * ( 1 + game.audioVolume/2.5 ) ) {
+            if ( game.timer < stats.timerMax && car.running && ( keys.includes("w") || keys.includes(" ") ) && ((car.braking && stats.partAcc) || car.speed > -stats.topSpeed * ( 1 + 0.2 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 0.5 * (car.booster/300) ) * ( 1 + game.audioVolume/2.5 ) ) ) {
                 car.speed -= stats.acceleration * (1 + 2*(car.speed > 0) ) * ( 1 + 0.7 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 9 * (car.booster/300) );
-            } else car.speed *= 0.998;
+                car.accelerating = true;
+                if (car.brakeBoost > car.booster) {
+                    car.booster = car.brakeBoost;
+                    car.brakeBoost = 0;
+                }
+            } else {
+                car.speed *= 0.998;
+                car.accelerating = false;
+            }
             if ( game.timer < stats.timerMax &&  car.running && ( keys.includes("s") || keys.includes("shift") ) && car.speed < stats.topSpeed/5 && !stats.noBrake) {
-                car.speed += stats.acceleration * (1 + 2*(car.speed < 0) );
+                if (!car.accelerating) {
+                    car.brakeBoost += 20*stats.acceleration * (1 + 2*(car.speed < 0) );
+
+                    car.speed += stats.acceleration * (1 + 2*(car.speed < 0) );
+                }
+                car.braking = true;
+            } else {
+                car.braking = false;
             }
 
             if (mouse.selected == "wheel") {
@@ -3389,7 +3558,7 @@
 
                 if (Math.abs(angleDiff) > stats.turnSpeed) angleDiff = Math.sign(angleDiff)*stats.turnSpeed;
 
-                car.wheel -= -(angleDiff) / (Math.PI*5/2);
+                car.wheel -= -(angleDiff) / (Math.PI*5/2) * (1 - 0.8*(!!stats.partAcc && car.accelerating && car.braking));
             } else if (stats.telekinesis && ( keys.includes("d") - keys.includes("a") )) {
                 car.wheel -= 0.01*( keys.includes("d") - keys.includes("a") )*stats.turnSpeed;
             }
@@ -3827,11 +3996,51 @@
                 ctx.restore();
             }
 
+            //hazard
+            {
+                ctx.save();
+                
+                ctx.translate(60,270);
+
+                ctx.beginPath();
+                ctx.moveTo(-25,0);
+                ctx.lineTo(-18,-18);
+                ctx.lineTo(0,-25);
+                ctx.lineTo(18,-18);
+                ctx.lineTo(25,0);
+                ctx.lineTo(18,18);
+                ctx.lineTo(0,25);
+                ctx.lineTo(-18,18);
+                ctx.closePath();
+                //ctx.arc(0,0,25,0,Math.PI*2);
+                
+                ctx.fillStyle = "#111";
+                if (car.hazard && game.timer%40 > 20) ctx.fillStyle = "#600";
+                ctx.fill();
+                ctx.strokeStyle = "#222";
+                if (mouse.selected == "hazard") ctx.strokeStyle = "#666";
+                else if (mouse.hover == "hazard") ctx.strokeStyle = "#444";
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(0,-12.5);
+                ctx.lineTo(10,7.5);
+                ctx.lineTo(-10,7.5);
+                ctx.closePath();
+                ctx.strokeStyle = "#c00";
+                ctx.lineWidth = game.defaultLineWidth/1.5;
+                ctx.stroke();
+
+                ctx.lineWidth = game.defaultLineWidth;
+
+                ctx.restore();
+            }
+
             //ignition
             {
                 ctx.save();
                 
-                ctx.translate(70,350);
+                ctx.translate(50,350);
 
                 ctx.beginPath();
                 ctx.moveTo(-25,0);
@@ -4031,16 +4240,37 @@
                 }
             }
         
-            //region name
+            //blinker
             {
+                ctx.save();
+                ctx.translate(-500,325);
                 ctx.beginPath();
-                ctx.strokeStyle = "#222";
-                ctx.fillStyle = "#666";
-                ctx.font = "50px Jura";
-                ctx.strokeText(currentRegion.toUpperCase(), 600, -475);
-                ctx.fillText(currentRegion.toUpperCase(), 600, -475);
-            } 
-        
+                ctx.moveTo(60,0);
+                ctx.lineTo(10,25);
+                ctx.lineTo(10,-25);
+                ctx.closePath();
+                ctx.strokeStyle = "#333";
+                if (mouse.selected == "blinkerR") ctx.strokeStyle = "#fff";
+                else if (mouse.hover == "blinkerR") ctx.strokeStyle = "#888";
+                ctx.stroke();
+                ctx.fillStyle = "#222";
+                if (car.blinker == "r" && game.timer%40 > 20) ctx.fillStyle = "#990";
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(-60,0);
+                ctx.lineTo(-10,25);
+                ctx.lineTo(-10,-25);
+                ctx.closePath();
+                ctx.strokeStyle = "#333";
+                if (mouse.selected == "blinkerL") ctx.strokeStyle = "#fff";
+                else if (mouse.hover == "blinkerL") ctx.strokeStyle = "#888";
+                ctx.stroke();
+                ctx.fillStyle = "#222";
+                if (car.blinker == "l" && game.timer%40 > 20) ctx.fillStyle = "#990";
+                ctx.fill();
+                ctx.restore();
+            }
+
             //radio
             {
                 ctx.beginPath();
@@ -4303,8 +4533,8 @@
                 ctx.stroke();
 
                 ctx.fillStyle = "#222";
-                ctx.font = "50px Jura";
-                ctx.fillText("Trip Plan",-225, -100);
+                ctx.font = "40px Jura";
+                ctx.fillText("Trip Plan: " + currentRegion.toUpperCase(),-225, -100);
 
                 ctx.restore();
             }
@@ -4371,7 +4601,10 @@
                 } else if (wheelHypot < 75) {
                     mouse.hover = "horn";
                     return;
-                } else if (Math.hypot(mouse.x-70, mouse.y-350) < 50) {
+                } else if (Math.hypot(mouse.x-60, mouse.y-270) < 50) {
+                    mouse.hover = "hazard";
+                    return;
+                } else if (Math.hypot(mouse.x-50, mouse.y-350) < 50) {
                     mouse.hover = "ignition";
                     return;
                 } else if (Math.hypot(mouse.x+425 + 250 * (car.wiper), mouse.y-415) < 50) {
@@ -4379,6 +4612,12 @@
                     return;
                 } else if (Math.hypot(mouse.x-200, mouse.y-420) < 50) {
                     mouse.hover = "radio";
+                    return;
+                } else if (Math.hypot(mouse.x+470, mouse.y-325) < 30) {
+                    mouse.hover = "blinkerR";
+                    return;
+                } else if (Math.hypot(mouse.x+530, mouse.y-325) < 30) {
+                    mouse.hover = "blinkerL";
                     return;
                 }
             }
@@ -5108,7 +5347,7 @@
             drawMouse();
         }
 
-        
+        stats.brakeBoost = true;
     </script>
     <script>
         //music handling
@@ -5161,9 +5400,9 @@
             generatePlatformRoad(stats.roadLength/stats.roadSize);
             
             //stackablePerks[4].drawFunction();
-            //unStackablePerks[12].drawFunction();
+            unStackablePerks[14].drawFunction();
             //stackablePunishments[7].drawFunction();
-            unStackablePunishments[14].drawFunction()
+            //unStackablePunishments[14].drawFunction()
         },100)
     </script>
 </body>
