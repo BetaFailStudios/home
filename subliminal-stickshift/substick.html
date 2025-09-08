@@ -112,6 +112,8 @@
         const mouse = {
             x: 0,
             y: 0,
+            x: 0,
+            y: 1,
             down: false
         };
 
@@ -211,20 +213,23 @@
         window.oncontextmenu = () => {
             return false;
         }
+        
         function xy(e) {
-            let moveX = (e.movementX)/screenScale;
-            let moveY = (e.movementY)/screenScale;
+            //mouse.x = e.x/screenScale - (window.innerWidth)/2/screenScale;
+            //mouse.y = e.y/screenScale - (window.innerHeight)/2/screenScale;
 
-            if (stats.relaxMuscle && !game.menu) {
-                let speed = Math.hypot(moveX, moveY);
-                if (speed > 25) {
-                    moveX *= 25/speed;
-                    moveY *= 25/speed;
-                }
+            let moveX = e.movementX/screenScale;
+            let moveY = e.movementY/screenScale;
+
+            const speed = Math.hypot(moveX, moveY);
+            if (stats.relaxMuscle && speed > 20) {
+                moveX *= 20/speed;
+                moveY *= 20/speed;
             }
 
-            mouse.x += moveX;
-            mouse.y += moveY;
+            
+            mouse.x += moveX;// - (window.innerWidth)/2/screenScale;
+            mouse.y += moveY;// - (window.innerHeight)/2/screenScale;
 
             if (game.status == "driving") checkHover();
         }
@@ -2922,6 +2927,426 @@
             },
         ]
 
+        const cars = [
+            {
+                name: "Cardboard Car",
+                desc: "Simple and Reliable",
+                drawFunctions: {
+                    dash() {
+                        //wipers
+                        {
+                            const wiperAngle = -Math.PI*11/10*car.wiper+Math.PI/20;
+
+                            ctx.beginPath();
+                            ctx.moveTo(0,300);
+                            ctx.lineTo(Math.cos(wiperAngle)*800,300+Math.sin(wiperAngle)*800);
+                            ctx.closePath();
+                            ctx.strokeStyle = "#222";
+                            ctx.stroke();
+                        }
+                        
+                        //windshield gradient
+                        {
+                            ctx.beginPath();
+
+                            ctx.fillStyle = windshieldGradient;
+
+                            //ctx.fillStyle = "#9999ff22";
+                            ctx.rect(-1800,-500,3600,1000);
+                            ctx.fill();
+                        }
+                        
+                        //dash
+                        {
+                            ctx.beginPath();
+                            ctx.strokeStyle = "#222";
+                            ctx.fillStyle = "#664e3a";
+                            ctx.moveTo(-2000, 800);
+                            ctx.lineTo(-700, 300);
+                            ctx.lineTo(-300, 200);
+                            ctx.lineTo(300, 200);
+                            ctx.lineTo(700, 300);
+                            ctx.lineTo(2000, 800);
+                            ctx.lineTo(2000, 1000);
+                            ctx.lineTo(-2000, 1000);
+                            ctx.closePath();
+                            ctx.stroke();
+                            ctx.fill();
+
+                            ctx.beginPath();
+                            ctx.moveTo(-1000, -300);
+                            ctx.lineTo(-700, -400);
+                            ctx.lineTo(-200, -475);
+                            ctx.lineTo(200, -475);
+                            ctx.lineTo(700, -400);
+                            ctx.lineTo(1000, -300);
+                            ctx.lineTo(1000, -1000);
+                            ctx.lineTo(-1000, -1000);
+                            ctx.closePath();
+                            ctx.stroke();
+                            ctx.fill();
+                        }
+
+                        //upgrades
+                        {
+                            ctx.beginPath();
+                            ctx.save();
+                            ctx.translate(-500,-375);
+                            ctx.scale(0.2,0.2);
+
+                            chosenPunish.forEach( (thing) => {
+                                ctx.beginPath();
+                                ctx.rect(25,-500,-50,500);
+                                ctx.moveTo(-140,0);
+                                ctx.lineTo(-100,100);
+                                ctx.lineTo(0,140);
+                                ctx.lineTo(100,100);
+                                ctx.lineTo(140,0);
+                                ctx.lineTo(100,-100);
+                                ctx.lineTo(0,-140);
+                                ctx.lineTo(-100,-100);
+                                ctx.closePath();
+
+                                ctx.fillStyle = "#777";
+                                ctx.strokeStyle = "#ccc";
+
+                                ctx.stroke();
+                                ctx.fill();
+
+                                thing.drawFunction(true);
+
+                                ctx.translate(-300,50);
+                            })
+
+                            ctx.restore();
+                            ctx.save();
+                            ctx.translate(500,-375);
+                            ctx.scale(0.2,0.2)
+                            
+                            chosenPerk.forEach( (thing) => {
+                                ctx.beginPath();
+                                ctx.rect(25,-500,-50,500);
+                                ctx.moveTo(-140,0);
+                                ctx.lineTo(-100,100);
+                                ctx.lineTo(0,140);
+                                ctx.lineTo(100,100);
+                                ctx.lineTo(140,0);
+                                ctx.lineTo(100,-100);
+                                ctx.lineTo(0,-140);
+                                ctx.lineTo(-100,-100);
+                                ctx.closePath();
+
+                                ctx.fillStyle = "#777";
+                                ctx.strokeStyle = "#ccc";
+
+                                ctx.stroke();
+                                ctx.fill();
+
+                                thing.drawFunction(true);
+
+                                ctx.translate(450,87.5);
+                            })
+
+                            ctx.restore();
+                            //Trip Plan
+                            {
+                                ctx.save();
+                                
+                                ctx.translate(150,250);
+
+                                ctx.rotate(Math.PI/20);
+
+                                ctx.beginPath();
+                                ctx.rect(-25,-75,400,150);
+
+                                ctx.fillStyle = "#cc9";
+                                ctx.strokeStyle = "#222";
+                                ctx.stroke();
+                                ctx.fill();
+
+                                ctx.fillStyle = "#ffffff22";
+
+                                ctx.lineWidth = 3;
+
+                                ctx.beginPath();
+                                
+                                perkChoices.forEach( (choice, i) => {
+                                    if (i >= perkChoicePos) {
+                                        if ( i == perkChoicePos) {
+                                            ctx.strokeStyle = "#555";
+                                            ctx.fill();
+                                            ctx.stroke();
+
+                                            ctx.beginPath();
+                                            ctx.moveTo(25,0);
+                                            ctx.lineTo(19,19);
+                                            ctx.lineTo(0,25);
+                                            ctx.lineTo(-19,19);
+                                            ctx.lineTo(-25,0);
+                                            ctx.lineTo(-19,-19);
+                                            ctx.lineTo(0,-25);
+                                            ctx.lineTo(19,-19);
+                                            ctx.closePath();
+
+                                            ctx.strokeStyle = "#900";
+                                            ctx.fill();
+                                            ctx.stroke();
+
+                                            ctx.beginPath();
+                                        }
+
+                                        ctx.moveTo(20,0);
+                                        ctx.lineTo(15,15);
+                                        ctx.lineTo(0,20);
+                                        ctx.lineTo(-15,15);
+                                        ctx.lineTo(-20,0);
+                                        ctx.lineTo(-15,-15);
+                                        ctx.lineTo(0,-20);
+                                        ctx.lineTo(15,-15);
+                                        ctx.closePath();
+
+                                        switch(choice) {
+                                            case "perk": {
+                                                ctx.moveTo(-10, -3);
+                                                ctx.lineTo(-3, -3);
+                                                ctx.lineTo(-3, -10);
+                                                ctx.lineTo(3, -10);
+                                                ctx.lineTo(3, -3);
+                                                ctx.lineTo(10, -3);
+                                                ctx.lineTo(10, 3);
+                                                ctx.lineTo(3, 3);
+                                                ctx.lineTo(3, 10);
+                                                ctx.lineTo(-3, 10);
+                                                ctx.lineTo(-3, 3);
+                                                ctx.lineTo(-10, 3);
+                                                ctx.closePath();
+
+                                                break;
+                                            }
+                                            case "punish": {
+                                                ctx.moveTo(-10, -3);
+                                                ctx.lineTo(10, -3);
+                                                ctx.lineTo(10, 3);
+                                                ctx.lineTo(-10, 3);
+                                                ctx.closePath();
+
+                                                break;
+                                            }
+                                            case "unstackPerk": {
+                                                ctx.translate(-7,7);
+                                                
+                                                ctx.moveTo(-10, -3);
+                                                ctx.lineTo(-3, -3);
+                                                ctx.lineTo(-3, -10);
+                                                ctx.lineTo(3, -10);
+                                                ctx.lineTo(3, -3);
+                                                ctx.lineTo(10, -3);
+                                                ctx.lineTo(10, 3);
+                                                ctx.lineTo(3, 3);
+                                                ctx.lineTo(3, 10);
+                                                ctx.lineTo(-3, 10);
+                                                ctx.lineTo(-3, 3);
+                                                ctx.lineTo(-10, 3);
+                                                ctx.closePath();
+
+                                                ctx.translate(14,-14);
+                                                
+                                                ctx.moveTo(-10, -3);
+                                                ctx.lineTo(-3, -3);
+                                                ctx.lineTo(-3, -10);
+                                                ctx.lineTo(3, -10);
+                                                ctx.lineTo(3, -3);
+                                                ctx.lineTo(10, -3);
+                                                ctx.lineTo(10, 3);
+                                                ctx.lineTo(3, 3);
+                                                ctx.lineTo(3, 10);
+                                                ctx.lineTo(-3, 10);
+                                                ctx.lineTo(-3, 3);
+                                                ctx.lineTo(-10, 3);
+                                                ctx.closePath();
+                                                
+                                                ctx.translate(-7,7);
+
+                                                break;
+                                            }
+                                            case "unstackPunish": {
+                                                ctx.translate(-7,7);
+
+                                                ctx.moveTo(-10, -3);
+                                                ctx.lineTo(10, -3);
+                                                ctx.lineTo(10, 3);
+                                                ctx.lineTo(-10, 3);
+                                                ctx.closePath();
+
+                                                ctx.translate(14,-14);
+                                                
+                                                ctx.moveTo(-10, -3);
+                                                ctx.lineTo(10, -3);
+                                                ctx.lineTo(10, 3);
+                                                ctx.lineTo(-10, 3);
+                                                ctx.closePath();
+                                                
+                                                ctx.translate(-7,7);
+
+                                                break;
+                                            }
+                                            case "final": {
+                                                ctx.strokeStyle = "#222";
+                                                ctx.fill();
+                                                ctx.stroke();
+
+                                                ctx.beginPath();
+                                                
+                                                ctx.moveTo(0, -13);
+                                                ctx.lineTo(8, 10);
+                                                ctx.lineTo(-11, -5);
+                                                ctx.lineTo(11, -5);
+                                                ctx.lineTo(-8, 10);
+                                                ctx.closePath();
+                                                
+                                                ctx.fillStyle = "#222";
+
+                                                ctx.fill();
+                                                ctx.stroke();
+
+                                                break;
+                                            }
+                                            case "finish": {
+                                                ctx.fill();
+                                                ctx.stroke();
+
+                                                ctx.beginPath();
+                                                
+                                                ctx.moveTo(0, -13);
+                                                ctx.lineTo(8, 10);
+                                                ctx.lineTo(-11, -5);
+                                                ctx.lineTo(11, -5);
+                                                ctx.lineTo(-8, 10);
+                                                ctx.closePath();
+                                                
+                                                ctx.fillStyle = "#222";
+
+                                                ctx.fill();
+                                                ctx.stroke();
+
+                                                break;
+                                            }
+                                        }
+                                    } else if (chosenPerkDraw[i]) {
+                                        ctx.save();
+
+                                        ctx.scale(0.2,0.2);
+                                        ctx.lineWidth = game.defaultLineWidth;
+                                        chosenPerkDraw[i](true);
+                                        ctx.beginPath();
+
+                                        ctx.lineWidth = 3;
+
+                                        ctx.restore();
+                                    }
+
+                                    ctx.translate(50,0);
+                                    if (i == 7) ctx.translate(-400, 50);
+                                })
+
+                                ctx.strokeStyle = "#222";
+                                ctx.fill();
+                                ctx.stroke();
+
+                                ctx.fillStyle = "#222";
+                                ctx.font = "40px Jura";
+                                ctx.fillText("Trip Plan: " + currentRegion.toUpperCase(),-225, -100);
+
+                                ctx.restore();
+                            }
+        
+                        }
+                    },
+                    speedometer(x,y) {
+                        //spedometer
+                        {
+                            ctx.save();
+                            
+                            ctx.translate(x,y);
+
+                            ctx.beginPath();
+                            ctx.moveTo(-25,35);
+                            ctx.lineTo(-45,25);
+                            ctx.lineTo(-50,0);
+                            ctx.lineTo(-45,-25);
+                            ctx.lineTo(-25,-45);
+                            ctx.lineTo(0,-50);
+                            ctx.lineTo(25,-45);
+                            ctx.lineTo(45,-25);
+                            ctx.lineTo(50,0);
+                            ctx.lineTo(45,25);
+                            ctx.lineTo(25,35);
+
+                            ctx.lineTo(10,25);
+                            ctx.lineTo(-10,25);
+                            ctx.closePath();
+                            
+                            ctx.strokeStyle = "#222";
+                            ctx.fillStyle = "#444";
+                            ctx.fill();
+                            ctx.stroke();
+
+                            ctx.strokeStyle = "#a00";
+
+                            ctx.beginPath();
+                            
+
+                            ctx.rotate(-Math.PI*4.75/4);
+
+                            //ctx.rect(25, -3, 15, 3);
+                            
+                            ctx.fillStyle = "#900";
+
+                            ctx.fill();
+
+                            ctx.beginPath();
+
+                            for (var i = 0; i < 9; i++) {
+                                ctx.rect(30, -3, 10, 3);
+
+                                if (i-8) ctx.rotate(Math.PI*5.50/32);
+                            }
+                            
+                            ctx.fillStyle = "#666";
+
+                            ctx.fill();
+
+                            ctx.beginPath();
+
+                            ctx.rotate(-Math.PI*5.5/4 + Math.min(105,Math.abs(car.speed))/100*Math.PI*5.5/4);
+
+                            ctx.rect(5, -3, 30, 3);
+                            
+                            ctx.fillStyle = "#a00";
+
+                            ctx.fill();
+
+                            ctx.beginPath();
+                            ctx.moveTo(0,0);
+
+                            ctx.stroke();
+
+                            ctx.restore();
+                        }
+
+                    }
+                },
+                positions: {
+                    speedometer: [-290,325],
+                },
+                startupFunction() {
+
+                }
+            }
+        ]
+
+        currentCar = cars[0];
+
         let choices = [];
 
         let perkChoices = [ "punish", "perk", "unstackPunish", "perk", "punish", "unstackPerk", "punish", "perk", "unstackPunish", "perk", "punish", "unstackPerk", "punish", "perk", "unstackPunish", "final" ];
@@ -3047,8 +3472,8 @@
 
         const windshieldGradient = ctx.createLinearGradient(0, -300, 0, 500);
 
-        windshieldGradient.addColorStop(0, "#99ffff33");
-        windshieldGradient.addColorStop(1, "#00aaff33");
+        windshieldGradient.addColorStop(0, "#55999955");
+        windshieldGradient.addColorStop(1, "#00779955");
 
         const skyboxGradient = ctx.createLinearGradient(0, -500+horizon, 0, 500+horizon);
 
@@ -3066,6 +3491,9 @@
         skyboxGradientHighway.addColorStop(0.503, "#111");
 
         function tickloop() {
+            mouse.x = Math.min(Math.max(-1000,mouse.x),1000);
+            mouse.y = Math.min(Math.max(-500,mouse.y),500);
+
             //sortBuildings
             if (game.timer%10 == 0) buildingPoints.sort( (a,b) => {
                 if (Math.hypot(a[4].x-car.x,a[4].y-car.y) < Math.hypot(b[4].x-car.x,b[4].y-car.y)) return 1; 
@@ -3128,7 +3556,7 @@
                 ctx.font = "200px Jura";
                 ctx.strokeText("You Win", 0, 0);
                 ctx.fillText("You Win", 0, 0);
-            } else if (game.timer > stats.timerMax+100 && Math.abs(car.speed) < 1) {
+            } else if (game.timer > stats.timerMax+100 && Math.abs(car.speed) < 0.2) {
                 ctx.beginPath();
                 ctx.fillStyle = "#f33";
                 ctx.strokeStyle = "#933";
@@ -3200,9 +3628,6 @@
         }
 
         function drawMouse() {
-            mouse.x = Math.min(Math.max(-1000,mouse.x),1000);
-            mouse.y = Math.min(Math.max(-500,mouse.y),500);
-            
             ctx.beginPath();
             ctx.fillStyle = "#777";
             ctx.strokeStyle = "#ccc";
@@ -3656,7 +4081,7 @@
         }
 
         function drive() {
-            if (stats.heavyHanded) mouse.y += 1.5;
+            if (stats.heavyHanded) mouse.y += 2;
 
             car.x += Math.cos(car.speedAngle)*car.speed;
             car.y += Math.sin(car.speedAngle)*car.speed;
@@ -3674,7 +4099,7 @@
             }
             if ( game.timer < stats.timerMax &&  car.running && ( keys.includes("s") || keys.includes("shift") ) && car.speed < stats.topSpeed/5 && !stats.noBrake) {
                 if (!car.accelerating) {
-                    car.brakeBoost += 20*stats.acceleration * (1 + 2*(car.speed < 0) );
+                    if (stats.brakeBoost && car.brakeBoost < 400) car.brakeBoost += 17*stats.acceleration * (1 + 2*(car.speed < 0) );
 
                     car.speed += stats.acceleration * (1 + 2*(car.speed < 0) );
                 }
@@ -3886,17 +4311,52 @@
         }
 
         function drawDash() {
-            //wipers & windsheild objects
-            {
-                const wiperAngle = -Math.PI*11/10*car.wiper+Math.PI/20;
+            //windshield crack
+            if (stats.crackPath) {
+                ctx.lineWidth = Math.min(game.defaultLineWidth*2, game.defaultLineWidth/200 * stats.crack.length);
 
                 ctx.beginPath();
-                ctx.moveTo(0,300);
-                ctx.lineTo(Math.cos(wiperAngle)*800,300+Math.sin(wiperAngle)*800);
-                ctx.closePath();
-                ctx.strokeStyle = "#222";
+                stats.crackPath.forEach((pos) => {
+                    if (pos[2] === true) ctx.moveTo(...pos);
+                    else ctx.lineTo(...pos);
+                } )
+                ctx.strokeStyle = "#ccc";
                 ctx.stroke();
 
+                ctx.lineWidth = game.defaultLineWidth;
+            }
+
+            //boost lines
+            if (car.booster) {
+                const ratio = Math.max(0,50/(car.booster+1));
+                ctx.strokeStyle = "#cccccc33";
+
+                ctx.beginPath();
+                ctx.moveTo(0,500);
+                ctx.lineTo(0,100+1000*ratio);
+                ctx.moveTo(0,-500);
+                ctx.lineTo(0,-100-1000*ratio);
+                ctx.moveTo(-1000,0);
+                ctx.lineTo(-200-1000*ratio,0);
+                ctx.moveTo(1000,0);
+                ctx.lineTo(200+1000*ratio,0);
+                ctx.moveTo(1000,500);
+                ctx.lineTo(200+800*ratio,100+400*ratio);
+                ctx.moveTo(1000,-500);
+                ctx.lineTo(200+800*ratio,-100-400*ratio);
+                ctx.moveTo(-1000,500);
+                ctx.lineTo(-200-800*ratio,100+400*ratio);
+                ctx.moveTo(-1000,-500);
+                ctx.lineTo(-200-800*ratio,-100-400*ratio);
+                ctx.moveTo(-500,-500);
+                ctx.lineTo(-100-450*ratio,-200-450*ratio);
+                ctx.moveTo(500,-500);
+                ctx.lineTo(100+450*ratio,-200-450*ratio);
+                ctx.stroke();
+            }
+
+            //windsheild Objects
+            {
                 let size = 1;
 
                 while (windshield.length > 200) windshield.splice(0,1);
@@ -3948,195 +4408,9 @@
                 })
             }
 
-            //windshield crack
-            if (stats.crackPath) {
-                ctx.lineWidth = Math.min(game.defaultLineWidth*2, game.defaultLineWidth/200 * stats.crack.length);
+            currentCar.drawFunctions.dash();
 
-                ctx.beginPath();
-                stats.crackPath.forEach((pos) => {
-                    if (pos[2] === true) ctx.moveTo(...pos);
-                    else ctx.lineTo(...pos);
-                } )
-                ctx.strokeStyle = "#ccc";
-                ctx.stroke();
-
-                ctx.lineWidth = game.defaultLineWidth;
-            }
-
-            //boost lines
-            if (car.booster) {
-                const ratio = Math.max(0,50/(car.booster+1));
-                ctx.strokeStyle = "#cccccc33";
-
-                ctx.beginPath();
-                ctx.moveTo(0,500);
-                ctx.lineTo(0,100+1000*ratio);
-                ctx.moveTo(0,-500);
-                ctx.lineTo(0,-100-1000*ratio);
-                ctx.moveTo(-1000,0);
-                ctx.lineTo(-200-1000*ratio,0);
-                ctx.moveTo(1000,0);
-                ctx.lineTo(200+1000*ratio,0);
-                ctx.moveTo(1000,500);
-                ctx.lineTo(200+800*ratio,100+400*ratio);
-                ctx.moveTo(1000,-500);
-                ctx.lineTo(200+800*ratio,-100-400*ratio);
-                ctx.moveTo(-1000,500);
-                ctx.lineTo(-200-800*ratio,100+400*ratio);
-                ctx.moveTo(-1000,-500);
-                ctx.lineTo(-200-800*ratio,-100-400*ratio);
-                ctx.moveTo(-500,-500);
-                ctx.lineTo(-100-450*ratio,-200-450*ratio);
-                ctx.moveTo(500,-500);
-                ctx.lineTo(100+450*ratio,-200-450*ratio);
-                ctx.stroke();
-            }
-
-            //windshield & dash
-            {
-                ctx.beginPath();
-
-                ctx.fillStyle = windshieldGradient;
-
-                //ctx.fillStyle = "#9999ff22";
-                ctx.rect(-1800,-500,3600,1000);
-                ctx.fill();
-            }
-            
-            //upgrades
-            {
-                ctx.beginPath();
-                ctx.save();
-                ctx.translate(-500,-375);
-                ctx.scale(0.2,0.2);
-
-                chosenPunish.forEach( (thing) => {
-                    ctx.beginPath();
-                    ctx.rect(25,-500,-50,500);
-                    ctx.moveTo(-140,0);
-                    ctx.lineTo(-100,100);
-                    ctx.lineTo(0,140);
-                    ctx.lineTo(100,100);
-                    ctx.lineTo(140,0);
-                    ctx.lineTo(100,-100);
-                    ctx.lineTo(0,-140);
-                    ctx.lineTo(-100,-100);
-                    ctx.closePath();
-
-                    ctx.fillStyle = "#777";
-                    ctx.strokeStyle = "#ccc";
-
-                    ctx.stroke();
-                    ctx.fill();
-
-                    thing.drawFunction(true);
-
-                    ctx.translate(-300,50);
-                })
-
-                ctx.restore();
-                ctx.save();
-                ctx.translate(500,-375);
-                ctx.scale(0.2,0.2)
-                
-                chosenPerk.forEach( (thing) => {
-                    ctx.beginPath();
-                    ctx.rect(25,-500,-50,500);
-                    ctx.moveTo(-140,0);
-                    ctx.lineTo(-100,100);
-                    ctx.lineTo(0,140);
-                    ctx.lineTo(100,100);
-                    ctx.lineTo(140,0);
-                    ctx.lineTo(100,-100);
-                    ctx.lineTo(0,-140);
-                    ctx.lineTo(-100,-100);
-                    ctx.closePath();
-
-                    ctx.fillStyle = "#777";
-                    ctx.strokeStyle = "#ccc";
-
-                    ctx.stroke();
-                    ctx.fill();
-
-                    thing.drawFunction(true);
-
-                    ctx.translate(450,87.5);
-                })
-
-                ctx.restore();
-            }
-
-            //dash
-            {
-                ctx.beginPath();
-                ctx.strokeStyle = "#222";
-                ctx.fillStyle = "#664e3a";
-                ctx.moveTo(-2000, 800);
-                ctx.lineTo(-700, 300);
-                ctx.lineTo(-300, 200);
-                ctx.lineTo(300, 200);
-                ctx.lineTo(700, 300);
-                ctx.lineTo(2000, 800);
-                ctx.lineTo(2000, 1000);
-                ctx.lineTo(-2000, 1000);
-                ctx.closePath();
-                ctx.stroke();
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.moveTo(-1000, -300);
-                ctx.lineTo(-700, -400);
-                ctx.lineTo(-200, -475);
-                ctx.lineTo(200, -475);
-                ctx.lineTo(700, -400);
-                ctx.lineTo(1000, -300);
-                ctx.lineTo(1000, -1000);
-                ctx.lineTo(-1000, -1000);
-                ctx.closePath();
-                ctx.stroke();
-                ctx.fill();
-            }
-
-            //spedometer
-            {
-                ctx.save();
-                
-                ctx.translate(-290,325);
-
-                ctx.beginPath();
-                ctx.moveTo(-25,35);
-                ctx.lineTo(-45,25);
-                ctx.lineTo(-50,0);
-                ctx.lineTo(-45,-25);
-                ctx.lineTo(-25,-45);
-                ctx.lineTo(0,-50);
-                ctx.lineTo(25,-45);
-                ctx.lineTo(45,-25);
-                ctx.lineTo(50,0);
-                ctx.lineTo(45,25);
-                ctx.lineTo(25,35);
-
-                ctx.lineTo(10,25);
-                ctx.lineTo(-10,25);
-                ctx.closePath();
-                
-                ctx.strokeStyle = "#222";
-                ctx.fillStyle = "#444";
-                ctx.fill();
-                ctx.stroke();
-
-                ctx.strokeStyle = "#a00";
-
-                const speedAngle = -Math.PI*4.75/4 + Math.abs(car.speed)/100*Math.PI*5.5/4;
-
-                ctx.beginPath();
-                ctx.moveTo(0,0);
-                ctx.lineTo(Math.cos(speedAngle)*35, Math.sin(speedAngle)*35);
-
-                ctx.stroke();
-
-                ctx.restore();
-            }
+            currentCar.drawFunctions.speedometer(...currentCar.positions.speedometer);
 
             //hazard
             {
@@ -4154,7 +4428,6 @@
                 ctx.lineTo(0,25);
                 ctx.lineTo(-18,18);
                 ctx.closePath();
-                //ctx.arc(0,0,25,0,Math.PI*2);
                 
                 ctx.fillStyle = "#111";
                 if (car.hazard && game.timer%40 > 20) ctx.fillStyle = "#600";
@@ -4467,218 +4740,6 @@
 
                     game.audioVolume = Math.min(1,Math.max(0, desiredOutput ));
                 }
-            }
-
-            //upgrades
-            {
-                ctx.save();
-                
-                ctx.translate(150,250);
-
-                ctx.rotate(Math.PI/20);
-
-                ctx.beginPath();
-                ctx.rect(-25,-75,400,150);
-
-                ctx.fillStyle = "#cc9";
-                ctx.strokeStyle = "#222";
-                ctx.stroke();
-                ctx.fill();
-
-                ctx.fillStyle = "#ffffff22";
-
-                ctx.lineWidth = 3;
-
-                ctx.beginPath();
-                
-                perkChoices.forEach( (choice, i) => {
-                    if (i >= perkChoicePos) {
-                        if ( i == perkChoicePos) {
-                            ctx.strokeStyle = "#555";
-                            ctx.fill();
-                            ctx.stroke();
-
-                            ctx.beginPath();
-                            ctx.moveTo(25,0);
-                            ctx.lineTo(19,19);
-                            ctx.lineTo(0,25);
-                            ctx.lineTo(-19,19);
-                            ctx.lineTo(-25,0);
-                            ctx.lineTo(-19,-19);
-                            ctx.lineTo(0,-25);
-                            ctx.lineTo(19,-19);
-                            ctx.closePath();
-
-                            ctx.strokeStyle = "#900";
-                            ctx.fill();
-                            ctx.stroke();
-
-                            ctx.beginPath();
-                        }
-
-                        ctx.moveTo(20,0);
-                        ctx.lineTo(15,15);
-                        ctx.lineTo(0,20);
-                        ctx.lineTo(-15,15);
-                        ctx.lineTo(-20,0);
-                        ctx.lineTo(-15,-15);
-                        ctx.lineTo(0,-20);
-                        ctx.lineTo(15,-15);
-                        ctx.closePath();
-
-                        switch(choice) {
-                            case "perk": {
-                                ctx.moveTo(-10, -3);
-                                ctx.lineTo(-3, -3);
-                                ctx.lineTo(-3, -10);
-                                ctx.lineTo(3, -10);
-                                ctx.lineTo(3, -3);
-                                ctx.lineTo(10, -3);
-                                ctx.lineTo(10, 3);
-                                ctx.lineTo(3, 3);
-                                ctx.lineTo(3, 10);
-                                ctx.lineTo(-3, 10);
-                                ctx.lineTo(-3, 3);
-                                ctx.lineTo(-10, 3);
-                                ctx.closePath();
-
-                                break;
-                            }
-                            case "punish": {
-                                ctx.moveTo(-10, -3);
-                                ctx.lineTo(10, -3);
-                                ctx.lineTo(10, 3);
-                                ctx.lineTo(-10, 3);
-                                ctx.closePath();
-
-                                break;
-                            }
-                            case "unstackPerk": {
-                                ctx.translate(-7,7);
-                                
-                                ctx.moveTo(-10, -3);
-                                ctx.lineTo(-3, -3);
-                                ctx.lineTo(-3, -10);
-                                ctx.lineTo(3, -10);
-                                ctx.lineTo(3, -3);
-                                ctx.lineTo(10, -3);
-                                ctx.lineTo(10, 3);
-                                ctx.lineTo(3, 3);
-                                ctx.lineTo(3, 10);
-                                ctx.lineTo(-3, 10);
-                                ctx.lineTo(-3, 3);
-                                ctx.lineTo(-10, 3);
-                                ctx.closePath();
-
-                                ctx.translate(14,-14);
-                                
-                                ctx.moveTo(-10, -3);
-                                ctx.lineTo(-3, -3);
-                                ctx.lineTo(-3, -10);
-                                ctx.lineTo(3, -10);
-                                ctx.lineTo(3, -3);
-                                ctx.lineTo(10, -3);
-                                ctx.lineTo(10, 3);
-                                ctx.lineTo(3, 3);
-                                ctx.lineTo(3, 10);
-                                ctx.lineTo(-3, 10);
-                                ctx.lineTo(-3, 3);
-                                ctx.lineTo(-10, 3);
-                                ctx.closePath();
-                                
-                                ctx.translate(-7,7);
-
-                                break;
-                            }
-                            case "unstackPunish": {
-                                ctx.translate(-7,7);
-
-                                ctx.moveTo(-10, -3);
-                                ctx.lineTo(10, -3);
-                                ctx.lineTo(10, 3);
-                                ctx.lineTo(-10, 3);
-                                ctx.closePath();
-
-                                ctx.translate(14,-14);
-                                
-                                ctx.moveTo(-10, -3);
-                                ctx.lineTo(10, -3);
-                                ctx.lineTo(10, 3);
-                                ctx.lineTo(-10, 3);
-                                ctx.closePath();
-                                
-                                ctx.translate(-7,7);
-
-                                break;
-                            }
-                            case "final": {
-                                ctx.strokeStyle = "#222";
-                                ctx.fill();
-                                ctx.stroke();
-
-                                ctx.beginPath();
-                                
-                                ctx.moveTo(0, -13);
-                                ctx.lineTo(8, 10);
-                                ctx.lineTo(-11, -5);
-                                ctx.lineTo(11, -5);
-                                ctx.lineTo(-8, 10);
-                                ctx.closePath();
-                                
-                                ctx.fillStyle = "#222";
-
-                                ctx.fill();
-                                ctx.stroke();
-
-                                break;
-                            }
-                            case "finish": {
-                                ctx.fill();
-                                ctx.stroke();
-
-                                ctx.beginPath();
-                                
-                                ctx.moveTo(0, -13);
-                                ctx.lineTo(8, 10);
-                                ctx.lineTo(-11, -5);
-                                ctx.lineTo(11, -5);
-                                ctx.lineTo(-8, 10);
-                                ctx.closePath();
-                                
-                                ctx.fillStyle = "#222";
-
-                                ctx.fill();
-                                ctx.stroke();
-
-                                break;
-                            }
-                        }
-                    } else if (chosenPerkDraw[i]) {
-                        ctx.save();
-
-                        ctx.scale(0.2,0.2);
-                        ctx.lineWidth = game.defaultLineWidth;
-                        chosenPerkDraw[i](true);
-                        ctx.beginPath();
-
-                        ctx.lineWidth = 3;
-
-                        ctx.restore();
-                    }
-
-                    ctx.translate(50,0);
-                    if (i == 7) ctx.translate(-400, 50);
-                })
-
-                ctx.strokeStyle = "#222";
-                ctx.fill();
-                ctx.stroke();
-
-                ctx.fillStyle = "#222";
-                ctx.font = "40px Jura";
-                ctx.fillText("Trip Plan: " + currentRegion.toUpperCase(),-225, -100);
-
-                ctx.restore();
             }
         }
 
@@ -5144,7 +5205,7 @@
             } )
         }
 
-        function drawMenu() {
+        async function drawMenu() {
             game.rgbTimer++;
             if (game.rgbTimer > 1000000) game.rgbTimer -= 500*Math.PI;
 
@@ -5216,13 +5277,22 @@
             ctx.translate(200-700*(game.menu == "settings"),0);
 
             ctx.beginPath();
-            ctx.arc(0,0,game.rgbTimer%500,0,Math.PI*2);
-            ctx.moveTo(game.rgbTimer%500+500,0);
-            ctx.arc(0,0,game.rgbTimer%500+500,0,Math.PI*2);
-            ctx.moveTo(game.rgbTimer%500+1000,0);
-            ctx.arc(0,0,game.rgbTimer%500+1000,0,Math.PI*2);
-            ctx.moveTo(game.rgbTimer%500+1500,0);
-            ctx.arc(0,0,game.rgbTimer%500+1500,0,Math.PI*2);
+            let thing = game.rgbTimer%500;
+            let thing2 = thing*0.7;
+            for (var i = 0; i < 4; i++) {
+                ctx.moveTo(thing,0);
+                ctx.lineTo(thing2,thing2);
+                ctx.lineTo(0,thing);
+                ctx.lineTo(-thing2,thing2);
+                ctx.lineTo(-thing,0);
+                ctx.lineTo(-thing2,-thing2);
+                ctx.lineTo(0,-thing);
+                ctx.lineTo(thing2,-thing2);
+                ctx.closePath();
+
+                thing += 500;
+                thing2 = thing*0.7;
+            }
             ctx.strokeStyle = "#00000099";
             ctx.lineWidth = game.defaultLineWidth*20;
             ctx.stroke();
@@ -5339,25 +5409,35 @@
             ctx.beginPath();
             ctx.strokeStyle = "#333";
             ctx.fillStyle = "#ad7d53";
-            ctx.moveTo(-700*(game.menu == "settings")-(mouse.hover == "menu1" && game.menu == "main")*50 + 200+450*Math.cos(-Math.PI+Math.PI*2.8/16), 450*Math.sin(-Math.PI+Math.PI*2.8/16));
-            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu1" && game.menu == "main")*50 + 200,0,450,-Math.PI+Math.PI*2.8/16,-Math.PI+Math.PI*4.5/16);
-            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu1" && game.menu == "main")*50 - 300,0,450,-Math.PI+Math.PI*4.5/16,-Math.PI+Math.PI*2.8/16,true);
+            thing = -700*(game.menu == "settings")-(mouse.hover == "menu1" && game.menu == "main")*50 - 175
+            ctx.moveTo(thing, -250);
+            ctx.lineTo(thing+100, -350);
+            ctx.lineTo(thing-400, -350);
+            ctx.lineTo(thing-500, -250);
             ctx.closePath();
-            ctx.moveTo(-700*(game.menu == "settings")-(mouse.hover == "menu2" && game.menu == "main")*50 + 200+450*Math.cos(-Math.PI+Math.PI/16), 450*Math.sin(-Math.PI+Math.PI/16));
-            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu2" && game.menu == "main")*50 + 200,0,450,-Math.PI+Math.PI/16,-Math.PI+Math.PI*2.5/16);
-            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu2" && game.menu == "main")*50 - 300,0,450,-Math.PI+Math.PI*2.5/16,-Math.PI+Math.PI/16,true);
+            thing = -700*(game.menu == "settings")-(mouse.hover == "menu2" && game.menu == "main")*50 - 235
+            ctx.moveTo(thing, -100);
+            ctx.lineTo(thing+35, -200);
+            ctx.lineTo(thing-465, -200);
+            ctx.lineTo(thing-500, -100);
             ctx.closePath();
-            ctx.moveTo(-700*(game.menu == "settings")-(mouse.hover == "menu3" && game.menu == "main")*50 + 200+450*Math.cos(-Math.PI-Math.PI*0.7/16), 450*Math.sin(-Math.PI-Math.PI*0.7/16));
-            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu3" && game.menu == "main")*50 + 200,0,450,-Math.PI-Math.PI*0.7/16,-Math.PI+Math.PI*0.7/16);
-            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu3" && game.menu == "main")*50 - 300,0,450,-Math.PI+Math.PI*0.7/16,-Math.PI-Math.PI*0.7/16,true);
+            thing = -700*(game.menu == "settings")-(mouse.hover == "menu3" && game.menu == "main")*50 - 245
+            ctx.moveTo(thing, -50);
+            ctx.lineTo(thing, 50);
+            ctx.lineTo(thing-500, 50);
+            ctx.lineTo(thing-500, -50);
             ctx.closePath();
-            ctx.moveTo(-700*(game.menu == "settings")-(mouse.hover == "menu4" && game.menu == "main")*50 + 200+450*Math.cos(-Math.PI-Math.PI*2.5/16), 450*Math.sin(-Math.PI-Math.PI*2.5/16));
-            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu4" && game.menu == "main")*50 + 200,0,450,-Math.PI-Math.PI*2.5/16,-Math.PI-Math.PI/16);
-            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu4" && game.menu == "main")*50 - 300,0,450,-Math.PI-Math.PI/16,-Math.PI-Math.PI*2.5/16,true);
+            thing = -700*(game.menu == "settings")-(mouse.hover == "menu4" && game.menu == "main")*50 - 235
+            ctx.moveTo(thing, 100);
+            ctx.lineTo(thing+35, 200);
+            ctx.lineTo(thing-465, 200);
+            ctx.lineTo(thing-500, 100);
             ctx.closePath();
-            ctx.moveTo(-700*(game.menu == "settings")-(mouse.hover == "menu5" && game.menu == "main")*50 + 200+450*Math.cos(-Math.PI-Math.PI*4.5/16), 450*Math.sin(-Math.PI-Math.PI*4.5/16));
-            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu5" && game.menu == "main")*50 - 300,0,450,-Math.PI-Math.PI*4.5/16,-Math.PI-Math.PI*2.8/16);
-            ctx.arc(-700*(game.menu == "settings")-(mouse.hover == "menu5" && game.menu == "main")*50 + 200,0,450,-Math.PI-Math.PI*2.8/16,-Math.PI-Math.PI*4.5/16,true);
+            thing = -700*(game.menu == "settings")-(mouse.hover == "menu5" && game.menu == "main")*50 - 175
+            ctx.moveTo(thing, 250);
+            ctx.lineTo(thing+100, 350);
+            ctx.lineTo(thing-400, 350);
+            ctx.lineTo(thing-500, 250);
             ctx.closePath();
             ctx.stroke();
             ctx.fill();
@@ -5383,25 +5463,35 @@
                 ctx.beginPath();
                 ctx.strokeStyle = "#333";
                 ctx.fillStyle = "#ad7d53";
-                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu1")*50 + 200+450*Math.cos(-Math.PI*4.5/16), 450*Math.sin(-Math.PI*4.5/16));
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu1")*50 + 1100,0,450,-Math.PI*4.5/16,-Math.PI*2.8/16);
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu1")*50 + 200,0,450,-Math.PI*2.8/16,-Math.PI*4.5/16,true);
+                thing = (mouse.hover == "menu1")*50 + 175 - 300;
+                ctx.moveTo(thing, -250);
+                ctx.lineTo(thing-100, -350);
+                ctx.lineTo(thing+800, -350);
+                ctx.lineTo(thing+900, -250);
                 ctx.closePath();
-                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu2" || game.subMenu == "menu2")*50 + 200+450*Math.cos(-Math.PI*2.5/16), 450*Math.sin(-Math.PI*2.5/16));
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu2" || game.subMenu == "menu2")*50 + 200,0,450,-Math.PI*2.5/16,-Math.PI/16);
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu2" || game.subMenu == "menu2")*50 + 400,0,450,-Math.PI/16,-Math.PI*2.5/16,true);
+                thing = (mouse.hover == "menu2" || game.subMenu == "menu2")*50 + 235 - 300;
+                ctx.moveTo(thing, -100);
+                ctx.lineTo(thing-35, -200);
+                ctx.lineTo(thing+165, -200);
+                ctx.lineTo(thing+200, -100);
                 ctx.closePath();
-                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu3" || game.subMenu == "menu3")*50 + 200+450*Math.cos(-Math.PI*0.7/16), 450*Math.sin(-Math.PI*0.7/16));
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu3" || game.subMenu == "menu3")*50 + 200,0,450,-Math.PI*0.7/16,Math.PI*0.7/16);
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu3" || game.subMenu == "menu3")*50 + 400,0,450,Math.PI*0.7/16,-Math.PI*0.7/16,true);
+                thing = (mouse.hover == "menu3" || game.subMenu == "menu3")*50 + 245 - 300;
+                ctx.moveTo(thing, -50);
+                ctx.lineTo(thing, 50);
+                ctx.lineTo(thing+200, 50);
+                ctx.lineTo(thing+200, -50);
                 ctx.closePath();
-                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu4" || game.subMenu == "menu4")*50 + 200+450*Math.cos(Math.PI/16), 450*Math.sin(Math.PI/16));
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu4" || game.subMenu == "menu4")*50 + 200,0,450,Math.PI/16,Math.PI*2.5/16);
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu4" || game.subMenu == "menu4")*50 + 400,0,450,Math.PI*2.5/16,Math.PI/16,true);
+                thing = (mouse.hover == "menu4" || game.subMenu == "menu4")*50 + 235 - 300;
+                ctx.moveTo(thing, 100);
+                ctx.lineTo(thing-35, 200);
+                ctx.lineTo(thing+165, 200);
+                ctx.lineTo(thing+200, 100);
                 ctx.closePath();
-                ctx.moveTo(-700*(game.menu == "settings")+(mouse.hover == "menu5" || game.subMenu == "menu5")*50 + 200+450*Math.cos(Math.PI*2.8/16), 450*Math.sin(Math.PI*2.8/16));
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu5" || game.subMenu == "menu5")*50 + 200,0,450,Math.PI*2.8/16,Math.PI*4.5/16);
-                ctx.arc(-700*(game.menu == "settings")+(mouse.hover == "menu5" || game.subMenu == "menu5")*50 + 400,0,450,Math.PI*4.5/16,Math.PI*2.8/16,true);
+                thing = (mouse.hover == "menu5" || game.subMenu == "menu5")*50 + 175 - 300;
+                ctx.moveTo(thing, 250);
+                ctx.lineTo(thing-100, 350);
+                ctx.lineTo(thing+100, 350);
+                ctx.lineTo(thing+200, 250);
                 ctx.closePath();
                 ctx.stroke();
                 ctx.fill();
@@ -5427,9 +5517,23 @@
                     ctx.beginPath();
                     ctx.strokeStyle = "#333";
                     ctx.fillStyle = "#ad7d53";
-                    ctx.moveTo(-700*(game.menu == "settings") + 475+450*Math.cos(-Math.PI*2.5/16), 450*Math.sin(-Math.PI*2.5/16));
-                    ctx.arc(-700*(game.menu == "settings") + 475,0,450,-Math.PI*2.5/16,Math.PI*4.5/16);
-                    ctx.arc(-700*(game.menu == "settings") + 1100,0,450,Math.PI*4.5/16,-Math.PI*2.5/16,true);
+                    ctx.moveTo(200, -200);
+                    ctx.lineTo(235, -100);
+                    ctx.lineTo(245, -50);
+                    ctx.lineTo(245, 50);
+                    ctx.lineTo(235, 100);
+                    ctx.lineTo(200, 200);
+                    ctx.lineTo(175, 250);
+                    ctx.lineTo(75, 350);
+
+                    ctx.lineTo(675, 350);
+                    ctx.lineTo(775, 250);
+                    ctx.lineTo(800, 200);
+                    ctx.lineTo(835, 100);
+                    ctx.lineTo(845, 50);
+                    ctx.lineTo(845, -50);
+                    ctx.lineTo(835, -100);
+                    ctx.lineTo(800, -200);
                     ctx.closePath();
                     ctx.stroke();
                     ctx.fill();
@@ -5490,7 +5594,7 @@
             drawMouse();
         }
 
-        stats.relaxMuscle = true;
+        stats.heavyHanded = true;
     </script>
     <script>
         //music handling
