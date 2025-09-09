@@ -5198,20 +5198,8 @@
 
                 if (stats.crack) developCrack();
 
-                if (stats.poltergeist) {
-                    currentCar.positions.wheel = currentCar.misc.randomDashPos();
-                    currentCar.positions.speedometer = currentCar.misc.randomDashPos();
-                    currentCar.positions.gasMeter = currentCar.misc.randomDashPos();
-                    currentCar.positions.ignition = currentCar.misc.randomDashPos();
-                    currentCar.positions.hazard = currentCar.misc.randomDashPos();
-                    currentCar.positions.blinker = currentCar.misc.randomDashPos();
-                    currentCar.positions.radio = currentCar.misc.randomDashPos();
-                    currentCar.positions.windWipers = currentCar.misc.randomDashPos();
-                }
-
                 if (perkChoicePos == perkChoices.length) {
                     chosenPerk.splice(choice.position, 1);
-                    if (choice.choice.name == "Windsheild Crack") stats.crack = undefined;
 
                     currentRegion = regions[0];
                     regions.splice(0,1);
@@ -5233,7 +5221,6 @@
                         inertia: 1,
                         roadHazardChance: 1,
                         timerMax: 4300,
-                        crack: stats.crack,
                     }
 
                     if (currentRegion == "city") {
@@ -5285,6 +5272,18 @@
                 }
 
                 if (stats.wind) stats.windAngle = Math.PI*2*Math.random();
+                if (stats.poltergeist) {
+                    currentCar.positions = { 
+                        wheel: currentCar.misc.randomDashPos(),
+                        speedometer: currentCar.misc.randomDashPos(),
+                        gasMeter: currentCar.misc.randomDashPos(),
+                        wheel: currentCar.misc.randomDashPos(),
+                        hazard: currentCar.misc.randomDashPos(),
+                        blinker: currentCar.misc.randomDashPos(),
+                        radio: currentCar.misc.randomDashPos(),
+                        windWipers: currentCar.misc.randomDashPos(),
+                    }
+                }
 
                 generatePlatformRoad(stats.roadLength/stats.roadSize);
             }
