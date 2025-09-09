@@ -4690,7 +4690,7 @@
                 car.speedAngle += angleDiff
             } else {
                 if (Math.abs(angleDiff) > Math.PI/15) {
-                    if (stats.driftBoost) stats.driftBoostCharge += Math.abs(angleDiff)*350;
+                    if (stats.driftBoost && car.driftBoost < 400) stats.driftBoostCharge += Math.abs(angleDiff)*350;
                 }else if (stats.driftBoostCharge && car.booster < stats.driftBoostCharge) {
                     car.booster = stats.driftBoostCharge;
                     stats.driftBoostCharge = 0;
