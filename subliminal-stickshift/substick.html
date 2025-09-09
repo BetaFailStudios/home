@@ -3885,6 +3885,11 @@
         skyboxGradientHighway.addColorStop(0.497, "#001133");
         skyboxGradientHighway.addColorStop(0.503, "#111");
 
+
+        const menuGradient = ctx.createLinearGradient(0, -1000, 0, 1000);
+
+        menuGradient.addColorStop(0.45, "#140");
+        menuGradient.addColorStop(0.55, "#410");
         function tickloop() {
             mouse.x = Math.min(Math.max(-1000,mouse.x),1000);
             mouse.y = Math.min(Math.max(-500,mouse.y),500);
@@ -5310,6 +5315,13 @@
         }
 
         async function drawMenu() {
+            const rainbow = ctx.createLinearGradient(0, -4000+game.rgbTimer%1000, 0, 4000+game.rgbTimer%1000);
+
+            rainbow.addColorStop(0, "#f00");
+            rainbow.addColorStop(0.33, "#0f0");
+            rainbow.addColorStop(0.67, "#00f");
+            rainbow.addColorStop(1, "#f00");
+            
             game.rgbTimer++;
             if (game.rgbTimer > 1000000) game.rgbTimer -= 500*Math.PI;
 
@@ -5333,30 +5345,26 @@
 
                 ctx.beginPath();
                 ctx.strokeStyle = "#222";
-                ctx.fillStyle = "#f90";
-                ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
+                ctx.fillStyle = rainbow;
+            //    ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
                 ctx.font = "70px Jura";
                 ctx.strokeText("Resume",0,-100);
                 ctx.fillText("Resume",0,-100);
                 ctx.strokeText("Main Menu",0,100);
                 ctx.fillText("Main Menu",0,100);
-                ctx.filter = "none";
+            //    ctx.filter = "none";
 
                 drawMouse();
 
                 return;
             }
 
-            ctx.beginPath();
-            ctx.rect(-1000,-500,2000,1000);
-            ctx.fillStyle = "#300";
-            ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)"
-            ctx.fill();
-            ctx.filter = "none";
-
             ctx.save();
             ctx.scale(1.2,1.2)
             ctx.rotate(-Math.PI/10*Math.sin(game.rgbTimer/100));
+            ctx.beginPath();
+            ctx.fillStyle = menuGradient;
+            ctx.fillRect(-2000,-1000,4000,2000);
             ctx.save();
             xPos = -1000+(game.rgbTimer*5)%(unStackablePerks.length*400)-(unStackablePerks.length*400) + 250;
             ctx.translate(xPos, -300);
@@ -5434,8 +5442,9 @@
             ctx.beginPath();
 
             ctx.strokeStyle = "#222";
-            ctx.fillStyle = "#f90";
-            ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
+            //ctx.fillStyle = "#f90";
+            ctx.fillStyle = rainbow;
+        //    ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
             ctx.font = "70px Jura"
             ctx.rotate(-Math.PI/2);
 
@@ -5506,7 +5515,7 @@
             ctx.strokeText("DRIVE",0,10);
             ctx.fillText("DRIVE",0,10);
 
-            ctx.filter = "none";
+        //    ctx.filter = "none";
 
             ctx.restore();
 
@@ -5548,8 +5557,8 @@
 
             ctx.beginPath();
             ctx.strokeStyle = "#222";
-            ctx.fillStyle = "#f90";
-            ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
+            ctx.fillStyle = rainbow;
+        //    ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
             ctx.font = "70px Jura";
             ctx.strokeText("Settings",-700*(game.menu == "settings")-400-(mouse.hover == "menu1")*50,-300);
             ctx.fillText("Settings",-700*(game.menu == "settings")-400-(mouse.hover == "menu1")*50,-300);
@@ -5561,7 +5570,7 @@
             ctx.fillText("Credits",-700*(game.menu == "settings")-475-(mouse.hover == "menu4")*50,150);
             ctx.strokeText("Quit",-700*(game.menu == "settings")-400-(mouse.hover == "menu5")*50,300);
             ctx.fillText("Quit",-700*(game.menu == "settings")-400-(mouse.hover == "menu5")*50,300);
-            ctx.filter = "none";
+        //    ctx.filter = "none";
 
             if (game.menu == "settings") {
                 ctx.beginPath();
@@ -5602,8 +5611,8 @@
                 
                 ctx.beginPath();
                 ctx.strokeStyle = "#222";
-                ctx.fillStyle = "#f90";
-                ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
+                ctx.fillStyle = rainbow;
+            //    ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
                 ctx.font = "70px Jura";
                 ctx.strokeText("Back",-700*(game.menu == "settings")+1000+(mouse.hover == "menu1")*50,-300);
                 ctx.fillText("Back",-700*(game.menu == "settings")+1000+(mouse.hover == "menu1")*50,-300);
@@ -5615,7 +5624,7 @@
                 ctx.fillText("GAM",-700*(game.menu == "settings")+725+(mouse.hover == "menu4" || game.subMenu == "menu4")*50,150);
                 ctx.strokeText("CHT",-700*(game.menu == "settings")+640+(mouse.hover == "menu5" || game.subMenu == "menu5")*50,300);
                 ctx.fillText("CHT",-700*(game.menu == "settings")+640+(mouse.hover == "menu5" || game.subMenu == "menu5")*50,300);
-                ctx.filter = "none";
+            //    ctx.filter = "none";
 
                 if (game.subMenu) {
                     ctx.beginPath();
@@ -5645,8 +5654,8 @@
                     if (game.subMenu == "menu2") {
                         ctx.beginPath();
                         ctx.strokeStyle = "#222";
-                        ctx.fillStyle = "#f90";
-                        ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
+                        ctx.fillStyle = rainbow;
+                    //    ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
                         ctx.font = "40px Jura";
                         ctx.strokeText("Ctrl +/-",500,-150);
                         ctx.fillText("Ctrl +/-",500,-150);
@@ -5657,12 +5666,12 @@
                         ctx.fillText("decrease/increase resolution",525,-100);
                         ctx.strokeText("Toggle fullscreen",525,50);
                         ctx.fillText("Toggle fullscreen",525,50);
-                        ctx.filter = "none";
+                    //    ctx.filter = "none";
                     } else if (game.subMenu == "menu3") {
                         ctx.beginPath();
                         ctx.strokeStyle = "#222";
-                        ctx.fillStyle = "#f90";
-                        ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
+                        ctx.fillStyle = rainbow;
+                    //    ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
                         ctx.font = "60px Jura";
                         ctx.strokeText("Master",500,-150);
                         ctx.fillText("Master",500,-150);
@@ -5690,7 +5699,7 @@
                         ctx.strokeStyle = ctx.fillStyle;
                         ctx.stroke();
                         
-                        ctx.filter = "none";
+                    //    ctx.filter = "none";
                     }
                 }
             }
