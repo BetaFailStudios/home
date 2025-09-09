@@ -104,9 +104,9 @@
                 ctx.font = "100px serif";
             });
             
-            canvas.addEventListener("click", async () => {
+            /*canvas.addEventListener("click", async () => {
                 await canvas.requestPointerLock();
-            });
+            });*/
         }
 
         const mouse = {
@@ -218,18 +218,8 @@
             //mouse.x = e.x/screenScale - (window.innerWidth)/2/screenScale;
             //mouse.y = e.y/screenScale - (window.innerHeight)/2/screenScale;
 
-            let moveX = e.movementX/screenScale;
-            let moveY = e.movementY/screenScale;
-
-            const speed = Math.hypot(moveX, moveY);
-            if (stats.relaxMuscle && speed > 20) {
-                moveX *= 20/speed;
-                moveY *= 20/speed;
-            }
-
-            
-            mouse.x += moveX;// - (window.innerWidth)/2/screenScale;
-            mouse.y += moveY;// - (window.innerHeight)/2/screenScale;
+            mouse.actualX = e.x/screenScale - (window.innerWidth)/2/screenScale;
+            mouse.actualY = e.y/screenScale - (window.innerHeight)/2/screenScale;
 
             if (game.status == "driving") checkHover();
         }
@@ -2851,10 +2841,10 @@
                     ctx.lineWidth = game.defaultLineWidth;
                 },
                 chooseFunction() {
-                    stats.heavyHanded = true;
+                    stats.heavyHand = true;
                 }
             },
-            {
+            /*{
                 name: "Relaxed Muscles",
                 desc: "Cursor movement velocity is fixed",
                 drawFunction(timer) {
@@ -2922,9 +2912,9 @@
                     ctx.lineWidth = game.defaultLineWidth;
                 },
                 chooseFunction() {
-                    stats.relaxMuscle = true;
+                    stats.heavyHand = true;
                 }
-            },
+            },*/
             {
                 name: "Poltergeist",
                 desc: "dashboard elements randomly arranged themselves every level",
@@ -3891,6 +3881,25 @@
         menuGradient.addColorStop(0.45, "#140");
         menuGradient.addColorStop(0.55, "#410");
         function tickloop() {
+            if (stats.heavyHand) {
+                let moveX = mouse.actualX-mouse.x;
+                let moveY = mouse.actualY-mouse.y;
+
+                const speed = Math.hypot(moveX, moveY);
+                if (stats.heavyHand && speed > 20) {
+                    moveX *= 20/speed;
+                    moveY *= 20/speed;
+                }
+
+                
+                mouse.x += moveX;
+                mouse.y += moveY;
+
+            } else {
+                mouse.x = mouse.actualX;
+                mouse.y = mouse.actualY;
+            }
+
             mouse.x = Math.min(Math.max(-1000,mouse.x),1000);
             mouse.y = Math.min(Math.max(-500,mouse.y),500);
 
@@ -4028,6 +4037,25 @@
         }
 
         function drawMouse() {
+            if (stats.heavyHand) {
+                ctx.beginPath();
+                ctx.fillStyle = "#777";
+                ctx.strokeStyle = "#ccc";
+                
+                //inner circle
+                ctx.moveTo(mouse.actualX-8,mouse.actualY);
+                ctx.lineTo(mouse.actualX-6,mouse.actualY-6);
+                ctx.lineTo(mouse.actualX,mouse.actualY-8);
+                ctx.lineTo(mouse.actualX+6,mouse.actualY-6);
+                ctx.lineTo(mouse.actualX+8,mouse.actualY);
+                ctx.lineTo(mouse.actualX+6,mouse.actualY+6);
+                ctx.lineTo(mouse.actualX,mouse.actualY+8);
+                ctx.lineTo(mouse.actualX-6,mouse.actualY+6);
+                ctx.closePath();
+                //ctx.stroke();
+                ctx.fill();
+            }
+
             ctx.beginPath();
             ctx.fillStyle = "#777";
             ctx.strokeStyle = "#ccc";
@@ -4481,8 +4509,6 @@
         }
 
         async function drive() {
-            if (stats.heavyHanded) mouse.y += 2;
-
             car.x += Math.cos(car.speedAngle)*car.speed;
             car.y += Math.sin(car.speedAngle)*car.speed;
 
@@ -4499,7 +4525,7 @@
             }
             if ( game.timer < stats.timerMax &&  car.running && ( keys.includes("s") || keys.includes("shift") ) && car.speed < stats.topSpeed/5 && !stats.noBrake) {
                 if (!car.accelerating) {
-                    if (stats.brakeBoost && car.brakeBoost < 400) car.brakeBoost += 17*stats.acceleration * (1 + 2*(car.speed < 0) );
+                    if (stats.regenBrake && car.brakeBoost < 400) car.brakeBoost += 17*stats.acceleration * (1 + 2*(car.speed < 0) );
 
                     car.speed += stats.acceleration * (1 + 2*(car.speed < 0) );
                 }
@@ -5315,7 +5341,7 @@
         }
 
         async function drawMenu() {
-            const rainbow = ctx.createLinearGradient(0, -4000+game.rgbTimer%1000, 0, 4000+game.rgbTimer%1000);
+            const rainbow = ctx.createLinearGradient(0, -8000+game.rgbTimer%8000, 0, game.rgbTimer%8000);
 
             rainbow.addColorStop(0, "#f00");
             rainbow.addColorStop(0.33, "#0f0");
