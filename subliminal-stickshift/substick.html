@@ -4665,7 +4665,7 @@
             car.wheel = Math.max(-1,Math.min(1,car.wheel));
 
             if (!car.jumpPos && !car.bIce) {
-                car.angleDiff = Math.PI/60/30 * car.wheel * car.speed * (1 - 0.5*car.oilslick) * (1-2*!!stats.invertSteering)
+                car.angleDiff = Math.PI/60/30 * car.wheel * car.speed * (1 - 0.5*car.oilslick) * (1-2*!!stats.invertSteering);
             }
             car.angle += car.angleDiff;
             car.angle = car.angle%(Math.PI*2);
@@ -4689,7 +4689,7 @@
             if (stats.driftWiper && Math.sign(angleDiff) == -Math.sign(car.wiper-0.5)) {
                 car.speedAngle += angleDiff
             } else {
-                if (Math.abs(angleDiff) > Math.PI/15) {
+                if (Math.abs(angleDiff) > Math.abs(stats.requiredDriftAngle/car.speed)) {
                     if (stats.driftBoost && car.driftBoost < 400) stats.driftBoostCharge += Math.abs(angleDiff)*350;
                 }else if (stats.driftBoostCharge && car.booster < stats.driftBoostCharge) {
                     car.booster = stats.driftBoostCharge;
@@ -4698,6 +4698,8 @@
 
                 if (stats.jamin && Math.abs(angleDiff) > Math.abs(stats.requiredDriftAngle/car.speed) / ( 1 + game.audioVolume )) {
                     angleDiff *= stats.driftGrip / ( 1 + game.audioVolume );
+                } else if (Math.abs(angleDiff) > Math.abs(stats.requiredDriftAngle/car.speed)) {
+                    angleDiff *= stats.driftGrip;
                 }
 
                 if (stats.pLaneChange && (Math.sign(angleDiff) == 1 && car.blinker != "r" || Math.sign(angleDiff) == -1 && car.blinker != "l")) {
