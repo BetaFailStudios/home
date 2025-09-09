@@ -3001,6 +3001,66 @@
                     stats.pLaneChange = true;
                 },
             },
+            {
+                name: "Peripheral Blinding",
+                desc: "You can only see thing in the vicinity of your cursor",
+                drawFunction(timer) {
+                    ctx.beginPath();
+                    ctx.moveTo(-140,0);
+                    ctx.lineTo(-80,50);
+                    ctx.lineTo(-20,65);
+                    ctx.lineTo(0,70);
+                    ctx.lineTo(20,65);
+                    ctx.lineTo(80,50);
+                    ctx.lineTo(140,0);
+                    ctx.lineTo(80,-50);
+                    ctx.lineTo(20,-65);
+                    ctx.lineTo(0,-70);
+                    ctx.lineTo(-20,-65);
+                    ctx.lineTo(-80,-50);
+                    ctx.closePath();
+                    ctx.fillStyle = "#222";
+                    ctx.strokeStyle = "#333";
+                    ctx.stroke();
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(50,0);
+                    ctx.lineTo(35,35);
+                    ctx.lineTo(0,50);
+                    ctx.lineTo(-35,35);
+                    ctx.lineTo(-50,0);
+                    ctx.lineTo(-35,-35);
+                    ctx.lineTo(0,-50);
+                    ctx.lineTo(35,-35);
+                    ctx.closePath();
+                    ctx.moveTo(-32.5, -32.5);
+                    ctx.lineTo(32.5, 32.5);
+                    
+                    ctx.strokeStyle = "#900";
+                    ctx.lineWidth = game.defaultLineWidth*2;
+                    ctx.stroke();
+                    ctx.strokeStyle = "#c00";
+                    ctx.lineWidth = game.defaultLineWidth;
+                    ctx.stroke();
+
+                    if (!timer) {
+                        ctx.beginPath();
+                        ctx.font = "50px Jura";
+                        ctx.fillStyle = "#c00";
+                        ctx.strokeStyle = "#700";
+                        ctx.strokeText("Peripheral",0,-150);
+                        ctx.fillText("Peripheral",0,-150);
+                        ctx.strokeText("Blinding",0,150);
+                        ctx.fillText("Blinding",0,150);
+                    }
+
+                    ctx.lineWidth = game.defaultLineWidth;
+                },
+                chooseFunction() {
+                    stats.mouseBlind = true;
+                },
+            },
         ]
 
         const cars = [
@@ -3880,15 +3940,20 @@
 
         menuGradient.addColorStop(0.45, "#140");
         menuGradient.addColorStop(0.55, "#410");
+        
+        const peripheralBlindGradient = ctx.createRadialGradient(0, 0, 300, 0, 0, 500);
+
+        peripheralBlindGradient.addColorStop(0, "#00000000");
+        peripheralBlindGradient.addColorStop(1, "#000");
         function tickloop() {
             if (stats.heavyHand) {
                 let moveX = mouse.actualX-mouse.x;
                 let moveY = mouse.actualY-mouse.y;
 
                 const speed = Math.hypot(moveX, moveY);
-                if (stats.heavyHand && speed > 20) {
-                    moveX *= 20/speed;
-                    moveY *= 20/speed;
+                if (stats.heavyHand && speed > 17) {
+                    moveX *= 17/speed;
+                    moveY *= 17/speed;
                 }
 
                 
@@ -4072,6 +4137,20 @@
             ctx.closePath();
             ctx.stroke();
             ctx.fill();
+
+            if (stats.mouseBlind && !game.menu) {
+                ctx.save();
+
+                ctx.translate(mouse.x, mouse.y);
+
+                ctx.beginPath();
+
+                ctx.fillStyle = peripheralBlindGradient;
+                
+                ctx.fillRect(-3000,-2000,6000,4000);
+
+                ctx.restore();
+            }
         }
 
         function calculateRoadPoints() {
