@@ -4730,7 +4730,7 @@
              * ( 1 + 0.5 * (car.booster/300) )
              * ( 1 + game.audioVolume/2.5 * !!stats.jamin )
              * ( 1 - 0.2 * (!!stats.hazardDrive && car.hazard) ) 
-             * ( 1 + 0.55 * (stats.dirTurn && (Math.sign(angleDiff) == 1 && car.blinker == "r" || Math.sign(angleDiff) == -1 && car.blinker == "l")) ) 
+             * ( 1 + 0.55 * (!!stats.dirTurn && (Math.sign(angleDiff) == 1 && car.blinker == "r" || Math.sign(angleDiff) == -1 && car.blinker == "l")) ) 
             ) ) {
                 car.speed -= stats.acceleration * (1 + 2*(car.speed > 0) ) * ( 1 + 0.7 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 9 * (car.booster/300) ) * ( 1 + 2.5 * (!!stats.hazardDrive && car.hazard) );
                 car.accelerating = true;
@@ -5970,8 +5970,8 @@
             ctx.strokeStyle = "#222";
             ctx.fillStyle = rainbow;
             ctx.font = "30px Jura"
-            ctx.strokeText("Version: B.1",0,450);
-            ctx.fillText("Version: B.1",0,450);
+            ctx.strokeText("Version: B.1.1",0,450);
+            ctx.fillText("Version: B.1.1",0,450);
 
             drawMouse();
         }
