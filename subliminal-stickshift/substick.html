@@ -4063,7 +4063,7 @@
         peripheralBlindGradient.addColorStop(0, "#00000000");
         peripheralBlindGradient.addColorStop(1, "#000");
         
-        const spotBlindGradient = ctx.createRadialGradient(0, 0, 200, 0, 0, 250);
+        const spotBlindGradient = ctx.createRadialGradient(0, 0, 125, 0, 0, 250);
 
         spotBlindGradient.addColorStop(1, "#00000000");
         spotBlindGradient.addColorStop(0, "#000");
@@ -5967,11 +5967,12 @@
                         }
                     }
                 }
+                
+                ctx.strokeStyle = "#222";
+                ctx.fillStyle = rainbow;
+                ctx.font = "30px Jura"
             }
 
-            ctx.strokeStyle = "#222";
-            ctx.fillStyle = rainbow;
-            ctx.font = "30px Jura"
             ctx.strokeText("Version: B.1.2",0,450);
             ctx.fillText("Version: B.1.2",0,450);
 
