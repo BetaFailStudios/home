@@ -5060,14 +5060,14 @@
 
             currentCar.drawFunctions.dash();
 
-            currentCar.drawFunctions.ignition(...currentCar.positions.ignition);
-            currentCar.drawFunctions.hazard(...currentCar.positions.hazard);
-            currentCar.drawFunctions.blinker(...currentCar.positions.blinker);
             currentCar.drawFunctions.radio(...currentCar.positions.radio);
             currentCar.drawFunctions.speedometer(...currentCar.positions.speedometer);
             currentCar.drawFunctions.gasMeter(...currentCar.positions.gasMeter);
+            currentCar.drawFunctions.blinker(...currentCar.positions.blinker);
+            currentCar.drawFunctions.hazard(...currentCar.positions.hazard);
             currentCar.drawFunctions.windWipers(...currentCar.positions.windWipers);
             currentCar.drawFunctions.wheel(...currentCar.positions.wheel);
+            currentCar.drawFunctions.ignition(...currentCar.positions.ignition);
             
             //fps gauge
             {
@@ -5143,29 +5143,29 @@
             } else {
                 //wheel
                 const wheelHypot = Math.hypot(mouse.x-currentCar.positions.wheel[0], mouse.y-currentCar.positions.wheel[1]);
-                if (wheelHypot > 150 && wheelHypot < 230) {
-                    mouse.hover = "wheel";
-                    return;
-                } else if (wheelHypot < 75) {
-                    mouse.hover = "horn";
-                    return;
-                } else if (Math.hypot(mouse.x-currentCar.positions.hazard[0], mouse.y-currentCar.positions.hazard[1]) < 50) {
-                    mouse.hover = "hazard";
-                    return;
-                } else if (Math.hypot(mouse.x-currentCar.positions.ignition[0], mouse.y-currentCar.positions.ignition[1]) < 50) {
+                if (Math.hypot(mouse.x-currentCar.positions.ignition[0], mouse.y-currentCar.positions.ignition[1]) < 50) {
                     mouse.hover = "ignition";
+                    return;
+                } else if (wheelHypot > 150 && wheelHypot < 230) {
+                    mouse.hover = "wheel";
                     return;
                 } else if (Math.hypot(mouse.x-currentCar.positions.windWipers[0] - 125 + 250 * (car.wiper), mouse.y-currentCar.positions.windWipers[1]) < 50) {
                     mouse.hover = "wiper";
                     return;
-                } else if (Math.hypot(mouse.x-currentCar.positions.radio[0], mouse.y-currentCar.positions.radio[1]) < 50) {
-                    mouse.hover = "radio";
+                } else if (Math.hypot(mouse.x-currentCar.positions.hazard[0], mouse.y-currentCar.positions.hazard[1]) < 50) {
+                    mouse.hover = "hazard";
+                    return;
+                } else if (wheelHypot < 75) {
+                    mouse.hover = "horn";
                     return;
                 } else if (Math.hypot(mouse.x-currentCar.positions.blinker[0]+20, mouse.y-currentCar.positions.blinker[1]) < 30) {
                     mouse.hover = "blinkerL";
                     return;
                 } else if (Math.hypot(mouse.x-currentCar.positions.blinker[0]-20, mouse.y-currentCar.positions.blinker[1]) < 30) {
                     mouse.hover = "blinkerR";
+                    return;
+                } else if (Math.hypot(mouse.x-currentCar.positions.radio[0], mouse.y-currentCar.positions.radio[1]) < 50) {
+                    mouse.hover = "radio";
                     return;
                 }
             }
@@ -5578,31 +5578,244 @@
         }
 
         async function drawMenu() {
-            const rainbow = ctx.createLinearGradient(0, -8000+game.rgbTimer%8000, 0, game.rgbTimer%8000);
+            {
+                const rainbow = ctx.createLinearGradient(0, -8000+game.rgbTimer%8000, 0, game.rgbTimer%8000);
 
-            rainbow.addColorStop(0, "#f00");
-            rainbow.addColorStop(0.33, "#0f0");
-            rainbow.addColorStop(0.67, "#00f");
-            rainbow.addColorStop(1, "#f00");
-            
-            game.rgbTimer++;
-            if (game.rgbTimer > 1000000) game.rgbTimer -= 500*Math.PI;
+                rainbow.addColorStop(0, "#f00");
+                rainbow.addColorStop(0.33, "#0f0");
+                rainbow.addColorStop(0.67, "#00f");
+                rainbow.addColorStop(1, "#f00");
+                
+                game.rgbTimer++;
+                if (game.rgbTimer > 1000000) game.rgbTimer -= 500*Math.PI;
 
-            if (game.menu == "pause") {
-                drawSkybox();
-                drawRoadPerspective();
-                drawDash();
+                if (game.menu == "pause") {
+                    drawSkybox();
+                    drawRoadPerspective();
+                    drawDash();
+
+                    ctx.beginPath();
+                    ctx.fillStyle = "#00000099";
+                    ctx.rect(-2000,-1000,4000,2000);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#333";
+                    ctx.fillStyle = "#ad7d53"; 
+                    ctx.rect(-250-100*(mouse.hover == "menu1"),-150,500+200*(mouse.hover == "menu1"),100);
+                    ctx.rect(-250-100*(mouse.hover == "menu2"),50,500+200*(mouse.hover == "menu2"),100);
+                    ctx.stroke();
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#222";
+                    ctx.fillStyle = rainbow;
+                //    ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
+                    ctx.font = "70px Jura";
+                    ctx.strokeText("Resume",0,-100);
+                    ctx.fillText("Resume",0,-100);
+                    ctx.strokeText("Main Menu",0,100);
+                    ctx.fillText("Main Menu",0,100);
+                //    ctx.filter = "none";
+
+                    drawMouse();
+
+                    return;
+                }
+
+                ctx.save();
+                ctx.scale(1.2,1.2)
+                ctx.rotate(-Math.PI/10*Math.sin(game.rgbTimer/100));
+                ctx.beginPath();
+                ctx.fillStyle = menuGradient;
+                ctx.fillRect(-2000,-1000,4000,2000);
+                ctx.save();
+                xPos = -1000+(game.rgbTimer*5)%(unStackablePerks.length*400)-(unStackablePerks.length*400) + 250;
+                ctx.translate(xPos, -300);
+                for (var i = 0; i < 3; i++) unStackablePerks.forEach( (item, i2) => {
+                    if (Math.abs(xPos) < 1100) item.drawFunction(true);
+                    ctx.translate(400,0);
+                    xPos += 400;
+                } );
+                ctx.restore();
+                ctx.save();
+                xPos = -1000+(game.rgbTimer*5)%(unStackablePunishments.length*400)-(unStackablePunishments.length*400) + 100;
+                ctx.translate(xPos, 300);
+                for (var i = 0; i < 3; i++) unStackablePunishments.forEach( (item, i2) => {
+                    if (Math.abs(xPos) < 1100) item.drawFunction(true);
+                    ctx.translate(400,0);
+                    xPos += 400;
+                } );
+                ctx.restore();
+                ctx.restore();
+
+                ctx.save();
+                ctx.translate(200-700*(game.menu == "settings"),0);
 
                 ctx.beginPath();
-                ctx.fillStyle = "#00000099";
-                ctx.rect(-2000,-1000,4000,2000);
+                let thing = game.rgbTimer%500;
+                let thing2 = thing*0.7;
+                for (var i = 0; i < 4; i++) {
+                    ctx.moveTo(thing,0);
+                    ctx.lineTo(thing2,thing2);
+                    ctx.lineTo(0,thing);
+                    ctx.lineTo(-thing2,thing2);
+                    ctx.lineTo(-thing,0);
+                    ctx.lineTo(-thing2,-thing2);
+                    ctx.lineTo(0,-thing);
+                    ctx.lineTo(thing2,-thing2);
+                    ctx.closePath();
+
+                    thing += 500;
+                    thing2 = thing*0.7;
+                }
+                ctx.strokeStyle = "#00000099";
+                ctx.lineWidth = game.defaultLineWidth*20;
+                ctx.stroke();
+                ctx.lineWidth = game.defaultLineWidth;
+
+                ctx.rotate(Math.PI/10*Math.sin(game.rgbTimer/100));
+
+                ctx.strokeStyle = "#333";
+                ctx.fillStyle = "#ad7d53";
+                ctx.beginPath();
+                ctx.arc(0,0,400,0,Math.PI*2);
+                ctx.moveTo(-180,0);
+                ctx.arc(0,0,350,0,Math.PI*2, true);
+                ctx.rect(-375,-25,750,50);
+                ctx.rect(-25,0,50,375);
+                ctx.stroke();
+                ctx.fill();
+                
+                //reuse of variables
+                xPos = 1 + 0.2*(mouse.hover == "drive");
+                ctx.strokeStyle = "#333";
+                ctx.beginPath();
+                ctx.moveTo(-100*xPos,-40*xPos);
+                ctx.lineTo(-60*xPos,-80*xPos);
+                ctx.lineTo(60*xPos,-80*xPos);
+                ctx.lineTo(100*xPos,-40*xPos);
+                ctx.lineTo(100*xPos,60*xPos);
+                ctx.lineTo(60*xPos,100*xPos);
+                ctx.lineTo(-60*xPos,100*xPos);
+                ctx.lineTo(-100*xPos,60*xPos);
+                ctx.closePath();
+                ctx.stroke();
                 ctx.fill();
 
                 ctx.beginPath();
+
+                ctx.strokeStyle = "#222";
+                //ctx.fillStyle = "#f90";
+                ctx.fillStyle = rainbow;
+            //    ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
+                ctx.font = "70px Jura"
+                ctx.rotate(-Math.PI/2);
+
+                ctx.rotate(Math.PI/11);
+                ctx.strokeText("S",0,-300);
+                ctx.fillText("S",0,-300);
+                ctx.rotate(Math.PI/11);
+                ctx.strokeText("U",0,-300);
+                ctx.fillText("U",0,-300);
+                ctx.rotate(Math.PI/11);
+                ctx.strokeText("B",0,-300);
+                ctx.fillText("B",0,-300);
+                ctx.rotate(Math.PI/11);
+                ctx.strokeText("L",0,-300);
+                ctx.fillText("L",0,-300);
+                ctx.rotate(Math.PI/11);
+                ctx.strokeText("I",0,-300);
+                ctx.fillText("I",0,-300);
+                ctx.rotate(Math.PI/11);
+                ctx.strokeText("M",0,-300);
+                ctx.fillText("M",0,-300);
+                ctx.rotate(Math.PI/11);
+                ctx.strokeText("I",0,-300);
+                ctx.fillText("I",0,-300);
+                ctx.rotate(Math.PI/11);
+                ctx.strokeText("N",0,-300);
+                ctx.fillText("N",0,-300);
+                ctx.rotate(Math.PI/11);
+                ctx.strokeText("A",0,-300);
+                ctx.fillText("A",0,-300);
+                ctx.rotate(Math.PI/11);
+                ctx.strokeText("L",0,-300);
+                ctx.fillText("L",0,-300);
+                ctx.rotate(Math.PI/11);
+                ctx.rotate(-Math.PI/12);
+                ctx.strokeText("S",0,300);
+                ctx.fillText("S",0,300);
+                ctx.rotate(-Math.PI/12);
+                ctx.strokeText("T",0,300);
+                ctx.fillText("T",0,300);
+                ctx.rotate(-Math.PI/12);
+                ctx.strokeText("I",0,300);
+                ctx.fillText("I",0,300);
+                ctx.rotate(-Math.PI/12);
+                ctx.strokeText("C",0,300);
+                ctx.fillText("C",0,300);
+                ctx.rotate(-Math.PI/12);
+                ctx.strokeText("K",0,300);
+                ctx.fillText("K",0,300);
+                ctx.rotate(-Math.PI/6);
+                ctx.strokeText("S",0,300);
+                ctx.fillText("S",0,300);
+                ctx.rotate(-Math.PI/12);
+                ctx.strokeText("H",0,300);
+                ctx.fillText("H",0,300);
+                ctx.rotate(-Math.PI/12);
+                ctx.strokeText("I",0,300);
+                ctx.fillText("I",0,300);
+                ctx.rotate(-Math.PI/12);
+                ctx.strokeText("F",0,300);
+                ctx.fillText("F",0,300);
+                ctx.rotate(-Math.PI/12);
+                ctx.strokeText("T",0,300);
+                ctx.fillText("T",0,300);
+                ctx.rotate(-Math.PI/12);
+                ctx.rotate(Math.PI/2);
+                ctx.font = (60 + 10*(mouse.hover == "drive")) + "px Jura"
+                ctx.strokeText("DRIVE",0,10);
+                ctx.fillText("DRIVE",0,10);
+
+            //    ctx.filter = "none";
+
+                ctx.restore();
+
+                ctx.beginPath();
                 ctx.strokeStyle = "#333";
-                ctx.fillStyle = "#ad7d53"; 
-                ctx.rect(-250-100*(mouse.hover == "menu1"),-150,500+200*(mouse.hover == "menu1"),100);
-                ctx.rect(-250-100*(mouse.hover == "menu2"),50,500+200*(mouse.hover == "menu2"),100);
+                ctx.fillStyle = "#ad7d53";
+                thing = -700*(game.menu == "settings")-(mouse.hover == "menu1" && game.menu == "main")*50 - 175
+                ctx.moveTo(thing, -250);
+                ctx.lineTo(thing+100, -350);
+                ctx.lineTo(thing-400, -350);
+                ctx.lineTo(thing-500, -250);
+                ctx.closePath();
+                thing = -700*(game.menu == "settings")-(mouse.hover == "menu2" && game.menu == "main")*50 - 235
+                ctx.moveTo(thing, -100);
+                ctx.lineTo(thing+35, -200);
+                ctx.lineTo(thing-465, -200);
+                ctx.lineTo(thing-500, -100);
+                ctx.closePath();
+                thing = -700*(game.menu == "settings")-(mouse.hover == "menu3" && game.menu == "main")*50 - 245
+                ctx.moveTo(thing, -50);
+                ctx.lineTo(thing, 50);
+                ctx.lineTo(thing-500, 50);
+                ctx.lineTo(thing-500, -50);
+                ctx.closePath();
+                thing = -700*(game.menu == "settings")-(mouse.hover == "menu4" && game.menu == "main")*50 - 235
+                ctx.moveTo(thing, 100);
+                ctx.lineTo(thing+35, 200);
+                ctx.lineTo(thing-465, 200);
+                ctx.lineTo(thing-500, 100);
+                ctx.closePath();
+                thing = -700*(game.menu == "settings")-(mouse.hover == "menu5" && game.menu == "main")*50 - 175
+                ctx.moveTo(thing, 250);
+                ctx.lineTo(thing+100, 350);
+                ctx.lineTo(thing-400, 350);
+                ctx.lineTo(thing-500, 250);
+                ctx.closePath();
                 ctx.stroke();
                 ctx.fill();
 
@@ -5611,358 +5824,147 @@
                 ctx.fillStyle = rainbow;
             //    ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
                 ctx.font = "70px Jura";
-                ctx.strokeText("Resume",0,-100);
-                ctx.fillText("Resume",0,-100);
-                ctx.strokeText("Main Menu",0,100);
-                ctx.fillText("Main Menu",0,100);
+                ctx.strokeText("Settings",-700*(game.menu == "settings")-400-(mouse.hover == "menu1")*50,-300);
+                ctx.fillText("Settings",-700*(game.menu == "settings")-400-(mouse.hover == "menu1")*50,-300);
+                ctx.strokeText("Unlocks",-700*(game.menu == "settings")-475-(mouse.hover == "menu2")*50,-150);
+                ctx.fillText("Unlocks",-700*(game.menu == "settings")-475-(mouse.hover == "menu2")*50,-150);
+                ctx.strokeText("Discord",-700*(game.menu == "settings")-500-(mouse.hover == "menu3")*50,0);
+                ctx.fillText("Discord",-700*(game.menu == "settings")-500-(mouse.hover == "menu3")*50,0);
+                ctx.strokeText("Credits",-700*(game.menu == "settings")-475-(mouse.hover == "menu4")*50,150);
+                ctx.fillText("Credits",-700*(game.menu == "settings")-475-(mouse.hover == "menu4")*50,150);
+                ctx.strokeText("Quit",-700*(game.menu == "settings")-400-(mouse.hover == "menu5")*50,300);
+                ctx.fillText("Quit",-700*(game.menu == "settings")-400-(mouse.hover == "menu5")*50,300);
             //    ctx.filter = "none";
 
-                drawMouse();
-
-                return;
-            }
-
-            ctx.save();
-            ctx.scale(1.2,1.2)
-            ctx.rotate(-Math.PI/10*Math.sin(game.rgbTimer/100));
-            ctx.beginPath();
-            ctx.fillStyle = menuGradient;
-            ctx.fillRect(-2000,-1000,4000,2000);
-            ctx.save();
-            xPos = -1000+(game.rgbTimer*5)%(unStackablePerks.length*400)-(unStackablePerks.length*400) + 250;
-            ctx.translate(xPos, -300);
-            for (var i = 0; i < 3; i++) unStackablePerks.forEach( (item, i2) => {
-                if (Math.abs(xPos) < 1100) item.drawFunction(true);
-                ctx.translate(400,0);
-                xPos += 400;
-            } );
-            ctx.restore();
-            ctx.save();
-            xPos = -1000+(game.rgbTimer*5)%(unStackablePunishments.length*400)-(unStackablePunishments.length*400) + 100;
-            ctx.translate(xPos, 300);
-            for (var i = 0; i < 3; i++) unStackablePunishments.forEach( (item, i2) => {
-                if (Math.abs(xPos) < 1100) item.drawFunction(true);
-                ctx.translate(400,0);
-                xPos += 400;
-            } );
-            ctx.restore();
-            ctx.restore();
-
-            ctx.save();
-            ctx.translate(200-700*(game.menu == "settings"),0);
-
-            ctx.beginPath();
-            let thing = game.rgbTimer%500;
-            let thing2 = thing*0.7;
-            for (var i = 0; i < 4; i++) {
-                ctx.moveTo(thing,0);
-                ctx.lineTo(thing2,thing2);
-                ctx.lineTo(0,thing);
-                ctx.lineTo(-thing2,thing2);
-                ctx.lineTo(-thing,0);
-                ctx.lineTo(-thing2,-thing2);
-                ctx.lineTo(0,-thing);
-                ctx.lineTo(thing2,-thing2);
-                ctx.closePath();
-
-                thing += 500;
-                thing2 = thing*0.7;
-            }
-            ctx.strokeStyle = "#00000099";
-            ctx.lineWidth = game.defaultLineWidth*20;
-            ctx.stroke();
-            ctx.lineWidth = game.defaultLineWidth;
-
-            ctx.rotate(Math.PI/10*Math.sin(game.rgbTimer/100));
-
-            ctx.strokeStyle = "#333";
-            ctx.fillStyle = "#ad7d53";
-            ctx.beginPath();
-            ctx.arc(0,0,400,0,Math.PI*2);
-            ctx.moveTo(-180,0);
-            ctx.arc(0,0,350,0,Math.PI*2, true);
-            ctx.rect(-375,-25,750,50);
-            ctx.rect(-25,0,50,375);
-            ctx.stroke();
-            ctx.fill();
-            
-            //reuse of variables
-            xPos = 1 + 0.2*(mouse.hover == "drive");
-            ctx.strokeStyle = "#333";
-            ctx.beginPath();
-            ctx.moveTo(-100*xPos,-40*xPos);
-            ctx.lineTo(-60*xPos,-80*xPos);
-            ctx.lineTo(60*xPos,-80*xPos);
-            ctx.lineTo(100*xPos,-40*xPos);
-            ctx.lineTo(100*xPos,60*xPos);
-            ctx.lineTo(60*xPos,100*xPos);
-            ctx.lineTo(-60*xPos,100*xPos);
-            ctx.lineTo(-100*xPos,60*xPos);
-            ctx.closePath();
-            ctx.stroke();
-            ctx.fill();
-
-            ctx.beginPath();
-
-            ctx.strokeStyle = "#222";
-            //ctx.fillStyle = "#f90";
-            ctx.fillStyle = rainbow;
-        //    ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
-            ctx.font = "70px Jura"
-            ctx.rotate(-Math.PI/2);
-
-            ctx.rotate(Math.PI/11);
-            ctx.strokeText("S",0,-300);
-            ctx.fillText("S",0,-300);
-            ctx.rotate(Math.PI/11);
-            ctx.strokeText("U",0,-300);
-            ctx.fillText("U",0,-300);
-            ctx.rotate(Math.PI/11);
-            ctx.strokeText("B",0,-300);
-            ctx.fillText("B",0,-300);
-            ctx.rotate(Math.PI/11);
-            ctx.strokeText("L",0,-300);
-            ctx.fillText("L",0,-300);
-            ctx.rotate(Math.PI/11);
-            ctx.strokeText("I",0,-300);
-            ctx.fillText("I",0,-300);
-            ctx.rotate(Math.PI/11);
-            ctx.strokeText("M",0,-300);
-            ctx.fillText("M",0,-300);
-            ctx.rotate(Math.PI/11);
-            ctx.strokeText("I",0,-300);
-            ctx.fillText("I",0,-300);
-            ctx.rotate(Math.PI/11);
-            ctx.strokeText("N",0,-300);
-            ctx.fillText("N",0,-300);
-            ctx.rotate(Math.PI/11);
-            ctx.strokeText("A",0,-300);
-            ctx.fillText("A",0,-300);
-            ctx.rotate(Math.PI/11);
-            ctx.strokeText("L",0,-300);
-            ctx.fillText("L",0,-300);
-            ctx.rotate(Math.PI/11);
-            ctx.rotate(-Math.PI/12);
-            ctx.strokeText("S",0,300);
-            ctx.fillText("S",0,300);
-            ctx.rotate(-Math.PI/12);
-            ctx.strokeText("T",0,300);
-            ctx.fillText("T",0,300);
-            ctx.rotate(-Math.PI/12);
-            ctx.strokeText("I",0,300);
-            ctx.fillText("I",0,300);
-            ctx.rotate(-Math.PI/12);
-            ctx.strokeText("C",0,300);
-            ctx.fillText("C",0,300);
-            ctx.rotate(-Math.PI/12);
-            ctx.strokeText("K",0,300);
-            ctx.fillText("K",0,300);
-            ctx.rotate(-Math.PI/6);
-            ctx.strokeText("S",0,300);
-            ctx.fillText("S",0,300);
-            ctx.rotate(-Math.PI/12);
-            ctx.strokeText("H",0,300);
-            ctx.fillText("H",0,300);
-            ctx.rotate(-Math.PI/12);
-            ctx.strokeText("I",0,300);
-            ctx.fillText("I",0,300);
-            ctx.rotate(-Math.PI/12);
-            ctx.strokeText("F",0,300);
-            ctx.fillText("F",0,300);
-            ctx.rotate(-Math.PI/12);
-            ctx.strokeText("T",0,300);
-            ctx.fillText("T",0,300);
-            ctx.rotate(-Math.PI/12);
-            ctx.rotate(Math.PI/2);
-            ctx.font = (60 + 10*(mouse.hover == "drive")) + "px Jura"
-            ctx.strokeText("DRIVE",0,10);
-            ctx.fillText("DRIVE",0,10);
-
-        //    ctx.filter = "none";
-
-            ctx.restore();
-
-            ctx.beginPath();
-            ctx.strokeStyle = "#333";
-            ctx.fillStyle = "#ad7d53";
-            thing = -700*(game.menu == "settings")-(mouse.hover == "menu1" && game.menu == "main")*50 - 175
-            ctx.moveTo(thing, -250);
-            ctx.lineTo(thing+100, -350);
-            ctx.lineTo(thing-400, -350);
-            ctx.lineTo(thing-500, -250);
-            ctx.closePath();
-            thing = -700*(game.menu == "settings")-(mouse.hover == "menu2" && game.menu == "main")*50 - 235
-            ctx.moveTo(thing, -100);
-            ctx.lineTo(thing+35, -200);
-            ctx.lineTo(thing-465, -200);
-            ctx.lineTo(thing-500, -100);
-            ctx.closePath();
-            thing = -700*(game.menu == "settings")-(mouse.hover == "menu3" && game.menu == "main")*50 - 245
-            ctx.moveTo(thing, -50);
-            ctx.lineTo(thing, 50);
-            ctx.lineTo(thing-500, 50);
-            ctx.lineTo(thing-500, -50);
-            ctx.closePath();
-            thing = -700*(game.menu == "settings")-(mouse.hover == "menu4" && game.menu == "main")*50 - 235
-            ctx.moveTo(thing, 100);
-            ctx.lineTo(thing+35, 200);
-            ctx.lineTo(thing-465, 200);
-            ctx.lineTo(thing-500, 100);
-            ctx.closePath();
-            thing = -700*(game.menu == "settings")-(mouse.hover == "menu5" && game.menu == "main")*50 - 175
-            ctx.moveTo(thing, 250);
-            ctx.lineTo(thing+100, 350);
-            ctx.lineTo(thing-400, 350);
-            ctx.lineTo(thing-500, 250);
-            ctx.closePath();
-            ctx.stroke();
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.strokeStyle = "#222";
-            ctx.fillStyle = rainbow;
-        //    ctx.filter = "hue-rotate(" + game.rgbTimer/3 + "deg)";
-            ctx.font = "70px Jura";
-            ctx.strokeText("Settings",-700*(game.menu == "settings")-400-(mouse.hover == "menu1")*50,-300);
-            ctx.fillText("Settings",-700*(game.menu == "settings")-400-(mouse.hover == "menu1")*50,-300);
-            ctx.strokeText("Unlocks",-700*(game.menu == "settings")-475-(mouse.hover == "menu2")*50,-150);
-            ctx.fillText("Unlocks",-700*(game.menu == "settings")-475-(mouse.hover == "menu2")*50,-150);
-            ctx.strokeText("Discord",-700*(game.menu == "settings")-500-(mouse.hover == "menu3")*50,0);
-            ctx.fillText("Discord",-700*(game.menu == "settings")-500-(mouse.hover == "menu3")*50,0);
-            ctx.strokeText("Credits",-700*(game.menu == "settings")-475-(mouse.hover == "menu4")*50,150);
-            ctx.fillText("Credits",-700*(game.menu == "settings")-475-(mouse.hover == "menu4")*50,150);
-            ctx.strokeText("Quit",-700*(game.menu == "settings")-400-(mouse.hover == "menu5")*50,300);
-            ctx.fillText("Quit",-700*(game.menu == "settings")-400-(mouse.hover == "menu5")*50,300);
-        //    ctx.filter = "none";
-
-            if (game.menu == "settings") {
-                ctx.beginPath();
-                ctx.strokeStyle = "#333";
-                ctx.fillStyle = "#ad7d53";
-                thing = (mouse.hover == "menu1")*50 + 175 - 300;
-                ctx.moveTo(thing, -250);
-                ctx.lineTo(thing-100, -350);
-                ctx.lineTo(thing+800, -350);
-                ctx.lineTo(thing+900, -250);
-                ctx.closePath();
-                thing = (mouse.hover == "menu2" || game.subMenu == "menu2")*50 + 235 - 300;
-                ctx.moveTo(thing, -100);
-                ctx.lineTo(thing-35, -200);
-                ctx.lineTo(thing+165, -200);
-                ctx.lineTo(thing+200, -100);
-                ctx.closePath();
-                thing = (mouse.hover == "menu3" || game.subMenu == "menu3")*50 + 245 - 300;
-                ctx.moveTo(thing, -50);
-                ctx.lineTo(thing, 50);
-                ctx.lineTo(thing+200, 50);
-                ctx.lineTo(thing+200, -50);
-                ctx.closePath();
-                thing = (mouse.hover == "menu4" || game.subMenu == "menu4")*50 + 235 - 300;
-                ctx.moveTo(thing, 100);
-                ctx.lineTo(thing-35, 200);
-                ctx.lineTo(thing+165, 200);
-                ctx.lineTo(thing+200, 100);
-                ctx.closePath();
-                thing = (mouse.hover == "menu5" || game.subMenu == "menu5")*50 + 175 - 300;
-                ctx.moveTo(thing, 250);
-                ctx.lineTo(thing-100, 350);
-                ctx.lineTo(thing+100, 350);
-                ctx.lineTo(thing+200, 250);
-                ctx.closePath();
-                ctx.stroke();
-                ctx.fill();
-                
-                ctx.beginPath();
-                ctx.strokeStyle = "#222";
-                ctx.fillStyle = rainbow;
-            //    ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
-                ctx.font = "70px Jura";
-                ctx.strokeText("Back",-700*(game.menu == "settings")+1000+(mouse.hover == "menu1")*50,-300);
-                ctx.fillText("Back",-700*(game.menu == "settings")+1000+(mouse.hover == "menu1")*50,-300);
-                ctx.strokeText("VID",-700*(game.menu == "settings")+725+(mouse.hover == "menu2" || game.subMenu == "menu2")*50,-150);
-                ctx.fillText("VID",-700*(game.menu == "settings")+725+(mouse.hover == "menu2" || game.subMenu == "menu2")*50,-150);
-                ctx.strokeText("AUD",-700*(game.menu == "settings")+750+(mouse.hover == "menu3" || game.subMenu == "menu3")*50,0);
-                ctx.fillText("AUD",-700*(game.menu == "settings")+750+(mouse.hover == "menu3" || game.subMenu == "menu3")*50,0);
-                ctx.strokeText("GAM",-700*(game.menu == "settings")+725+(mouse.hover == "menu4" || game.subMenu == "menu4")*50,150);
-                ctx.fillText("GAM",-700*(game.menu == "settings")+725+(mouse.hover == "menu4" || game.subMenu == "menu4")*50,150);
-                ctx.strokeText("CHT",-700*(game.menu == "settings")+640+(mouse.hover == "menu5" || game.subMenu == "menu5")*50,300);
-                ctx.fillText("CHT",-700*(game.menu == "settings")+640+(mouse.hover == "menu5" || game.subMenu == "menu5")*50,300);
-            //    ctx.filter = "none";
-
-                if (game.subMenu) {
+                if (game.menu == "settings") {
                     ctx.beginPath();
                     ctx.strokeStyle = "#333";
                     ctx.fillStyle = "#ad7d53";
-                    ctx.moveTo(200, -200);
-                    ctx.lineTo(235, -100);
-                    ctx.lineTo(245, -50);
-                    ctx.lineTo(245, 50);
-                    ctx.lineTo(235, 100);
-                    ctx.lineTo(200, 200);
-                    ctx.lineTo(175, 250);
-                    ctx.lineTo(75, 350);
-
-                    ctx.lineTo(675, 350);
-                    ctx.lineTo(775, 250);
-                    ctx.lineTo(800, 200);
-                    ctx.lineTo(835, 100);
-                    ctx.lineTo(845, 50);
-                    ctx.lineTo(845, -50);
-                    ctx.lineTo(835, -100);
-                    ctx.lineTo(800, -200);
+                    thing = (mouse.hover == "menu1")*50 + 175 - 300;
+                    ctx.moveTo(thing, -250);
+                    ctx.lineTo(thing-100, -350);
+                    ctx.lineTo(thing+800, -350);
+                    ctx.lineTo(thing+900, -250);
+                    ctx.closePath();
+                    thing = (mouse.hover == "menu2" || game.subMenu == "menu2")*50 + 235 - 300;
+                    ctx.moveTo(thing, -100);
+                    ctx.lineTo(thing-35, -200);
+                    ctx.lineTo(thing+165, -200);
+                    ctx.lineTo(thing+200, -100);
+                    ctx.closePath();
+                    thing = (mouse.hover == "menu3" || game.subMenu == "menu3")*50 + 245 - 300;
+                    ctx.moveTo(thing, -50);
+                    ctx.lineTo(thing, 50);
+                    ctx.lineTo(thing+200, 50);
+                    ctx.lineTo(thing+200, -50);
+                    ctx.closePath();
+                    thing = (mouse.hover == "menu4" || game.subMenu == "menu4")*50 + 235 - 300;
+                    ctx.moveTo(thing, 100);
+                    ctx.lineTo(thing-35, 200);
+                    ctx.lineTo(thing+165, 200);
+                    ctx.lineTo(thing+200, 100);
+                    ctx.closePath();
+                    thing = (mouse.hover == "menu5" || game.subMenu == "menu5")*50 + 175 - 300;
+                    ctx.moveTo(thing, 250);
+                    ctx.lineTo(thing-100, 350);
+                    ctx.lineTo(thing+100, 350);
+                    ctx.lineTo(thing+200, 250);
                     ctx.closePath();
                     ctx.stroke();
                     ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#222";
+                    ctx.fillStyle = rainbow;
+                //    ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
+                    ctx.font = "70px Jura";
+                    ctx.strokeText("Back",-700*(game.menu == "settings")+1000+(mouse.hover == "menu1")*50,-300);
+                    ctx.fillText("Back",-700*(game.menu == "settings")+1000+(mouse.hover == "menu1")*50,-300);
+                    ctx.strokeText("VID",-700*(game.menu == "settings")+725+(mouse.hover == "menu2" || game.subMenu == "menu2")*50,-150);
+                    ctx.fillText("VID",-700*(game.menu == "settings")+725+(mouse.hover == "menu2" || game.subMenu == "menu2")*50,-150);
+                    ctx.strokeText("AUD",-700*(game.menu == "settings")+750+(mouse.hover == "menu3" || game.subMenu == "menu3")*50,0);
+                    ctx.fillText("AUD",-700*(game.menu == "settings")+750+(mouse.hover == "menu3" || game.subMenu == "menu3")*50,0);
+                    ctx.strokeText("GAM",-700*(game.menu == "settings")+725+(mouse.hover == "menu4" || game.subMenu == "menu4")*50,150);
+                    ctx.fillText("GAM",-700*(game.menu == "settings")+725+(mouse.hover == "menu4" || game.subMenu == "menu4")*50,150);
+                    ctx.strokeText("CHT",-700*(game.menu == "settings")+640+(mouse.hover == "menu5" || game.subMenu == "menu5")*50,300);
+                    ctx.fillText("CHT",-700*(game.menu == "settings")+640+(mouse.hover == "menu5" || game.subMenu == "menu5")*50,300);
+                //    ctx.filter = "none";
 
-                    if (game.subMenu == "menu2") {
+                    if (game.subMenu) {
                         ctx.beginPath();
-                        ctx.strokeStyle = "#222";
-                        ctx.fillStyle = rainbow;
-                    //    ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
-                        ctx.font = "40px Jura";
-                        ctx.strokeText("Ctrl +/-",500,-150);
-                        ctx.fillText("Ctrl +/-",500,-150);
-                        ctx.strokeText("F11",525,0);
-                        ctx.fillText("F11",525,0);
-                        ctx.font = "30px Jura";
-                        ctx.strokeText("decrease/increase resolution",525,-100);
-                        ctx.fillText("decrease/increase resolution",525,-100);
-                        ctx.strokeText("Toggle fullscreen",525,50);
-                        ctx.fillText("Toggle fullscreen",525,50);
-                    //    ctx.filter = "none";
-                    } else if (game.subMenu == "menu3") {
-                        ctx.beginPath();
-                        ctx.strokeStyle = "#222";
-                        ctx.fillStyle = rainbow;
-                    //    ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
-                        ctx.font = "60px Jura";
-                        ctx.strokeText("Master",500,-150);
-                        ctx.fillText("Master",500,-150);
-                        ctx.strokeText("Music",525,25);
-                        ctx.fillText("Music",525,25);
-                        ctx.strokeText("Sfx",450,200);
-                        ctx.fillText("Sfx",450,200);
+                        ctx.strokeStyle = "#333";
+                        ctx.fillStyle = "#ad7d53";
+                        ctx.moveTo(200, -200);
+                        ctx.lineTo(235, -100);
+                        ctx.lineTo(245, -50);
+                        ctx.lineTo(245, 50);
+                        ctx.lineTo(235, 100);
+                        ctx.lineTo(200, 200);
+                        ctx.lineTo(175, 250);
+                        ctx.lineTo(75, 350);
 
-                        ctx.beginPath();
-                        ctx.moveTo(300,-75);
-                        ctx.lineTo(700,-75);
-                        ctx.moveTo(325,100);
-                        ctx.lineTo(725,100);
-                        ctx.moveTo(250,275);
-                        ctx.lineTo(650,275);
-                        ctx.moveTo(300+400*game.masterVolume,-85);
-                        ctx.lineTo(300+400*game.masterVolume,-65);
-                        ctx.moveTo(325+400*game.musicVolume,90);
-                        ctx.lineTo(325+400*game.musicVolume,110);
-                        ctx.moveTo(250+400*game.sfxVolume,265);
-                        ctx.lineTo(250+400*game.sfxVolume,285);
-                        ctx.lineWidth = game.defaultLineWidth*2;
+                        ctx.lineTo(675, 350);
+                        ctx.lineTo(775, 250);
+                        ctx.lineTo(800, 200);
+                        ctx.lineTo(835, 100);
+                        ctx.lineTo(845, 50);
+                        ctx.lineTo(845, -50);
+                        ctx.lineTo(835, -100);
+                        ctx.lineTo(800, -200);
+                        ctx.closePath();
                         ctx.stroke();
-                        ctx.lineWidth = game.defaultLineWidth;
-                        ctx.strokeStyle = ctx.fillStyle;
-                        ctx.stroke();
-                        
-                    //    ctx.filter = "none";
+                        ctx.fill();
+
+                        if (game.subMenu == "menu2") {
+                            ctx.beginPath();
+                            ctx.strokeStyle = "#222";
+                            ctx.fillStyle = rainbow;
+                        //    ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
+                            ctx.font = "40px Jura";
+                            ctx.strokeText("Ctrl +/-",500,-150);
+                            ctx.fillText("Ctrl +/-",500,-150);
+                            ctx.strokeText("F11",525,0);
+                            ctx.fillText("F11",525,0);
+                            ctx.font = "30px Jura";
+                            ctx.strokeText("decrease/increase resolution",525,-100);
+                            ctx.fillText("decrease/increase resolution",525,-100);
+                            ctx.strokeText("Toggle fullscreen",525,50);
+                            ctx.fillText("Toggle fullscreen",525,50);
+                        //    ctx.filter = "none";
+                        } else if (game.subMenu == "menu3") {
+                            ctx.beginPath();
+                            ctx.strokeStyle = "#222";
+                            ctx.fillStyle = rainbow;
+                        //    ctx.filter = "hue-rotate(" + game.timer/3 + "deg)";
+                            ctx.font = "60px Jura";
+                            ctx.strokeText("Master",500,-150);
+                            ctx.fillText("Master",500,-150);
+                            ctx.strokeText("Music",525,25);
+                            ctx.fillText("Music",525,25);
+                            ctx.strokeText("Sfx",450,200);
+                            ctx.fillText("Sfx",450,200);
+
+                            ctx.beginPath();
+                            ctx.moveTo(300,-75);
+                            ctx.lineTo(700,-75);
+                            ctx.moveTo(325,100);
+                            ctx.lineTo(725,100);
+                            ctx.moveTo(250,275);
+                            ctx.lineTo(650,275);
+                            ctx.moveTo(300+400*game.masterVolume,-85);
+                            ctx.lineTo(300+400*game.masterVolume,-65);
+                            ctx.moveTo(325+400*game.musicVolume,90);
+                            ctx.lineTo(325+400*game.musicVolume,110);
+                            ctx.moveTo(250+400*game.sfxVolume,265);
+                            ctx.lineTo(250+400*game.sfxVolume,285);
+                            ctx.lineWidth = game.defaultLineWidth*2;
+                            ctx.stroke();
+                            ctx.lineWidth = game.defaultLineWidth;
+                            ctx.strokeStyle = ctx.fillStyle;
+                            ctx.stroke();
+                            
+                        //    ctx.filter = "none";
+                        }
                     }
                 }
             }
@@ -5970,8 +5972,8 @@
             ctx.strokeStyle = "#222";
             ctx.fillStyle = rainbow;
             ctx.font = "30px Jura"
-            ctx.strokeText("Version: B.1.1",0,450);
-            ctx.fillText("Version: B.1.1",0,450);
+            ctx.strokeText("Version: B.1.2",0,450);
+            ctx.fillText("Version: B.1.2",0,450);
 
             drawMouse();
         }
