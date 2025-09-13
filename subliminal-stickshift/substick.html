@@ -24,7 +24,7 @@
     <canvas onmousemove="xy(event)" id="gameScreen" width="1800" height="1000"></canvas>
     <p id="fps">60</p>
     <script> 
-        const gameVersion = "B.1.4" 
+        const gameVersion = "B.1.5" 
     </script>
     <script>
         //setup
@@ -4798,14 +4798,16 @@
             car.x += Math.cos(car.speedAngle)*car.speed;
             car.y += Math.sin(car.speedAngle)*car.speed;
 
+            console.log(car.angleDiff)
+
             if ( game.timer < stats.timerMax && car.running && ( keys.includes("w") || keys.includes(" ") ) && ((car.braking && stats.partAcc) || car.speed > -stats.topSpeed
              * ( 1 + 0.2 * !!(stats.noHands && mouse.selected != "wheel") )
              * ( 1 + 0.5 * (car.booster/300) )
              * ( 1 + game.audioVolume/2.5 * !!stats.jamin )
              * ( 1 - 0.2 * (!!stats.hazardDrive && car.hazard) ) 
-             * ( 1 + 0.55 * (!!stats.dirTurn && (Math.sign(angleDiff) == 1 && car.blinker == "r" || Math.sign(angleDiff) == -1 && car.blinker == "l")) ) 
+             * ( 1 + 1 * (!!stats.dirTurn && (car.angleDiff > 0.003 && car.blinker == "r" || car.angleDiff < -0.003 && car.blinker == "l")) ) 
             ) ) {
-                car.speed -= stats.acceleration * (1 + 2*(car.speed > 0) ) * ( 1 + 0.7 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 9 * (car.booster/300) ) * ( 1 + 2.5 * (!!stats.hazardDrive && car.hazard) );
+                car.speed -= stats.acceleration * (1 + 2*(car.speed > 0) ) * ( 1 + 0.7 * !!(stats.noHands && mouse.selected != "wheel") ) * ( 1 + 9 * (car.booster/300) ) * ( 1 + 4 * (!!stats.hazardDrive && car.hazard) ) * ( 1 + 2 * (!!stats.dirTurn && (car.angleDiff > 0.003 && car.blinker == "r" || car.angleDiff < -0.003 && car.blinker == "l")) );
                 car.accelerating = true;
                 if (car.brakeBoost > car.booster) {
                     car.booster = car.brakeBoost;
@@ -6067,7 +6069,7 @@
             drawMouse();
         }
 
-        //stats.dirDrift = true;    
+        //stats.dirTurn = true;    
     </script>
     <script>
         //music handling
