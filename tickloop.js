@@ -1,0 +1,236 @@
+function tickloop() {
+    ctx.beginPath();
+    ctx.fillStyle = "#000";
+    ctx.fillRect(-1800,-1000,3600,2000);
+    //ctx.fillStyle = "#ccc";
+    //ctx.fillRect(-900,-500,1800,1000);
+    //background
+    ctx.beginPath();
+    ctx.fillStyle = "#cccccc";
+    if (game.motionBlur) ctx.fillStyle += "88";
+    ctx.fillRect(-900, -500, 1800, 1000);
+    
+    ctx.save();
+    ctx.beginPath();
+    var gridSize = 100;
+    ctx.rotate(player.rotationTick/4);
+    ctx.fillStyle = "#bbbbbb88";
+    const rotation = player.rotationTick/Math.PI*2;
+    for(var a = -200; a < canvas.width+200; a += gridSize) {
+        for(var b = -200; b < canvas.width+200; b += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(-(-2+rotation%4)*10 + a - canvas.width/2, -20 + b - canvas.width/2);
+            ctx.lineTo(20 + a - canvas.width/2, -(-2+rotation%4)*10 + b - canvas.width/2);
+            ctx.lineTo((-2+rotation%4)*10 + a - canvas.width/2, 20 + b - canvas.width/2);
+            ctx.lineTo(-20 + a - canvas.width/2, (-2+rotation%4)*10 + b - canvas.width/2);
+            ctx.closePath();
+            ctx.fill();
+        }
+    }
+
+    ctx.restore();
+
+    ctx.lineCap = "round";
+    attackWarnings = attackWarnings.filter((item) => {
+        if (item[0] == "line") {
+            ctx.moveTo(...item.slice(2,4));
+            ctx.lineTo(...item.slice(4,6));
+        }
+
+        return item[1] > 0;
+    });
+    ctx.lineWidth = 5+20*game.warnFade;   
+    ctx.strokeStyle = "#ff000033";
+    ctx.stroke();
+    attackWarnings = attackWarnings.filter((item) => {
+        if (item[0] == "line") {
+            ctx.moveTo(...item.slice(2,4));
+            ctx.lineTo(...item.slice(4,6));
+        }
+
+        item[1]--;
+
+        return item[1] > 0;
+    });
+    ctx.lineWidth = 5+Math.max(0,20*game.warnFade-5);
+    ctx.strokeStyle = "#ff000033";
+    ctx.stroke();
+
+    ctx.lineCap = "butt";
+    ctx.lineWidth = 3;
+
+    attackWarnings = attackWarnings.filter((item) => {
+        ctx.beginPath();    
+        if (game[item[0] + "AttackWarnPath"]) {
+            draw(item[2],item[3],game[item[0] + "AttackWarnPath"],item[4]*(1+game.warnFade/5),item[5] || false,false,true);
+        }
+        
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#ff000055";
+        ctx.fillStyle = "#ff000055";
+        ctx.stroke();
+        ctx.fill();
+
+        item[1]--;
+
+        return item[1] > 0;
+    });
+
+    ctx.beginPath();
+    ctx.rect(-1000,-600,2000,1200);
+    //ctx.rect(850,-450,-1700,900);
+    ctx.moveTo(-850,-450);
+    ctx.lineTo(-850,-100);
+    ctx.lineTo(-850-60*game.notLocked*game.openings.includes("left"),-100);
+    ctx.lineTo(-850-60*game.notLocked*game.openings.includes("left"),100);
+    ctx.lineTo(-850,100);
+    ctx.lineTo(-850,450);
+    ctx.lineTo(-100,450);
+    ctx.lineTo(-100,450+60*game.notLocked*game.openings.includes("down"));
+    ctx.lineTo(100,450+60*game.notLocked*game.openings.includes("down"));
+    ctx.lineTo(100,450);
+    ctx.lineTo(850,450);
+    ctx.lineTo(850,100);
+    ctx.lineTo(850+60*game.notLocked*game.openings.includes("right"),100);
+    ctx.lineTo(850+60*game.notLocked*game.openings.includes("right"),-100);
+    ctx.lineTo(850,-100);
+    ctx.lineTo(850,-450);
+    ctx.lineTo(100,-450);
+    ctx.lineTo(100,-450-60*game.notLocked*game.openings.includes("up"));
+    ctx.lineTo(-100,-450-60*game.notLocked*game.openings.includes("up"));
+    ctx.lineTo(-100,-450);
+    ctx.closePath();
+    blocks.forEach((block) => {
+        ctx.rect(...block);
+    })
+    ctx.lineWidth = 3;
+    ctx.fillStyle = "#666";
+    ctx.fill();
+    ctx.strokeStyle = "#222";
+    ctx.stroke();
+
+    bulletTick();
+    enemyTick();
+    playerTick();
+    itemTick();
+
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    const maxBounds = 50*stats.healthMax;
+    ctx.moveTo(-900, 500-5);
+    ctx.lineTo(maxBounds+40-900, 500-5);
+    ctx.lineTo(maxBounds+20-900, 500-25);
+    ctx.lineTo(-900, 500-25);
+    ctx.closePath();
+    ctx.fillStyle = "#333"
+    ctx.strokeStyle = "#222";
+    ctx.fill();
+    ctx.stroke();
+        
+    if (stats.health > 0) {
+        const healthBounds = 50*stats.health;
+        ctx.beginPath();
+        ctx.moveTo(-900, 500-5);
+        ctx.lineTo(healthBounds+40-900, 500-5);
+        ctx.lineTo(healthBounds+20-900, 500-25);
+        ctx.lineTo(-900, 500-25);
+        ctx.closePath();
+        ctx.fillStyle = "#900";
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    const maxExtraBounds = 200;
+    ctx.moveTo(maxBounds+40-900, 500-5);
+    ctx.lineTo(maxBounds+maxExtraBounds+40-900, 500-5);
+    ctx.lineTo(maxBounds+maxExtraBounds+20-900, 500-25);
+    ctx.lineTo(maxBounds+20-900, 500-25);
+    ctx.closePath();
+    ctx.fillStyle = "#333"
+    ctx.strokeStyle = "#222";
+    ctx.fill();
+    ctx.stroke();
+        
+    if (stats.extraHealth > 0 ) {
+        const extraBounds = 200*(stats.extraHealth/stats.extraHealthMax);
+        ctx.beginPath();
+        ctx.moveTo(maxBounds+40-900, 500-5);
+        ctx.lineTo(maxBounds+extraBounds+40-900, 500-5);
+        ctx.lineTo(maxBounds+extraBounds+20-900, 500-25);
+        ctx.lineTo(maxBounds+20-900, 500-25);
+        ctx.closePath();
+        ctx.fillStyle = "#29c";
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    const maxBoundsDash = 400;
+    ctx.moveTo(-900+20, 500-25);
+    ctx.lineTo(maxBoundsDash+35-900, 500-25);
+    ctx.lineTo(maxBoundsDash+20-900, 500-40);
+    ctx.lineTo(-900+20, 500-40);
+    ctx.closePath();
+    ctx.fillStyle = "#333"
+    ctx.strokeStyle = "#222";
+    ctx.fill();
+    ctx.stroke();
+        
+    if (player.dashCooldown <= 1 ) {
+        const dashBounds = 400*Math.min(1,1-player.dashCooldown);
+        ctx.beginPath();
+        ctx.moveTo(-900+20, 500-25);
+        ctx.lineTo(dashBounds+35-900, 500-25);
+        ctx.lineTo(dashBounds+20-900, 500-40);
+        ctx.lineTo(-900+20, 500-40);
+        ctx.closePath();
+        ctx.fillStyle = "#ccc";
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    ctx.lineWidth = 15;
+    ctx.beginPath();
+    ctx.fillStyle = "#444"
+    ctx.moveTo(70-900, 500);
+    ctx.lineTo(-900, 500-70);
+    ctx.lineTo(-900, 500);
+    ctx.closePath();
+
+    ctx.rect(1800,-1000,-3600,2000);
+    ctx.rect(-900,-500,1800,1000);
+    ctx.strokeStyle = "#222";
+    ctx.fillStyle = "#000";
+    ctx.stroke();
+    ctx.fill();
+    ctx.lineWidth = 3;
+
+    if (keys.tab) drawMap();
+
+    if (!enemies.length && !game.notLocked) {
+        ease(game,"notLocked", 1,0.2);
+
+        if (game.relicTick >= 1) {
+            if (game.firstWeapon) {
+                items.push(new Item(player.x-200,player.y,false,false,"weapon"), new Item(player.x+200,player.y,false,false,"weapon"));
+                game.firstWeapon = false;
+            } else items.push(new Item(player.x-200,player.y), new Item(player.x+200,player.y));
+            game.relicTick = 0;
+            game.deleteItems = true;
+        } else game.relicTick++;
+    }
+
+    draw(mouse.x,mouse.y,game.cursorPath,30,player.rotationTick);
+
+    if (game.enemyAttackWarning.includes("beat")) ease(game,"warnFade",1,20/60);
+    if (game.enemyAttack.includes("beat")) ease(game,"warnFade",0,10/60);
+    game.enemyAttack = "";
+    game.enemyAttackWarning = "";
+
+    toEaseVariables = toEaseVariables.filter(changeEaseable);
+}
+
+setInterval( tickloop, 1000/60 );
