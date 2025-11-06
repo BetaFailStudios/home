@@ -142,7 +142,7 @@ function tickloop() {
 
     ctx.lineWidth = 7;
     ctx.beginPath();
-    const maxExtraBounds = 200;
+    const maxExtraBounds = 250;
     ctx.moveTo(maxBounds+40-900, 500-5);
     ctx.lineTo(maxBounds+maxExtraBounds+40-900, 500-5);
     ctx.lineTo(maxBounds+maxExtraBounds+20-900, 500-25);
@@ -154,7 +154,7 @@ function tickloop() {
     ctx.stroke();
         
     if (stats.extraHealth > 0 ) {
-        const extraBounds = 200*(stats.extraHealth/stats.extraHealthMax);
+        const extraBounds = 250*(stats.extraHealth/stats.extraHealthMax);
         ctx.beginPath();
         ctx.moveTo(maxBounds+40-900, 500-5);
         ctx.lineTo(maxBounds+extraBounds+40-900, 500-5);
@@ -208,7 +208,8 @@ function tickloop() {
     ctx.fill();
     ctx.lineWidth = 3;
 
-    if (keys.tab) drawMap();
+    if (game.menu == "inventory") drawInventory();
+    else if (keys.tab) drawMap();
 
     if (!enemies.length && !game.notLocked) {
         ease(game,"notLocked", 1,0.2);

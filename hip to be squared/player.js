@@ -29,8 +29,10 @@ function playerTick() {
     player.vx *= 1-stats.friction;
     player.vy *= 1-stats.friction;
 
-    player.vx += (!!keys.d-!!keys.a)*stats.playerSpeed * (1-0.293*(keys.s ^ keys.w));
-    player.vy += (!!keys.s-!!keys.w)*stats.playerSpeed * (1-0.293*(keys.d ^ keys.a));
+    if (!game.menu) {
+        player.vx += (!!keys.d-!!keys.a)*stats.playerSpeed * (1-0.293*(keys.s ^ keys.w));
+        player.vy += (!!keys.s-!!keys.w)*stats.playerSpeed * (1-0.293*(keys.d ^ keys.a));
+    }
 
     player.rotationTick += Math.PI/600;
     if (player.rotationTick > Math.PI*2) player.rotationTick -= Math.PI*2;

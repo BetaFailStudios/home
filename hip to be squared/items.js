@@ -52,7 +52,7 @@ const relics = [
         }
     },{
         name: "Sluggish Rounds",
-        desc: "Greatly increases bullet\n damage but reduces speed",
+        desc: "Increased bullet damage, reduced speed",
         drawPath: JSON.parse(
             `[{"type":"point","x":-225,"y":-75},{"type":"point","x":-200,"y":-100},{"type":"point","x":-150,"y":-125},{"type":"point","x":-100,"y":-125},{"type":"point","x":-75,"y":-100},{"type":"point","x":-50,"y":-50},{"type":"point","x":-75,"y":-25},{"type":"point","x":-125,"y":0},{"type":"point","x":-175,"y":0},{"type":"point","x":-200,"y":-25},{"type":"close"},{"type":"point","x":-125,"y":-200},{"type":"point","x":-50,"y":-250},{"type":"point","x":25,"y":-275},{"type":"point","x":50,"y":-275},{"type":"point","x":50,"y":-250},{"type":"point","x":25,"y":-150},{"type":"point","x":-50,"y":-50},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":0,"y":-125},{"type":"point","x":50,"y":-100},{"type":"point","x":100,"y":-125},{"type":"point","x":150,"y":-75},{"type":"point","x":100,"y":0},{"type":"point","x":25,"y":25},{"type":"point","x":-25,"y":75},{"type":"point","x":0,"y":125},{"type":"point","x":50,"y":100},{"type":"point","x":50,"y":100,"move":true},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":50,"y":100,"move":false},{"type":"point","x":75,"y":50,"move":false},{"type":"point","x":125,"y":25,"move":false},{"type":"point","x":175,"y":50,"move":false},{"type":"point","x":200,"y":100,"move":false},{"type":"point","x":175,"y":150,"move":false},{"type":"point","x":125,"y":175,"move":false},{"type":"point","x":75,"y":150,"move":false},{"type":"close"},{"type":"fill","r":25,"g":25,"b":25},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
@@ -85,6 +85,14 @@ const relics = [
         ), statChange(rarity) {
             stats.damage *= 1.15 + 0.1*rarity;
             stats.bulletSpeed *= 1.35 + 0.1*rarity;
+        }
+    },{
+        name: "Bouncy Ball",
+        desc: "Bullets bounce & gain damage when they do",
+        drawPath: JSON.parse(
+            `[{"type":"point","x":0,"y":-250},{"type":"point","x":125,"y":-225},{"type":"point","x":225,"y":-125},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":125},{"type":"point","x":125,"y":225},{"type":"point","x":0,"y":250},{"type":"point","x":-125,"y":225},{"type":"point","x":-225,"y":125},{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":-125},{"type":"point","x":-125,"y":-225},{"type":"close"},{"type":"fill","r":125,"g":60,"b":105},{"type":"stroke","r":55,"g":15,"b":35},{"type":"point","x":150,"y":-150},{"type":"point","x":200,"y":-50},{"type":"point","x":150,"y":50},{"type":"point","x":50,"y":100},{"type":"point","x":-50,"y":50},{"type":"point","x":-100,"y":-50},{"type":"point","x":-50,"y":-150},{"type":"point","x":50,"y":-200},{"type":"close"},{"type":"fill","r":155,"g":75,"b":115},{"type":"stroke","r":140,"g":60,"b":110},{"type":"point","x":125,"y":-125,"move":false},{"type":"point","x":150,"y":-75,"move":false},{"type":"point","x":125,"y":-25,"move":false},{"type":"point","x":75,"y":0,"move":false},{"type":"point","x":25,"y":-25,"move":false},{"type":"point","x":0,"y":-75,"move":false},{"type":"point","x":25,"y":-125,"move":false},{"type":"point","x":75,"y":-150,"move":false},{"type":"close"},{"type":"fill","r":250,"g":135,"b":200},{"type":"stroke","r":230,"g":120,"b":180}]`
+        ), statChange(rarity) {
+            stats.bulletBounce = (stats.bulletBounce || 0) + 2 + Math.floor(rarity*0.7);
         }
     }
 ]
@@ -160,7 +168,13 @@ function itemTick() {
         draw(item.x,item.y,item.reference.drawPath,40+10*(i === closestIndex),Math.sin(player.rotationTick*5)/3);
     })
     items.forEach((item, i) => {
-        if (i != closestIndex) return;
+        if (i == closestIndex) drawItemDesc(item);
+    })
+}
+
+function drawItemDesc(item,x,y) {
+        if (x !== undefined) item.x = x;
+        if (y !== undefined) item.y = y;
         ctx.beginPath();
         ctx.rect(item.x-150,item.y+100,300,100);
         ctx.fillStyle = "#555";
@@ -204,14 +218,13 @@ function itemTick() {
         ctx.fillText(name, item.x,item.y+125);
         ctx.fillStyle = "#ccc"
         ctx.font = "20px Share Tech";
-        ctx.strokeText(item.reference.desc, item.x,item.y+175);
-        ctx.fillText(item.reference.desc, item.x,item.y+175);
-    })
-}
+        ctx.strokeText(item.reference.desc, item.x,item.y+165);
+        ctx.fillText(item.reference.desc, item.x,item.y+165);
+    }
 
 function updateStats() {
     const health = stats.health || stats.healthMax || 10;
-    let extraHealth = stats.extraHealth || stats.extraHealthMax || 4;
+    let extraHealth = stats.extraHealth || stats.extraHealthMax || 5;
     if (stats.extraHealth === 0) extraHealth = 0;
     stats = {
         friction: 0.2,
@@ -223,8 +236,8 @@ function updateStats() {
         playerSpeed: 2,
         health: health,
         healthMax: 10,
-        extraHealth: 4,
-        extraHealthMax: 4,
+        extraHealth: 5,
+        extraHealthMax: 5,
         projectiles: 1,
         bursts: 0
     }
@@ -261,7 +274,12 @@ function pickUpItem() {
         } else if (closestItem.reference.type == "relic") {
             let emptyIndex = 0;
             while (game.relicsEquipped[emptyIndex]) emptyIndex++;
-            if (emptyIndex >= game.relicsEquipped.length) return;
+            if (emptyIndex >= game.relicsEquipped.length) {
+                game.dropItem = true;
+                game.menu = "inventory";
+
+                return;
+            };
             game.relicsEquipped[emptyIndex] = closestItem;
             items.splice(closestIndex,1);
             updateStats();

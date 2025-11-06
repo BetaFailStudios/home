@@ -78,12 +78,12 @@ function dungeonMove(change) {
     else player.y -= 1000*change[1];
 
     if (!room.visited) {
-        stats.extraHealth += 2;
+        stats.extraHealth += 5;
         if (stats.extraHealth > stats.extraHealthMax) stats.extraHealth = stats.extraHealthMax;
 
         room.visited = true;
 
-        spawnEnemies(2 + 1*(Math.random() < 0.2));
+        spawnEnemies(1 + 1*(Math.random() < 0.7));
         ease(game,"notLocked",0,0.2);
     }
     if (room.visited) room.connections.forEach((item) => {

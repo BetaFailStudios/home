@@ -51,7 +51,7 @@ const enemyBlueprints = [
             }
         }
     },{ // 2 greatsword slash
-        size: 200, health: 1, projectile: true, rotateToTarget: true, immovable: true, speed: 4, target: "direction", drawPath: JSON.parse(
+        size: 125, health: 1, projectile: true, rotateToTarget: true, immovable: true, speed: 4, target: "direction", drawPath: JSON.parse(
             `[{"type":"point","x":125,"y":-50},{"type":"point","x":125,"y":50},{"type":"point","x":100,"y":125},{"type":"point","x":50,"y":200},{"type":"point","x":0,"y":175},{"type":"point","x":50,"y":100},{"type":"point","x":75,"y":0},{"type":"point","x":50,"y":-100},{"type":"point","x":0,"y":-175},{"type":"point","x":50,"y":-200},{"type":"point","x":100,"y":-125},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40}]`
         )
     },{ // 3 scythe
@@ -66,7 +66,7 @@ const enemyBlueprints = [
                 //attackWarnings.push(["slice",warn+15,enemy.x + Math.cos(enemy.dirToTarget)*100,enemy.y + Math.sin(enemy.dirToTarget)*100,50,enemy.dirToTarget]);
             } else {
                 enemy.dirToTarget = ((Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x)));
-                enemiesBuffer.push(new Enemy(enemyBlueprints[2], {x: enemy.x + Math.cos(enemy.dirToTarget+Math.PI/2)*25, y: enemy.y + Math.sin(enemy.dirToTarget+Math.PI/2)*25, size: 50, speed: 0.3, dirToTarget: enemy.dirToTarget}));
+                enemiesBuffer.push(new Enemy(enemyBlueprints[2], {x: enemy.x + Math.cos(enemy.dirToTarget+Math.PI/2)*25, y: enemy.y + Math.sin(enemy.dirToTarget+Math.PI/2)*25, size: 40, speed: 0.2, dirToTarget: enemy.dirToTarget}));
                 enemy.target = "player";
             }
         }, boom(enemy, warn) {
@@ -151,7 +151,7 @@ const enemyBlueprints = [
         ), beat(enemy, warn) {
             if (warn) {
                 enemy.target = "direction";
-                enemy.dirToTarget = (Math.atan((player.y+player.vy*30-enemy.y)/(player.x+player.vx*30-enemy.x)) + Math.PI*(player.x+player.vx*30 < enemy.x)) || (Math.PI*(player.x+player.vx*30 < enemy.x));
+                enemy.dirToTarget = (Math.atan((1.5*player.y+player.vy*30-0.5*enemy.y)/(1.5*player.x+player.vx*30-0.5*enemy.x)) + Math.PI*(1.5*player.x+player.vx*30 < 0.5*enemy.x)) || (Math.PI*(1.5*player.x+player.vx*30 < 0.5*enemy.x));
                 enemy.drawPath = enemy.drawReadyPath;
                 enemy.vx = 0; enemy.vy = 0;
                 enemy.speed = 0;

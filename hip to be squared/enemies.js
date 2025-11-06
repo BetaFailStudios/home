@@ -44,21 +44,29 @@ function enemyTick() {
             enemy.reset[0]();
             delete enemy.reset;
         }
-        if (enemy.projectile) if (Math.abs(enemy.x) > 1000+enemy.size || Math.abs(enemy.y) > 600+enemy.size) return false;
-
-        if (!enemy.immovable) {
+        if (enemy.projectile) { if (Math.abs(enemy.x) > 1000+enemy.size || Math.abs(enemy.y) > 600+enemy.size) return false;
+        } else {        
             if (Math.abs(enemy.x) > 850-enemy.size) {
                 enemy.x = Math.sign(enemy.x)*(850-enemy.size);
-
-                if (enemy.frictionless) enemy.vx *= -1;
+                
+                if (enemy.immovable) {
+                    enemy.vx = 0;
+                    enemy.vy = 0;
+                } else if (enemy.frictionless) enemy.vx *= -1;
                 else if (!enemy.noVelocityChange) enemy.vx = 0;            
             }
             if (Math.abs(enemy.y) > 450-enemy.size) {
                 enemy.y = Math.sign(enemy.y)*(450-enemy.size);
 
-                if (enemy.frictionless) enemy.vy *= -1;
+                if (enemy.immovable) {
+                    enemy.vx = 0;
+                    enemy.vy = 0;
+                } else if (enemy.frictionless) enemy.vy *= -1;
                 else if (!enemy.noVelocityChange) enemy.vy = 0;            
             }
+        }
+
+        if (!enemy.immovable) {
             blocks.forEach((block) => {
                 const diffx = enemy.x + enemy.size - block[0];
                 const diffy = enemy.y + enemy.size - block[1];
@@ -145,6 +153,7 @@ function enemyTick() {
         ["boom","beat","tick"].forEach((item) => {
             if (!enemy[item] || (enemy.noAttack && enemy.noAttack != item)) return;
             if (game.enemyAttackWarning.includes(item) && triggerWarn) {
+                if (enemy.reset) enemy.reset[0]();
                 enemy[item](enemy,30);
                 if (!enemy[item+"WarnCount"]) enemy[item+"WarnCount"] = 0;
                 enemy[item+"WarnCount"]++;

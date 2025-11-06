@@ -17,6 +17,8 @@ class Bullet {
             this.vy = 0;
         }
         this.alive = true;
+
+        if (stats.bulletBounce) this.bulletBounce = stats.bulletBounce;
     }
 }
 
@@ -48,8 +50,22 @@ function bulletTick() {
 
         if (Math.abs(bullet.x-bullet.size) > 1000 || Math.abs(bullet.y-bullet.size) > 600) return false;
         if (Math.abs(bullet.x) > 850-collisionSize || Math.abs(bullet.y) > 450-collisionSize) {
-            bullet.alive = false;
-            ease(bullet,"size",0,0.05);
+            if (bullet.bulletBounce) {
+                bullet.bulletBounce--;
+                bullet.damage *= 1.75;
+
+                if (Math.abs(bullet.x) > 850-collisionSize) {
+                    bullet.x = Math.sign(bullet.x)*(850-collisionSize);
+                    bullet.vx *= -1;            
+                }
+                if (Math.abs(bullet.y) > 450-collisionSize) {
+                    bullet.y = Math.sign(bullet.y)*(450-collisionSize);
+                    bullet.vy *= -1;         
+                }
+            } else {
+                bullet.alive = false;
+                ease(bullet,"size",0,0.05);
+            }
         }
 
         blocks.forEach((block) => {
@@ -57,11 +73,30 @@ function bulletTick() {
             const diffy = bullet.y + collisionSize/2.5 - block[1];
             const diffx1 = -bullet.x + collisionSize/2.5 + block[0]+block[2];
             const diffy1 = -bullet.y + collisionSize/2.5 + block[1]+block[3];
+
             if (diffx > 0 && diffx1 > 0 && diffy > 0 && diffy1 > 0) {
-                bullet.alive = false;
-                ease(bullet,"size",0,0.05);
+                if (bullet.bulletBounce) {
+                    bullet.bulletBounce--;
+                    bullet.damage *= 1.75;
+                    if (Math.min(diffx, diffx1) < Math.min(diffy,diffy1)) {
+                        bullet.vx *= -1;
+
+                        if (diffx < diffx1) bullet.x = block[0]-collisionSize;
+                        else bullet.x = block[0]+block[2]+collisionSize;
+                    } else {
+                        bullet.vy *= -1;
+
+                        if (diffy < diffy1) bullet.y = block[1]-collisionSize;
+                        else bullet.y = block[1]+block[3]+collisionSize;
+                    }
+                } else  {
+                    bullet.alive = false;
+                    ease(bullet,"size",0,0.05);
+                }
             }
         })
+
+
 
         return true;
     })
