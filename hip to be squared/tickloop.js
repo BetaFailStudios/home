@@ -80,7 +80,7 @@ function tickloop() {
     if (game.openings.includes("left")) if (dungeon[(game.dungeonPosition[0]-1) + "," + (game.dungeonPosition[1])].boss) ctx.rect(-970,-500,100,1000);
     if (game.openings.includes("right")) if (dungeon[(game.dungeonPosition[0]+1) + "," + (game.dungeonPosition[1])].boss) ctx.rect(870,-500,100,1000);
     if (game.openings.includes("up")) if (dungeon[(game.dungeonPosition[0]) + "," + (game.dungeonPosition[1]-1)].boss) ctx.rect(-900,-570,1800,100);
-    if (game.openings.includes("down")) if (dungeon[(game.dungeonPosition[0]) + "," + (game.dungeonPosition[1]+1)].boss) ctx.rect(-900,-470,1800,1000);
+    if (game.openings.includes("down")) if (dungeon[(game.dungeonPosition[0]) + "," + (game.dungeonPosition[1]+1)].boss) ctx.rect(-900,470,1800,100);
     ctx.fillStyle = "#cc000099";
     ctx.fill();
 
@@ -124,7 +124,7 @@ function tickloop() {
 
     ctx.lineWidth = 7;
     ctx.beginPath();
-    const maxBounds = 50*stats.healthMax;
+    const maxBounds = 500;
     ctx.moveTo(-900, 500-5);
     ctx.lineTo(maxBounds+40-900, 500-5);
     ctx.lineTo(maxBounds+20-900, 500-25);
@@ -136,7 +136,7 @@ function tickloop() {
     ctx.stroke();
         
     if (stats.health > 0) {
-        const healthBounds = 50*stats.health;
+        const healthBounds = 500*stats.health/stats.healthMax;
         ctx.beginPath();
         ctx.moveTo(-900, 500-5);
         ctx.lineTo(healthBounds+40-900, 500-5);
@@ -147,6 +147,14 @@ function tickloop() {
         ctx.fill();
         ctx.stroke();
     }
+
+    ctx.beginPath();
+    for(var i = 1; i < stats.healthMax; i++) {
+        ctx.moveTo(maxBounds*i/stats.healthMax+40-900, 500-5);
+        ctx.lineTo(maxBounds*i/stats.healthMax+20-900, 500-25);
+    }
+    ctx.strokeStyle = "#22222277";
+    ctx.stroke();
 
     ctx.lineWidth = 7;
     ctx.beginPath();
@@ -173,6 +181,14 @@ function tickloop() {
         ctx.fill();
         ctx.stroke();
     }
+
+    ctx.beginPath();
+    for(var i = 1; i < stats.extraHealthMax; i++) {
+        ctx.moveTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+40-900, 500-5);
+        ctx.lineTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+20-900, 500-25);
+    }
+    ctx.strokeStyle = "#22222277";
+    ctx.stroke();
 
     ctx.lineWidth = 7;
     ctx.beginPath();
@@ -244,7 +260,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.0.1",0,-470);
+    ctx.fillText("Version: b.0.2",0,-470);
 }
 
 setInterval( tickloop, 1000/60 );

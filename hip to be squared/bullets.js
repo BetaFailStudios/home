@@ -19,6 +19,7 @@ class Bullet {
         this.alive = true;
 
         if (stats.bulletBounce) this.bulletBounce = stats.bulletBounce;
+        if (stats.pierce) this.pierce = stats.pierce;
         if (stats.lotteryChance) if (Math.random() < stats.lotteryChance) {
             this.damage *= 30;
             this.size *= 2.2;
@@ -46,8 +47,11 @@ function bulletTick() {
                 else {
                     bullet.enemiesTouched.push(enemy);
                     enemy.health -= bullet.damage;
-                    bullet.alive = false;
-                    ease(bullet,"size",0,0.05);
+                    if (bullet.pierce) bullet.pierce--;
+                    else if (!enemy.projectiles || enemy.health > 0) {
+                        bullet.alive = false;
+                        ease(bullet,"size",0,0.05);
+                    }
                 }
             } else if (bullet.enemiesTouched.includes(enemy)) bullet.enemiesTouched.splice(bullet.enemiesTouched.indexOf(enemy), 1);
         })
@@ -57,6 +61,7 @@ function bulletTick() {
             if (bullet.bulletBounce) {
                 bullet.bulletBounce--;
                 bullet.damage *= 1.75;
+                bullet.direction = Math.PI*2*Math.random();
 
                 if (Math.abs(bullet.x) > 850-collisionSize) {
                     bullet.x = Math.sign(bullet.x)*(850-collisionSize);
@@ -82,6 +87,7 @@ function bulletTick() {
                 if (bullet.bulletBounce) {
                     bullet.bulletBounce--;
                     bullet.damage *= 1.75;
+                    bullet.direction = Math.PI*2*Math.random();
                     if (Math.min(diffx, diffx1) < Math.min(diffy,diffy1)) {
                         bullet.vx *= -1;
 

@@ -67,7 +67,7 @@ function playerTick() {
     //
     // fire
     //
-    if (mouse.down && player.firerateTick <= 0) {
+    if ((mouse.down || player.burstsLeft) && player.firerateTick <= 0) {
         let lookDirection = (Math.atan((mouse.y-player.y)/(mouse.x-player.x)) + Math.PI*(mouse.x < player.x)) || (Math.PI*(mouse.x < player.x));
         
         if (stats.projectiles > 1) lookDirection -= stats.spread/2;
@@ -76,8 +76,11 @@ function playerTick() {
             lookDirection += stats.spread/(stats.projectiles-1);
         }
 
-        player.firerateTick = stats.firerate;
-    } else player.firerateTick--;
+        if (!player.burstsLeft) player.burstsLeft = stats.bursts-1;
+        else player.burstsLeft--;
+        if (player.burstsLeft) player.firerateTick += Math.min(4,stats.firerate/10);
+        else player.firerateTick += stats.firerate;
+    } else if (player.firerateTick > 0) player.firerateTick--;
 
     if (player.iFrames > 0) player.iFrames--;
     else {

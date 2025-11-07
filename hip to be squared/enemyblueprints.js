@@ -51,7 +51,7 @@ const enemyBlueprints = [
             }
         }
     },{ // 2 greatsword slash
-        size: 125, health: 1, projectile: true, rotateToTarget: true, immovable: true, speed: 4, target: "direction", drawPath: JSON.parse(
+        size: 125, health: 0.1, projectile: true, rotateToTarget: true, immovable: true, speed: 4, target: "direction", drawPath: JSON.parse(
             `[{"type":"point","x":125,"y":-50},{"type":"point","x":125,"y":50},{"type":"point","x":100,"y":125},{"type":"point","x":50,"y":200},{"type":"point","x":0,"y":175},{"type":"point","x":50,"y":100},{"type":"point","x":75,"y":0},{"type":"point","x":50,"y":-100},{"type":"point","x":0,"y":-175},{"type":"point","x":50,"y":-200},{"type":"point","x":100,"y":-125},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40}]`
         )
     },{ // 3 scythe
@@ -181,7 +181,7 @@ const enemyBlueprints = [
             }
         }
     },{ // 7 bow arrow
-        size: 30, health: 1, projectile: true, rotateToTarget: true, immovable: true, speed: 6, target: "direction", drawPath: JSON.parse(
+        size: 30, health: 0.07, projectile: true, rotateToTarget: true, immovable: true, speed: 6, target: "direction", drawPath: JSON.parse(
             `[{"type":"point","x":250,"y":0},{"type":"point","x":175,"y":-50},{"type":"point","x":-250,"y":0},{"type":"point","x":175,"y":50},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40},{"type":"point","x":250,"y":0},{"type":"point","x":125,"y":-125},{"type":"point","x":175,"y":0},{"type":"point","x":125,"y":125},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40}]`
         )
     },{ // 8 Ephemeral Zweihänder
