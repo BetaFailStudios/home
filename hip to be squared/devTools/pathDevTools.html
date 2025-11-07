@@ -132,13 +132,13 @@
 
             if (arcPoint) if (arcPoint[2]) {
                 const ratio = arcPoint[2]/Math.hypot(mouse.x-arcPoint[0],mouse.y-arcPoint[1]);
-                mouse.gridx = Math.round((arcPoint[0]+(mouse.x-arcPoint[0])*ratio)/grid)*grid;
-                mouse.gridy = Math.round((arcPoint[1]+(mouse.y-arcPoint[1])*ratio)/grid)*grid;
+                mouse.gridx = Math.round((arcPoint[0]+(mouse.x-arcPoint[0])*ratio)/grid*2)*grid/2;
+                mouse.gridy = Math.round((arcPoint[1]+(mouse.y-arcPoint[1])*ratio)/grid*2)*grid/2;
                 return;
             }
             
-            mouse.gridx = Math.round(mouse.x/grid)*grid;
-            mouse.gridy = Math.round(mouse.y/grid)*grid;
+            mouse.gridx = Math.round(mouse.x/grid*2)*grid/2;
+            mouse.gridy = Math.round(mouse.y/grid*2)*grid/2;
         }
 
         function tickloop() {

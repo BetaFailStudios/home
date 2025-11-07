@@ -93,7 +93,9 @@ function enemyTick() {
         }
 
         if (enemy.spawning && enemy.rotateToTarget) enemy.dirToTarget = (Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x));
+        if (enemy.ephemeral) ctx.globalAlpha = 0.4;
         draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4);
+        if (enemy.ephemeral) ctx.globalAlpha = 1;
         if (enemy.spawning) {
             draw(enemy.x, enemy.y, game.enemySpawnPath, enemy.spawnSize, 0, enemy.spawning);
             return true;

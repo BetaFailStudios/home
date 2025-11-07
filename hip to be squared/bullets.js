@@ -8,9 +8,9 @@ class Bullet {
         this.drawPath = inputStats.drawPath || game.weapon.reference.bulletDrawPath;
         this.enemiesTouched = [];
         if (inputStats.direction) {
-            this.direction = inputStats.direction;
-            this.vx = Math.cos(inputStats.direction) * (inputStats.speed || stats.bulletSpeed);
-            this.vy = Math.sin(inputStats.direction) * (inputStats.speed || stats.bulletSpeed);
+            this.direction = inputStats.direction + stats.bloom-2*Math.random()*stats.bloom;
+            this.vx = Math.cos(this.direction) * (inputStats.speed || stats.bulletSpeed);
+            this.vy = Math.sin(this.direction) * (inputStats.speed || stats.bulletSpeed);
         } else {
             this.direction = 0;
             this.vx = inputStats.speed || stats.bulletSpeed;
@@ -19,6 +19,10 @@ class Bullet {
         this.alive = true;
 
         if (stats.bulletBounce) this.bulletBounce = stats.bulletBounce;
+        if (stats.lotteryChance) if (Math.random() < stats.lotteryChance) {
+            this.damage *= 30;
+            this.size *= 2.2;
+        }
     }
 }
 
@@ -34,7 +38,7 @@ function bulletTick() {
         if (!bullet.alive) return bullet.size;
 
         enemies.forEach((enemy) => {
-            if (enemy.projectile) return;
+            if (enemy.projectile && !stats.projHit || enemy.spawning) return;
             const hypot = Math.hypot(enemy.x-bullet.x,enemy.y-bullet.y);
 
             if (hypot < bullet.size+enemy.size*0.8) {

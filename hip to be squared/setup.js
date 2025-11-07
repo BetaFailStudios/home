@@ -114,7 +114,7 @@ window.addEventListener('mousedown', function () {
         game.musicStarted = true;
         startMusic();
     }
-    if (game.dropItem) {
+    if (game.menu == "inventory") {
         let relicPos = -1;
         if (game.relicsEquipped[0] && Math.hypot(mouse.x+300,mouse.y+300) < 200) relicPos = 0;
         if (game.relicsEquipped[1] && Math.hypot(mouse.x-300,mouse.y+300) < 200) relicPos = 1;
@@ -126,7 +126,7 @@ window.addEventListener('mousedown', function () {
         if (relicPos != -1) {
             const relicToPush = game.relicsEquipped[relicPos];
             game.relicsEquipped[relicPos] = false;
-            pickUpItem();
+            if (game.replaceItem) pickUpItem();
             items.push(new Item(player.x,player.y,relicToPush.reference,relicToPush.rarity));
             game.menu = false;
         }

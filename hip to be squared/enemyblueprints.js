@@ -151,11 +151,11 @@ const enemyBlueprints = [
         ), beat(enemy, warn) {
             if (warn) {
                 enemy.target = "direction";
-                enemy.dirToTarget = (Math.atan((1.5*player.y+player.vy*30-0.5*enemy.y)/(1.5*player.x+player.vx*30-0.5*enemy.x)) + Math.PI*(1.5*player.x+player.vx*30 < 0.5*enemy.x)) || (Math.PI*(1.5*player.x+player.vx*30 < 0.5*enemy.x));
+                //enemy.dirToTarget = (Math.atan((player.y+player.vy*20-enemy.x)/(player.x+player.vx*20-enemy.x)) + Math.PI*(player.x+player.vx*20 < enemy.x)) || (Math.PI*(player.x+player.vx*20 < enemy.x));
                 enemy.drawPath = enemy.drawReadyPath;
                 enemy.vx = 0; enemy.vy = 0;
                 enemy.speed = 0;
-                attackWarnings.push(["line",warn+15,enemy.x,enemy.y,1.5*player.x+player.vx*30-0.5*enemy.x,1.5*player.y+player.vy*30-0.5*enemy.y]);
+                //ttackWarnings.push(["line",warn+15,enemy.x,enemy.y,1.5*player.x+player.vx*30-0.5*enemy.x,1.5*player.y+player.vy*30-0.5*enemy.y]);
             } else {
                 enemy.drawPath = enemy.drawIdlePath;
                 enemiesBuffer.push(new Enemy(enemyBlueprints[7], {x: enemy.x + 20*Math.cos(enemy.dirToTarget), y: enemy.y + 20*Math.sin(enemy.dirToTarget), dirToTarget: enemy.dirToTarget}));
@@ -181,8 +181,29 @@ const enemyBlueprints = [
             }
         }
     },{ // 7 bow arrow
-        size: 30, health: 1, projectile: true, rotateToTarget: true, immovable: true, speed: 5, target: "direction", drawPath: JSON.parse(
+        size: 30, health: 1, projectile: true, rotateToTarget: true, immovable: true, speed: 6, target: "direction", drawPath: JSON.parse(
             `[{"type":"point","x":250,"y":0},{"type":"point","x":175,"y":-50},{"type":"point","x":-250,"y":0},{"type":"point","x":175,"y":50},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40},{"type":"point","x":250,"y":0},{"type":"point","x":125,"y":-125},{"type":"point","x":175,"y":0},{"type":"point","x":125,"y":125},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40}]`
         )
+    },{ // 8 Ephemeral Zweihänder
+        size: 125, health: 9, rotateToTarget: true, speed: -0.05, target: "playerAdvanced", ephemeral: true, drawPath: JSON.parse(
+            `[{"type":"point","x":-150,"y":-12.5},{"type":"point","x":-75,"y":-12.5},{"type":"point","x":-62.5,"y":-62.5},{"type":"point","x":-50,"y":-75},{"type":"point","x":-50,"y":-62.5},{"type":"point","x":-62.5,"y":-12.5},{"type":"point","x":250,"y":-12.5},{"type":"point","x":300,"y":0},{"type":"point","x":250,"y":12.5},{"type":"point","x":-62.5,"y":12.5},{"type":"point","x":-50,"y":62.5},{"type":"point","x":-50,"y":75},{"type":"point","x":-62.5,"y":62.5},{"type":"point","x":-75,"y":12.5},{"type":"point","x":-150,"y":12.5},{"type":"fill","r":175,"g":235,"b":230},{"type":"stroke","r":50,"g":80,"b":85},{"type":"point","x":-175,"y":-12.5},{"type":"point","x":-275,"y":-12.5},{"type":"point","x":-275,"y":12.5},{"type":"point","x":-175,"y":12.5},{"type":"fill","r":75,"g":105,"b":105},{"type":"stroke","r":85,"g":175,"b":165},{"type":"point","x":-150,"y":-75},{"type":"point","x":-150,"y":75},{"type":"point","x":-137.5,"y":112.5},{"type":"point","x":-162.5,"y":100},{"type":"point","x":-175,"y":50},{"type":"point","x":-175,"y":-50},{"type":"point","x":-162.5,"y":-100},{"type":"point","x":-137.5,"y":-112.5},{"type":"close"},{"type":"point","x":-250,"y":0,"move":true},{"type":"point","x":-275,"y":-25,"move":false},{"type":"point","x":-300,"y":0,"move":false},{"type":"point","x":-275,"y":25,"move":false},{"type":"close"},{"type":"fill","r":100,"g":145,"b":150},{"type":"stroke","r":50,"g":130,"b":130}]`
+        ), boom(enemy, warn) {
+            if (warn) {
+                enemy.speed = 0;
+                enemy.noAttack = "boom";
+                enemy.vx *= 0.5; enemy.vy *= 0.5;
+                enemy.teleportX = Math.random()*1600-800;
+                enemy.teleportY = Math.random()*800-400;
+                enemy.teleportSize = enemy.teleportSize || enemy.size;
+                ease(enemy,"size",0,warn/60);
+                attackWarnings.push(["circle",warn+30,enemy.teleportX, enemy.teleportY,50]);
+            } else {
+                enemy.speed = -0.05;
+                enemy.noAttack = false;
+                ease(enemy,"size",enemy.teleportSize,0.1);
+                enemy.x = enemy.teleportX;
+                enemy.y = enemy.teleportY;
+            }
+        }
     }
 ]

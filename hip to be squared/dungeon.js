@@ -68,6 +68,7 @@ function drawMap() {
 }
 
 function dungeonMove(change) {
+    bullets.splice(0);
     dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].items = items;
     game.openings = [];
     game.dungeonPosition[change[0]] += change[1];
@@ -78,8 +79,7 @@ function dungeonMove(change) {
     else player.y -= 1000*change[1];
 
     if (!room.visited) {
-        stats.extraHealth += 5;
-        if (stats.extraHealth > stats.extraHealthMax) stats.extraHealth = stats.extraHealthMax;
+        stats.extraHealth = stats.extraHealthMax;
 
         room.visited = true;
 

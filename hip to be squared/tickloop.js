@@ -77,6 +77,14 @@ function tickloop() {
     });
 
     ctx.beginPath();
+    if (game.openings.includes("left")) if (dungeon[(game.dungeonPosition[0]-1) + "," + (game.dungeonPosition[1])].boss) ctx.rect(-970,-500,100,1000);
+    if (game.openings.includes("right")) if (dungeon[(game.dungeonPosition[0]+1) + "," + (game.dungeonPosition[1])].boss) ctx.rect(870,-500,100,1000);
+    if (game.openings.includes("up")) if (dungeon[(game.dungeonPosition[0]) + "," + (game.dungeonPosition[1]-1)].boss) ctx.rect(-900,-570,1800,100);
+    if (game.openings.includes("down")) if (dungeon[(game.dungeonPosition[0]) + "," + (game.dungeonPosition[1]+1)].boss) ctx.rect(-900,-470,1800,1000);
+    ctx.fillStyle = "#cc000099";
+    ctx.fill();
+
+    ctx.beginPath();
     ctx.rect(-1000,-600,2000,1200);
     //ctx.rect(850,-450,-1700,900);
     ctx.moveTo(-850,-450);
