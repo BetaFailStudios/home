@@ -371,14 +371,15 @@ function pickUpItem() {
 
     if (closestItem) {
         if (closestItem.reference.type == "weapon") {
-            if (game.deleteItems) {
-                items.splice(items.length-1,1);
-                game.deleteItems = false;
-            }
-            
             items.push(new Item(player.x, player.y, game.weapon.reference, game.weapon.rarity));
             game.weapon = closestItem;
-            items.splice(game.itemPos,1);
+            items.splice(closestItem,1);
+
+            if (game.deleteItems && ( closestIndex == game.itemPos || closestIndex == game.itemPos+1 ) ) {
+                items.splice(game.itemPos,1);
+                game.deleteItems = false;
+            }
+
             updateStats();
         } else if (closestItem.reference.type == "relic") {
             let emptyIndex = 0;
@@ -393,7 +394,7 @@ function pickUpItem() {
             items.splice(closestIndex,1);
             updateStats();
 
-            if (game.deleteItems) {
+            if (game.deleteItems && ( closestIndex == game.itemPos || closestIndex == game.itemPos+1 ) ) {
                 items.splice(game.itemPos,1);
                 game.deleteItems = false;
             }

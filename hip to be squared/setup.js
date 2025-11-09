@@ -102,7 +102,10 @@ window.addEventListener('keydown', async function (e) {
     if (e.key.toLowerCase() == 'e') pickUpItem();
     if (e.key.toLowerCase() == 'q') if (!game.menu) {
         game.menu = "inventory";
-    } else if (game.menu == "inventory") game.menu = false;
+    } else if (game.menu == "inventory") {
+        game.menu = false;
+        game.replaceItem = false;
+    }
 }, false);
 window.addEventListener('keyup', function (e) {
     keys[e.key.toLowerCase()] = false;
