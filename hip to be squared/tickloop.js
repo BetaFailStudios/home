@@ -269,9 +269,10 @@ function tickloop() {
                 items.push(new Item(player.x-200,player.y,false,false,"weapon"), new Item(player.x+200,player.y,false,false,"weapon"));
                 game.firstWeapon = false;
             } else items.push(new Item(player.x-200,player.y), new Item(player.x+200,player.y));
+
             game.relicTick = 0;
             game.deleteItems = true;
-            game.itemPos = item.length-2;
+            game.itemPos = items.length-2;
         } else game.relicTick++;
     }
 
@@ -284,7 +285,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.0.3.5",700,470);
+    ctx.fillText("Version: b.0.3.6",700,470);
 }
 
 setInterval( tickloop, 1000/60 );
