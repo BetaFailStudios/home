@@ -101,7 +101,7 @@ function dungeonMove(change) {
         
         ease(game,"notLocked",0,0.2);
         
-        setInterval(() => {
+        setTimeout(() => {
             room.connections.forEach((item) => {
                 if (item[0] == 0) {
                     if (item[1] == -1) game.openings.push("left");

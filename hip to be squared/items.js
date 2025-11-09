@@ -372,7 +372,7 @@ function pickUpItem() {
     if (closestItem) {
         if (closestItem.reference.type == "weapon") {
             if (game.deleteItems) {
-                items.splice(items.length(items.length-1),1);
+                items.splice(items.length-1,1);
                 game.deleteItems = false;
             }
             
@@ -394,7 +394,7 @@ function pickUpItem() {
             updateStats();
 
             if (game.deleteItems) {
-                items.splice(items.length(items.length-1),1);
+                items.splice(items.length-1,1);
                 game.deleteItems = false;
             }
         }
