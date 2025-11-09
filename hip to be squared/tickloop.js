@@ -256,7 +256,20 @@ function tickloop() {
     ctx.fill();
     ctx.lineWidth = 3;
 
-    if (game.menu == "inventory") drawInventory();
+    if (stats.health <= 0) game.menu = "death";
+
+    if (game.menu == "death") {
+        ctx.beginPath();
+        ctx.fillStyle = "#000000cc";
+        ctx.fillRect(-900,-500,1800,1000);
+
+        ctx.beginPath();
+        ctx.strokeStyle = "#777";
+        ctx.fillStyle = "#ccc";
+        ctx.font = "100px share tech"
+        ctx.strokeText("Game over, ctrl + r to restart", 0, 0);
+        ctx.fillText("Game over, ctrl + r to restart", 0, 0);
+    } else if (game.menu == "inventory") drawInventory();
     else if (keys.tab) drawMap();
 
     if (!enemies.length && !game.notLocked) {
@@ -285,7 +298,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.0.3.7",700,470);
+    ctx.fillText("Version: b.0.3.8",700,470);
 }
 
 setInterval( tickloop, 1000/60 );
