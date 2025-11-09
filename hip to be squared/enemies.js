@@ -22,7 +22,7 @@ class Enemy {
 
         this.actualDirection = this.dirToTarget;
 
-        this.maxHealth = this.health;
+        this.healthMax = this.health;
         this.spawnSize = this.size*1.2;
     }
 }
@@ -30,7 +30,14 @@ class Enemy {
 let enemiesBuffer = [];
 
 function enemyTick() {
+    game.bossHealth = 0;
+    game.bossHealthMax = 0;
     enemies = enemies.filter((enemy,i) => {
+        if (enemy.boss) {
+            game.bossHealth += enemy.health;
+            game.bossHealthMax += enemy.healthMax;
+        }
+
         enemy.x += enemy.vx;
         enemy.y += enemy.vy;
         if (!enemy.frictionless) {
@@ -44,14 +51,18 @@ function enemyTick() {
             enemy.reset[0]();
             delete enemy.reset;
         }
+
+        if (enemy.target == "random") {
+            enemy.actualDirection = Math.random()*Math.PI*2;
+        }
+
         if (enemy.projectile) { if (Math.abs(enemy.x) > 1000+enemy.size || Math.abs(enemy.y) > 600+enemy.size) return false;
-        } else {        
+        } else if (!enemy.offscreen) {        
             if (Math.abs(enemy.x) > 850-enemy.size) {
                 enemy.x = Math.sign(enemy.x)*(850-enemy.size);
                 
                 if (enemy.immovable) {
                     enemy.vx = 0;
-                    enemy.vy = 0;
                 } else if (enemy.frictionless) enemy.vx *= -1;
                 else if (!enemy.noVelocityChange) enemy.vx = 0;            
             }
@@ -59,7 +70,6 @@ function enemyTick() {
                 enemy.y = Math.sign(enemy.y)*(450-enemy.size);
 
                 if (enemy.immovable) {
-                    enemy.vx = 0;
                     enemy.vy = 0;
                 } else if (enemy.frictionless) enemy.vy *= -1;
                 else if (!enemy.noVelocityChange) enemy.vy = 0;            
@@ -99,7 +109,7 @@ function enemyTick() {
         if (enemy.spawning) {
             draw(enemy.x, enemy.y, game.enemySpawnPath, enemy.spawnSize, 0, enemy.spawning);
             return true;
-        } else if (enemy.health > 0 && enemy.health < enemy.maxHealth) {
+        } else if (!enemy.boss && enemy.health > 0 && enemy.health < enemy.healthMax && enemy.size) {
             ctx.lineCap = "round";
             ctx.beginPath();
             ctx.moveTo(enemy.x-enemy.size-10, enemy.y-enemy.size-10);
@@ -109,7 +119,7 @@ function enemyTick() {
             ctx.stroke();
             ctx.beginPath();
             ctx.moveTo(enemy.x-enemy.size-10, enemy.y-enemy.size-10);
-            ctx.lineTo(enemy.x-enemy.size-10+enemy.health/enemy.maxHealth*(enemy.size*2+20), enemy.y-enemy.size-10);
+            ctx.lineTo(enemy.x-enemy.size-10+enemy.health/enemy.healthMax*(enemy.size*2+20), enemy.y-enemy.size-10);
             ctx.lineWidth = 5;
             ctx.strokeStyle = "#822";
             ctx.stroke();
@@ -152,20 +162,23 @@ function enemyTick() {
 
         let triggerWarn = true;
         let triggerAttack = true;
-        ["boom","beat","tick"].forEach((item) => {
-            if (!enemy[item] || (enemy.noAttack && enemy.noAttack != item)) return;
+        let attackTypes = ["boom","beat","tick"];
+        if (game.musicPos == 1) attackTypes = ["drum","largedrum","slice","dash","disappear","reappear","melee"];
+        attackTypes.forEach((item) => {
+            if (!enemy[item]/* || (enemy.noAttack && enemy.noAttack != item)*/) return;
+            if (!enemy["attackList" + item]) enemy["attackList" + item] = [];
             if (game.enemyAttackWarning.includes(item) && triggerWarn) {
-                if (enemy.reset) enemy.reset[0]();
                 enemy[item](enemy,30);
                 if (!enemy[item+"WarnCount"]) enemy[item+"WarnCount"] = 0;
                 enemy[item+"WarnCount"]++;
-                triggerWarn = false;
+                //triggerWarn = false;
+                enemy.lastWarning = item;
             }
             if (game.enemyAttack.includes(item) && triggerAttack && enemy[item+"WarnCount"] > 0) {
+                if (enemy.reset) enemy.reset[0]();
                 enemy[item](enemy);
-                if (!enemy[item+"WarnCount"]) enemy[item+"WarnCount"] = 0;
                 enemy[item+"WarnCount"]--;
-                triggerAttack = false;
+                //triggerAttack = false;
             }
         })
 
@@ -182,7 +195,7 @@ function enemyTick() {
 
 function spawnEnemies(num) {
     for(var i = 0; i < (num || 1); i++) {
-        const enemyIndexes = [0,1,3,5,6];
+        const enemyIndexes = [0,1,3,4,5];
         const enemy = new Enemy(enemyBlueprints[enemyIndexes[Math.floor(Math.random()*enemyIndexes.length)]]);
         enemy.x = Math.random()*1600-800;
         enemy.y = Math.random()*800-400;

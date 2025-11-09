@@ -32,39 +32,32 @@ function tickloop() {
 
     ctx.lineCap = "round";
     attackWarnings = attackWarnings.filter((item) => {
+        const ratio = 4*item[1]*(item[1]-item[2])/(item[2]**2);
         if (item[0] == "line") {
-            ctx.moveTo(...item.slice(2,4));
-            ctx.lineTo(...item.slice(4,6));
-        }
-
-        return item[1] > 0;
-    });
-    ctx.lineWidth = 5+20*game.warnFade;   
-    ctx.strokeStyle = "#ff000033";
-    ctx.stroke();
-    attackWarnings = attackWarnings.filter((item) => {
-        if (item[0] == "line") {
-            ctx.moveTo(...item.slice(2,4));
-            ctx.lineTo(...item.slice(4,6));
+            ctx.moveTo(item[3]+item[5]*ratio,item[4]+item[6]*ratio);
+            ctx.lineTo(item[3]-item[5]*ratio,item[4]-item[6]*ratio);
         }
 
         item[1]--;
-
         return item[1] > 0;
     });
-    ctx.lineWidth = 5+Math.max(0,20*game.warnFade-5);
+    ctx.lineWidth = 15  
+    ctx.strokeStyle = "#ff000033";
+    ctx.stroke();
+    ctx.lineWidth = 10
     ctx.strokeStyle = "#ff000033";
     ctx.stroke();
 
     ctx.lineCap = "butt";
     ctx.lineWidth = 3;
 
-    attackWarnings = attackWarnings.filter((item) => {
-        ctx.beginPath();    
+    attackWarnings = attackWarnings.filter((item) => {  
+        ctx.beginPath();  
+        const ratio = 4*item[1]*(item[1]-item[2])/(item[2]**2);
         if (game[item[0] + "AttackWarnPath"]) {
-            draw(item[2],item[3],game[item[0] + "AttackWarnPath"],item[4]*(1+game.warnFade/5),item[5] || false,false,true);
+            draw(item[3],item[4],game[item[0] + "AttackWarnPath"],-item[5]*ratio,item[6] || false,false,true);
         }
-        
+    
         ctx.lineWidth = 3;
         ctx.strokeStyle = "#ff000055";
         ctx.fillStyle = "#ff000055";
@@ -121,6 +114,32 @@ function tickloop() {
     enemyTick();
     playerTick();
     itemTick();
+
+    if (game.bossHealth) {
+        ctx.lineWidth = 7;
+        ctx.beginPath();
+        const maxBounds = 1600;
+        ctx.moveTo(-900, -500+5);
+        ctx.lineTo(maxBounds+55-900, -500+5);
+        ctx.lineTo(maxBounds+20-900, -500+40);
+        ctx.lineTo(-900, -500+40);
+        ctx.closePath();
+        ctx.fillStyle = "#333"
+        ctx.strokeStyle = "#222";
+        ctx.fill();
+        ctx.stroke();
+
+        const healthBounds = 1600*game.bossHealth/game.bossHealthMax;
+        ctx.beginPath();
+        ctx.moveTo(-900, -500+5);
+        ctx.lineTo(healthBounds+55-900, -500+5);
+        ctx.lineTo(healthBounds+20-900, -500+40);
+        ctx.lineTo(-900, -500+40);
+        ctx.closePath();
+        ctx.fillStyle = "#900";
+        ctx.fill();
+        ctx.stroke();
+    }
 
     ctx.lineWidth = 7;
     ctx.beginPath();
@@ -221,11 +240,16 @@ function tickloop() {
     ctx.fillStyle = "#444"
     ctx.moveTo(70-900, 500);
     ctx.lineTo(-900, 500-70);
-    ctx.lineTo(-900, 500);
+    ctx.lineTo(-900, -500+70);
+    ctx.lineTo(70-900, -500);
+    ctx.lineTo(-70+900, -500);
+    ctx.lineTo(900, -500+70);
+    ctx.lineTo(900, 500-70);
+    ctx.lineTo(-70+900, 500);
     ctx.closePath();
 
     ctx.rect(1800,-1000,-3600,2000);
-    ctx.rect(-900,-500,1800,1000);
+    //ctx.rect(-900,-500,1800,1000);
     ctx.strokeStyle = "#222";
     ctx.fillStyle = "#000";
     ctx.stroke();
@@ -238,6 +262,8 @@ function tickloop() {
     if (!enemies.length && !game.notLocked) {
         ease(game,"notLocked", 1,0.2);
 
+        if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].boss) restartMusic(0);
+
         if (game.relicTick >= 1) {
             if (game.firstWeapon) {
                 items.push(new Item(player.x-200,player.y,false,false,"weapon"), new Item(player.x+200,player.y,false,false,"weapon"));
@@ -249,9 +275,6 @@ function tickloop() {
     }
 
     draw(mouse.x,mouse.y,game.cursorPath,30,player.rotationTick);
-
-    if (game.enemyAttackWarning.includes("beat")) ease(game,"warnFade",1,20/60);
-    if (game.enemyAttack.includes("beat")) ease(game,"warnFade",0,10/60);
     game.enemyAttack = "";
     game.enemyAttackWarning = "";
 
@@ -260,7 +283,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.0.2",0,-470);
+    ctx.fillText("Version: b.0.3",700,470);
 }
 
 setInterval( tickloop, 1000/60 );

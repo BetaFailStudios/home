@@ -47,11 +47,13 @@ const weapons = [
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":75,"y":-125},{"type":"point","x":175,"y":-125},{"type":"point","x":237.5,"y":-12.5},{"type":"point","x":250,"y":12.5},{"type":"point","x":200,"y":175},{"type":"point","x":62.5,"y":212.5},{"type":"point","x":-25,"y":250},{"type":"point","x":-150,"y":175},{"type":"point","x":-175,"y":50},{"type":"point","x":-250,"y":12.5},{"type":"point","x":-187.5,"y":-137.5},{"type":"point","x":-87.5,"y":-250},{"type":"close"},{"type":"fill","r":75,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
             stats.firerate *= 1.5 - 0.03*rarity;
-            stats.damage *= 0.3 + 0.05*rarity;
+            stats.damage *= 0.65 + 0.2*rarity;
             stats.bulletSize *= 0.9;
-            stats.bulletSpeed *= 0.4;
+            stats.bulletSpeed *= 0.6;
             stats.projectiles += 4;
             stats.bloom *= 2.5;
+            stats.spread *= 1.25;
+            stats.lifetime = 0.3;
         }
     },{
         name: "Railgun",
@@ -66,6 +68,24 @@ const weapons = [
             stats.damage *= 2.3 + 0.2*rarity;
             stats.bulletSpeed *= 3;
             stats.bulletSize *= 2;
+        }
+    },{
+        name: "Gas Can",
+        desc: "Lots of low damage bullets",
+        drawPath: JSON.parse(
+            `[{"type":"point","x":225,"y":-75},{"type":"point","x":225,"y":50},{"type":"point","x":-25,"y":300},{"type":"point","x":-125,"y":300},{"type":"point","x":-300,"y":125},{"type":"point","x":-300,"y":25},{"type":"point","x":-25,"y":-250},{"type":"point","x":50,"y":-250},{"type":"close"},{"type":"point","x":0,"y":100,"move":true},{"type":"point","x":75,"y":75,"move":false},{"type":"point","x":100,"y":0,"move":false},{"type":"point","x":75,"y":-75,"move":false},{"type":"point","x":0,"y":-100,"move":false},{"type":"point","x":-75,"y":-75,"move":false},{"type":"point","x":-100,"y":0,"move":false},{"type":"point","x":-75,"y":75,"move":false},{"type":"close"},{"type":"fill","r":175,"g":75,"b":70},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":175,"y":-125,"move":false},{"type":"point","x":200,"y":-125,"move":false},{"type":"point","x":225,"y":-100,"move":false},{"type":"point","x":250,"y":-100,"move":false},{"type":"point","x":250,"y":75,"move":false},{"type":"point","x":225,"y":75,"move":false},{"type":"point","x":200,"y":100,"move":false},{"type":"point","x":175,"y":100,"move":false},{"type":"close"},{"type":"fill","r":25,"g":25,"b":25},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ),
+        bulletDrawPath: JSON.parse(
+            `[{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":-50},{"type":"point","x":175,"y":-100},{"type":"point","x":100,"y":-125},{"type":"point","x":50,"y":-75},{"type":"point","x":-100,"y":-25},{"type":"point","x":-300,"y":0},{"type":"point","x":-100,"y":25},{"type":"point","x":50,"y":75},{"type":"point","x":100,"y":125},{"type":"point","x":162.5,"y":100},{"type":"point","x":225,"y":50},{"type":"close"},{"type":"fill","r":255,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":100,"y":-75},{"type":"point","x":162.5,"y":-50},{"type":"point","x":200,"y":0},{"type":"point","x":162.5,"y":50},{"type":"point","x":100,"y":75},{"type":"point","x":75,"y":50},{"type":"point","x":-50,"y":0},{"type":"point","x":75,"y":-50},{"type":"close"},{"type":"fill","r":255,"g":200,"b":100},{"type":"stroke","r":255,"g":150,"b":100}]`
+        ), statChange(rarity) {
+            stats.firerate *= 0.2 - 0.03*rarity;
+            stats.damage *= 0.15 + 0.03*rarity;
+            stats.bulletSpeed *= 0.3;
+            stats.bulletSize *= 2;
+            stats.projectiles += 1;
+            stats.bloom *= 2;
+            stats.spread *= 0.3;
+            stats.lifetime = 0.7;
         }
     }
 ]
@@ -159,8 +179,8 @@ const relics = [
         drawPath: JSON.parse(
             `[{"type":"point","x":-150,"y":-50},{"type":"point","x":200,"y":-200},{"type":"point","x":225,"y":-125},{"type":"point","x":175,"y":-150},{"type":"point","x":175,"y":-100},{"type":"point","x":125,"y":-125},{"type":"point","x":125,"y":-75},{"type":"point","x":75,"y":-100},{"type":"point","x":75,"y":-50},{"type":"point","x":25,"y":-75},{"type":"point","x":25,"y":-25},{"type":"point","x":-25,"y":-50},{"type":"point","x":-25,"y":0},{"type":"point","x":-75,"y":-25},{"type":"point","x":-75,"y":25},{"type":"point","x":-100,"y":50},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-150,"y":-50},{"type":"point","x":-100,"y":50},{"type":"point","x":-100,"y":75},{"type":"point","x":-200,"y":125},{"type":"point","x":-250,"y":0},{"type":"close"},{"type":"point","x":-175,"y":0,"move":true},{"type":"point","x":-212.5,"y":12.5,"move":false},{"type":"point","x":-187.5,"y":75,"move":false},{"type":"point","x":-137.5,"y":62.5,"move":false},{"type":"point","x":-125,"y":50,"move":false},{"type":"close"},{"type":"fill","r":125,"g":100,"b":50},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
-            stats.bloom *= 3-0.25*rarity;
-            stats.bulletSpeed *= 1.45 + 0.2*rarity;
+            stats.bloom *= 2.5-0.15*rarity;
+            stats.damage *= 1.45 + 0.2*rarity;
         }
     },{
         name: "Piercing Rounds",
@@ -352,7 +372,7 @@ function pickUpItem() {
     if (closestItem) {
         if (closestItem.reference.type == "weapon") {
             if (game.deleteItems) {
-                items.splice(0);
+                items.splice(items.length(items.length-1),1);
                 game.deleteItems = false;
             }
             
@@ -374,7 +394,7 @@ function pickUpItem() {
             updateStats();
 
             if (game.deleteItems) {
-                items.splice(0);
+                items.splice(items.length(items.length-1),1);
                 game.deleteItems = false;
             }
         }

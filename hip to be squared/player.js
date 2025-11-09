@@ -78,7 +78,7 @@ function playerTick() {
 
         if (!player.burstsLeft) player.burstsLeft = stats.bursts-1;
         else player.burstsLeft--;
-        if (player.burstsLeft) player.firerateTick += Math.min(4,stats.firerate/10);
+        if (player.burstsLeft) player.firerateTick += Math.min(3,stats.firerate/10);
         else player.firerateTick += stats.firerate;
     } else if (player.firerateTick > 0) player.firerateTick--;
 
@@ -124,5 +124,5 @@ function playerTick() {
     stats.playerSize /= 1.25;
 
     if (player.dashCooldown <= 0) player.dashCooldown = 0;
-    else player.dashCooldown -= 1/60;
+    else player.dashCooldown -= 1/45;
 }

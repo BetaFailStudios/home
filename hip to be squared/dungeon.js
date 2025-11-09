@@ -20,6 +20,7 @@ function generateDungeon() {
         if (Math.abs(pos[0]) + Math.abs(pos[1]) == 6) {
             dungeon[pos[0] + "," + pos[1]].boss = true;
             connected = true;
+            dungeon[pos[0] + "," + pos[1]].blocks = [];
         }
     }
 }
@@ -78,14 +79,6 @@ function dungeonMove(change) {
     if (change[0] == 0) player.x -= 1800*change[1];
     else player.y -= 1000*change[1];
 
-    if (!room.visited) {
-        stats.extraHealth = stats.extraHealthMax;
-
-        room.visited = true;
-
-        spawnEnemies(1 + 1*(Math.random() < 0.7));
-        ease(game,"notLocked",0,0.2);
-    }
     if (room.visited) room.connections.forEach((item) => {
         if (item[0] == 0) {
             if (item[1] == -1) game.openings.push("left");
@@ -94,18 +87,32 @@ function dungeonMove(change) {
             if (item[1] == -1) game.openings.push("up");
             else game.openings.push("down");
         }
-    })
-    else setInterval(() => {
-        room.connections.forEach((item) => {
-            if (item[0] == 0) {
-                if (item[1] == -1) game.openings.push("left");
-                else game.openings.push("right");
-            } else {
-                if (item[1] == -1) game.openings.push("up");
-                else game.openings.push("down");
-            }
-        })
-    }, 250);
+    }); 
+    else {
+        stats.extraHealth = stats.extraHealthMax;
+
+        room.visited = true;
+
+        if (room.boss) {
+            restartMusic(1);
+            enemies.push( new Enemy(enemyBlueprints[7]) );
+        }
+        else spawnEnemies(1 + 1*(Math.random() < 0.7));
+        
+        ease(game,"notLocked",0,0.2);
+        
+        setInterval(() => {
+            room.connections.forEach((item) => {
+                if (item[0] == 0) {
+                    if (item[1] == -1) game.openings.push("left");
+                    else game.openings.push("right");
+                } else {
+                    if (item[1] == -1) game.openings.push("up");
+                    else game.openings.push("down");
+                }
+            })
+        }, 250);
+    }
 
     items = room.items;
 }

@@ -76,9 +76,9 @@ window.addEventListener('keydown', async function (e) {
         switch(0) {
             case 0: {
                 const hypot = Math.hypot(player.vx, player.vy) || 1;
-                player.vx *= 65/hypot;
-                player.vy *= 65/hypot;
-                player.iFrames = 17;
+                player.vx *= 60/hypot;
+                player.vy *= 60/hypot;
+                player.iFrames = 15;
                 break;
             }
             case 1: {
@@ -154,14 +154,13 @@ function ease(thing, target, end, time) {
 }
 
 function changeEaseable(item, i) {
-    item.thing[item.target] += item.tickRate;
-
     var contin = true;
 
-    if ( item.thing[item.target] >= item.end && Math.sign(item.tickRate) > 0 ) contin = false;
-    if ( item.thing[item.target] <= item.end && Math.sign(item.tickRate) < 0 ) contin = false;
+    if ( item.thing[item.target] + item.tickRate >= item.end && Math.sign(item.tickRate) > 0 ) contin = false;
+    if ( item.thing[item.target] + item.tickRate <= item.end && Math.sign(item.tickRate) < 0 ) contin = false;
 
-    if (!contin) item.thing[item.target] = item.end;
+    if (contin) item.thing[item.target] += item.tickRate;
+    else item.thing[item.target] = item.end;
 
     return contin;
 }
@@ -262,7 +261,6 @@ const game = {
     ),
     enemyAttack:"",
     enemyAttackWarning:"",
-    warnFade: 0,
     dungeonPosition: [0,0],
     notLocked: 0,
     openings: [  ],
@@ -271,6 +269,7 @@ const game = {
     relicTick: 0,
     deleteItems: true,
     firstWeapon: true,
+    musicPos: 0,
 };
 
 let bullets = [];

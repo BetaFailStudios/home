@@ -18,6 +18,7 @@ class Bullet {
         }
         this.alive = true;
 
+        if (stats.lifetime) this.lifetime = stats.lifetime;
         if (stats.bulletBounce) this.bulletBounce = stats.bulletBounce;
         if (stats.pierce) this.pierce = stats.pierce;
         if (stats.lotteryChance) if (Math.random() < stats.lotteryChance) {
@@ -106,7 +107,10 @@ function bulletTick() {
             }
         })
 
-
+        if (bullet.lifetime < 0 || bullet.lifetime === 0) {
+            bullet.alive = false;
+            ease(bullet,"size",0,0.05);
+        } else if (bullet.lifetime) bullet.lifetime -= 1/60;
 
         return true;
     })
