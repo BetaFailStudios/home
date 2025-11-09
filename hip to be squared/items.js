@@ -332,7 +332,7 @@ function drawItemDesc(item,x,y) {
 
 function updateStats() {
     const health = stats.health || stats.healthMax || 10;
-    let extraHealth = stats.extraHealth || stats.extraHealthMax || 4;
+    let extraHealth = stats.extraHealth || stats.extraHealthMax || 6;
     if (stats.extraHealth === 0) extraHealth = 0;
     stats = {
         friction: 0.2,
@@ -345,7 +345,7 @@ function updateStats() {
         health: health,
         healthMax: stats.healthMax || 10,
         extraHealth: extraHealth,
-        extraHealthMax: 4,
+        extraHealthMax: 6,
         projectiles: 1, spread: Math.PI/8,
         bursts: 1,
         bloom: Math.PI/65
