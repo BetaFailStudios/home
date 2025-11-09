@@ -126,9 +126,14 @@ window.addEventListener('mousedown', function () {
         if (relicPos != -1) {
             const relicToPush = game.relicsEquipped[relicPos];
             game.relicsEquipped[relicPos] = false;
-            if (game.replaceItem) pickUpItem();
+            if (game.replaceItem) {
+                pickUpItem();
+                game.replaceItem = false;
+            }
             items.push(new Item(player.x,player.y,relicToPush.reference,relicToPush.rarity));
             game.menu = false;
+
+            updateStats();
         }
     }
 }, false);

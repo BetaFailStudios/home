@@ -215,9 +215,9 @@ class Item {
         if (!rarity && rarity !== 0) {
             const random = Math.random();
             if (random < 0.65) this.rarity = 0;
-            else if (random < 0.83) this.rarity = 1;
-            else if (random < 0.95) this.rarity = 2;
-            else if (random < 0.99) this.rarity = 3;
+            else if (random < 0.85) this.rarity = 1;
+            else if (random < 0.97) this.rarity = 2;
+            else if (random < 0.995) this.rarity = 3;
             else this.rarity = 4;
         }
         if (reference) this.reference = reference;
@@ -345,10 +345,10 @@ function updateStats() {
         health: health,
         healthMax: stats.healthMax || 10,
         extraHealth: extraHealth,
-        extraHealthMax: stats.extraHealthMax || 5,
+        extraHealthMax: stats.extraHealthMax || 4,
         projectiles: 1, spread: Math.PI/8,
         bursts: 1,
-        bloom: Math.PI/50
+        bloom: Math.PI/65
     }
     if (game.weapon.reference.statChange) game.weapon.reference.statChange(game.weapon.rarity);
     game.relicsEquipped.forEach((relic) => {
@@ -378,13 +378,13 @@ function pickUpItem() {
             
             items.push(new Item(player.x, player.y, game.weapon.reference, game.weapon.rarity));
             game.weapon = closestItem;
-            items.splice(closestIndex,1);
+            items.splice(game.itemPos,1);
             updateStats();
         } else if (closestItem.reference.type == "relic") {
             let emptyIndex = 0;
             while (game.relicsEquipped[emptyIndex]) emptyIndex++;
             if (emptyIndex >= game.relicsEquipped.length) {
-                game.dropItem = true;
+                game.replaceItem = true;
                 game.menu = "inventory";
 
                 return;
@@ -394,7 +394,7 @@ function pickUpItem() {
             updateStats();
 
             if (game.deleteItems) {
-                items.splice(items.length-1,1);
+                items.splice(game.itemPos,1);
                 game.deleteItems = false;
             }
         }

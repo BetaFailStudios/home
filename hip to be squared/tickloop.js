@@ -271,6 +271,7 @@ function tickloop() {
             } else items.push(new Item(player.x-200,player.y), new Item(player.x+200,player.y));
             game.relicTick = 0;
             game.deleteItems = true;
+            game.itemPos = item.length-2;
         } else game.relicTick++;
     }
 
@@ -283,7 +284,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.0.3.3",700,470);
+    ctx.fillText("Version: b.0.3.4",700,470);
 }
 
 setInterval( tickloop, 1000/60 );

@@ -33,7 +33,7 @@ function bulletTick() {
         bullet.x += bullet.vx;
         bullet.y += bullet.vy;
 
-        const collisionSize = Math.min(50,bullet.size/2.2);
+        const collisionSize = Math.min(150,bullet.size/2.2);
 
         draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction);
 
