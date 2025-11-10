@@ -78,7 +78,7 @@ window.addEventListener('keydown', async function (e) {
                 const hypot = Math.hypot(player.vx, player.vy) || 1;
                 player.vx *= 60/hypot;
                 player.vy *= 60/hypot;
-                player.iFrames = 15;
+                player.iFrames = 15 + (stats.extraIframes || 0);
                 break;
             }
             case 1: {

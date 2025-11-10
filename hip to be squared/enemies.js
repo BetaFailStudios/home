@@ -163,7 +163,7 @@ function enemyTick() {
         let triggerWarn = true;
         let triggerAttack = true;
         let attackTypes = ["boom","beat","tick"];
-        if (game.musicPos == 1) attackTypes = ["drum","largedrum","slice","dash","disappear","reappear","melee"];
+        if (game.musicPos == 1) attackTypes = ["drum","sword","knives","slice","dash","disappear","reappear","melee"];
         attackTypes.forEach((item) => {
             if (!enemy[item]/* || (enemy.noAttack && enemy.noAttack != item)*/) return;
             if (!enemy["attackList" + item]) enemy["attackList" + item] = [];

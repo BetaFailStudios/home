@@ -96,7 +96,7 @@ function playerTick() {
                     enemy.vx -= 25*Math.sign(x)/hypot;
                     enemy.vy -= 25*Math.sign(y)/hypot;
                 }
-                player.iFrames = 30;
+                player.iFrames = 30 + (stats.extraIframes || 0);
                 if (stats.extraHealth) stats.extraHealth--;
                 else stats.health--;
             }

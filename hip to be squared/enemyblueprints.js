@@ -158,19 +158,53 @@ const enemyBlueprints = [
             if (warn) {
                 const pos = [-800+Math.random()*1600,-400+Math.random()*800]
                 enemy.attackListdrum.push(pos);
-                attackWarnings.push(["circle",warn*4,warn*4,pos[0], pos[1],150]);
+                attackWarnings.push(["circle",warn*4,warn*4,pos[0], pos[1],100]);
             } else {
                 enemiesBuffer.push(new Enemy(enemyBlueprints[8],{ x: enemy.attackListdrum[0][0], y: enemy.attackListdrum[0][1]}));
                 enemy.attackListdrum.splice(0,1);
             }
-        }, largedrum(enemy, warn) {
+        }, sword(enemy, warn) {
             if (warn) {
-                const pos = [-800+Math.random()*1600,-400+Math.random()*800]
-                enemy.attackListlargedrum.push(pos);
-                attackWarnings.push(["circle",warn*4,warn*4,pos[0], pos[1],350]);
+                let posX = -800+1600*(Math.random() < 0.5);
+                let posY = -500+1000*Math.random();
+                if (Math.random() < 0.5) {
+                    posX = -900+1800*Math.random();
+                    posY = -500+1000*(Math.random() < 0.5);
+                }
+                const thing = new Enemy(enemyBlueprints[10],{x: posX, y: posY, dirToTarget: (Math.atan((player.y-posY)/(player.x-posX)) + Math.PI*(player.x < posX)) || (Math.PI*(player.x < posX))});
+                enemiesBuffer.push(thing);
+                enemy.attackListsword.push(thing);
+                attackWarnings.push(["line",warn*4,warn*4,player.x, player.y,player.x-thing.x, player.y-thing.y]);
             } else {
-                enemiesBuffer.push(new Enemy(enemyBlueprints[8],{ x: enemy.attackListlargedrum[0][0], y: enemy.attackListlargedrum[0][1], size: 600 }));
-                enemy.attackListlargedrum.splice(0,1);
+                enemy.attackListsword[0].speed = 4;
+                enemy.attackListsword.splice(0,1);
+            }
+        }, knives(enemy, warn) {
+            const things = [];
+            if (warn) {
+                if (Math.random() < 0.5) {
+                    const rightSide = (Math.random() < 0.5);
+                    x = -900 + 1800*rightSide;
+                    for (var y = -500+175*Math.random(); y < 500; y += 175) {
+                        const thing = new Enemy(enemyBlueprints[11], {x:x,y:y,dirToTarget:Math.PI*rightSide});
+                        enemiesBuffer.push(thing);
+                        things.push(thing);
+                        attackWarnings.push(["line",warn*4,warn*4,0,y,1800, 0]);
+                    }
+                } else {
+                    const downSide = (Math.random() < 0.5);
+                    y = -500 + 1000*downSide;
+                    for (var x = -900+175*Math.random(); x < 900; x += 175) {
+                        const thing = new Enemy(enemyBlueprints[11], {x:x,y:y,dirToTarget:Math.PI/2+Math.PI*downSide});
+                        enemiesBuffer.push(thing);
+                        things.push(thing);
+                        attackWarnings.push(["line",warn*4,warn*4,x,0,0, 1000]);
+                    }
+                }
+                enemy.attackListknives.push(things);
+            } else {
+                enemy.attackListknives[0].forEach((item) => item.speed = 4);
+                enemy.attackListknives.splice(0,1);
             }
         }, melee(enemy, warn) {
             if (warn) {
@@ -234,12 +268,20 @@ const enemyBlueprints = [
             }
         }
     },{ // 8 Zweihänder drum
-        size: 200, health: 0, projectile: true, rotateToTarget: true, immovable: true, speed: 0, target: "random", drawPath: JSON.parse(
+        size: 150, health: 0, projectile: true, rotateToTarget: true, immovable: true, speed: 0, target: "random", drawPath: JSON.parse(
             `[{"type":"point","x":100,"y":-237.5,"move":false},{"type":"point","x":12.5,"y":-150,"move":false},{"type":"point","x":37.5,"y":-75,"move":false},{"type":"point","x":0,"y":0,"move":false},{"type":"point","x":-37.5,"y":125,"move":false},{"type":"point","x":-125,"y":237.5,"move":false},{"type":"point","x":212.5,"y":75,"move":true},{"type":"point","x":100,"y":112.5,"move":false},{"type":"point","x":50,"y":0,"move":false},{"type":"point","x":-137.5,"y":0,"move":false},{"type":"point","x":-187.5,"y":-87.5,"move":false},{"type":"point","x":-250,"y":-87.5,"move":false},{"type":"point","x":-125,"y":-200,"move":true},{"type":"point","x":-112.5,"y":-125,"move":false},{"type":"point","x":-37.5,"y":-50,"move":false},{"type":"point","x":37.5,"y":50,"move":false},{"type":"point","x":50,"y":200,"move":false},{"type":"point","x":175,"y":225,"move":false},{"type":"point","x":-225,"y":100,"move":true},{"type":"point","x":-150,"y":137.5,"move":false},{"type":"point","x":-100,"y":37.5,"move":false},{"type":"point","x":75,"y":-37.5,"move":false},{"type":"point","x":162.5,"y":12.5,"move":false},{"type":"point","x":175,"y":-137.5,"move":false},{"type":"point","x":-37.5,"y":125,"move":true},{"type":"point","x":0,"y":187.5,"move":false},{"type":"point","x":-150,"y":137.5,"move":true},{"type":"point","x":-200,"y":200,"move":false},{"type":"point","x":-137.5,"y":0,"move":true},{"type":"point","x":-187.5,"y":37.5,"move":false},{"type":"point","x":-200,"y":-87.5,"move":true},{"type":"point","x":-225,"y":-175,"move":false},{"type":"point","x":-125,"y":-162.5,"move":true},{"type":"point","x":-162.5,"y":-162.5,"move":false},{"type":"point","x":50,"y":-187.5,"move":true},{"type":"point","x":0,"y":-225,"move":false},{"type":"point","x":25,"y":-112.5,"move":true},{"type":"point","x":100,"y":-137.5,"move":false},{"type":"point","x":162.5,"y":-75,"move":true},{"type":"point","x":212.5,"y":-12.5,"move":false},{"type":"point","x":162.5,"y":87.5,"move":true},{"type":"point","x":187.5,"y":175,"move":false},{"type":"point","x":87.5,"y":200,"move":true},{"type":"point","x":25,"y":237.5,"move":false},{"type":"stroke","r":75,"g":175,"b":255},{"type":"point","x":-62.5,"y":225,"move":false},{"type":"point","x":12.5,"y":75,"move":false},{"type":"point","x":-25,"y":-162.5,"move":false},{"type":"point","x":-150,"y":-237.5,"move":false},{"type":"point","x":-175,"y":-162.5,"move":true},{"type":"point","x":-100,"y":-25,"move":false},{"type":"point","x":87.5,"y":0,"move":false},{"type":"point","x":212.5,"y":75,"move":false},{"type":"point","x":212.5,"y":-175,"move":true},{"type":"point","x":75,"y":-100,"move":false},{"type":"point","x":-62.5,"y":87.5,"move":false},{"type":"point","x":-187.5,"y":150,"move":false},{"type":"point","x":-125,"y":187.5,"move":true},{"type":"point","x":0,"y":-12.5,"move":false},{"type":"point","x":112.5,"y":62.5,"move":false},{"type":"point","x":75,"y":225,"move":false},{"type":"point","x":-100,"y":150,"move":true},{"type":"point","x":-100,"y":237.5,"move":false},{"type":"point","x":-237.5,"y":12.5,"move":true},{"type":"point","x":-87.5,"y":50,"move":false},{"type":"point","x":-37.5,"y":-25,"move":false},{"type":"point","x":-150,"y":-112.5,"move":true},{"type":"point","x":-212.5,"y":-100,"move":false},{"type":"point","x":0,"y":-12.5,"move":true},{"type":"point","x":75,"y":-175,"move":false},{"type":"point","x":12.5,"y":-237.5,"move":false},{"type":"point","x":-50,"y":-175,"move":true},{"type":"point","x":-25,"y":-250,"move":false},{"type":"point","x":-12.5,"y":-62.5,"move":true},{"type":"point","x":-125,"y":-112.5,"move":false},{"type":"stroke","r":75,"g":255,"b":255}]`
         )
     },{ // 9 Zweihänder slash
         size: 200, health: 5, projectile: true, rotateToTarget: true, immovable: true, speed: 3, target: "direction", drawPath: JSON.parse(
             `[{"type":"point","x":125,"y":-50},{"type":"point","x":125,"y":50},{"type":"point","x":100,"y":125},{"type":"point","x":50,"y":200},{"type":"point","x":0,"y":175},{"type":"point","x":50,"y":100},{"type":"point","x":75,"y":0},{"type":"point","x":50,"y":-100},{"type":"point","x":0,"y":-175},{"type":"point","x":50,"y":-200},{"type":"point","x":100,"y":-125},{"type":"close"},{"type":"fill","r":175,"g":225,"b":255},{"type":"stroke","r":80,"g":175,"b":175}]`
+        )
+    },{ // 10 Zweihänder sword projectile
+        size: 75, health: 1, projectile: true, ephemeral: true, rotateToTarget: true, immovable: true, speed: 0, target: "direction", drawPath: JSON.parse(
+            `[{"type":"point","x":-75,"y":-50},{"type":"point","x":200,"y":-50},{"type":"point","x":250,"y":0},{"type":"point","x":200,"y":50},{"type":"point","x":-75,"y":50},{"type":"fill","r":175,"g":235,"b":230},{"type":"stroke","r":50,"g":80,"b":85},{"type":"point","x":-125,"y":-25},{"type":"point","x":-225,"y":-25},{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":25},{"type":"point","x":-125,"y":25},{"type":"fill","r":75,"g":105,"b":105},{"type":"stroke","r":85,"g":175,"b":165},{"type":"point","x":-75,"y":100},{"type":"point","x":-100,"y":100},{"type":"point","x":-125,"y":75},{"type":"point","x":-125,"y":-75},{"type":"point","x":-100,"y":-100},{"type":"point","x":-75,"y":-100},{"type":"close"},{"type":"fill","r":100,"g":145,"b":150},{"type":"stroke","r":50,"g":130,"b":130}]`
+        )
+    },{ // 11 Zweihänder knife projectile
+        size: 45, health: 1, projectile: true, ephemeral: true, rotateToTarget: true, immovable: true, speed: 0, target: "direction", drawPath: JSON.parse(
+            `[{"type":"point","x":-25,"y":-50},{"type":"point","x":200,"y":-25},{"type":"point","x":250,"y":0},{"type":"point","x":200,"y":25},{"type":"point","x":-25,"y":50},{"type":"fill","r":175,"g":235,"b":235},{"type":"stroke","r":50,"g":80,"b":80},{"type":"point","x":-75,"y":-25},{"type":"point","x":-225,"y":-25},{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":25},{"type":"point","x":-75,"y":25},{"type":"fill","r":75,"g":105,"b":105},{"type":"stroke","r":85,"g":175,"b":165},{"type":"point","x":-25,"y":-100},{"type":"point","x":-75,"y":-75},{"type":"point","x":-75,"y":75},{"type":"point","x":-25,"y":100},{"type":"close"},{"type":"fill","r":100,"g":145,"b":150},{"type":"stroke","r":50,"g":130,"b":130}]`
         )
     }
 ]

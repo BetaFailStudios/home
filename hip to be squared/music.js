@@ -28,10 +28,9 @@ const music = {
                 [23, "slice",3,0.125],[23 + 11/32, "melee"],[23 + 7/16, "dash"], // bar 14
                 [24, "melee",4,2],[24 + 3/8, "slice",4,2],[24 + 7/16, "dash",4,2],[24 + 15/16, "dash",4,2], // bar 12
                 [25+3/16, "slice",4,2],[25 + 5/16, "slice",4,2],[25 + 7/16, "dash",4,2],[25 + 11/16, "melee",4,2], // bar 13
-                [32, "disappear"],[32, "drum", 128, 0.03125], // amen break
-                [36, "drum", 22*8, 0.125], // less amen break
-                [36.125, "largedrum", 8, 1],[36 + 5/16, "largedrum", 8, 1],[36.625, "largedrum", 8, 1],[36.5 + 5/16, "largedrum", 7, 1],[36.5 + 7/16, "largedrum", 8, 1], // picked string
-                [37.5 + 3/8, "largedrum", 4, 2], // picked string
+                [32, "disappear"],[32, "sword", 32, 0.125], // amen break
+                [36.125, "knives", 8, 1],[36 + 5/16, "knives", 8, 1],[36.625, "knives", 8, 1],[36.5 + 5/16, "knives", 7, 1],[36.5 + 7/16, "knives", 8, 1], // picked string
+                [37.5 + 3/8, "knives", 4, 2], // picked string
                 [40, "reappear"], // appearance
                 [44, "slice", 2, 4],[44 + 3/16, "slice", 2, 4],[44.5, "melee", 2, 4], // bar 20
                 [45.125, "slice", 2, 4],[45 + 7/16, "slice", 2, 4],[45.5 + 3/16, "melee", 2, 4], // bar 21
