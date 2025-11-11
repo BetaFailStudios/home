@@ -4,7 +4,7 @@ class Bullet {
         this.y = inputStats.y || 0;
         this.size = 0;
         this.damage = inputStats.damage || stats.damage;
-        ease(this,"size",inputStats.size || stats.bulletSize,0.05);
+        ease(this,"size",inputStats.size || stats.bulletSize,0.1);
         this.drawPath = inputStats.drawPath || game.weapon.reference.bulletDrawPath;
         this.enemiesTouched = [];
         if (inputStats.direction) {
@@ -16,17 +16,28 @@ class Bullet {
             this.vx = inputStats.speed || stats.bulletSpeed;
             this.vy = 0;
         }
+        
+        if (inputStats.speed === 0) {
+            this.vx = 0;
+            this.vy = 0;
+        }
+
         this.alive = true;
 
-        if (stats.lifetime) this.lifetime = stats.lifetime;
-        if (stats.bulletBounce) this.bulletBounce = stats.bulletBounce;
-        if (stats.pierce) this.pierce = stats.pierce;
+        if (stats.lifetime) this.lifetime = inputStats.lifetime || stats.lifetime;
+        this.bulletBounce = stats.bulletBounce;
+        this.pierce = inputStats.pierce || stats.pierce;
+        this.wallPierce = inputStats.wallPierce || stats.wallPierce;
         if (stats.lotteryChance) if (Math.random() < stats.lotteryChance) {
             this.damage *= 30;
             this.size *= 2.2;
         }
+
+        this.triggerExpire = inputStats.triggerExpire;
     }
 }
+
+let bulletBuffer = [];
 
 function bulletTick() {
     bullets = bullets.filter((bullet,i) => {
@@ -54,6 +65,7 @@ function bulletTick() {
                     else if (!enemy.projectiles || enemy.health > 0) {
                         bullet.alive = false;
                         ease(bullet,"size",0,0.05);
+                        if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
                     }
                     
                     stats.onHits.forEach( (item) => item[1](item[0],bullet,enemy));
@@ -62,7 +74,7 @@ function bulletTick() {
         })
 
         if (Math.abs(bullet.x-bullet.size) > 1000 || Math.abs(bullet.y-bullet.size) > 600) return false;
-        if (Math.abs(bullet.x) > 850-collisionSize || Math.abs(bullet.y) > 450-collisionSize) {
+        if (!bullet.wallPierce) if (Math.abs(bullet.x) > 850-collisionSize || Math.abs(bullet.y) > 450-collisionSize) {
             if (bullet.bulletBounce) {
                 bullet.bulletBounce--;
                 bullet.damage *= 1.75;
@@ -79,10 +91,11 @@ function bulletTick() {
             } else {
                 bullet.alive = false;
                 ease(bullet,"size",0,0.05);
+                if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
             }
         }
 
-        blocks.forEach((block) => {
+        if (!bullet.wallPierce) blocks.forEach((block) => {
             const diffx = bullet.x + collisionSize/2.5 - block[0];
             const diffy = bullet.y + collisionSize/2.5 - block[1];
             const diffx1 = -bullet.x + collisionSize/2.5 + block[0]+block[2];
@@ -107,6 +120,7 @@ function bulletTick() {
                 } else  {
                     bullet.alive = false;
                     ease(bullet,"size",0,0.05);
+                    if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
                 }
             }
         })
@@ -114,8 +128,12 @@ function bulletTick() {
         if (bullet.lifetime < 0 || bullet.lifetime === 0) {
             bullet.alive = false;
             ease(bullet,"size",0,0.05);
+            if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
         } else if (bullet.lifetime) bullet.lifetime -= 1/60;
 
         return true;
     })
+
+    bullets.push(...bulletBuffer);
+    bulletBuffer = [];
 }

@@ -115,10 +115,49 @@ const weapons = [
         bulletDrawPath: JSON.parse(
             `[{"type":"point","x":-125,"y":-125},{"type":"point","x":0,"y":-175},{"type":"point","x":125,"y":-125},{"type":"point","x":175,"y":0},{"type":"point","x":125,"y":125},{"type":"point","x":0,"y":175},{"type":"point","x":-125,"y":125},{"type":"point","x":-100,"y":175},{"type":"point","x":0,"y":225},{"type":"point","x":100,"y":225},{"type":"point","x":200,"y":175},{"type":"point","x":250,"y":75},{"type":"point","x":262.5,"y":0},{"type":"point","x":250,"y":-75},{"type":"point","x":200,"y":-175},{"type":"point","x":100,"y":-225},{"type":"point","x":0,"y":-225},{"type":"point","x":-100,"y":-175},{"type":"close"},{"type":"fill","r":200,"g":200,"b":200},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
-            stats.firerate *= 3 - 0.08*rarity;
-            stats.damage *= 5.2 + 0.3*rarity;
+            stats.firerate *= 2.5 - 0.08*rarity;
+            stats.damage *= 3.4 + 0.3*rarity;
             stats.bulletSize *= 5;
             stats.bulletSpeed *= 0.15;
+        }
+    },{
+        name: "Guitar",
+        desc: "Bulllets pop with AoE",
+        drawPath: JSON.parse(
+            `[{"type":"point","x":-225,"y":225},{"type":"point","x":-250,"y":175},{"type":"point","x":-250,"y":100},{"type":"point","x":-225,"y":50},{"type":"point","x":-175,"y":0},{"type":"point","x":-125,"y":0},{"type":"point","x":-100,"y":-25},{"type":"point","x":-75,"y":-75},{"type":"point","x":-25,"y":-100},{"type":"point","x":25,"y":-100},{"type":"point","x":62.5,"y":-87.5},{"type":"point","x":225,"y":-250},{"type":"point","x":250,"y":-225},{"type":"point","x":87.5,"y":-62.5},{"type":"point","x":100,"y":-25},{"type":"point","x":100,"y":25},{"type":"point","x":75,"y":75},{"type":"point","x":25,"y":100},{"type":"point","x":0,"y":125},{"type":"point","x":0,"y":175},{"type":"point","x":-50,"y":225},{"type":"point","x":-100,"y":250},{"type":"point","x":-175,"y":250},{"type":"close"},{"type":"point","x":-50,"y":25,"move":true},{"type":"point","x":-100,"y":25,"move":false},{"type":"point","x":-125,"y":50,"move":false},{"type":"point","x":-125,"y":100,"move":false},{"type":"point","x":-100,"y":125,"move":false},{"type":"point","x":-50,"y":125,"move":false},{"type":"point","x":-25,"y":100,"move":false},{"type":"point","x":-25,"y":50,"move":false},{"type":"close"},{"type":"fill","r":175,"g":150,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":150,"y":-200,"move":false},{"type":"point","x":225,"y":-275,"move":false},{"type":"point","x":275,"y":-225,"move":false},{"type":"point","x":200,"y":-150,"move":false},{"type":"close"},{"type":"point","x":-187.5,"y":137.5,"move":true},{"type":"point","x":-175,"y":125,"move":false},{"type":"point","x":-137.5,"y":162.5,"move":false},{"type":"point","x":-150,"y":175,"move":false},{"type":"close"},{"type":"fill","r":75,"g":50,"b":0},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":200,"y":-237.5,"move":false},{"type":"point","x":-175,"y":125,"move":false},{"type":"point","x":212.5,"y":-225,"move":true},{"type":"point","x":-162.5,"y":137.5,"move":false},{"type":"point","x":225,"y":-212.5,"move":true},{"type":"point","x":-150,"y":150,"move":false},{"type":"point","x":237.5,"y":-200,"move":true},{"type":"point","x":-137.5,"y":162.5,"move":false},{"type":"stroke","r":125,"g":125,"b":125}]`
+        ),
+        bulletDrawPath: JSON.parse(
+            `[{"type":"point","x":-125,"y":-225},{"type":"point","x":-50,"y":-250},{"type":"point","x":-25,"y":-300},{"type":"point","x":50,"y":-300},{"type":"point","x":50,"y":75},{"type":"point","x":100,"y":75},{"type":"point","x":150,"y":100},{"type":"point","x":175,"y":150},{"type":"point","x":175,"y":200},{"type":"point","x":150,"y":250},{"type":"point","x":100,"y":275},{"type":"point","x":50,"y":275},{"type":"point","x":0,"y":250},{"type":"point","x":-25,"y":200},{"type":"point","x":-25,"y":-200},{"type":"point","x":-100,"y":-175},{"type":"point","x":-150,"y":-200},{"type":"close"},{"type":"fill","r":50,"g":150,"b":250},{"type":"stroke","r":50,"g":50,"b":150}]`
+        ),
+        explosionPath: JSON.parse(
+            `[{"type":"point","x":-50,"y":-250},{"type":"point","x":50,"y":-250},{"type":"point","x":175,"y":-200,"move":false},{"type":"point","x":200,"y":-175,"move":false},{"type":"point","x":250,"y":-50,"move":false},{"type":"point","x":250,"y":50,"move":false},{"type":"point","x":200,"y":175,"move":false},{"type":"point","x":175,"y":200,"move":false},{"type":"point","x":50,"y":250,"move":false},{"type":"point","x":-50,"y":250,"move":false},{"type":"point","x":-175,"y":200,"move":false},{"type":"point","x":-200,"y":175,"move":false},{"type":"point","x":-250,"y":50,"move":false},{"type":"point","x":-250,"y":-50,"move":false},{"type":"point","x":-200,"y":-175,"move":false},{"type":"point","x":-175,"y":-200,"move":false},{"type":"close"},{"type":"point","x":-50,"y":-200,"move":true},{"type":"point","x":-150,"y":-150,"move":false},{"type":"point","x":-200,"y":-50,"move":false},{"type":"point","x":-200,"y":50,"move":false},{"type":"point","x":-150,"y":150,"move":false},{"type":"point","x":-50,"y":200,"move":false},{"type":"point","x":50,"y":200,"move":false},{"type":"point","x":150,"y":150,"move":false},{"type":"point","x":200,"y":50,"move":false},{"type":"point","x":200,"y":-62.5,"move":false},{"type":"point","x":150,"y":-150,"move":false},{"type":"point","x":50,"y":-200,"move":false},{"type":"close"},{"type":"fill","r":50,"g":150,"b":250},{"type":"stroke","r":50,"g":50,"b":150}]`
+        ), statChange(rarity) {
+            stats.firerate *= 1.5 - 0.08*rarity;
+            stats.damage *= 0.85 + 0.05*rarity;
+            stats.bulletSize *= 2;
+            stats.bulletSpeed *= 0.85;
+            stats.lifetime = 0.5;
+        }, expiration(rarity,bullet) {
+            bulletBuffer.push(new Bullet({
+                x:bullet.x,y:bullet.y,
+                damage:bullet.damage*(1 + rarity/10),size:bullet.size*(6 + rarity),
+                speed:0, drawPath: game.weapon.reference.explosionPath, lifetime: 0.1, pierce: Infinity, wallPierce: true,
+            }))
+        }
+    },{
+        name: "Sledgehammer",
+        desc: "Bulllets pop with AoE",
+        drawPath: JSON.parse(
+            `[{"type":"point","x":-250,"y":225},{"type":"point","x":225,"y":-250},{"type":"point","x":250,"y":-225},{"type":"point","x":-225,"y":250},{"type":"close"},{"type":"fill","r":125,"g":125,"b":50},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":125,"y":-225},{"type":"point","x":225,"y":-125},{"type":"point","x":275,"y":-175},{"type":"point","x":175,"y":-275},{"type":"close"},{"type":"fill","r":75,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ),
+        bulletDrawPath: JSON.parse(
+            `[{"type":"point","x":0,"y":-250},{"type":"point","x":-187.5,"y":-187.5},{"type":"point","x":-250,"y":0},{"type":"point","x":-187.5,"y":187.5},{"type":"point","x":0,"y":250},{"type":"point","x":187.5,"y":187.5},{"type":"point","x":250,"y":0},{"type":"point","x":187.5,"y":-187.5},{"type":"close"},{"type":"fill","r":225,"g":175,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-100,"y":-100},{"type":"point","x":0,"y":-137.5},{"type":"point","x":100,"y":-100},{"type":"point","x":137.5,"y":0},{"type":"point","x":100,"y":100},{"type":"point","x":0,"y":137.5},{"type":"point","x":-100,"y":100},{"type":"point","x":-137.5,"y":0},{"type":"close"},{"type":"fill","r":250,"g":150,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ), statChange(rarity) {
+            stats.firerate *= 4 - 0.08*rarity;
+            stats.damage *= 6 + 0.2*rarity;
+            stats.bulletSize *= 4;
+            stats.bulletSpeed *= 0.5;
+            stats.lifetime = 0.1;
         }
     }
 ]
@@ -297,9 +336,9 @@ const relics = [
         drawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":-150,"move":false},{"type":"point","x":-175,"y":-175,"move":false},{"type":"point","x":200,"y":-50,"move":false},{"type":"point","x":200,"y":100,"move":false},{"type":"point","x":125,"y":125,"move":false},{"type":"point","x":125,"y":-25,"move":false},{"type":"point","x":-250,"y":-150,"move":false},{"type":"point","x":-250,"y":0,"move":false},{"type":"point","x":125,"y":125,"move":false},{"type":"point","x":125,"y":-25,"move":false},{"type":"fill","r":75,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":125,"y":-25,"move":false},{"type":"point","x":200,"y":-50,"move":false},{"type":"point","x":200,"y":100,"move":false},{"type":"point","x":125,"y":125,"move":false},{"type":"close"},{"type":"point","x":-100,"y":50,"move":true},{"type":"point","x":-100,"y":200,"move":false},{"type":"point","x":-175,"y":175,"move":false},{"type":"point","x":-175,"y":25,"move":false},{"type":"point","x":-100,"y":50,"move":false},{"type":"point","x":-25,"y":75,"move":false},{"type":"point","x":-25,"y":175,"move":false},{"type":"point","x":-100,"y":200,"move":false},{"type":"fill","r":20,"g":20,"b":20},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-200,"y":-62.5,"move":false},{"type":"point","x":-75,"y":25,"move":false},{"type":"point","x":-75,"y":-50,"move":false},{"type":"point","x":75,"y":37.5,"move":false},{"type":"fill","r":150,"g":150,"b":0},{"type":"stroke","r":175,"g":175,"b":50}]`
         ), onHit(rarity,bullet,enemy) {
-            enemy.vx *= 0.7;
-            enemy.vy *= 0.7;
-            enemy.health -= 1/2 + rarity/4;
+            enemy.vx *= 0.7-0.05*rarity;
+            enemy.vy *= 0.7-0.05*rarity;
+            enemy.health -= 0.05 + 0.01*rarity;
         }
     },{
         name: "Silver Bullet",
@@ -312,13 +351,13 @@ const relics = [
         }
     },{
         name: "Demonic Bracelet",
-        desc: "Increased Damage, reduce max health",
+        desc: "Increased Damage, reduced max health",
         drawPath: JSON.parse(
             `[{"type":"point","x":-50,"y":-150},{"type":"point","x":50,"y":-150},{"type":"point","x":150,"y":-125},{"type":"point","x":200,"y":-75},{"type":"point","x":225,"y":-25},{"type":"point","x":225,"y":0},{"type":"point","x":200,"y":50},{"type":"point","x":150,"y":100},{"type":"point","x":50,"y":125},{"type":"point","x":-50,"y":125},{"type":"point","x":-150,"y":100},{"type":"point","x":-200,"y":50},{"type":"point","x":-225,"y":0},{"type":"point","x":-225,"y":-25},{"type":"point","x":-200,"y":-75},{"type":"point","x":-150,"y":-125},{"type":"close"},{"type":"point","x":-100,"y":-100,"move":true},{"type":"point","x":-137.5,"y":-75,"move":false},{"type":"point","x":-175,"y":-50,"move":false},{"type":"point","x":-187.5,"y":-12.5,"move":false},{"type":"point","x":-175,"y":25,"move":false},{"type":"point","x":-100,"y":75,"move":false},{"type":"point","x":0,"y":87.5,"move":false},{"type":"point","x":100,"y":75,"move":false},{"type":"point","x":175,"y":25,"move":false},{"type":"point","x":187.5,"y":-12.5,"move":false},{"type":"point","x":175,"y":-50,"move":false},{"type":"point","x":100,"y":-100,"move":false},{"type":"point","x":0,"y":-112.5,"move":false},{"type":"close"},{"type":"point","x":-175,"y":-100,"move":true},{"type":"point","x":-175,"y":-175,"move":false},{"type":"point","x":-125,"y":-125,"move":false},{"type":"point","x":125,"y":-125,"move":true},{"type":"point","x":175,"y":-175,"move":false},{"type":"point","x":175,"y":-100,"move":false},{"type":"fill","r":255,"g":50,"b":50},{"type":"stroke","r":50,"g":0,"b":0}]`
         ), statChange(rarity) {
-            stats.damage *= 2 + 0.3*rarity;
+            stats.damage *= 1.25 + 0.15*rarity;
             stats.health -= 4;
-            stats.maxHealth -= 4;
+            stats.healthMax -= 4;
         }
     },{
         name: "Hollow Point",
@@ -326,7 +365,7 @@ const relics = [
         drawPath: JSON.parse(
             `[{"type":"point","x":-25,"y":250},{"type":"point","x":-75,"y":225},{"type":"point","x":-100,"y":200},{"type":"point","x":-100,"y":-100},{"type":"point","x":-75,"y":-200},{"type":"point","x":0,"y":-250},{"type":"point","x":75,"y":-200},{"type":"point","x":100,"y":-100},{"type":"point","x":100,"y":200},{"type":"point","x":75,"y":225},{"type":"point","x":25,"y":250},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":100,"y":-100,"move":true},{"type":"point","x":75,"y":-125,"move":false},{"type":"point","x":25,"y":-150,"move":false},{"type":"point","x":-25,"y":-150,"move":false},{"type":"point","x":-75,"y":-125,"move":false},{"type":"point","x":-100,"y":-100,"move":false},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":100,"y":200,"move":false},{"type":"point","x":75,"y":225,"move":false},{"type":"point","x":25,"y":250,"move":false},{"type":"point","x":-25,"y":250,"move":false},{"type":"point","x":-75,"y":225,"move":false},{"type":"point","x":-100,"y":200,"move":false},{"type":"point","x":-75,"y":175,"move":false},{"type":"point","x":-25,"y":150,"move":false},{"type":"point","x":25,"y":150,"move":false},{"type":"point","x":75,"y":175,"move":false},{"type":"close"},{"type":"fill","r":150,"g":150,"b":150},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), damageBoost(rarity,bullet,enemy) {
-            if (Math.hypot(player.x-bullet.x,player.y-bullet.y) < 300) return 1.5 + 0.1*rarity;
+            if (Math.hypot(player.x-bullet.x,player.y-bullet.y) < 300) return 1.3 + 0.1*rarity;
             else return 1;
         }
     },{
@@ -335,7 +374,7 @@ const relics = [
         drawPath: JSON.parse(
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":175,"y":-175},{"type":"point","x":250,"y":0},{"type":"point","x":175,"y":175},{"type":"point","x":0,"y":250},{"type":"point","x":-175,"y":175},{"type":"point","x":-250,"y":0},{"type":"point","x":-175,"y":-175},{"type":"close"},{"type":"point","x":0,"y":-200,"move":true},{"type":"point","x":-137.5,"y":-137.5,"move":false},{"type":"point","x":-200,"y":0,"move":false},{"type":"point","x":-137.5,"y":137.5,"move":false},{"type":"point","x":0,"y":200,"move":false},{"type":"point","x":137.5,"y":137.5,"move":false},{"type":"point","x":200,"y":0,"move":false},{"type":"point","x":137.5,"y":-137.5,"move":false},{"type":"close"},{"type":"fill","r":75,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":0,"y":-75,"move":false},{"type":"point","x":-50,"y":-50,"move":false},{"type":"point","x":-75,"y":0,"move":false},{"type":"point","x":-50,"y":50,"move":false},{"type":"point","x":0,"y":75,"move":false},{"type":"point","x":50,"y":50,"move":false},{"type":"point","x":75,"y":0,"move":false},{"type":"point","x":50,"y":-50,"move":false},{"type":"close"},{"type":"fill","r":200,"g":50,"b":50},{"type":"stroke","r":75,"g":0,"b":0}]`
         ), damageBoost(rarity,bullet,enemy) {
-            if (Math.hypot(player.x-bullet.x,player.y-bullet.y) > 500) return 1.5 + 0.1*rarity;
+            if (Math.hypot(player.x-bullet.x,player.y-bullet.y) > 500) return 1.3 + 0.1*rarity;
             else return 1;
         }
     }
@@ -480,8 +519,8 @@ function drawItemDesc(item,x,y) {
     }
 
 function updateStats() {
-    const health = stats.health || stats.healthMax || 10;
-    let extraHealth = stats.extraHealth || stats.extraHealthMax || 6;
+    const healthDifference = stats.healthMax-stats.health;
+    const extraHealthDifference = stats.extraHealthMax-stats.extraHealth;
     if (stats.extraHealth === 0) extraHealth = 0;
     stats = {
         friction: 0.2,
@@ -491,26 +530,37 @@ function updateStats() {
         damage: 0.325,
         playerSize: 25,
         playerSpeed: 2,
-        health: health,
-        healthMax: stats.healthMax || 10,
-        extraHealth: extraHealth,
+        health: 10,
+        healthMax: 10,
+        extraHealth: 6,
         extraHealthMax: 6,
         projectiles: 1, spread: Math.PI/8,
         bursts: 1,
         bloom: Math.PI/65,
         damageBoosts: [],
-        onHits: []
+        onHits: [],
+        expirationEffects: []
     }
     if (game.weapon.reference.statChange) {
         game.weapon.reference.statChange(game.weapon.rarity);
+        if (game.weapon.reference.damageBoost) stats.damageBoosts.push([game.weapon.rarity,game.weapon.reference.damageBoost]);
+        if (game.weapon.reference.onHit) stats.onHits.push([game.weapon.rarity,game.weapon.reference.onHit]);
+        if (game.weapon.reference.expiration) stats.expirationEffects.push([game.weapon.rarity,game.weapon.reference.expiration]);
     }
     game.relicsEquipped.forEach((relic) => {
         if (relic) {
             if (relic.reference.statChange) relic.reference.statChange(relic.rarity);
             if (relic.reference.damageBoost) stats.damageBoosts.push([relic.rarity,relic.reference.damageBoost]);
             if (relic.reference.onHit) stats.onHits.push([relic.rarity,relic.reference.onHit]);
+            if (relic.reference.expiration) stats.expirationEffects.push([relic.rarity,relic.reference.expiration]);
         }
     });
+
+    if (healthDifference) stats.health -= healthDifference;
+    if (extraHealthDifference) stats.extraHealth -= extraHealthDifference;
+
+    stats.health = Math.max(1,Math.min(stats.health, stats.healthMax));
+    if (stats.healthMax <= 0) stats.healthMax = 1;
 
     stats.extraHealth = Math.min(stats.extraHealth, stats.extraHealthMax);
 }

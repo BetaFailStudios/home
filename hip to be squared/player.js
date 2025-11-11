@@ -72,7 +72,7 @@ function playerTick() {
         
         if (stats.projectiles > 1) lookDirection -= stats.spread/2;
         for (var i = 0; i < stats.projectiles; i++) {
-            bullets.push(new Bullet({x: player.x + Math.cos(lookDirection)*50, y: player.y + Math.sin(lookDirection)*50, direction: lookDirection}));
+            bullets.push(new Bullet({x: player.x + Math.cos(lookDirection)*50, y: player.y + Math.sin(lookDirection)*50, direction: lookDirection, triggerExpire: true}));
             lookDirection += stats.spread/(stats.projectiles-1);
         }
 

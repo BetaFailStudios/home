@@ -16,13 +16,13 @@ function tickloop() {
     ctx.rotate(player.rotationTick/4);
     ctx.fillStyle = "#bbbbbb88";
     const rotation = player.rotationTick/Math.PI*2;
-    for(var a = -200; a < canvas.width+200; a += gridSize) {
-        for(var b = -200; b < canvas.width+200; b += gridSize) {
+    for(var a = -900-gridSize/2; a < 900; a += gridSize) {
+        for(var b = -900-gridSize/2; b < 900; b += gridSize) {
             ctx.beginPath();
-            ctx.moveTo(-(-2+rotation%4)*10 + a - canvas.width/2, -20 + b - canvas.width/2);
-            ctx.lineTo(20 + a - canvas.width/2, -(-2+rotation%4)*10 + b - canvas.width/2);
-            ctx.lineTo((-2+rotation%4)*10 + a - canvas.width/2, 20 + b - canvas.width/2);
-            ctx.lineTo(-20 + a - canvas.width/2, (-2+rotation%4)*10 + b - canvas.width/2);
+            ctx.moveTo(-(-2+rotation%(Math.PI*2))*10 + a, -20 + b);
+            ctx.lineTo(20 + a, -(-2+rotation%(Math.PI*2))*10 + b);
+            ctx.lineTo((-2+rotation%(Math.PI*2))*10 + a, 20 + b);
+            ctx.lineTo(-20 + a, (-2+rotation%(Math.PI*2))*10 + b);
             ctx.closePath();
             ctx.fill();
         }
@@ -298,7 +298,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.0.4.1",700,470);
+    ctx.fillText("Version: b.0.4.2",700,470);
 }
 
 setInterval( tickloop, 1000/60 );
