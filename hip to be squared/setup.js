@@ -300,3 +300,7 @@ dungeon["0,0"].connections.forEach((item) => {
         else game.openings.push("down");
     }
 })
+
+function animationRatio(x,t) {
+    return 1 - Math.abs( ( 2*x/t - 1 ) ** /**/ 6 /**/ );
+}

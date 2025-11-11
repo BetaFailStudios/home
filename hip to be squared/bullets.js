@@ -47,12 +47,16 @@ function bulletTick() {
                 if (bullet.enemiesTouched.includes(enemy)) return;
                 else {
                     bullet.enemiesTouched.push(enemy);
-                    enemy.health -= bullet.damage;
+                    let damage = bullet.damage;
+                    stats.damageBoosts.forEach( (item) => damage *= item[1](item[0],bullet,enemy));
+                    enemy.health -= damage;
                     if (bullet.pierce) bullet.pierce--;
                     else if (!enemy.projectiles || enemy.health > 0) {
                         bullet.alive = false;
                         ease(bullet,"size",0,0.05);
                     }
+                    
+                    stats.onHits.forEach( (item) => item[1](item[0],bullet,enemy));
                 }
             } else if (bullet.enemiesTouched.includes(enemy)) bullet.enemiesTouched.splice(bullet.enemiesTouched.indexOf(enemy), 1);
         })

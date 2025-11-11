@@ -32,7 +32,7 @@ function tickloop() {
 
     ctx.lineCap = "round";
     attackWarnings = attackWarnings.filter((item) => {
-        const ratio = 4*item[1]*(item[1]-item[2])/(item[2]**2);
+        const ratio = animationRatio(item[1],item[2]);
         if (item[0] == "line") {
             ctx.moveTo(item[3]+item[5]*ratio,item[4]+item[6]*ratio);
             ctx.lineTo(item[3]-item[5]*ratio,item[4]-item[6]*ratio);
@@ -53,9 +53,9 @@ function tickloop() {
 
     attackWarnings = attackWarnings.filter((item) => {  
         ctx.beginPath();  
-        const ratio = 4*item[1]*(item[1]-item[2])/(item[2]**2);
+        const ratio = animationRatio(item[1],item[2]);
         if (game[item[0] + "AttackWarnPath"]) {
-            draw(item[3],item[4],game[item[0] + "AttackWarnPath"],-item[5]*ratio,item[6] || false,false,true);
+            draw(item[3],item[4],game[item[0] + "AttackWarnPath"],item[5]*ratio,item[6] || false,false,true);
         }
     
         ctx.lineWidth = 3;
@@ -298,7 +298,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.0.4",700,470);
+    ctx.fillText("Version: b.0.4.1",700,470);
 }
 
 setInterval( tickloop, 1000/60 );
