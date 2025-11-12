@@ -1,5 +1,7 @@
 class Bullet {
     constructor(inputStats) {
+        this.tick = 0;
+        if (stats.sineWaveMovement) this.tick = Math.random()*12;
         this.x = inputStats.x || 0;
         this.y = inputStats.y || 0;
         this.size = 0;
@@ -34,6 +36,10 @@ class Bullet {
         }
 
         this.triggerExpire = inputStats.triggerExpire;
+
+        if (stats.trailColor) {
+            this.trailPoints = [];
+        }
     }
 }
 
@@ -44,9 +50,30 @@ function bulletTick() {
         bullet.x += bullet.vx;
         bullet.y += bullet.vy;
 
+        let sineRatio = 0;
+
+        if (stats.sineWaveMovement) {
+            sineRatio = Math.sin(bullet.tick*Math.PI/6)*2;
+            bullet.x += bullet.vy * sineRatio;
+            bullet.y -= bullet.vx * sineRatio;
+        }
+
         const collisionSize = Math.min(150,bullet.size/2.2);
 
         draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction);
+
+        if (stats.trailColor && bullet.trailPoints) {
+            bullet.trailPoints.push([bullet.x,bullet.y]);
+            if (bullet.trailPoints.length > (stats.trailLength || 8)) bullet.trailPoints.splice(0,1);
+            ctx.beginPath();
+            bullet.trailPoints.forEach((points) => ctx.lineTo(...points));
+            ctx.strokeStyle = stats.trailColor;
+            ctx.globalAlpha = 0.25;
+            ctx.lineWidth = 5;
+            ctx.stroke();
+            ctx.lineWidth = 3;
+            ctx.globalAlpha = 1;
+        }
 
         if (!bullet.alive) return bullet.size;
 
@@ -129,7 +156,14 @@ function bulletTick() {
             bullet.alive = false;
             ease(bullet,"size",0,0.05);
             if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
-        } else if (bullet.lifetime) bullet.lifetime -= 1/60;
+        } else if (bullet.lifetime) bullet.lifetime -= 1/30 - Math.random()/45;
+
+        if (stats.sineWaveMovement) {
+            bullet.x -= bullet.vy * sineRatio;
+            bullet.y += bullet.vx * sineRatio;
+        }
+
+        bullet.tick++;
 
         return true;
     })

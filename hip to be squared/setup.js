@@ -275,7 +275,6 @@ const game = {
     relicsEquipped: [0,0,0,0,0,0],
     weapon: new Item(0,0,weapons[0],0),
     relicTick: 0,
-    deleteItems: true,
     firstWeapon: true,
     musicPos: 0,
 };

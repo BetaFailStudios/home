@@ -167,14 +167,6 @@ function tickloop() {
         ctx.stroke();
     }
 
-    ctx.beginPath();
-    for(var i = 1; i < stats.healthMax; i++) {
-        ctx.moveTo(maxBounds*i/stats.healthMax+40-900, 500-5);
-        ctx.lineTo(maxBounds*i/stats.healthMax+20-900, 500-25);
-    }
-    ctx.strokeStyle = "#22222277";
-    ctx.stroke();
-
     ctx.lineWidth = 7;
     ctx.beginPath();
     const maxExtraBounds = 250;
@@ -202,11 +194,15 @@ function tickloop() {
     }
 
     ctx.beginPath();
+    for(var i = 1; i < stats.healthMax; i++) {
+        ctx.moveTo(maxBounds*i/stats.healthMax+40-900, 500-5);
+        ctx.lineTo(maxBounds*i/stats.healthMax+20-900, 500-25);
+    }
     for(var i = 1; i < stats.extraHealthMax; i++) {
         ctx.moveTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+40-900, 500-5);
         ctx.lineTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+20-900, 500-25);
     }
-    ctx.strokeStyle = "#22222277";
+    ctx.strokeStyle = "#22222244";
     ctx.stroke();
 
     ctx.lineWidth = 7;
@@ -284,8 +280,8 @@ function tickloop() {
             } else items.push(new Item(player.x-200,player.y), new Item(player.x+200,player.y));
 
             game.relicTick = 0;
-            game.deleteItems = true;
-            game.itemPos = items.length-2;
+            dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems = true;
+            dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos = items.length-2;
         } else game.relicTick++;
     }
 

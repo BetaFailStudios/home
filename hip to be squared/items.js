@@ -67,7 +67,9 @@ const weapons = [
             stats.firerate *= 1.6 - 0.05*rarity;
             stats.damage *= 2.3 + 0.2*rarity;
             stats.bulletSpeed *= 2.5 + 0.15*rarity;
-            stats.bulletSize *= 2;
+            stats.pierce = 1;
+            stats.bulletSize *= 2.5;
+            stats.trailColor = "#0cc";
         }, damageBoost(rarity,bullet,enemy) {
             return Math.hypot(bullet.vx,bullet.vy)/50;
         }
@@ -155,9 +157,25 @@ const weapons = [
         ), statChange(rarity) {
             stats.firerate *= 4 - 0.08*rarity;
             stats.damage *= 6 + 0.2*rarity;
-            stats.bulletSize *= 4;
-            stats.bulletSpeed *= 0.5;
+            stats.bulletSize *= 10;
+            stats.bulletSpeed *= 0.25;
             stats.lifetime = 0.1;
+        }
+    },{
+        name: "Scientific Calculator",
+        desc: "Bullets travel in sine waves with pierce",
+        drawPath: JSON.parse(
+            `[{"type":"point","x":-200,"y":-225},{"type":"point","x":-175,"y":-250},{"type":"point","x":175,"y":-250},{"type":"point","x":200,"y":-225},{"type":"point","x":200,"y":225},{"type":"point","x":175,"y":250},{"type":"point","x":-175,"y":250},{"type":"point","x":-200,"y":225},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-150,"y":175},{"type":"point","x":150,"y":175},{"type":"point","x":150,"y":125},{"type":"point","x":-150,"y":125},{"type":"point","x":-150,"y":75},{"type":"point","x":150,"y":75},{"type":"point","x":150,"y":25},{"type":"point","x":-150,"y":25},{"type":"point","x":-150,"y":-25},{"type":"point","x":150,"y":-25},{"type":"point","x":150,"y":-75},{"type":"point","x":100,"y":-75},{"type":"point","x":100,"y":225},{"type":"point","x":50,"y":225},{"type":"point","x":50,"y":-75},{"type":"point","x":0,"y":-75},{"type":"point","x":0,"y":225},{"type":"point","x":-50,"y":225},{"type":"point","x":-50,"y":-75},{"type":"point","x":-100,"y":-75},{"type":"point","x":-100,"y":225},{"type":"point","x":-150,"y":225},{"type":"close"},{"type":"fill","r":25,"g":25,"b":25},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-175,"y":-100},{"type":"point","x":-175,"y":-200},{"type":"point","x":-150,"y":-225},{"type":"point","x":150,"y":-225},{"type":"point","x":175,"y":-200},{"type":"point","x":175,"y":-100},{"type":"close"},{"type":"fill","r":100,"g":150,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ),
+        bulletDrawPath: JSON.parse(
+            `[{"type":"point","x":-250,"y":225},{"type":"point","x":-37.5,"y":12.5},{"type":"point","x":-275,"y":-225},{"type":"point","x":-175,"y":-225},{"type":"point","x":12.5,"y":-37.5},{"type":"point","x":200,"y":-225},{"type":"point","x":250,"y":-225},{"type":"point","x":37.5,"y":-12.5},{"type":"point","x":275,"y":225},{"type":"point","x":175,"y":225},{"type":"point","x":-12.5,"y":37.5},{"type":"point","x":-200,"y":225},{"type":"close"},{"type":"fill","r":25,"g":25,"b":25},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ), statChange(rarity) {
+            stats.firerate *= 0.75 - 0.08*rarity;
+            stats.damage *= 0.95 + 0.08*rarity;
+            stats.trailColor = "#0c0";
+            stats.trailLength = 15;
+            stats.pierce = 1;
+            stats.sineWaveMovement = true;
         }
     }
 ]
@@ -413,7 +431,7 @@ class Item {
     } 
 }
 
-let items = [];//new Item(0,0,weapons[2])];
+let items = [];//new Item(0,0,weapons[10])];
 
 function itemTick() {
     let closestIndex = -1;
@@ -516,7 +534,7 @@ function drawItemDesc(item,x,y) {
         ctx.fillText(item.reference.desc, item.x,item.y+165);
 
         ctx.lineWidth = 3;
-    }
+}
 
 function updateStats() {
     const healthDifference = stats.healthMax-stats.health;
@@ -582,11 +600,12 @@ function pickUpItem() {
         if (closestItem.reference.type == "weapon") {
             items.push(new Item(player.x, player.y, game.weapon.reference, game.weapon.rarity));
             game.weapon = closestItem;
-            items.splice(closestItem,1);
-
-            if (game.deleteItems && ( closestIndex == game.itemPos || closestIndex == game.itemPos+1 ) ) {
-                items.splice(game.itemPos,1);
-                game.deleteItems = false;
+            items.splice(closestIndex,1);
+            
+            const itemPos = dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos
+            if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems && ( closestIndex == itemPos || closestIndex == itemPos+1 ) ) {
+                items.splice(itemPos,1);
+                dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems = false;
             }
 
             updateStats();
@@ -603,9 +622,10 @@ function pickUpItem() {
             items.splice(closestIndex,1);
             updateStats();
 
-            if (game.deleteItems && ( closestIndex == game.itemPos || closestIndex == game.itemPos+1 ) ) {
-                items.splice(game.itemPos,1);
-                game.deleteItems = false;
+            const itemPos = dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos
+            if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems && ( closestIndex == itemPos || closestIndex == itemPos+1 ) ) {
+                items.splice(itemPos,1);
+                dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems = false;
             }
         }
     }
