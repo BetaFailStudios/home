@@ -40,6 +40,11 @@ class Bullet {
         if (stats.trailColor) {
             this.trailPoints = [];
         }
+
+        if (game.firstBullet) {
+            this.firstBullet = true;
+            game.firstBullet = false;
+        }
     }
 }
 

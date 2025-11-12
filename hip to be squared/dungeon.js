@@ -76,6 +76,7 @@ function drawMap() {
 }
 
 function dungeonMove(change) {
+    game.firstBullet = true;
     bullets.splice(0);
     dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].items = items;
     game.openings = [];
@@ -102,7 +103,7 @@ function dungeonMove(change) {
 
         if (room.boss) {
             restartMusic(1);
-            enemies.push( new Enemy(enemyBlueprints[7]) );
+            enemies.push( new Enemy(enemyBlueprints[8]) );
         }
         else spawnEnemies(1 + 1*(Math.random() < 0.7));
         
