@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<head>
+    <title>HtbS Song Syncer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+</head>
+<body>
+    <style>
+        body {
+            color: #000000;
+            margin: auto;
+            height: 100%;
+            overflow: hidden;
+            cursor: none;
+        }
+        .share-tech-regular {
+            font-family: "Share Tech", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+    </style>
+    <canvas oncontextmenu="return false;" onmousemove="xy(event)" width="1500px" height="1000px" id="gameScreen"></canvas>
+    <p id="fps">60</p>
+    <script>function xy(event) {  }</script>
+    <script>
+        function startAnimating(fps) {
+            fpsInterval = 1000 / fps;
+            then = Date.now();
+            startTime = then;
+            animate();
+        }
+
+        // the animation loop calculates time elapsed since the last loop
+        // and only draws if your specified fps interval is achieved
+
+        function animate() {
+            requestAnimationFrame(animate);
+            now = Date.now();
+            elapsed = now - then;
+            if (elapsed > fpsInterval) {
+                then = now - (elapsed % fpsInterval);
+                tickloop();
+            }
+        }
+        //canvas or gamescreen
+        var canvas = document.getElementById("gameScreen");
+        //context, for drawing
+        var ctx = canvas.getContext("2d");
+        //settings canvas size and scale
+        var screenScale = window.innerWidth/1800;
+        if (window.innerHeight/1000 < screenScale) screenScale = window.innerHeight/1000;
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        ctx.translate(window.innerWidth/2, window.innerHeight/2);
+
+        ctx.scale(screenScale, screenScale);
+
+        ctx.lineWidth = 3;
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'left';
+        ctx.lineJoin = "bevel";
+
+        //resizing
+        window.addEventListener("resize", (  ) => {
+            ctx.resetTransform();
+
+            //settings canvas size and scale
+            screenScale = window.innerWidth/1800;
+            if (window.innerHeight/1000 < screenScale) screenScale = window.innerHeight/1000;
+
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            ctx.translate(window.innerWidth/2, window.innerHeight/2);
+
+            ctx.scale(screenScale, screenScale);
+
+            ctx.lineWidth = 3;
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'left';
+            ctx.lineJoin = "bevel";
+
+            ctx.beginPath();
+            ctx.fillStyle = "#000";
+            ctx.fillRect(-1800,-1000,3600,2000);
+        });
+
+        const keys = {};
+        const mouse = { x: 0, y: 0, gridpos: 0 };
+
+        let notes = [];
+
+        const bpb = 8;
+        let offset = 0;
+
+        //detect keypresses
+        window.addEventListener('keydown', async function (e) {
+            keys[e.key.toLowerCase()] = true;
+
+            const pos = (mouse.gridpos*bpb/1600+bpb/2 + offset)/bpb;
+
+            if (e.key.toLowerCase() == " ") console.log("`" + JSON.stringify(notes) + "`");
+            if (e.key.toLowerCase() == "a") notes.push( [ pos, "tick" ] );
+            if (e.key.toLowerCase() == "s") notes.push( [ pos, "beat" ] );
+            if (e.key.toLowerCase() == "d") notes.push( [ pos, "boom" ] );
+            if (e.key.toLowerCase() == "z") notes.splice( notes.length-1 );
+            if (e.key.toLowerCase() == "arrowright") offset += bpb;
+            if (e.key.toLowerCase() == "arrowleft" && offset > 0) offset -= bpb;
+        }, false);
+        window.addEventListener('keyup', function (e) {
+            keys[e.key.toLowerCase()] = false;
+        }, false)/[ ];
+        window.addEventListener('mousedown', function () {
+            keys.mouse = true;
+            mouse.down = true;
+        }, false);
+        window.addEventListener('mouseup', function () {
+            keys.mouse = false;
+            mouse.down = false;
+        }, false);
+        function xy(e) {
+            mouse.x = e.x/screenScale - (window.innerWidth-1800*screenScale)/2/screenScale -900;
+            mouse.y = e.y/screenScale - (window.innerHeight-1000*screenScale)/2/screenScale -500;
+            
+            mouse.gridpos = Math.round(mouse.x*bpb/1600*8)*1600/bpb/8;
+        }
+
+        function tickloop() {
+            ctx.beginPath();
+            ctx.fillStyle = "#000";
+            ctx.strokeStyle = "#fff";
+            ctx.fillRect(-1800,-1000,3600,2000);
+            ctx.strokeRect(-900,-500,1800,1000);
+
+            ctx.beginPath();
+            ctx.fillStyle = "#fff";
+            ctx.font = "30px share tech";
+            ctx.fillText("z: deleteLast", -800,-430);
+            ctx.fillText("a: tick", -800,-400);
+            ctx.fillText("s: beat", -800,-370);
+            ctx.fillText("d: boom", -800,-340);
+            ctx.fillText("x: settings", -500,-340);
+            ctx.fillText("Bar: " + (offset/bpb + 1), -500,-440);
+            ctx.fillText("1-4: bossAttacks 1-4", -800,-460);
+
+            ctx.beginPath();
+            for (var i = -800; i <= 800; i += 1600/bpb/2) {
+                //ctx.moveTo(-250,i);
+                //ctx.lineTo(250,i);
+                const size = 200 + 50 * ( i % (1600/bpb) == 0 ) + 50 * ( i % (1600/bpb*2) == 0 );;
+                ctx.moveTo(i,-size);
+                ctx.lineTo(i,size);
+            }
+            ctx.strokeStyle = "#666";
+            ctx.stroke();
+            
+            ctx.lineWidth = 3;
+
+            notes.forEach((item) => {
+                ctx.fillStyle = "#ccc";
+                ctx.fillText(item[1],(item[0]*bpb-bpb/2-offset)*1600/bpb,0);
+                ctx.fillRect((item[0]*bpb-bpb/2-offset)*1600/bpb-2.5, -200, 5, 400);
+            })
+
+            ctx.beginPath();
+            ctx.moveTo(mouse.x+5,mouse.y+5);
+            ctx.lineTo(mouse.x+30,mouse.y+20);
+            ctx.lineTo(mouse.x+20,mouse.y+30);
+            ctx.closePath();
+            ctx.rect(mouse.gridpos-2.5, -200, 5, 400);
+            ctx.fillStyle = "#ccc";
+            ctx.fill();
+        }
+
+        function input(input) {
+            notes = JSON.parse(input);
+        }
+
+        setInterval( tickloop, 1000/60 );
+    </script>
+</body>
