@@ -109,6 +109,24 @@
             if (e.key.toLowerCase() == "z") notes.splice( notes.length-1 );
             if (e.key.toLowerCase() == "arrowright") offset += bpb;
             if (e.key.toLowerCase() == "arrowleft" && offset > 0) offset -= bpb;
+            if (e.key.toLowerCase() == "x") {
+                let closest = -1;
+                let closestDist = bpb;
+                let type = "beat";
+                if (mouse.y < -50) type = "tick";
+                else if (mouse.y > 50) type = "boom";
+                notes.forEach((item, i) => {
+                    const dist = Math.abs(pos-item[0]);
+                    if (dist < bpb && dist < closestDist && item[1] == type) {
+                        closestDist = dist;
+                        closest = i;
+                    }
+                })
+
+                if (closest != -1) {
+                    notes.splice(closest,1);
+                }
+            }
         }, false);
         window.addEventListener('keyup', function (e) {
             keys[e.key.toLowerCase()] = false;
@@ -142,7 +160,7 @@
             ctx.fillText("a: tick", -800,-400);
             ctx.fillText("s: beat", -800,-370);
             ctx.fillText("d: boom", -800,-340);
-            ctx.fillText("x: settings", -500,-340);
+            ctx.fillText("x: delete closest", -500,-340);
             ctx.fillText("Bar: " + (offset/bpb + 1), -500,-440);
             ctx.fillText("1-4: bossAttacks 1-4", -800,-460);
 
@@ -161,7 +179,8 @@
 
             notes.forEach((item) => {
                 ctx.fillStyle = "#ccc";
-                ctx.fillText(item[1],(item[0]*bpb-bpb/2-offset)*1600/bpb,0);
+                const y = -100 + 100*(item[1] == "beat") + 200*(item[1] == "boom"); 
+                ctx.fillText(item[1],(item[0]*bpb-bpb/2-offset)*1600/bpb,y);
                 ctx.fillRect((item[0]*bpb-bpb/2-offset)*1600/bpb-2.5, -200, 5, 400);
             })
 

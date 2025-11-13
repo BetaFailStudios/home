@@ -37,9 +37,10 @@ const enemyBlueprints = [
         }, boom(enemy, warn) {
             if (warn) {
                 enemy.immovable = true;
-                enemy.attackListboom.push([enemy.x,enemy.y,(Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x))]);
+                const dir = (Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x));
+                enemy.attackListboom.push([enemy.x,enemy.y,dir]);
                 enemy.speed = 0; enemy.vx = 0; enemy.vy = 0;
-                attackWarnings.push(["slice",warn*4,warn*4,enemy.x + Math.cos(enemy.dirToTarget)*300,enemy.y + Math.sin(enemy.dirToTarget)*300,250,enemy.dirToTarget]);
+                attackWarnings.push(["slice",warn*4,warn*4,enemy.x + Math.cos(dir)*300,enemy.y + Math.sin(dir)*300,250,dir]);
             } else {
                 enemiesBuffer.push(new Enemy(enemyBlueprints[2], {x: enemy.attackListboom[0][0] + Math.cos(enemy.attackListboom[0][2])*50, y: enemy.attackListboom[0][1] + Math.sin(enemy.attackListboom[0][2])*50, dirToTarget: enemy.attackListboom[0][2]}));
                 enemy.speed = 0.1;

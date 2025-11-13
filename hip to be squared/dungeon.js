@@ -67,7 +67,7 @@ function drawMap() {
         ctx.fill();
         ctx.beginPath();
         ctx.rect(pos[0]-62.5,pos[1]-37.5,125,75);
-        if (pos[0] + pos[1] == 0) ctx.fillStyle = "#999";
+        if (pos[0] == 0 && pos[1] == 0) ctx.fillStyle = "#999";
         else if (dungeon[item].boss) ctx.fillStyle = "#933";
         else ctx.fillStyle = "#333";
         ctx.fill();
