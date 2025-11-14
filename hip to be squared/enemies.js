@@ -103,7 +103,7 @@ function enemyTick() {
         }
 
         if (enemy.spawning && enemy.rotateToTarget) enemy.dirToTarget = (Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x));
-        if (enemy.ephemeral) ctx.globalAlpha = 0.4;
+        if (enemy.ephemeral) ctx.globalAlpha = 0.6;
         draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4);
         if (enemy.ephemeral) ctx.globalAlpha = 1;
         if (enemy.spawning) {
@@ -168,6 +168,7 @@ function enemyTick() {
             if (!enemy[item]/* || (enemy.noAttack && enemy.noAttack != item)*/) return;
             if (!enemy["attackList" + item]) enemy["attackList" + item] = [];
             if (game.enemyAttackWarning.includes(item) && triggerWarn) {
+                if (enemy.reset) enemy.reset[0]();
                 enemy[item](enemy,30);
                 if (!enemy[item+"WarnCount"]) enemy[item+"WarnCount"] = 0;
                 enemy[item+"WarnCount"]++;
