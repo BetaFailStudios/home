@@ -157,7 +157,7 @@ const weapons = [
         ), statChange(rarity) {
             stats.firerate *= 4 - 0.08*rarity;
             stats.damage *= 10 + 0.4*rarity;
-            stats.bulletSize *= 13 + 2*rarity;
+            stats.bulletSize *= 17 + 3*rarity;
             stats.bulletSpeed *= 0.25;
             stats.lifetime = 0.1;
         }
@@ -170,7 +170,7 @@ const weapons = [
         bulletDrawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":225},{"type":"point","x":-37.5,"y":12.5},{"type":"point","x":-275,"y":-225},{"type":"point","x":-175,"y":-225},{"type":"point","x":12.5,"y":-37.5},{"type":"point","x":200,"y":-225},{"type":"point","x":250,"y":-225},{"type":"point","x":37.5,"y":-12.5},{"type":"point","x":275,"y":225},{"type":"point","x":175,"y":225},{"type":"point","x":-12.5,"y":37.5},{"type":"point","x":-200,"y":225},{"type":"close"},{"type":"fill","r":25,"g":25,"b":25},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
-            stats.firerate *= 0.75 - 0.08*rarity;
+            stats.firerate *= 0.7 - 0.08*rarity;
             stats.damage *= 1.15 + 0.08*rarity;
             stats.trailColor = "#0c0";
             stats.trailLength = 15;
@@ -186,7 +186,7 @@ const weapons = [
         bulletDrawPath: JSON.parse(
             `[{"type":"point","x":250,"y":0},{"type":"point","x":-100,"y":-250},{"type":"point","x":-250,"y":-250},{"type":"point","x":-100,"y":0},{"type":"point","x":-250,"y":250},{"type":"point","x":-100,"y":250},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
-            stats.damage *= 1.45 + 0.1*rarity;
+            stats.damage *= 1.65 + 0.1*rarity;
             stats.firerate *= 1.15;
             stats.trailColor = "#999";
             stats.trailLength = 7;
@@ -204,7 +204,7 @@ const weapons = [
         bulletDrawPath: JSON.parse(
             `[{"type":"point","x":187.5,"y":-75},{"type":"point","x":187.5,"y":75},{"type":"point","x":150,"y":187.5},{"type":"point","x":75,"y":300},{"type":"point","x":0,"y":262.5},{"type":"point","x":75,"y":150},{"type":"point","x":112.5,"y":0},{"type":"point","x":75,"y":-150},{"type":"point","x":0,"y":-262.5},{"type":"point","x":75,"y":-300},{"type":"point","x":150,"y":-187.5},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
-            stats.damage *= 0.4 + 0.05*rarity;
+            stats.damage *= 0.8 + 0.05*rarity;
             stats.firerate *= 3;
             stats.bulletSpeed *= 0.35;
             stats.bulletSize *= 3;
@@ -504,12 +504,12 @@ const relics = [
         }
     },{
         name: "Hit Marker",
-        desc: "Enemies hit are dealt extra damage",
+        desc: "Deal more damage to enemies hit multiple times",
         drawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-200,"y":-250},{"type":"point","x":-25,"y":-75},{"type":"point","x":-75,"y":-25},{"type":"close"},{"type":"point","x":200,"y":-250,"move":true},{"type":"point","x":25,"y":-75,"move":false},{"type":"point","x":75,"y":-25,"move":false},{"type":"point","x":250,"y":-200,"move":false},{"type":"close"},{"type":"point","x":250,"y":200,"move":true},{"type":"point","x":200,"y":250,"move":false},{"type":"point","x":25,"y":75,"move":false},{"type":"point","x":75,"y":25,"move":false},{"type":"close"},{"type":"point","x":-200,"y":250,"move":true},{"type":"point","x":-25,"y":75,"move":false},{"type":"point","x":-75,"y":25,"move":false},{"type":"point","x":-250,"y":200,"move":false},{"type":"close"},{"type":"fill","r":75,"g":25,"b":25},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), damageBoost(rarity,bullet,enemy) {
             if (enemy.hitMarkers) {
-                if (enemy.hitMarkers < 5 + 2*rarity) enemy.hitMarkers++;
+                if (enemy.hitMarkers < 6 + 3*rarity) enemy.hitMarkers++;
                 return 1 + 0.1*enemy.hitMarkers;
             } else {
                 enemy.hitMarkers = 1;
@@ -551,9 +551,9 @@ const relics = [
         drawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":200},{"type":"point","x":-175,"y":150},{"type":"point","x":0,"y":100},{"type":"point","x":175,"y":150},{"type":"point","x":250,"y":200},{"type":"point","x":200,"y":-125},{"type":"point","x":-200,"y":-125},{"type":"close"},{"type":"fill","r":25,"g":20,"b":20},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-175,"y":225},{"type":"point","x":-250,"y":200},{"type":"point","x":-250,"y":-175},{"type":"point","x":-175,"y":-225},{"type":"point","x":-50,"y":-250},{"type":"point","x":50,"y":-250},{"type":"point","x":175,"y":-225},{"type":"point","x":250,"y":-175},{"type":"point","x":250,"y":200},{"type":"point","x":175,"y":225},{"type":"point","x":175,"y":-50},{"type":"point","x":100,"y":-75},{"type":"point","x":50,"y":-50},{"type":"point","x":50,"y":112.5},{"type":"point","x":0,"y":125},{"type":"point","x":-50,"y":112.5},{"type":"point","x":-50,"y":-50},{"type":"point","x":-100,"y":-75},{"type":"point","x":-175,"y":-50},{"type":"close"},{"type":"fill","r":75,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
-            stats.playerSize *= 2;
-            stats.health += 5 + 3*rarity;
-            stats.healthMax += 5 + 3*rarity;
+            stats.playerSize *= 1.5
+            stats.health += 5 + 4*rarity;
+            stats.healthMax += 5 + 4*rarity;
         }
     }
 ]
