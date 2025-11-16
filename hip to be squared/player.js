@@ -3,10 +3,7 @@ const player = {
     vx: 0, vy: 0,
     rotationTick: 0,
     drawPath: JSON.parse(
-        `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-50,"y":0},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"point","x":-200,"y":250,"move":true},{"type":"point","x":200,"y":250,"move":false},{"type":"point","x":0,"y":50,"move":false},{"type":"close"},{"type":"point","x":250,"y":200,"move":true},{"type":"point","x":250,"y":-200,"move":false},{"type":"point","x":50,"y":0,"move":false},{"type":"close"},{"type":"point","x":0,"y":-50,"move":true},{"type":"point","x":200,"y":-250,"move":false},{"type":"point","x":-200,"y":-250,"move":false},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":75,"g":75,"b":75}]`
-    ),
-    invDrawPath: JSON.parse(
-        `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-50,"y":0},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"point","x":-200,"y":250,"move":true},{"type":"point","x":200,"y":250,"move":false},{"type":"point","x":0,"y":50,"move":false},{"type":"close"},{"type":"point","x":250,"y":200,"move":true},{"type":"point","x":250,"y":-200,"move":false},{"type":"point","x":50,"y":0,"move":false},{"type":"close"},{"type":"point","x":0,"y":-50,"move":true},{"type":"point","x":200,"y":-250,"move":false},{"type":"point","x":-200,"y":-250,"move":false},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":75,"g":75,"b":75}]`
+        `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-50,"y":0},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"point","x":-200,"y":250,"move":true},{"type":"point","x":200,"y":250,"move":false},{"type":"point","x":0,"y":50,"move":false},{"type":"close"},{"type":"point","x":250,"y":200,"move":true},{"type":"point","x":250,"y":-200,"move":false},{"type":"point","x":50,"y":0,"move":false},{"type":"close"},{"type":"point","x":0,"y":-50,"move":true},{"type":"point","x":200,"y":-250,"move":false},{"type":"point","x":-200,"y":-250,"move":false},{"type":"close"},{"type":"fill","r":150,"g":200,"b":200},{"type":"stroke","r":75,"g":125,"b":120}]`
     ),
     firerateTick: 0,
     iFrames: 0,
@@ -97,8 +94,10 @@ function playerTick() {
                     enemy.vy -= 25*Math.sign(y)/hypot;
                 }
                 player.iFrames = 30 + (stats.extraIframes || 0);
-                if (stats.extraHealth) stats.extraHealth--;
+                for (var i = 0; i < 1 + (stats.extraReceivedDamage || 0); i++) if (stats.extraHealth) stats.extraHealth--;
                 else stats.health--;
+
+                stats.onPlayerHits.forEach( (item) => item[1](item[0],enemy));
             }
         })
     }

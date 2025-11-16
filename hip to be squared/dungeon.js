@@ -12,6 +12,36 @@ const dungeonPresets = [
     `[[-525,-125,250,250],[275,-125,250,250]]`,
 ]
 
+const roomEffectList = {
+    "Haunted Armory": [
+        JSON.parse(
+            `[{"type":"point","x":-225,"y":100},{"type":"point","x":-250,"y":75},{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":-25},{"type":"point","x":-150,"y":-25},{"type":"point","x":-175,"y":-25},{"type":"point","x":-200,"y":-50},{"type":"point","x":-200,"y":-75},{"type":"point","x":-175,"y":-100},{"type":"point","x":0,"y":-100},{"type":"point","x":-25,"y":-100},{"type":"point","x":-50,"y":-125},{"type":"point","x":-50,"y":-150},{"type":"point","x":-25,"y":-175},{"type":"point","x":125,"y":-175},{"type":"point","x":150,"y":-150},{"type":"point","x":150,"y":-125},{"type":"point","x":125,"y":-100},{"type":"point","x":100,"y":-100},{"type":"point","x":200,"y":-100},{"type":"point","x":225,"y":-75},{"type":"point","x":225,"y":-50},{"type":"point","x":200,"y":-25},{"type":"point","x":100,"y":-25},{"type":"point","x":125,"y":-25},{"type":"point","x":150,"y":0},{"type":"point","x":150,"y":25},{"type":"point","x":125,"y":50},{"type":"point","x":0,"y":50},{"type":"point","x":25,"y":50},{"type":"point","x":50,"y":75},{"type":"point","x":50,"y":150},{"type":"point","x":25,"y":175},{"type":"point","x":-150,"y":175},{"type":"point","x":-175,"y":150},{"type":"point","x":-175,"y":125},{"type":"point","x":-150,"y":100},{"type":"point","x":-125,"y":100},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ),JSON.parse(
+            `[{"type":"point","x":-100,"y":250},{"type":"point","x":-125,"y":225},{"type":"point","x":-125,"y":200},{"type":"point","x":-150,"y":175},{"type":"point","x":-225,"y":175},{"type":"point","x":-250,"y":150},{"type":"point","x":-250,"y":100},{"type":"point","x":-225,"y":75},{"type":"point","x":-150,"y":75},{"type":"point","x":-175,"y":75},{"type":"point","x":-200,"y":50},{"type":"point","x":-200,"y":-50},{"type":"point","x":-175,"y":-75},{"type":"point","x":-75,"y":-75},{"type":"point","x":-50,"y":-100},{"type":"point","x":-50,"y":-175},{"type":"point","x":-25,"y":-200},{"type":"point","x":175,"y":-200},{"type":"point","x":200,"y":-175},{"type":"point","x":200,"y":-125},{"type":"point","x":175,"y":-100},{"type":"point","x":125,"y":-100},{"type":"point","x":100,"y":-75},{"type":"point","x":100,"y":0},{"type":"point","x":75,"y":25},{"type":"point","x":50,"y":25},{"type":"point","x":200,"y":25},{"type":"point","x":225,"y":50},{"type":"point","x":225,"y":150},{"type":"point","x":200,"y":175},{"type":"point","x":25,"y":175},{"type":"point","x":50,"y":175},{"type":"point","x":75,"y":200},{"type":"point","x":75,"y":225},{"type":"point","x":50,"y":250},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ),JSON.parse(
+            `[{"type":"point","x":-225,"y":-250},{"type":"point","x":-250,"y":-225},{"type":"point","x":-250,"y":-100},{"type":"point","x":-225,"y":-75},{"type":"point","x":-150,"y":-75},{"type":"point","x":-125,"y":-50},{"type":"point","x":-125,"y":100},{"type":"point","x":-100,"y":125},{"type":"point","x":-75,"y":125},{"type":"point","x":-175,"y":125},{"type":"point","x":-200,"y":150},{"type":"point","x":-200,"y":200},{"type":"point","x":-175,"y":225},{"type":"point","x":200,"y":225},{"type":"point","x":225,"y":200},{"type":"point","x":225,"y":100},{"type":"point","x":200,"y":75},{"type":"point","x":125,"y":75},{"type":"point","x":100,"y":50},{"type":"point","x":100,"y":-25},{"type":"point","x":75,"y":-50},{"type":"point","x":50,"y":-50},{"type":"point","x":175,"y":-50},{"type":"point","x":200,"y":-75},{"type":"point","x":200,"y":-175},{"type":"point","x":175,"y":-200},{"type":"point","x":25,"y":-200},{"type":"point","x":0,"y":-225},{"type":"point","x":-25,"y":-250},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
+        )
+    ]
+}
+
+const roomEffects = [
+];
+
+for (var i = 0; i < 6; i++) 
+    roomEffects.push({moveSpeed: 0.5 + Math.random()*2,x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:600+Math.random()*400,reference:roomEffectList["Haunted Armory"][Math.floor(Math.random()*roomEffectList["Haunted Armory"].length)]});
+
+function drawRoommEffects() {
+    roomEffects.forEach((item) => {
+        draw(item.x,item.y,item.reference,item.size,0,0.25);
+        item.x += 0.2*item.moveSpeed;
+        if (item.x > 900 + item.size) item.x -= 1800+item.size*2;
+        else if (item.x < -900 - item.size) item.x += 1800+item.size*2;
+        item.y += 0.05*item.moveSpeed;
+        if (item.y > 500 + item.size) item.y -= 1000+item.size*2;
+        else if (item.y < -500 - item.size) item.y += 1000+item.size*2;
+    })
+}
+
 function generateDungeon() {
     const pos = [0,0];
     let connected = false;
@@ -33,7 +63,7 @@ function generateDungeon() {
 }
 
 function drawMap() {
-    ctx.fillStyle = "#cccccc99";
+    ctx.fillStyle = "#55555599";
     ctx.fillRect(-900,-500,1800,1000);
     ctx.lineWidth = 10;
     Object.keys(dungeon).forEach((item) => {
@@ -87,6 +117,16 @@ function dungeonMove(change) {
     if (change[0] == 0) player.x -= 1800*change[1];
     else player.y -= 1000*change[1];
 
+    floor = [];
+
+    for (var i = 0; i < 6; i++) 
+        floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:floorPaths[Math.floor(Math.random()*floorPaths.length)]});
+
+    roomEffects.forEach((item) => {
+        if (change[0] == 0) item.x -= 1800*change[1]*Math.random();
+        else item.y -= 1000*change[1]*Math.random();    
+    })
+
     if (room.visited) room.connections.forEach((item) => {
         if (item[0] == 0) {
             if (item[1] == -1) game.openings.push("left");
@@ -123,4 +163,22 @@ function dungeonMove(change) {
     }
 
     items = room.items;
+}
+
+function drawBlock(block) {
+    ctx.beginPath()
+    ctx.rect(...block);
+    for (var i = block[1]; i <= block[1]+block[3]-25; i += 25) {
+        ctx.moveTo(block[0],i);
+        ctx.lineTo(block[0]+block[2],i);
+        for (var i2 = block[0]+25+25*((i-block[1])%50 == 0); i2 <= block[0]+block[2]-25; i2 += 50) {
+            ctx.moveTo(i2,i);
+            ctx.lineTo(i2,i+25);
+        }
+    }
+    ctx.lineWidth = 3;
+    ctx.fillStyle = "#666";
+    ctx.fill();
+    ctx.strokeStyle = "#222";
+    ctx.stroke();
 }

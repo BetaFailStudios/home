@@ -6,7 +6,7 @@ class Bullet {
         this.y = inputStats.y || 0;
         this.size = 0;
         this.damage = inputStats.damage || stats.damage;
-        ease(this,"size",inputStats.size || stats.bulletSize,0.1);
+        ease(this,"size", inputStats.size || stats.bulletSize, 0.1);
         this.drawPath = inputStats.drawPath || game.weapon.reference.bulletDrawPath;
         this.enemiesTouched = [];
         if (inputStats.direction) {
@@ -23,17 +23,16 @@ class Bullet {
             this.vx = 0;
             this.vy = 0;
         }
+        
+        if (inputStats.vx) this.vx = inputStats.vx;
+        if (inputStats.vy) this.vy = inputStats.vy;
 
         this.alive = true;
 
-        if (stats.lifetime) this.lifetime = inputStats.lifetime || stats.lifetime;
+        if (stats.lifetime || inputStats.lifetime) this.lifetime = inputStats.lifetime || stats.lifetime;
         this.bulletBounce = stats.bulletBounce;
         this.pierce = inputStats.pierce || stats.pierce;
         this.wallPierce = inputStats.wallPierce || stats.wallPierce;
-        if (stats.lotteryChance) if (Math.random() < stats.lotteryChance) {
-            this.damage *= 30;
-            this.size *= 2.2;
-        }
 
         this.triggerExpire = inputStats.triggerExpire;
 
@@ -45,6 +44,7 @@ class Bullet {
             this.firstBullet = true;
             game.firstBullet = false;
         }
+        if (this.triggerExpire) stats.onSpawns.forEach( (item) => item[1](item[0],this));
     }
 }
 
@@ -83,7 +83,7 @@ function bulletTick() {
         if (!bullet.alive) return bullet.size;
 
         enemies.forEach((enemy) => {
-            if (enemy.projectile && !stats.projHit || enemy.spawning) return;
+            if (enemy.projectile && !(stats.projHit && bullet.triggerExpire) || enemy.spawning) return;
             const hypot = Math.hypot(enemy.x-bullet.x,enemy.y-bullet.y);
 
             if (hypot < bullet.size+enemy.size*0.8) {
@@ -92,6 +92,7 @@ function bulletTick() {
                     bullet.enemiesTouched.push(enemy);
                     let damage = bullet.damage;
                     stats.damageBoosts.forEach( (item) => damage *= item[1](item[0],bullet,enemy));
+                    if (bullet.jackpot) effects.push(new Effect(bullet.x,bullet.y,"jackpot",40,40));
                     enemy.health -= damage;
                     if (bullet.pierce) bullet.pierce--;
                     else if (!enemy.projectiles || enemy.health > 0) {
@@ -125,6 +126,11 @@ function bulletTick() {
                 ease(bullet,"size",0,0.05);
                 if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
             }
+        }
+
+        if (stats.sineWaveMovement) {
+            bullet.x -= bullet.vy * sineRatio;
+            bullet.y += bullet.vx * sineRatio;
         }
 
         if (!bullet.wallPierce) blocks.forEach((block) => {
@@ -162,11 +168,6 @@ function bulletTick() {
             ease(bullet,"size",0,0.05);
             if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
         } else if (bullet.lifetime) bullet.lifetime -= 1/30 - Math.random()/45;
-
-        if (stats.sineWaveMovement) {
-            bullet.x -= bullet.vy * sineRatio;
-            bullet.y += bullet.vx * sineRatio;
-        }
 
         bullet.tick++;
 

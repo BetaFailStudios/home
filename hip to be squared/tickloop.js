@@ -5,12 +5,8 @@ function tickloop() {
     //ctx.fillStyle = "#ccc";
     //ctx.fillRect(-900,-500,1800,1000);
     //background
-    ctx.beginPath();
-    ctx.fillStyle = "#cccccc";
-    if (game.motionBlur) ctx.fillStyle += "88";
-    ctx.fillRect(-900, -500, 1800, 1000);
     
-    ctx.save();
+    /*ctx.save();
     ctx.beginPath();
     var gridSize = 100;
     ctx.rotate(player.rotationTick/4);
@@ -26,94 +22,15 @@ function tickloop() {
             ctx.closePath();
             ctx.fill();
         }
-    }
-
-    ctx.restore();
-
-    ctx.lineCap = "round";
-    attackWarnings = attackWarnings.filter((item) => {
-        const ratio = animationRatio(item[1],item[2]);
-        if (item[0] == "line") {
-            ctx.moveTo(item[3]+item[5]*ratio,item[4]+item[6]*ratio);
-            ctx.lineTo(item[3]-item[5]*ratio,item[4]-item[6]*ratio);
-        }
-
-        item[1]--;
-        return item[1] > 0;
-    });
-    ctx.lineWidth = 15  
-    ctx.strokeStyle = "#ff000033";
-    ctx.stroke();
-    ctx.lineWidth = 10
-    ctx.strokeStyle = "#ff000033";
-    ctx.stroke();
-
-    ctx.lineCap = "butt";
-    ctx.lineWidth = 3;
-
-    attackWarnings = attackWarnings.filter((item) => {  
-        ctx.beginPath();  
-        const ratio = animationRatio(item[1],item[2]);
-        if (game[item[0] + "AttackWarnPath"]) {
-            draw(item[3],item[4],game[item[0] + "AttackWarnPath"],item[5]*ratio,item[6] || false,false,true);
-        }
-    
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = "#ff000055";
-        ctx.fillStyle = "#ff000055";
-        ctx.stroke();
-        ctx.fill();
-
-        item[1]--;
-
-        return item[1] > 0;
-    });
-
-    ctx.beginPath();
-    if (game.openings.includes("left")) if (dungeon[(game.dungeonPosition[0]-1) + "," + (game.dungeonPosition[1])].boss) ctx.rect(-970,-500,100,1000);
-    if (game.openings.includes("right")) if (dungeon[(game.dungeonPosition[0]+1) + "," + (game.dungeonPosition[1])].boss) ctx.rect(870,-500,100,1000);
-    if (game.openings.includes("up")) if (dungeon[(game.dungeonPosition[0]) + "," + (game.dungeonPosition[1]-1)].boss) ctx.rect(-900,-570,1800,100);
-    if (game.openings.includes("down")) if (dungeon[(game.dungeonPosition[0]) + "," + (game.dungeonPosition[1]+1)].boss) ctx.rect(-900,470,1800,100);
-    ctx.fillStyle = "#cc000099";
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.rect(-1000,-600,2000,1200);
-    //ctx.rect(850,-450,-1700,900);
-    ctx.moveTo(-850,-450);
-    ctx.lineTo(-850,-100);
-    ctx.lineTo(-850-60*game.notLocked*game.openings.includes("left"),-100);
-    ctx.lineTo(-850-60*game.notLocked*game.openings.includes("left"),100);
-    ctx.lineTo(-850,100);
-    ctx.lineTo(-850,450);
-    ctx.lineTo(-100,450);
-    ctx.lineTo(-100,450+60*game.notLocked*game.openings.includes("down"));
-    ctx.lineTo(100,450+60*game.notLocked*game.openings.includes("down"));
-    ctx.lineTo(100,450);
-    ctx.lineTo(850,450);
-    ctx.lineTo(850,100);
-    ctx.lineTo(850+60*game.notLocked*game.openings.includes("right"),100);
-    ctx.lineTo(850+60*game.notLocked*game.openings.includes("right"),-100);
-    ctx.lineTo(850,-100);
-    ctx.lineTo(850,-450);
-    ctx.lineTo(100,-450);
-    ctx.lineTo(100,-450-60*game.notLocked*game.openings.includes("up"));
-    ctx.lineTo(-100,-450-60*game.notLocked*game.openings.includes("up"));
-    ctx.lineTo(-100,-450);
-    ctx.closePath();
-    blocks.forEach((block) => {
-        ctx.rect(...block);
-    })
-    ctx.lineWidth = 3;
-    ctx.fillStyle = "#666";
-    ctx.fill();
-    ctx.strokeStyle = "#222";
-    ctx.stroke();
-
+    }*/
+    drawEnvironment();
+    drawEnemyAttacks();
     bulletTick();
     enemyTick();
+    handleEffects();
     playerTick();
     itemTick();
+    drawRoommEffects();
 
     if (game.bossHealth) {
         ctx.lineWidth = 7;
@@ -294,7 +211,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.0.4.6",700,470);
+    ctx.fillText("Version: b.0.5.0",700,470);
 }
 
 setInterval( tickloop, 1000/60 );

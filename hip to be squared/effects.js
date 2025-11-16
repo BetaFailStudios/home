@@ -1,0 +1,36 @@
+const effectPaths = {
+    jackpot: JSON.parse(
+        `[{"type":"point","x":-250,"y":-125,"move":false},{"type":"point","x":-200,"y":-175,"move":false},{"type":"point","x":200,"y":-175,"move":false},{"type":"point","x":250,"y":-125,"move":false},{"type":"point","x":250,"y":125,"move":false},{"type":"point","x":200,"y":175,"move":false},{"type":"point","x":-200,"y":175,"move":false},{"type":"point","x":-250,"y":125,"move":false},{"type":"close"},{"type":"point","x":-200,"y":-100,"move":true},{"type":"point","x":-75,"y":-100,"move":false},{"type":"point","x":-150,"y":100,"move":false},{"type":"point","x":75,"y":-100,"move":true},{"type":"point","x":200,"y":-100,"move":false},{"type":"point","x":125,"y":100,"move":false},{"type":"point","x":-75,"y":-125,"move":true},{"type":"point","x":75,"y":-125,"move":false},{"type":"point","x":-25,"y":125,"move":false},{"type":"fill","r":175,"g":175,"b":50},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-212.5,"y":-125,"move":false},{"type":"point","x":-87.5,"y":-125,"move":false},{"type":"point","x":-87.5,"y":-150,"move":false},{"type":"point","x":100,"y":-150,"move":false},{"type":"point","x":100,"y":-125,"move":false},{"type":"point","x":225,"y":-125,"move":false},{"type":"point","x":225,"y":125,"move":false},{"type":"point","x":100,"y":125,"move":false},{"type":"point","x":100,"y":150,"move":false},{"type":"point","x":-87.5,"y":150,"move":false},{"type":"point","x":-87.5,"y":125,"move":false},{"type":"point","x":-212.5,"y":125,"move":false},{"type":"close"},{"type":"fill","r":170,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-62.5,"y":-125,"move":false},{"type":"point","x":75,"y":-125,"move":false},{"type":"point","x":75,"y":-87.5,"move":false},{"type":"point","x":0,"y":125,"move":false},{"type":"point","x":-37.5,"y":125,"move":false},{"type":"point","x":37.5,"y":-87.5,"move":false},{"type":"point","x":-62.5,"y":-87.5,"move":false},{"type":"close"},{"type":"point","x":-75,"y":-100,"move":true},{"type":"point","x":-75,"y":-62.5,"move":false},{"type":"point","x":-125,"y":100,"move":false},{"type":"point","x":-162.5,"y":100,"move":false},{"type":"point","x":-112.5,"y":-62.5,"move":false},{"type":"point","x":-187.5,"y":-62.5,"move":false},{"type":"point","x":-187.5,"y":-100,"move":false},{"type":"close"},{"type":"point","x":87.5,"y":-100,"move":true},{"type":"point","x":200,"y":-100,"move":false},{"type":"point","x":200,"y":-62.5,"move":false},{"type":"point","x":150,"y":100,"move":false},{"type":"point","x":112.5,"y":100,"move":false},{"type":"point","x":162.5,"y":-62.5,"move":false},{"type":"point","x":87.5,"y":-62.5,"move":false},{"type":"close"},{"type":"fill","r":255,"g":50,"b":50},{"type":"stroke","r":100,"g":50,"b":50}]`
+    ), silver: JSON.parse(
+        `[{"type":"point","x":-250,"y":-250},{"type":"point","x":-100,"y":0},{"type":"point","x":-250,"y":250},{"type":"point","x":0,"y":100},{"type":"point","x":250,"y":250},{"type":"point","x":100,"y":0},{"type":"point","x":250,"y":-250},{"type":"point","x":0,"y":-100},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
+    ), glasses: JSON.parse(
+        `[{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":-225},{"type":"point","x":0,"y":-250},{"type":"point","x":225,"y":-225},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":225},{"type":"point","x":0,"y":250},{"type":"point","x":-225,"y":225},{"type":"close"},{"type":"fill","r":255,"g":0,"b":0},{"type":"stroke","r":100,"g":50,"b":50}]`
+    ), "broken glass": JSON.parse(
+        `[{"type":"point","x":-237.5,"y":-225},{"type":"point","x":-125,"y":-175},{"type":"point","x":-175,"y":-225},{"type":"close"},{"type":"point","x":-87.5,"y":-250,"move":true},{"type":"point","x":-37.5,"y":-162.5,"move":false},{"type":"point","x":-25,"y":-237.5,"move":false},{"type":"close"},{"type":"point","x":62.5,"y":-250,"move":true},{"type":"point","x":75,"y":-150,"move":false},{"type":"point","x":125,"y":-187.5,"move":false},{"type":"close"},{"type":"point","x":250,"y":-187.5,"move":true},{"type":"point","x":112.5,"y":-125,"move":false},{"type":"point","x":175,"y":-112.5,"move":false},{"type":"close"},{"type":"point","x":237.5,"y":-87.5,"move":true},{"type":"point","x":125,"y":-50,"move":false},{"type":"point","x":225,"y":-12.5,"move":false},{"type":"close"},{"type":"point","x":237.5,"y":125,"move":true},{"type":"point","x":125,"y":75,"move":false},{"type":"point","x":225,"y":37.5,"move":false},{"type":"close"},{"type":"point","x":237.5,"y":212.5,"move":true},{"type":"point","x":125,"y":125,"move":false},{"type":"point","x":175,"y":225,"move":false},{"type":"close"},{"type":"point","x":112.5,"y":225,"move":true},{"type":"point","x":50,"y":87.5,"move":false},{"type":"point","x":62.5,"y":212.5,"move":false},{"type":"close"},{"type":"point","x":-137.5,"y":237.5,"move":true},{"type":"point","x":-75,"y":137.5,"move":false},{"type":"point","x":-175,"y":200,"move":false},{"type":"close"},{"type":"point","x":-37.5,"y":225,"move":true},{"type":"point","x":0,"y":100,"move":false},{"type":"point","x":25,"y":225,"move":false},{"type":"close"},{"type":"point","x":-225,"y":137.5,"move":true},{"type":"point","x":-112.5,"y":87.5,"move":false},{"type":"point","x":-250,"y":100,"move":false},{"type":"close"},{"type":"point","x":-250,"y":12.5,"move":true},{"type":"point","x":-125,"y":50,"move":false},{"type":"point","x":-250,"y":-37.5,"move":false},{"type":"close"},{"type":"point","x":-250,"y":-62.5,"move":true},{"type":"point","x":-125,"y":-25,"move":false},{"type":"point","x":-212.5,"y":-87.5,"move":false},{"type":"close"},{"type":"point","x":-212.5,"y":-125,"move":true},{"type":"point","x":-137.5,"y":-75,"move":false},{"type":"point","x":-212.5,"y":-187.5,"move":false},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
+    )
+}
+
+let effects = [];
+
+class Effect  {
+    constructor(x,y,type,size,ticks,rotation) {
+        this.x = x || 0;
+        this.y = y || 0;
+        this.size = size || 50;
+        this.drawPath = effectPaths[type];
+        this.ticksLeft = ticks || 30;
+        this.ticksTotal = this.ticksLeft;
+        this.rotation = rotation || (Math.random()*Math.PI/3-Math.PI/6);
+        this.rotationTick = -this.rotation/this.ticksLeft;
+    }
+}
+
+function handleEffects() {
+    effects = effects.filter((item) => {
+        draw(item.x,item.y,item.drawPath,item.size*animationRatio(item.ticksLeft,item.ticksTotal,3),item.rotation)
+        item.rotation += item.rotationTick;
+
+        item.ticksLeft--;
+        return item.ticksLeft > 0;
+    })
+}

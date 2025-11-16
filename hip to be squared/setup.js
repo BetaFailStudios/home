@@ -216,8 +216,8 @@ function drawInventory() {
     ctx.fillRect(-900,-500,1800,1000);
 
     //draw(0,0,game.UIPath,500);
-
-    const sizeWeapon = 350;
+    ctx.beginPath();
+    const sizeWeapon = 250;
     ctx.moveTo(-sizeWeapon,0);
     ctx.lineTo(0,sizeWeapon);
     ctx.lineTo(sizeWeapon,0);
@@ -378,6 +378,6 @@ dungeon["0,0"].connections.forEach((item) => {
     }
 })
 
-function animationRatio(x,t) {
-    return 1 - Math.abs( ( 2*x/t - 1 ) ** /**/ 6 /**/ );
+function animationRatio(x,t,r) {
+    return 1 - Math.abs( ( 2*x/t - 1 ) **r );
 }
