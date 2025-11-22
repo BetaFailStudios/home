@@ -1,5 +1,5 @@
 const weapons = [
-    {
+/*BP*/{
         name: "Basic Gun",
         desc: "Starting gun",
         drawPath: JSON.parse(
@@ -10,7 +10,7 @@ const weapons = [
         ), statChange(rarity) {
             stats.damage *= 1.3 + 0.15*rarity;
         }
-    },{
+/*GG*/},{
         name: "Gatling Gun",
         desc: "High Fire rate",
         drawPath: JSON.parse(
@@ -23,7 +23,7 @@ const weapons = [
             stats.damage *= 0.5 + 0.015*rarity;
             stats.bloom *= 3-0.2*rarity;
         }
-    },{
+/*HC*/},{
         name: "Hand Cannon",
         desc: "High damage, low firerate",
         drawPath: JSON.parse(
@@ -37,7 +37,7 @@ const weapons = [
             stats.bulletSpeed *= 0.7;
             stats.bulletSize *= 1.5 + 0.1*rarity;
         }
-    },{
+/*SO*/},{
         name: "Sawed Off",
         desc: "High damage, many projectiles",
         drawPath: JSON.parse(
@@ -53,9 +53,9 @@ const weapons = [
             stats.projectiles += 4;
             stats.bloom *= 2.5;
             stats.spread *= 1.25;
-            stats.lifetime = 0.3;
+            stats.lifetime = 0.5;
         }
-    },{
+/*RG*/},{
         name: "Railgun",
         desc: "High damage, damage scales with velocity",
         drawPath: JSON.parse(
@@ -73,7 +73,7 @@ const weapons = [
         }, damageBoost(rarity,bullet,enemy) {
             return Math.hypot(bullet.vx,bullet.vy)/50;
         }
-    },{
+/*GC*/},{
         name: "Gas Can",
         desc: "Lots of low damage bullets",
         drawPath: JSON.parse(
@@ -89,9 +89,9 @@ const weapons = [
             stats.projectiles += 1;
             stats.bloom *= 2;
             stats.spread *= 0.3;
-            stats.lifetime = 0.7;
+            stats.lifetime = 0.9;
         }
-    },{
+/*PC*/},{
         name: "Playing Cards",
         desc: "3 cards in a shot",
         drawPath: JSON.parse(
@@ -108,7 +108,7 @@ const weapons = [
             stats.bloom *= 3;
             stats.spread *= 0.3;
         }
-    },{
+/*SI*/},{
         name: "Sickle",
         desc: "Slow, powerful bullets",
         drawPath: JSON.parse(
@@ -122,7 +122,7 @@ const weapons = [
             stats.bulletSize *= 5;
             stats.bulletSpeed *= 0.15;
         }
-    },{
+/*GU*/},{
         name: "Guitar",
         desc: "Bulllets pop with AoE",
         drawPath: JSON.parse(
@@ -146,7 +146,7 @@ const weapons = [
                 speed:0, drawPath: game.weapon.reference.explosionPath, lifetime: 0.1, pierce: Infinity, wallPierce: true,
             }))
         }
-    },{
+/*SH*/},{
         name: "Sledgehammer",
         desc: "Bulllets pop with AoE",
         drawPath: JSON.parse(
@@ -161,7 +161,7 @@ const weapons = [
             stats.bulletSpeed *= 0.25;
             stats.lifetime = 0.1;
         }
-    },{
+/*SC*/},{
         name: "Scientific Calculator",
         desc: "Bullets travel in sine waves with pierce",
         drawPath: JSON.parse(
@@ -177,7 +177,7 @@ const weapons = [
             stats.pierce = 1;
             stats.sineWaveMovement = true;
         }
-    },{
+/*SP*/},{
         name: "Spear",
         desc: "Short Fast attacks",
         drawPath: JSON.parse(
@@ -195,7 +195,7 @@ const weapons = [
             stats.bulletSpeed *= 2.5;
             stats.bulletSize *= 2.5;
         }
-    },{
+/*SC*/},{
         name: "Scythe",
         desc: "Wave of projectiles",
         drawPath: JSON.parse(
@@ -211,7 +211,7 @@ const weapons = [
             stats.projectiles *= 6;
             stats.spread *= 3;
         }
-    },{
+/*MS*/},{
         name: "Mirror Sheild",
         desc: "Bullets parry enemies and their projectiles",
         drawPath: JSON.parse(
@@ -251,7 +251,7 @@ const weapons = [
 weapons.forEach((item) => item.type = "weapon");
 
 const relics = [
-    {
+/*GP*/{
         name: "Growth Pill",
         desc: "Increases bullet size & Damage",
         drawPath: JSON.parse(
@@ -260,7 +260,7 @@ const relics = [
             stats.damage *= 1.20 + 0.1*rarity;
             stats.bulletSize *= 1.60 + 0.40*rarity;
         }
-    },{
+/*SR*/},{
         name: "Sluggish Rounds",
         desc: "Increased bullet damage, reduced speed",
         drawPath: JSON.parse(
@@ -269,16 +269,16 @@ const relics = [
             stats.damage *= 1.35 + 0.20*rarity;
             stats.bulletSpeed *= 0.35 + 0.05*rarity;
         }
-    },{
+/*IC*/},{
         name: "Ice Cube",
         desc: "Increases movement speed",
         drawPath: JSON.parse(
             `[{"type":"point","x":-50,"y":-200},{"type":"point","x":-200,"y":-125},{"type":"point","x":25,"y":-50},{"type":"point","x":175,"y":-125},{"type":"close"},{"type":"point","x":-200,"y":-125,"move":true},{"type":"point","x":-200,"y":100,"move":false},{"type":"point","x":25,"y":175,"move":false},{"type":"point","x":25,"y":-50,"move":false},{"type":"point","x":25,"y":175,"move":false},{"type":"point","x":175,"y":100,"move":false},{"type":"point","x":175,"y":-125,"move":false},{"type":"fill","r":100,"g":150,"b":175},{"type":"stroke","r":50,"g":100,"b":150},{"type":"point","x":-200,"y":25,"move":false},{"type":"point","x":-225,"y":50,"move":false},{"type":"point","x":-250,"y":125,"move":false},{"type":"point","x":-175,"y":200,"move":false},{"type":"point","x":25,"y":250,"move":false},{"type":"point","x":175,"y":225,"move":false},{"type":"point","x":250,"y":150,"move":false},{"type":"point","x":250,"y":75,"move":false},{"type":"point","x":200,"y":25,"move":false},{"type":"point","x":175,"y":25,"move":false},{"type":"point","x":175,"y":100,"move":false},{"type":"point","x":25,"y":175,"move":false},{"type":"point","x":-200,"y":100,"move":false},{"type":"close"},{"type":"fill","r":100,"g":150,"b":175},{"type":"stroke","r":50,"g":100,"b":150}]`
         ), statChange(rarity) {
             stats.friction *= 0.95-0.05*rarity;
-            stats.playerSpeed *= 1.2+0.03*rarity;
+            stats.playerSpeed *= 1.2+0.1*rarity;
         }
-    },{
+/*AI*/},{
         name: "After Images",
         desc: "Increases fire rate but reduces damage",
         drawPath: JSON.parse(
@@ -287,7 +287,7 @@ const relics = [
             stats.firerate *= 0.65-0.07*rarity;
             stats.damage *= 0.85+0.03*rarity;
         }
-    },{
+/*RI*/},{
         name: "Rifling",
         desc: "Increases damage and bullet speed",
         drawPath: JSON.parse(
@@ -297,7 +297,7 @@ const relics = [
             stats.bulletSpeed *= 1.35 + 0.1*rarity;
             stats.bloom *= 0.8;
         }
-    },{
+/*BB*/},{
         name: "Bouncy Ball",
         desc: "Bullets bounce & gain damage when they do",
         drawPath: JSON.parse(
@@ -305,7 +305,7 @@ const relics = [
         ), statChange(rarity) {
             stats.bulletBounce = (stats.bulletBounce || 0) + 2 + rarity;
         }
-    },{
+/*LT*/},{
         name: "Lottery Ticket",
         desc: "Chance for bullets to have massive damage",
         drawPath: JSON.parse(
@@ -318,7 +318,7 @@ const relics = [
                 this.jackpot = true;
             }
         }
-    },{
+/*PM*/},{
         name: "Pacemaker",
         desc: "Extra blue health",
         drawPath: JSON.parse(
@@ -327,7 +327,7 @@ const relics = [
             stats.extraHealth += 1 + rarity;
             stats.extraHealthMax += 1 + rarity;
         }
-    },{
+/*HC*/},{
         name: "Heart Container",
         desc: "Extra red health",
         drawPath: JSON.parse(
@@ -336,16 +336,16 @@ const relics = [
             stats.health += 4 + 3*rarity;
             stats.healthMax += 4 + 3*rarity;
         }
-    },{
+/*SW*/},{
         name: "Saw",
         desc: "Reduced accuracy, increased damage",
         drawPath: JSON.parse(
             `[{"type":"point","x":-150,"y":-50},{"type":"point","x":200,"y":-200},{"type":"point","x":225,"y":-125},{"type":"point","x":175,"y":-150},{"type":"point","x":175,"y":-100},{"type":"point","x":125,"y":-125},{"type":"point","x":125,"y":-75},{"type":"point","x":75,"y":-100},{"type":"point","x":75,"y":-50},{"type":"point","x":25,"y":-75},{"type":"point","x":25,"y":-25},{"type":"point","x":-25,"y":-50},{"type":"point","x":-25,"y":0},{"type":"point","x":-75,"y":-25},{"type":"point","x":-75,"y":25},{"type":"point","x":-100,"y":50},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-150,"y":-50},{"type":"point","x":-100,"y":50},{"type":"point","x":-100,"y":75},{"type":"point","x":-200,"y":125},{"type":"point","x":-250,"y":0},{"type":"close"},{"type":"point","x":-175,"y":0,"move":true},{"type":"point","x":-212.5,"y":12.5,"move":false},{"type":"point","x":-187.5,"y":75,"move":false},{"type":"point","x":-137.5,"y":62.5,"move":false},{"type":"point","x":-125,"y":50,"move":false},{"type":"close"},{"type":"fill","r":125,"g":100,"b":50},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
-            stats.bloom *= 3-0.15*rarity;
+            stats.bloom *= 3.5-0.15*rarity;
             stats.damage *= 1.45 + 0.2*rarity;
         }
-    },{
+/*PR*/},{
         name: "Piercing Rounds",
         desc: "Bullets pierce & gain damage when they do",
         drawPath: JSON.parse(
@@ -356,7 +356,7 @@ const relics = [
         }, onHit(rarity,bullet,enemy) {
             bullet.damage *= 1.2 + 0.05*rarity;
         }
-    },{
+/*CB*/},{
         name: "Can o' Beans",
         desc: "MANY small and less powerful bullets",
         drawPath: JSON.parse(
@@ -368,7 +368,7 @@ const relics = [
             stats.spread *= 0.35;
             stats.bulletSize *= 0.45;
         }
-    },{
+/*SW*/},{
         name: "Stopwatch",
         desc: "increased I-Frame length when taking damage",
         drawPath: JSON.parse(
@@ -376,7 +376,7 @@ const relics = [
         ), statChange(rarity) {
             stats.extraIframes = (stats.extraIframes || 0) + 75 + 45*rarity;
         }
-    },{
+/*SH*/},{
         name: "Shadow",
         desc: "+1 burst, reduced firerate",
         drawPath: JSON.parse(
@@ -385,7 +385,7 @@ const relics = [
             stats.bursts += 1;
             stats.firerate *= 1.3 - 0.05*rarity;
         }
-    },{
+/*TR*/},{
         name: "Trident",
         desc: "+2 projectiles, reduced damage",
         drawPath: JSON.parse(
@@ -394,7 +394,7 @@ const relics = [
             stats.projectiles += 2;
             stats.damage *= 0.7 + 0.08*rarity;
         }
-    },{
+/*CB*/},{
         name: "Crowbar",
         desc: "Increased damage to enemies above 75% health",
         drawPath: JSON.parse(
@@ -403,7 +403,7 @@ const relics = [
             if (enemy.health/enemy.healthMax > 0.75) return 1.75 + 0.15*rarity;
             else return 1;
         }
-    },{
+/*GU*/},{
         name: "Guillotine",
         desc: "Increased damage to enemies below 50% health",
         drawPath: JSON.parse(
@@ -412,7 +412,7 @@ const relics = [
             if (enemy.health/enemy.healthMax < 0.5) return 1.5 + 0.1*rarity;
             else return 1;
         }
-    },{
+/*BH*/},{
         name: "Bull's Horn",
         desc: "Increased damage on low health",
         drawPath: JSON.parse(
@@ -421,7 +421,7 @@ const relics = [
             if (player.helath <= 3+rarity) return 2;
             else return 1;
         }
-    },{
+/*SG*/},{
         name: "Stun Gun",
         desc: "Stuns enemies and adds flat damage",
         drawPath: JSON.parse(
@@ -431,7 +431,7 @@ const relics = [
             enemy.vy *= 0.7-0.05*rarity;
             enemy.health -= 0.05 + 0.01*rarity;
         }
-    },{
+/*SB*/},{
         name: "Silver Bullet",
         desc: "Chance to crit damage",
         drawPath: JSON.parse(
@@ -442,7 +442,7 @@ const relics = [
                 return 2 + 0.2*rarity;
             } else return 1;
         }
-    },{
+/*DB*/},{
         name: "Demonic Bracelet",
         desc: "Increased Damage, reduced max health",
         drawPath: JSON.parse(
@@ -452,7 +452,7 @@ const relics = [
             stats.health -= 4;
             stats.healthMax -= 4;
         }
-    },{
+/*HP*/},{
         name: "Hollow Point",
         desc: "Increased damage up-close",
         drawPath: JSON.parse(
@@ -461,7 +461,7 @@ const relics = [
             if (Math.hypot(player.x-bullet.x,player.y-bullet.y) < 300) return 1.3 + 0.1*rarity;
             else return 1;
         }
-    },{
+/*RD*/},{
         name: "Red Dot",
         desc: "Increased damage far away",
         drawPath: JSON.parse(
@@ -470,7 +470,7 @@ const relics = [
             if (Math.hypot(player.x-bullet.x,player.y-bullet.y) > 500) return 1.3 + 0.1*rarity;
             else return 1;
         }
-    },{
+/*RP*/},{
         name: "Red Pen",
         desc: "Increased damage at high red health",
         drawPath: JSON.parse(
@@ -479,7 +479,7 @@ const relics = [
             if (player.health >= player.healthMax-3) return 1.4 + 0.08*rarity;
             else return 1;
         }
-    },{
+/*SP*/},{
         name: "Spectacles",
         desc: "First bullet in each room -> MASSIVE damage",
         drawPath: JSON.parse(
@@ -493,7 +493,7 @@ const relics = [
                 return stats.spectacleScale/stats.spectacleAmount;
             } else return 1;
         }
-    },{
+/*BW*/},{
         name: "Barbed Wire",
         desc: "+1 damage taken, increased damage dealt",
         drawPath: JSON.parse(
@@ -502,7 +502,7 @@ const relics = [
             stats.extraReceivedDamage = stats.extraReceivedDamage || 0 + 1;
             stats.damage *= 1.6 + 0.15*rarity;
         }
-    },{
+/*HM*/},{
         name: "Hit Marker",
         desc: "Deal more damage to enemies hit multiple times",
         drawPath: JSON.parse(
@@ -516,7 +516,7 @@ const relics = [
                 return 1;
             }
         }
-    },{
+/*BG*/},{
         name: "Broken Glass",
         desc: "Massive damage boost, when hit: chance this relic breaks",
         drawPath: JSON.parse(
@@ -535,7 +535,7 @@ const relics = [
                 updateStats();
             }
         }
-    },{
+/*MF*/},{
         name: "Muzzle Flash",
         desc: "Bullets spawn with damaging flashes",
         drawPath: JSON.parse(
@@ -543,9 +543,9 @@ const relics = [
         ),flashPath: JSON.parse(
             `[{"type":"point","x":-250,"y":0},{"type":"point","x":-100,"y":-37.5},{"type":"point","x":-175,"y":-175},{"type":"point","x":-37.5,"y":-100},{"type":"point","x":0,"y":-250},{"type":"point","x":37.5,"y":-100},{"type":"point","x":175,"y":-175},{"type":"point","x":100,"y":-37.5},{"type":"point","x":250,"y":0},{"type":"point","x":100,"y":37.5},{"type":"point","x":175,"y":175},{"type":"point","x":37.5,"y":100},{"type":"point","x":0,"y":250},{"type":"point","x":-37.5,"y":100},{"type":"point","x":-175,"y":175},{"type":"point","x":-100,"y":37.5},{"type":"close"},{"type":"fill","r":200,"g":200,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), onSpawn(rarity,bullet) {
-            bullets.push(new Bullet({x: bullet.x, y: bullet.y, vx: bullet.vx/8, vy: bullet.vy/8, direction: Math.random()*Math.PI, size: stats.bulletSize*(10+2*rarity), damage: bullet.damage * (0.9 + 0.1*rarity), lifetime: 0.2, drawPath: relics[28].flashPath, wallPierce: true,}));
+            bullets.push(new Bullet({x: bullet.x, y: bullet.y, vx: bullet.vx/8, vy: bullet.vy/8, direction: Math.random()*Math.PI, size: stats.bulletSize*(5+3.5*rarity), damage: bullet.damage * (0.9 + 0.2*rarity), lifetime: 0.2, drawPath: relics[28].flashPath, wallPierce: true,}));
         }
-    },{
+/*GH*/},{
         name: "Giant's Helmet",
         desc: "Lots more red health, increased player size",
         drawPath: JSON.parse(

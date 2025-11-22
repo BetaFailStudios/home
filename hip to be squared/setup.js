@@ -211,129 +211,13 @@ function draw(x,y,path, size, rotate, alpha, noClear) {
     ctx.restore();
 }
 
-function drawInventory() {
-    ctx.fillStyle = "#cccccc99";
-    ctx.fillRect(-900,-500,1800,1000);
-
-    //draw(0,0,game.UIPath,500);
-    ctx.beginPath();
-    const sizeWeapon = 250;
-    ctx.moveTo(-sizeWeapon,0);
-    ctx.lineTo(0,sizeWeapon);
-    ctx.lineTo(sizeWeapon,0);
-    ctx.lineTo(0,-sizeWeapon);
-    ctx.closePath();
-    ctx.fillStyle = "#ccc";
-    ctx.fill();
-
-    switch(game.weapon.rarity) {
-        case 1: {
-            ctx.fillStyle = "#55cc55"
-            break; 
-        }
-        case 2: { 
-            ctx.fillStyle = "#5577cc"
-            break; 
-        }
-        case 3: { 
-            ctx.fillStyle = "#cccc55"
-            break; 
-        }
-        case 4: { 
-            ctx.fillStyle = "#9955cc"
-            break; 
-        }
-        default: { 
-            ctx.fillStyle = "#999999"
-            break; 
-        }
-    }
-    ctx.fillStyle += "77";
-    ctx.strokeStyle = "#222";
-
-    ctx.fill();
-    ctx.stroke();
-
-    draw(0,0,game.weapon.reference.drawPath,100,Math.sin(player.rotationTick*5)/3);
-    if (Math.hypot(mouse.x,mouse.y) < 200) drawItemDesc(game.weapon,0,0);
-
-    [[-300,-300],[300,-300],[-450,0],[450,0],[-300,300],[300,300]].forEach((item, i) => {
-        if (game.relicsEquipped[i]) {
-            ctx.beginPath();
-
-            const size = 135;
-            ctx.moveTo(item[0]-size,item[1]);
-            ctx.lineTo(item[0],item[1]+size);
-            ctx.lineTo(item[0]+size,item[1]);
-            ctx.lineTo(item[0],item[1]-size);
-            ctx.closePath();
-            ctx.fillStyle = "#ccc";
-            ctx.fill();
-
-            switch(game.relicsEquipped[i].rarity) {
-                case 1: {
-                    ctx.fillStyle = "#55cc55"
-                    break; 
-                }
-                case 2: { 
-                    ctx.fillStyle = "#5577cc"
-                    break; 
-                }
-                case 3: { 
-                    ctx.fillStyle = "#cccc55"
-                    break; 
-                }
-                case 4: { 
-                    ctx.fillStyle = "#9955cc"
-                    break; 
-                }
-                default: { 
-                    ctx.fillStyle = "#999999"
-                    break; 
-                }
-            }
-            ctx.fillStyle += "77";
-            ctx.strokeStyle = "#222";
-
-            ctx.fill();
-            ctx.stroke();
-
-
-            draw(...item,game.relicsEquipped[i].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
-            if (Math.hypot(mouse.x-item[0],mouse.y-item[1]) < 200) drawItemDesc(game.relicsEquipped[i],...item);
-        }
-    })
-    /*if (game.relicsEquipped[1]) {
-        draw(300,-300,game.relicsEquipped[1].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
-        if (Math.hypot(mouse.x-300,mouse.y+300) < 200) drawItemDesc(game.relicsEquipped[1],300,-300);
-    }
-    if (game.relicsEquipped[2]) {
-        draw(-450,0,game.relicsEquipped[2].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
-        if (Math.hypot(mouse.x+450,mouse.y) < 200) drawItemDesc(game.relicsEquipped[2],-450,0);
-    }
-    if (game.relicsEquipped[3]) {
-        draw(450,0,game.relicsEquipped[3].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
-        if (Math.hypot(mouse.x-450,mouse.y) < 200) drawItemDesc(game.relicsEquipped[3],450,0);
-    }
-    if (game.relicsEquipped[4]) {
-        draw(-300,300,game.relicsEquipped[4].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
-        if (Math.hypot(mouse.x+300,mouse.y-300) < 200) drawItemDesc(game.relicsEquipped[4],-300,300);
-    }
-    if (game.relicsEquipped[5]) {
-        draw(300,300,game.relicsEquipped[5].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
-        if (Math.hypot(mouse.x-300,mouse.y-300) < 200) drawItemDesc(game.relicsEquipped[5],300,300);
-    }*/
-}
-
 let blocks = [];
 
 const game = {
     cursorPath: JSON.parse(
         `[{"type":"point","x":0,"y":-125,"move":false},{"type":"point","x":50,"y":-250,"move":false},{"type":"point","x":-50,"y":-250,"move":false},{"type":"point","x":0,"y":-125,"move":false},{"type":"point","x":125,"y":0,"move":true},{"type":"point","x":250,"y":-50,"move":false},{"type":"point","x":250,"y":50,"move":false},{"type":"point","x":125,"y":0,"move":false},{"type":"point","x":0,"y":125,"move":true},{"type":"point","x":50,"y":250,"move":false},{"type":"point","x":-50,"y":250,"move":false},{"type":"point","x":0,"y":125,"move":false},{"type":"point","x":-125,"y":0,"move":true},{"type":"point","x":-250,"y":-50,"move":false},{"type":"point","x":-250,"y":50,"move":false},{"type":"point","x":-125,"y":0,"move":false},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
-    ), UIPath: JSON.parse(
-        `[{"type":"point","x":-150,"y":0,"move":false},{"type":"point","x":0,"y":-150,"move":false},{"type":"point","x":150,"y":0,"move":false},{"type":"point","x":0,"y":150,"move":false},{"type":"close"},{"type":"fill","r":150,"g":150,"b":150},{"type":"stroke","r":50,"g":50,"b":50}]`
-    ), UIPathOld: JSON.parse(
-        `[{"type":"point","x":-150,"y":0,"move":false},{"type":"point","x":0,"y":-150,"move":false},{"type":"point","x":150,"y":0,"move":false},{"type":"point","x":0,"y":150,"move":false},{"type":"close"},{"type":"point","x":-175,"y":50,"move":true},{"type":"point","x":-175,"y":-50,"move":false},{"type":"point","x":-275,"y":-50,"move":false},{"type":"point","x":-275,"y":50,"move":false},{"type":"close"},{"type":"point","x":175,"y":50,"move":true},{"type":"point","x":175,"y":-50,"move":false},{"type":"point","x":275,"y":-50,"move":false},{"type":"point","x":275,"y":50,"move":false},{"type":"close"},{"type":"point","x":100,"y":-100,"move":true},{"type":"point","x":100,"y":-200,"move":false},{"type":"point","x":200,"y":-200,"move":false},{"type":"point","x":200,"y":-100,"move":false},{"type":"close"},{"type":"point","x":200,"y":100,"move":true},{"type":"point","x":200,"y":200,"move":false},{"type":"point","x":100,"y":200,"move":false},{"type":"point","x":100,"y":100,"move":false},{"type":"close"},{"type":"point","x":-100,"y":100,"move":true},{"type":"point","x":-100,"y":200,"move":false},{"type":"point","x":-200,"y":200,"move":false},{"type":"point","x":-200,"y":100,"move":false},{"type":"close"},{"type":"point","x":-100,"y":-100,"move":true},{"type":"point","x":-100,"y":-200,"move":false},{"type":"point","x":-200,"y":-200,"move":false},{"type":"point","x":-200,"y":-100,"move":false},{"type":"close"},{"type":"fill","r":150,"g":150,"b":150},{"type":"stroke","r":50,"g":50,"b":50}]`
+    ), hitScreenPath: JSON.parse(
+        `[{"type":"point","x":275,"y":-175},{"type":"point","x":-275,"y":-175},{"type":"point","x":-275,"y":175},{"type":"point","x":275,"y":175},{"type":"close"},{"type":"point","x":225,"y":-125,"move":true},{"type":"point","x":225,"y":-75,"move":false},{"type":"point","x":212.5,"y":-50,"move":false},{"type":"point","x":225,"y":-25,"move":false},{"type":"point","x":225,"y":25,"move":false},{"type":"point","x":212.5,"y":50,"move":false},{"type":"point","x":225,"y":75,"move":false},{"type":"point","x":225,"y":125,"move":false},{"type":"point","x":175,"y":125,"move":false},{"type":"point","x":150,"y":112.5,"move":false},{"type":"point","x":125,"y":125,"move":false},{"type":"point","x":75,"y":125,"move":false},{"type":"point","x":50,"y":112.5,"move":false},{"type":"point","x":25,"y":125,"move":false},{"type":"point","x":-25,"y":125,"move":false},{"type":"point","x":-50,"y":112.5,"move":false},{"type":"point","x":-75,"y":125,"move":false},{"type":"point","x":-125,"y":125,"move":false},{"type":"point","x":-150,"y":112.5,"move":false},{"type":"point","x":-175,"y":125,"move":false},{"type":"point","x":-225,"y":125,"move":false},{"type":"point","x":-225,"y":75,"move":false},{"type":"point","x":-212.5,"y":50,"move":false},{"type":"point","x":-225,"y":25,"move":false},{"type":"point","x":-225,"y":-25,"move":false},{"type":"point","x":-212.5,"y":-50,"move":false},{"type":"point","x":-225,"y":-75,"move":false},{"type":"point","x":-225,"y":-125,"move":false},{"type":"point","x":-175,"y":-125,"move":false},{"type":"point","x":-150,"y":-112.5,"move":false},{"type":"point","x":-125,"y":-125,"move":false},{"type":"point","x":-75,"y":-125,"move":false},{"type":"point","x":-50,"y":-112.5,"move":false},{"type":"point","x":-25,"y":-125,"move":false},{"type":"point","x":25,"y":-125,"move":false},{"type":"point","x":50,"y":-112.5,"move":false},{"type":"point","x":75,"y":-125,"move":false},{"type":"point","x":125,"y":-125,"move":false},{"type":"point","x":150,"y":-112.5,"move":false},{"type":"point","x":175,"y":-125,"move":false},{"type":"close"},{"type":"fill","r":250,"g":80,"b":80},{"type":"stroke","r":80,"g":40,"b":40}]`
     ), baseEnemyPath: JSON.parse(
         `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-200,"y":-250},{"type":"point","x":200,"y":-250},{"type":"point","x":250,"y":-200},{"type":"point","x":250,"y":200},{"type":"point","x":200,"y":250},{"type":"point","x":-200,"y":250},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"point","x":-100,"y":-125,"move":true},{"type":"point","x":-125,"y":-100,"move":false},{"type":"point","x":-125,"y":100,"move":false},{"type":"point","x":-100,"y":125,"move":false},{"type":"point","x":100,"y":125,"move":false},{"type":"point","x":125,"y":100,"move":false},{"type":"point","x":125,"y":-100,"move":false},{"type":"point","x":100,"y":-125,"move":false},{"type":"close"},{"type":"fill","r":200,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
     ), enemySpawnPath: JSON.parse(
@@ -355,6 +239,7 @@ const game = {
     relicTick: 0,
     firstWeapon: true,
     musicPos: 0,
+    showHit: 0,
 };
 
 let bullets = [];

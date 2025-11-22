@@ -32,7 +32,7 @@ for (var i = 0; i < 6; i++)
 
 function drawRoommEffects() {
     roomEffects.forEach((item) => {
-        draw(item.x,item.y,item.reference,item.size,0,0.25);
+        draw(item.x,item.y,item.reference,item.size,0,0.15);
         item.x += 0.2*item.moveSpeed;
         if (item.x > 900 + item.size) item.x -= 1800+item.size*2;
         else if (item.x < -900 - item.size) item.x += 1800+item.size*2;

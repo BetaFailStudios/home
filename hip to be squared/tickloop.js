@@ -148,6 +148,36 @@ function tickloop() {
         ctx.stroke();
     }
 
+    if (game.showHit > 0) {
+        game.showHit -= 1/75;
+        if (game.showHit > 1) game.showHit = 1;
+        else if (game.showHit < 0) game.showHit = 0;
+
+        const grid = 300;
+        const offset = 200*(1-game.showHit);
+
+        ctx.lineWidth = 6;
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.rect(1800,-1000,-3600,2000);
+        ctx.moveTo(-offset-800 + Math.random()*50,-offset-400 + Math.random()*50);
+        for (var i = -800+grid; i < 800; i += grid) ctx.lineTo(i,-offset-400 + Math.random()*50);
+        ctx.lineTo(offset+800 - Math.random()*50,-offset-400 + Math.random()*50);
+        for (var i = -400+grid; i < 400; i += grid) ctx.lineTo(offset+800 - Math.random()*50,i);
+        ctx.lineTo(offset+800 - Math.random()*50,offset+400 - Math.random()*50);
+        for (var i = 800-grid; i > -800; i -= grid) ctx.lineTo(i,offset+400 - Math.random()*50);
+        ctx.lineTo(-offset-800 + Math.random()*50,offset+400 - Math.random()*50);
+        for (var i = 400-grid; i > -400; i -= grid) ctx.lineTo(-offset-800 + Math.random()*50,i);
+        ctx.closePath();
+        
+        ctx.strokeStyle = "#522";
+        ctx.fillStyle = "#922";
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.globalAlpha = 1;
+    }
+    
     ctx.lineWidth = 15;
     ctx.beginPath();
     ctx.fillStyle = "#444"
@@ -171,6 +201,7 @@ function tickloop() {
 
     if (stats.health <= 0) game.menu = "death";
 
+    drawPauseMenu();
     if (game.menu == "death") {
         ctx.beginPath();
         ctx.fillStyle = "#000000cc";
@@ -211,7 +242,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.0.5.0",700,470);
+    ctx.fillText("Version: b.0.5.1",700,470);
 }
 
 setInterval( tickloop, 1000/60 );

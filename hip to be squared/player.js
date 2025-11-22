@@ -96,6 +96,7 @@ function playerTick() {
                 player.iFrames = 30 + (stats.extraIframes || 0);
                 for (var i = 0; i < 1 + (stats.extraReceivedDamage || 0); i++) if (stats.extraHealth) stats.extraHealth--;
                 else stats.health--;
+                game.showHit += 0.75;
 
                 stats.onPlayerHits.forEach( (item) => item[1](item[0],enemy));
             }

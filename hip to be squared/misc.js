@@ -45,6 +45,8 @@ function drawEnemyAttacks() {
 let floorPaths = [
     JSON.parse(
         `[{"type":"point","x":-250,"y":-25},{"type":"point","x":-250,"y":-87.5},{"type":"point","x":-225,"y":-125},{"type":"point","x":-150,"y":-175},{"type":"point","x":-125,"y":-225},{"type":"point","x":-25,"y":-250},{"type":"point","x":75,"y":-225},{"type":"point","x":100,"y":-150},{"type":"point","x":225,"y":-100},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":225},{"type":"point","x":75,"y":250},{"type":"point","x":-50,"y":225},{"type":"point","x":-200,"y":250},{"type":"point","x":-225,"y":200},{"type":"point","x":-200,"y":50},{"type":"close"},{"type":"fill","r":75,"g":60,"b":0},{"type":"stroke","r":50,"g":35,"b":0}]`
+    ), JSON.parse(
+        `[{"type":"point","x":-250,"y":12.5,"move":false},{"type":"point","x":-212.5,"y":-125,"move":false},{"type":"point","x":-62.5,"y":-225,"move":false},{"type":"point","x":112.5,"y":-250,"move":false},{"type":"point","x":237.5,"y":-112.5,"move":false},{"type":"point","x":200,"y":50,"move":false},{"type":"point","x":237.5,"y":187.5,"move":false},{"type":"point","x":212.5,"y":237.5,"move":false},{"type":"point","x":62.5,"y":250,"move":false},{"type":"point","x":-50,"y":187.5,"move":false},{"type":"point","x":-200,"y":150,"move":false},{"type":"close"},{"type":"fill","r":55,"g":80,"b":150},{"type":"stroke","r":45,"g":50,"b":90}]`
     )
 ];
 
