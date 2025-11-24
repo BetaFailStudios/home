@@ -11,28 +11,28 @@ const player = {
 }
 
 function playerTick() {
+    if (player.iFrames > 0) ctx.globalAlpha = 0.4;
+    draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
+    if (player.iFrames > 0) ctx.globalAlpha = 1;
+
+    player.rotationTick += Math.PI/600;
+    if (player.rotationTick > Math.PI*2) player.rotationTick -= Math.PI*2;
+
+    if (game.menu) return;
     ctx.save();
     ctx.translate(player.x, player.y);
     if (mouse.x < player.x) ctx.scale(-1,1);
     ctx.rotate((Math.atan((mouse.y-player.y)/(mouse.x-player.x)) * (1-2*(mouse.x < player.x))) || 0);
     draw(70,0,game.weapon.reference.drawPath,25);
     ctx.restore();
-    if (player.iFrames > 0) ctx.globalAlpha = 0.4;
-    draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
-    if (player.iFrames > 0) ctx.globalAlpha = 1;
 
     player.x += player.vx;
     player.y += player.vy;
     player.vx *= 1-stats.friction;
     player.vy *= 1-stats.friction;
-
-    if (!game.menu) {
-        player.vx += (!!keys.d-!!keys.a)*stats.playerSpeed * (1-0.293*(keys.s ^ keys.w));
-        player.vy += (!!keys.s-!!keys.w)*stats.playerSpeed * (1-0.293*(keys.d ^ keys.a));
-    }
-
-    player.rotationTick += Math.PI/600;
-    if (player.rotationTick > Math.PI*2) player.rotationTick -= Math.PI*2;
+    
+    player.vx += (!!keys.d-!!keys.a)*stats.playerSpeed * (1-0.293*(keys.s ^ keys.w));
+    player.vy += (!!keys.s-!!keys.w)*stats.playerSpeed * (1-0.293*(keys.d ^ keys.a));
 
     if (Math.abs(player.x) > 850-stats.playerSize*1.25) {
         if (game.notLocked == 1 && (Math.sign(player.x) == 1 && game.openings.includes("right") || Math.sign(player.x) == -1 && game.openings.includes("left")) && Math.abs(player.y) < 100) {

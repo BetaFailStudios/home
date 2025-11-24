@@ -186,7 +186,7 @@ const weapons = [
         bulletDrawPath: JSON.parse(
             `[{"type":"point","x":250,"y":0},{"type":"point","x":-100,"y":-250},{"type":"point","x":-250,"y":-250},{"type":"point","x":-100,"y":0},{"type":"point","x":-250,"y":250},{"type":"point","x":-100,"y":250},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
-            stats.damage *= 1.65 + 0.1*rarity;
+            stats.damage *= 1.85 + 0.1*rarity;
             stats.firerate *= 1.15;
             stats.trailColor = "#999";
             stats.trailLength = 7;

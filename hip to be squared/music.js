@@ -23,7 +23,7 @@ const music = {
                 [23, "slice",3,0.125],[23 + 11/32, "sword"],[23 + 7/16, "dash"], // bar 14
                 [24, "melee",4,2],[24 + 3/8, "slice",4,2],[24 + 7/16, "knives",4,2],[24 + 15/16, "dash",4,2], // bar 12
                 [25+3/16, "slice",4,2],[25 + 5/16, "slice",4,2],[25 + 7/16, "dash",4,2],[25 + 11/16, "melee",4,2], // bar 13
-                [32, "disappear"],[32, "sword", 64, 0.0625], // amen break
+                [32, "disappear"],[32, "sword", 32, 0.125], // amen break
                 [36.125, "knives", 8, 1],[36 + 5/16, "knives", 8, 1],[36.625, "knives", 8, 1],[36.5 + 5/16, "knives", 7, 1],[36.5 + 7/16, "knives", 8, 1], // picked string
                 [37.5 + 3/8, "sword", 4, 2], // picked string
                 [40, "reappear"], // appearance
@@ -65,6 +65,7 @@ function startMusic() {
     })
 
     song.file.currentTime = 0;
+    song.file.volume = game.audioVolume;
     song.file.play();
     setTimeout(() => { if (game.musicPos == posToCheck) startMusic() }, song.file.duration*1000);
 }
@@ -74,7 +75,7 @@ function restartMusic(input) {
     game.musicPos = input;
     music["Haunted Armory"][game.musicPos].file.volume = 0;
     setTimeout(() => {
-        ease(music["Haunted Armory"][game.musicPos].file,"volume",1,1.5);
+        ease(music["Haunted Armory"][game.musicPos].file,"volume",game.audioVolume,1.5);
         startMusic();
     },1000)
 }
