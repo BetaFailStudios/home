@@ -103,16 +103,14 @@
             const pos = (mouse.gridpos*bpb/1600+bpb/2 + offset)/bpb;
 
             if (e.key.toLowerCase() == " ") console.log("`" + JSON.stringify(notes) + "`");
-            if (e.key.toLowerCase() == "a") notes.push( [ pos, "tick" ] );
-            if (e.key.toLowerCase() == "s") notes.push( [ pos, "beat" ] );
-            if (e.key.toLowerCase() == "d") notes.push( [ pos, "boom" ] );
+            if ("123456789".includes(e.key.toLowerCase())) notes.push( [ pos, "a" + e.key.toLowerCase() ] );
             if (e.key.toLowerCase() == "z") notes.splice( notes.length-1 );
             if (e.key.toLowerCase() == "arrowright") offset += bpb;
             if (e.key.toLowerCase() == "arrowleft" && offset > 0) offset -= bpb;
             if (e.key.toLowerCase() == "x") {
                 let closest = -1;
                 let closestDist = bpb;
-                let type = "beat";
+                let type = "a1";
                 if (mouse.y < -50) type = "tick";
                 else if (mouse.y > 50) type = "boom";
                 notes.forEach((item, i) => {
@@ -157,12 +155,9 @@
             ctx.fillStyle = "#fff";
             ctx.font = "30px share tech";
             ctx.fillText("z: deleteLast", -800,-430);
-            ctx.fillText("a: tick", -800,-400);
-            ctx.fillText("s: beat", -800,-370);
-            ctx.fillText("d: boom", -800,-340);
+            ctx.fillText("1-9: a1-9", -800,-400);
             ctx.fillText("x: delete closest", -500,-340);
             ctx.fillText("Bar: " + (offset/bpb + 1), -500,-440);
-            ctx.fillText("1-4: bossAttacks 1-4", -800,-460);
 
             ctx.beginPath();
             for (var i = -800; i <= 800; i += 1600/bpb/2) {
@@ -179,7 +174,7 @@
 
             notes.forEach((item) => {
                 ctx.fillStyle = "#ccc";
-                const y = -100 + 100*(item[1] == "beat") + 200*(item[1] == "boom"); 
+                const y = -100 + 10*(Number(item[1][1])); 
                 ctx.fillText(item[1],(item[0]*bpb-bpb/2-offset)*1600/bpb,y);
                 ctx.fillRect((item[0]*bpb-bpb/2-offset)*1600/bpb-2.5, -200, 5, 400);
             })

@@ -3,8 +3,10 @@ const player = {
     vx: 0, vy: 0,
     rotationTick: 0,
     drawPath: JSON.parse(
-        `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-50,"y":0},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"point","x":-200,"y":250,"move":true},{"type":"point","x":200,"y":250,"move":false},{"type":"point","x":0,"y":50,"move":false},{"type":"close"},{"type":"point","x":250,"y":200,"move":true},{"type":"point","x":250,"y":-200,"move":false},{"type":"point","x":50,"y":0,"move":false},{"type":"close"},{"type":"point","x":0,"y":-50,"move":true},{"type":"point","x":200,"y":-250,"move":false},{"type":"point","x":-200,"y":-250,"move":false},{"type":"close"},{"type":"fill","r":150,"g":200,"b":200},{"type":"stroke","r":75,"g":125,"b":120}]`
-    ),
+        `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-50,"y":0},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"point","x":-200,"y":250,"move":true},{"type":"point","x":200,"y":250,"move":false},{"type":"point","x":0,"y":50,"move":false},{"type":"close"},{"type":"point","x":250,"y":200,"move":true},{"type":"point","x":250,"y":-200,"move":false},{"type":"point","x":50,"y":0,"move":false},{"type":"close"},{"type":"point","x":0,"y":-50,"move":true},{"type":"point","x":200,"y":-250,"move":false},{"type":"point","x":-200,"y":-250,"move":false},{"type":"close"},{"type":"fill","r":150,"g":200,"b":200},{"type":"stroke","r":75,"g":115,"b":125}]`
+    ),/*eyesPath: JSON.parse(
+        `[{"type":"point","x":-225,"y":-175,"move":false},{"type":"point","x":-200,"y":-200,"move":false},{"type":"point","x":-25,"y":-200,"move":false},{"type":"point","x":0,"y":-175,"move":false},{"type":"point","x":0,"y":-75,"move":false},{"type":"point","x":-25,"y":-50,"move":false},{"type":"point","x":-200,"y":-50,"move":false},{"type":"point","x":-225,"y":-75,"move":false},{"type":"close"},{"type":"point","x":-200,"y":-75,"move":true},{"type":"point","x":-175,"y":-125,"move":false},{"type":"point","x":-25,"y":-150,"move":false},{"type":"point","x":25,"y":-175,"move":true},{"type":"point","x":25,"y":-75,"move":false},{"type":"point","x":50,"y":-50,"move":false},{"type":"point","x":200,"y":-50,"move":false},{"type":"point","x":225,"y":-75,"move":false},{"type":"point","x":225,"y":-175,"move":false},{"type":"point","x":200,"y":-200,"move":false},{"type":"point","x":50,"y":-200,"move":false},{"type":"close"},{"type":"point","x":200,"y":-75,"move":true},{"type":"point","x":175,"y":-125,"move":false},{"type":"point","x":50,"y":-150,"move":false},{"type":"fill","r":150,"g":200,"b":200},{"type":"stroke","r":75,"g":115,"b":125}]`
+    ),*/
     firerateTick: 0,
     iFrames: 0,
     dashCooldown: 0,
@@ -13,6 +15,7 @@ const player = {
 function playerTick() {
     if (player.iFrames > 0) ctx.globalAlpha = 0.4;
     draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
+    //draw(player.x,player.y,player.eyesPath,stats.playerSize);
     if (player.iFrames > 0) ctx.globalAlpha = 1;
 
     player.rotationTick += Math.PI/600;
@@ -72,6 +75,7 @@ function playerTick() {
             bullets.push(new Bullet({x: player.x + Math.cos(lookDirection)*50, y: player.y + Math.sin(lookDirection)*50, direction: lookDirection, triggerExpire: true}));
             lookDirection += stats.spread/(stats.projectiles-1);
         }
+        game.firstBullet = false;
 
         if (!player.burstsLeft) player.burstsLeft = stats.bursts-1;
         else player.burstsLeft--;

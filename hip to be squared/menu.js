@@ -24,6 +24,7 @@ const menuButtons = {
             game.audioVolume += lr*0.1;
             game.audioVolume = Math.min(1,Math.max(0,game.audioVolume));
             music["Haunted Armory"][game.musicPos].file.volume = game.audioVolume;
+            localStorage.setItem("htbs-audioVolume",game.audioVolume);
         }
     ]]
 }

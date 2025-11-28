@@ -204,7 +204,7 @@ const weapons = [
         bulletDrawPath: JSON.parse(
             `[{"type":"point","x":187.5,"y":-75},{"type":"point","x":187.5,"y":75},{"type":"point","x":150,"y":187.5},{"type":"point","x":75,"y":300},{"type":"point","x":0,"y":262.5},{"type":"point","x":75,"y":150},{"type":"point","x":112.5,"y":0},{"type":"point","x":75,"y":-150},{"type":"point","x":0,"y":-262.5},{"type":"point","x":75,"y":-300},{"type":"point","x":150,"y":-187.5},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
-            stats.damage *= 0.8 + 0.05*rarity;
+            stats.damage *= 0.9 + 0.1*rarity;
             stats.firerate *= 3;
             stats.bulletSpeed *= 0.35;
             stats.bulletSize *= 3;
@@ -481,7 +481,7 @@ const relics = [
         }
 /*SP*/},{
         name: "Spectacles",
-        desc: "First bullet in each room -> MASSIVE damage",
+        desc: "First shot in each room has MASSIVE damage",
         drawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":-50},{"type":"point","x":-100,"y":100},{"type":"point","x":200,"y":-50},{"type":"point","x":50,"y":-200},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":50,"y":25,"move":false},{"type":"point","x":-100,"y":100,"move":false},{"type":"point","x":-100,"y":150,"move":false},{"type":"point","x":-75,"y":175,"move":false},{"type":"point","x":-50,"y":175,"move":false},{"type":"point","x":25,"y":137.5,"move":false},{"type":"point","x":50,"y":100,"move":false},{"type":"point","x":50,"y":25,"move":false},{"type":"point","x":200,"y":-50,"move":false},{"type":"point","x":200,"y":25,"move":false},{"type":"point","x":175,"y":62.5,"move":false},{"type":"point","x":100,"y":100,"move":false},{"type":"point","x":75,"y":100,"move":false},{"type":"point","x":50,"y":75,"move":false},{"type":"point","x":50,"y":25,"move":false},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
@@ -543,7 +543,7 @@ const relics = [
         ),flashPath: JSON.parse(
             `[{"type":"point","x":-250,"y":0},{"type":"point","x":-100,"y":-37.5},{"type":"point","x":-175,"y":-175},{"type":"point","x":-37.5,"y":-100},{"type":"point","x":0,"y":-250},{"type":"point","x":37.5,"y":-100},{"type":"point","x":175,"y":-175},{"type":"point","x":100,"y":-37.5},{"type":"point","x":250,"y":0},{"type":"point","x":100,"y":37.5},{"type":"point","x":175,"y":175},{"type":"point","x":37.5,"y":100},{"type":"point","x":0,"y":250},{"type":"point","x":-37.5,"y":100},{"type":"point","x":-175,"y":175},{"type":"point","x":-100,"y":37.5},{"type":"close"},{"type":"fill","r":200,"g":200,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), onSpawn(rarity,bullet) {
-            bullets.push(new Bullet({x: bullet.x, y: bullet.y, vx: bullet.vx/8, vy: bullet.vy/8, direction: Math.random()*Math.PI, size: stats.bulletSize*(5+3.5*rarity), damage: bullet.damage * (0.9 + 0.2*rarity), lifetime: 0.2, drawPath: relics[28].flashPath, wallPierce: true,}));
+            bullets.push(new Bullet({x: bullet.x, y: bullet.y, speed: 10+rarity*2, direction: bullet.direction, size: 50+stats.bulletSize*(1+1.5*rarity), damage: bullet.damage * (0.6 + 0.2*rarity), lifetime: 0.2, drawPath: relics[28].flashPath, wallPierce: true,}));
         }
 /*GH*/},{
         name: "Giant's Helmet",
@@ -602,13 +602,28 @@ function itemTick() {
             closestDist = dist;
             closestIndex = i;
         }
+        items.forEach((item2,i2) => {
+            if (i == i2) return;
+            if (item.x == item2.x && item.y == item2.y) {
+                item2.x++;
+                item2.y++;
+            }
+            const dist = {x:item2.x-item.x, y:item2.y-item.y};
+            dist.hypot = Math.hypot(dist.x,dist.y);
+            if (dist.hypot < 100) {
+                item.x += (100-dist.x)/dist.hypot;
+                item.y += (100-dist.y)/dist.hypot;
+                item2.x -= (100-dist.x)/dist.hypot;
+                item2.y -= (100-dist.y)/dist.hypot;
+            }
+        });
     });
     items.forEach((item, i) => {
         if (Math.abs(item.x) > 700-50) {
             item.x = Math.sign(item.x)*(700-50);
         }
-        if (Math.abs(item.y) > 300-50) {
-            item.y = Math.sign(item.y+100)*(300-50);
+        if (Math.abs(item.y) > 250-50) {
+            item.y = Math.sign(item.y+100)*(250-50);
         }
         blocks.forEach((block) => {
             const diffx = item.x + 50 - block[0];

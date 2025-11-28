@@ -249,9 +249,12 @@ const game = {
     musicPos: 0,
     showHit: 0,
     menu: "main",
-    audioVolume: 0.8
+    audioVolume: 0.8,
+    discoveredRooms: 0,
 };
 
+if (localStorage.getItem("htbs-audioVolume")) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));
+else localStorage.setItem("htbs-audioVolume",game.audioVolume);
 let bullets = [];
 let enemies = [];
 let attackWarnings = [];

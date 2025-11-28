@@ -45,7 +45,9 @@ function drawRoommEffects() {
 function generateDungeon() {
     const pos = [0,0];
     let connected = false;
+    let length = 0;
     while (!connected) {//} || Object.keys(dungeon).length < 10) {
+        length++;
         const change = [Math.floor(Math.random()*2), 1-2*(Math.random() < 0.5)];
         pos[change[0]] += change[1];
         while (dungeon[pos[0] + "," + pos[1]]) pos[change[0]] += change[1];
@@ -54,7 +56,7 @@ function generateDungeon() {
         pos[change[0]] += change[1];
         change[1] *= -1;
         dungeon[pos[0] + "," + pos[1]] = { blocks: JSON.parse(dungeonPresets[Math.floor(Math.random()*dungeonPresets.length)]), items: [], connections: [change] };
-        if (Math.abs(pos[0]) + Math.abs(pos[1]) == 6) {
+        if (length > 15 && Math.random() < 0.7/*Math.abs(pos[0]) + Math.abs(pos[1]) == 6*/) {
             dungeon[pos[0] + "," + pos[1]].boss = true;
             connected = true;
             dungeon[pos[0] + "," + pos[1]].blocks = [];
@@ -141,11 +143,15 @@ function dungeonMove(change) {
 
         room.visited = true;
 
+        game.discoveredRooms++;
+
         if (room.boss) {
             restartMusic(1);
             enemies.push( new Enemy(enemyBlueprints[8]) );
+            game.bossEase = 1;
+            ease(game,"bossEase",0,5);
         }
-        else spawnEnemies(1 + 1*(Math.random() < 0.7));
+        else spawnEnemies(Math.floor(1 + Math.random()*0.6+0.15*game.discoveredRooms));
         
         ease(game,"notLocked",0,0.2);
         

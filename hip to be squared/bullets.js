@@ -42,7 +42,6 @@ class Bullet {
 
         if (game.firstBullet) {
             this.firstBullet = true;
-            game.firstBullet = false;
         }
         if (this.triggerExpire) stats.onSpawns.forEach( (item) => item[1](item[0],this));
     }

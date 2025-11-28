@@ -23,16 +23,24 @@ class Enemy {
         this.actualDirection = this.dirToTarget;
 
         this.healthMax = this.health;
-        this.spawnSize = this.size*1.2;
+        this.spawnSize = this.size*1.4;
     }
 }
 
 let enemiesBuffer = [];
 
 function enemyTick() {
+    const attackTypes = ["a1","a2","a3","a4","a5","a6","a7","a8","a9"];
+    game.bossName = false;
     game.bossHealth = 0;
     game.bossHealthMax = 0;
     enemies = enemies.filter((enemy,i) => {
+        if (enemy.boss) {
+            game.bossName = enemy.boss;
+            game.bossHealth += enemy.health;
+            game.bossHealthMax += enemy.healthMax;
+        }
+
         if (enemy.spawning && enemy.rotateToTarget) enemy.dirToTarget = (Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x));
         if (enemy.ephemeral) ctx.globalAlpha = 0.6;
         draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4);
@@ -57,12 +65,28 @@ function enemyTick() {
             ctx.lineWidth = 3;
         }
 
-        if (game.menu && game.menu != "inventory") return true;
+        let triggerWarn = true;
+        let triggerAttack = true;
+        attackTypes.forEach((item) => {
+            if (!enemy[item]/* || (enemy.noAttack && enemy.noAttack != item)*/) return;
+            if (!enemy["attackList" + item]) enemy["attackList" + item] = [];
+            if (game.enemyAttackWarning.includes(item) && triggerWarn) {
+                //if (enemy.reset) enemy.reset[0]();
+                enemy[item](enemy,30);
+                if (!enemy[item+"WarnCount"]) enemy[item+"WarnCount"] = 0;
+                enemy[item+"WarnCount"]++;
+                //triggerWarn = false;
+                enemy.lastWarning = item;
+            }
+            if (game.enemyAttack.includes(item) && triggerAttack && enemy[item+"WarnCount"] > 0) {
+                if (enemy.reset) enemy.reset[0]();
+                enemy[item](enemy);
+                enemy[item+"WarnCount"]--;
+                //triggerAttack = false;
+            }
+        })
 
-        if (enemy.boss) {
-            game.bossHealth += enemy.health;
-            game.bossHealthMax += enemy.healthMax;
-        }
+        if (game.menu) return true;
 
         enemy.x += enemy.vx;
         enemy.y += enemy.vy;
@@ -162,29 +186,6 @@ function enemyTick() {
             }
         });
 
-        let triggerWarn = true;
-        let triggerAttack = true;
-        let attackTypes = ["boom","beat","tick"];
-        if (game.musicPos == 1) attackTypes = ["drum","sword","knives","slice","dash","disappear","reappear","melee"];
-        attackTypes.forEach((item) => {
-            if (!enemy[item]/* || (enemy.noAttack && enemy.noAttack != item)*/) return;
-            if (!enemy["attackList" + item]) enemy["attackList" + item] = [];
-            if (game.enemyAttackWarning.includes(item) && triggerWarn) {
-                //if (enemy.reset) enemy.reset[0]();
-                enemy[item](enemy,30);
-                if (!enemy[item+"WarnCount"]) enemy[item+"WarnCount"] = 0;
-                enemy[item+"WarnCount"]++;
-                //triggerWarn = false;
-                enemy.lastWarning = item;
-            }
-            if (game.enemyAttack.includes(item) && triggerAttack && enemy[item+"WarnCount"] > 0) {
-                if (enemy.reset) enemy.reset[0]();
-                enemy[item](enemy);
-                enemy[item+"WarnCount"]--;
-                //triggerAttack = false;
-            }
-        })
-
         if (enemy.health <= 0) {
             enemy.alive = false;
             ease(enemy,"size",0,0.2);
@@ -204,4 +205,17 @@ function spawnEnemies(num) {
         enemy.y = Math.random()*800-400;
         enemies.push(enemy);
     }
+}
+
+function drawBossName() {
+    ctx.beginPath();
+    ctx.fillStyle = game.bossName[1];
+    ctx.strokeStyle = "#222";
+    ctx.font = "75px share tech";
+    ctx.lineWidth = 20;
+    ctx.strokeText(game.bossName[0],0,-200-300*game.bossEase**5);
+    ctx.fillText(game.bossName[0],0,-200-300*game.bossEase**5);
+    ctx.lineWidth = 3;
+
+    if (!game.bossEase) ease(game,"bossEase",1,5);
 }
