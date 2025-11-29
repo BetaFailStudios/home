@@ -47,13 +47,13 @@ const weapons = [
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":75,"y":-125},{"type":"point","x":175,"y":-125},{"type":"point","x":237.5,"y":-12.5},{"type":"point","x":250,"y":12.5},{"type":"point","x":200,"y":175},{"type":"point","x":62.5,"y":212.5},{"type":"point","x":-25,"y":250},{"type":"point","x":-150,"y":175},{"type":"point","x":-175,"y":50},{"type":"point","x":-250,"y":12.5},{"type":"point","x":-187.5,"y":-137.5},{"type":"point","x":-87.5,"y":-250},{"type":"close"},{"type":"fill","r":75,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
             stats.firerate *= 1.5 - 0.03*rarity;
-            stats.damage *= 0.65 + 0.2*rarity;
+            stats.damage *= 0.75 + 0.2*rarity;
             stats.bulletSize *= 0.9;
             stats.bulletSpeed *= 0.6;
             stats.projectiles += 4;
             stats.bloom *= 2.5;
             stats.spread *= 1.25;
-            stats.lifetime = 0.5;
+            stats.lifetime = 0.6;
         }
 /*RG*/},{
         name: "Railgun",
@@ -83,13 +83,13 @@ const weapons = [
             `[{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":-50},{"type":"point","x":175,"y":-100},{"type":"point","x":100,"y":-125},{"type":"point","x":50,"y":-75},{"type":"point","x":-100,"y":-25},{"type":"point","x":-300,"y":0},{"type":"point","x":-100,"y":25},{"type":"point","x":50,"y":75},{"type":"point","x":100,"y":125},{"type":"point","x":162.5,"y":100},{"type":"point","x":225,"y":50},{"type":"close"},{"type":"fill","r":255,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":100,"y":-75},{"type":"point","x":162.5,"y":-50},{"type":"point","x":200,"y":0},{"type":"point","x":162.5,"y":50},{"type":"point","x":100,"y":75},{"type":"point","x":75,"y":50},{"type":"point","x":-50,"y":0},{"type":"point","x":75,"y":-50},{"type":"close"},{"type":"fill","r":255,"g":200,"b":100},{"type":"stroke","r":255,"g":150,"b":100}]`
         ), statChange(rarity) {
             stats.firerate *= 0.2 - 0.03*rarity;
-            stats.damage *= 0.11 + 0.03*rarity;
+            stats.damage *= 0.14 + 0.05*rarity;
             stats.bulletSpeed *= 0.3;
             stats.bulletSize *= 2;
             stats.projectiles += 1;
             stats.bloom *= 2;
             stats.spread *= 0.3;
-            stats.lifetime = 0.9;
+            stats.lifetime = 1;
         }
 /*PC*/},{
         name: "Playing Cards",
@@ -345,17 +345,6 @@ const relics = [
             stats.bloom *= 3.5-0.15*rarity;
             stats.damage *= 1.45 + 0.2*rarity;
         }
-/*PR*/},{
-        name: "Piercing Rounds",
-        desc: "Bullets pierce & gain damage when they do",
-        drawPath: JSON.parse(
-            `[{"type":"point","x":0,"y":-225},{"type":"point","x":-25,"y":-200},{"type":"point","x":-50,"y":-150},{"type":"point","x":-75,"y":-50},{"type":"point","x":75,"y":-50},{"type":"point","x":50,"y":-150},{"type":"point","x":25,"y":-200},{"type":"close"},{"type":"fill","r":100,"g":100,"b":50},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-75,"y":-50},{"type":"point","x":-75,"y":200},{"type":"point","x":-62.5,"y":237.5},{"type":"point","x":-25,"y":250},{"type":"point","x":25,"y":250},{"type":"point","x":62.5,"y":237.5},{"type":"point","x":75,"y":200},{"type":"point","x":75,"y":-50},{"type":"close"},{"type":"fill","r":150,"g":150,"b":50},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-100,"y":25},{"type":"point","x":-100,"y":-50},{"type":"point","x":-75,"y":-150},{"type":"point","x":-50,"y":-200},{"type":"point","x":0,"y":-250},{"type":"point","x":50,"y":-200},{"type":"point","x":75,"y":-150},{"type":"point","x":100,"y":-50},{"type":"point","x":100,"y":25},{"type":"point","x":-125,"y":-50,"move":true},{"type":"point","x":-100,"y":-150,"move":false},{"type":"point","x":-75,"y":-200,"move":false},{"type":"point","x":0,"y":-275,"move":false},{"type":"point","x":75,"y":-200,"move":false},{"type":"point","x":100,"y":-150,"move":false},{"type":"point","x":125,"y":-50,"move":false},{"type":"point","x":-125,"y":-150,"move":true},{"type":"point","x":-100,"y":-200,"move":false},{"type":"point","x":0,"y":-300,"move":false},{"type":"point","x":100,"y":-200,"move":false},{"type":"point","x":125,"y":-150,"move":false},{"type":"stroke","r":175,"g":175,"b":175}]`
-        ), statChange(rarity) {
-            stats.pierce = (stats.pierce || 0) + 1 + rarity;
-            stats.damage *= 1.1 + 0.05*rarity;
-        }, onHit(rarity,bullet,enemy) {
-            bullet.damage *= 1.2 + 0.05*rarity;
-        }
 /*CB*/},{
         name: "Can o' Beans",
         desc: "MANY small and less powerful bullets",
@@ -510,7 +499,7 @@ const relics = [
         ), damageBoost(rarity,bullet,enemy) {
             if (enemy.hitMarkers) {
                 if (enemy.hitMarkers < 6 + 3*rarity) enemy.hitMarkers++;
-                return 1 + 0.1*enemy.hitMarkers;
+                return 1 + 0.05*enemy.hitMarkers;
             } else {
                 enemy.hitMarkers = 1;
                 return 1;
@@ -543,7 +532,7 @@ const relics = [
         ),flashPath: JSON.parse(
             `[{"type":"point","x":-250,"y":0},{"type":"point","x":-100,"y":-37.5},{"type":"point","x":-175,"y":-175},{"type":"point","x":-37.5,"y":-100},{"type":"point","x":0,"y":-250},{"type":"point","x":37.5,"y":-100},{"type":"point","x":175,"y":-175},{"type":"point","x":100,"y":-37.5},{"type":"point","x":250,"y":0},{"type":"point","x":100,"y":37.5},{"type":"point","x":175,"y":175},{"type":"point","x":37.5,"y":100},{"type":"point","x":0,"y":250},{"type":"point","x":-37.5,"y":100},{"type":"point","x":-175,"y":175},{"type":"point","x":-100,"y":37.5},{"type":"close"},{"type":"fill","r":200,"g":200,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), onSpawn(rarity,bullet) {
-            bullets.push(new Bullet({x: bullet.x, y: bullet.y, speed: 10+rarity*2, direction: bullet.direction, size: 50+stats.bulletSize*(1+1.5*rarity), damage: bullet.damage * (0.6 + 0.2*rarity), lifetime: 0.2, drawPath: relics[28].flashPath, wallPierce: true,}));
+            bullets.push(new Bullet({x: bullet.x, y: bullet.y, speed: 20+rarity*5, direction: bullet.direction, size: 50+stats.bulletSize*(1+0.5*rarity), damage: bullet.damage * (0.6 + 0.2*rarity), lifetime: 0.2, drawPath: relics[28].flashPath, wallPierce: true,}));
         }
 /*GH*/},{
         name: "Giant's Helmet",
@@ -851,3 +840,16 @@ function pickUpItem() {
         }
     }
 }
+
+//scrapped
+/*PR  },{
+        name: "Piercing Rounds",
+        desc: "Bullets pierce & gain damage when they do",
+        drawPath: JSON.parse(
+            `[{"type":"point","x":0,"y":-225},{"type":"point","x":-25,"y":-200},{"type":"point","x":-50,"y":-150},{"type":"point","x":-75,"y":-50},{"type":"point","x":75,"y":-50},{"type":"point","x":50,"y":-150},{"type":"point","x":25,"y":-200},{"type":"close"},{"type":"fill","r":100,"g":100,"b":50},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-75,"y":-50},{"type":"point","x":-75,"y":200},{"type":"point","x":-62.5,"y":237.5},{"type":"point","x":-25,"y":250},{"type":"point","x":25,"y":250},{"type":"point","x":62.5,"y":237.5},{"type":"point","x":75,"y":200},{"type":"point","x":75,"y":-50},{"type":"close"},{"type":"fill","r":150,"g":150,"b":50},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-100,"y":25},{"type":"point","x":-100,"y":-50},{"type":"point","x":-75,"y":-150},{"type":"point","x":-50,"y":-200},{"type":"point","x":0,"y":-250},{"type":"point","x":50,"y":-200},{"type":"point","x":75,"y":-150},{"type":"point","x":100,"y":-50},{"type":"point","x":100,"y":25},{"type":"point","x":-125,"y":-50,"move":true},{"type":"point","x":-100,"y":-150,"move":false},{"type":"point","x":-75,"y":-200,"move":false},{"type":"point","x":0,"y":-275,"move":false},{"type":"point","x":75,"y":-200,"move":false},{"type":"point","x":100,"y":-150,"move":false},{"type":"point","x":125,"y":-50,"move":false},{"type":"point","x":-125,"y":-150,"move":true},{"type":"point","x":-100,"y":-200,"move":false},{"type":"point","x":0,"y":-300,"move":false},{"type":"point","x":100,"y":-200,"move":false},{"type":"point","x":125,"y":-150,"move":false},{"type":"stroke","r":175,"g":175,"b":175}]`
+        ), statChange(rarity) {
+            stats.pierce = (stats.pierce || 0) + 1 + rarity;
+            stats.damage *= 1.1 + 0.05*rarity;
+        }, onHit(rarity,bullet,enemy) {
+            bullet.damage *= 1.2 + 0.05*rarity;
+        }*/

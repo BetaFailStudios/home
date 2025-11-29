@@ -56,7 +56,7 @@ function generateDungeon() {
         pos[change[0]] += change[1];
         change[1] *= -1;
         dungeon[pos[0] + "," + pos[1]] = { blocks: JSON.parse(dungeonPresets[Math.floor(Math.random()*dungeonPresets.length)]), items: [], connections: [change] };
-        if (length > 15 && Math.random() < 0.7/*Math.abs(pos[0]) + Math.abs(pos[1]) == 6*/) {
+        if (length > 10 && Math.random() < 0.5/*Math.abs(pos[0]) + Math.abs(pos[1]) == 6*/) {
             dungeon[pos[0] + "," + pos[1]].boss = true;
             connected = true;
             dungeon[pos[0] + "," + pos[1]].blocks = [];
@@ -151,7 +151,7 @@ function dungeonMove(change) {
             game.bossEase = 1;
             ease(game,"bossEase",0,5);
         }
-        else spawnEnemies(Math.floor(1 + Math.random()*0.6+0.15*game.discoveredRooms));
+        else spawnEnemies(Math.floor(1 + Math.random()*0.6+0.2*game.discoveredRooms));
         
         ease(game,"notLocked",0,0.2);
         

@@ -107,12 +107,11 @@
             if (e.key.toLowerCase() == "z") notes.splice( notes.length-1 );
             if (e.key.toLowerCase() == "arrowright") offset += bpb;
             if (e.key.toLowerCase() == "arrowleft" && offset > 0) offset -= bpb;
-            if (e.key.toLowerCase() == "x") {
+            if (e.key.toLowerCase() == "x" && Math.abs(mouse.y) < 110) {
                 let closest = -1;
                 let closestDist = bpb;
-                let type = "a1";
-                if (mouse.y < -50) type = "tick";
-                else if (mouse.y > 50) type = "boom";
+                let type = "a" + Math.floor((mouse.y+140)/20);
+                console.log(type)
                 notes.forEach((item, i) => {
                     const dist = Math.abs(pos-item[0]);
                     if (dist < bpb && dist < closestDist && item[1] == type) {
@@ -160,6 +159,13 @@
             ctx.fillText("Bar: " + (offset/bpb + 1), -500,-440);
 
             ctx.beginPath();
+            for (var i = -100; i <= 100; i += 20) {
+                ctx.moveTo(-1000,i);
+                ctx.lineTo(1000,i);
+            }
+            ctx.strokeStyle = "#444";
+            ctx.stroke();
+            ctx.beginPath();
             for (var i = -800; i <= 800; i += 1600/bpb/2) {
                 //ctx.moveTo(-250,i);
                 //ctx.lineTo(250,i);
@@ -174,9 +180,10 @@
 
             notes.forEach((item) => {
                 ctx.fillStyle = "#ccc";
-                const y = -100 + 10*(Number(item[1][1])); 
-                ctx.fillText(item[1],(item[0]*bpb-bpb/2-offset)*1600/bpb,y);
-                ctx.fillRect((item[0]*bpb-bpb/2-offset)*1600/bpb-2.5, -200, 5, 400);
+                const y = -120 + 20*(Number(item[1][1])); 
+                ctx.font = "20px share tech"
+                ctx.fillText(item[1],(item[0]*bpb-bpb/2-offset)*1600/bpb+5,y);
+                ctx.fillRect((item[0]*bpb-bpb/2-offset)*1600/bpb-5, y-15, 10, 30);
             })
 
             ctx.beginPath();

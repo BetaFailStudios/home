@@ -213,8 +213,8 @@ function drawBossName() {
     ctx.strokeStyle = "#222";
     ctx.font = "75px share tech";
     ctx.lineWidth = 20;
-    ctx.strokeText(game.bossName[0],0,-200-300*game.bossEase**5);
-    ctx.fillText(game.bossName[0],0,-200-300*game.bossEase**5);
+    ctx.strokeText(game.bossName[0],0,-400-200*game.bossEase**5);
+    ctx.fillText(game.bossName[0],0,-400-200*game.bossEase**5);
     ctx.lineWidth = 3;
 
     if (!game.bossEase) ease(game,"bossEase",1,5);

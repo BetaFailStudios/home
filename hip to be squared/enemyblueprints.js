@@ -218,7 +218,7 @@ const enemyBlueprints = [
         }, a4(enemy, warn) { // large explosion
             if (warn) {
                 enemy.attackLista4.push([enemy.x,enemy.y]);
-                attackWarnings.push(["circle",warn*4,warn*4,enemy.x, enemy.y,500]);
+                attackWarnings.push(["circle",warn*4,warn*4,enemy.x, enemy.y,400]);
                 enemy.vx = 0; enemy.vy = 0; enemy.speed = 0;
             } else {
                 enemiesBuffer.push(new Enemy(enemyBlueprints[9],{ x: enemy.attackLista4[0][0], y: enemy.attackLista4[0][1], size: 850 }));
@@ -328,5 +328,18 @@ const enemyBlueprints = [
         size: 65, health: 0.07, projectile: true, rotateToTarget: true, immovable: true, speed: 0.35, target: "direction", drawPath: JSON.parse(
             `[{"type":"point","x":-125,"y":-125},{"type":"point","x":0,"y":-175},{"type":"point","x":125,"y":-125},{"type":"point","x":175,"y":0},{"type":"point","x":125,"y":125},{"type":"point","x":0,"y":175},{"type":"point","x":-125,"y":125},{"type":"point","x":-100,"y":175},{"type":"point","x":0,"y":225},{"type":"point","x":100,"y":225},{"type":"point","x":200,"y":175},{"type":"point","x":250,"y":75},{"type":"point","x":262.5,"y":0},{"type":"point","x":250,"y":-75},{"type":"point","x":200,"y":-175},{"type":"point","x":100,"y":-225},{"type":"point","x":0,"y":-225},{"type":"point","x":-100,"y":-175},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40}]`
         )
+    },{ // 15 Morning Star
+        size: 125, health: 500, boss: ["Morning Star", "#cc5"], rotateToTarget: true, speed: 0.05, target: "playerAdvanced", ephemeral: true, drawPath: JSON.parse(
+            `[{"type":"point","x":-250,"y":-12.5},{"type":"point","x":150,"y":-12.5},{"type":"point","x":150,"y":12.5},{"type":"point","x":-250,"y":12.5},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-225,"y":-25},{"type":"point","x":-225,"y":25},{"type":"point","x":-100,"y":25},{"type":"point","x":-100,"y":-25},{"type":"close"},{"type":"fill","r":75,"g":50,"b":0},{"type":"stroke","r":50,"g":25,"b":0},{"type":"point","x":137.5,"y":-12.5,"move":false},{"type":"point","x":150,"y":-37.5,"move":false},{"type":"point","x":175,"y":-50,"move":false},{"type":"point","x":200,"y":-50,"move":false},{"type":"point","x":225,"y":-37.5,"move":false},{"type":"point","x":237.5,"y":-12.5,"move":false},{"type":"point","x":237.5,"y":12.5,"move":false},{"type":"point","x":225,"y":37.5,"move":false},{"type":"point","x":200,"y":50,"move":false},{"type":"point","x":175,"y":50,"move":false},{"type":"point","x":150,"y":37.5,"move":false},{"type":"point","x":137.5,"y":12.5,"move":false},{"type":"close"},{"type":"point","x":112.5,"y":-37.5,"move":false},{"type":"point","x":150,"y":-37.5,"move":false},{"type":"point","x":150,"y":-75,"move":false},{"type":"point","x":175,"y":-50,"move":false},{"type":"point","x":187.5,"y":-87.5,"move":false},{"type":"point","x":200,"y":-50,"move":false},{"type":"point","x":225,"y":-75,"move":false},{"type":"point","x":225,"y":-37.5,"move":false},{"type":"point","x":262.5,"y":-37.5,"move":false},{"type":"point","x":237.5,"y":-12.5,"move":false},{"type":"point","x":275,"y":0,"move":false},{"type":"point","x":237.5,"y":12.5,"move":false},{"type":"point","x":262.5,"y":37.5,"move":false},{"type":"point","x":225,"y":37.5,"move":false},{"type":"point","x":225,"y":75,"move":false},{"type":"point","x":200,"y":50,"move":false},{"type":"point","x":187.5,"y":87.5,"move":false},{"type":"point","x":175,"y":50,"move":false},{"type":"point","x":150,"y":75,"move":false},{"type":"point","x":150,"y":37.5,"move":false},{"type":"point","x":112.5,"y":37.5,"move":false},{"type":"point","x":137.5,"y":12.5,"move":false},{"type":"fill","r":150,"g":150,"b":150},{"type":"stroke","r":75,"g":75,"b":75}]`
+        ), a1(enemy, warn) { // drum explosion
+            if (warn) {
+                const pos = [-800+Math.random()*1600,-400+Math.random()*800]
+                enemy.attackLista1.push(pos);
+                attackWarnings.push(["circle",warn*4,warn*4,pos[0], pos[1],100]);
+            } else {
+                enemiesBuffer.push(new Enemy(enemyBlueprints[9],{ x: enemy.attackLista1[0][0], y: enemy.attackLista1[0][1]}));
+                enemy.attackLista1.splice(0,1);
+            }
+        }
     }
 ]
