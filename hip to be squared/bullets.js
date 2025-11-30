@@ -94,7 +94,7 @@ function bulletTick() {
                     if (bullet.jackpot) effects.push(new Effect(bullet.x,bullet.y,"jackpot",40,40));
                     enemy.health -= damage;
                     let decimalPoint = 0;
-                    while (damage < 10**(-decimalPoint)) decimalPoint++;
+                    while (damage < 10**(1-decimalPoint)) decimalPoint++;
                     dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,damage.toFixed(decimalPoint)));
                     if (bullet.pierce) bullet.pierce--;
                     else if (!enemy.projectiles || enemy.health > 0) {
@@ -144,7 +144,7 @@ function bulletTick() {
             if (diffx > 0 && diffx1 > 0 && diffy > 0 && diffy1 > 0) {
                 if (bullet.bulletBounce) {
                     bullet.bulletBounce--;
-                    bullet.damage *= 1.75;
+                    bullet.damage *= 1.15;
                     bullet.direction = Math.PI*2*Math.random();
                     if (Math.min(diffx, diffx1) < Math.min(diffy,diffy1)) {
                         bullet.vx *= -1;
