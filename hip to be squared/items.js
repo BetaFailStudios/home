@@ -418,7 +418,7 @@ const relics = [
         ), onHit(rarity,bullet,enemy) {
             enemy.vx *= 0.7-0.05*rarity;
             enemy.vy *= 0.7-0.05*rarity;
-            enemy.health -= 0.05 + 0.01*rarity;
+            enemy.health -= 0.1 + 0.05*rarity;
         }
 /*SB*/},{
         name: "Silver Bullet",
@@ -497,7 +497,7 @@ const relics = [
             `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-200,"y":-250},{"type":"point","x":-25,"y":-75},{"type":"point","x":-75,"y":-25},{"type":"close"},{"type":"point","x":200,"y":-250,"move":true},{"type":"point","x":25,"y":-75,"move":false},{"type":"point","x":75,"y":-25,"move":false},{"type":"point","x":250,"y":-200,"move":false},{"type":"close"},{"type":"point","x":250,"y":200,"move":true},{"type":"point","x":200,"y":250,"move":false},{"type":"point","x":25,"y":75,"move":false},{"type":"point","x":75,"y":25,"move":false},{"type":"close"},{"type":"point","x":-200,"y":250,"move":true},{"type":"point","x":-25,"y":75,"move":false},{"type":"point","x":-75,"y":25,"move":false},{"type":"point","x":-250,"y":200,"move":false},{"type":"close"},{"type":"fill","r":75,"g":25,"b":25},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), damageBoost(rarity,bullet,enemy) {
             if (enemy.hitMarkers) {
-                if (enemy.hitMarkers < 6 + 3*rarity) enemy.hitMarkers++;
+                if (enemy.hitMarkers < 8 + 8*rarity) enemy.hitMarkers++;
                 return 1 + 0.05*enemy.hitMarkers;
             } else {
                 enemy.hitMarkers = 1;
@@ -556,7 +556,7 @@ class Item {
         if (!rarity && rarity !== 0) {
             const random = Math.random();
             if (random < 0.65) this.rarity = 0;
-            else if (random < 0.85) this.rarity = 1;
+            else if (random < 0.90) this.rarity = 1;
             else if (random < 0.98) this.rarity = 2;
             else if (random < 0.995) this.rarity = 3;
             else this.rarity = 4;
