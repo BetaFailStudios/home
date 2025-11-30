@@ -78,7 +78,7 @@ function enemyTick() {
                 //triggerWarn = false;
                 enemy.lastWarning = item;
             }
-            if (game.enemyAttack.includes(item) && triggerAttack && enemy[item+"WarnCount"] > 0) {
+            if (game.enemyAttack.includes(item) && triggerAttack && (enemy[item+"WarnCount"] > 0 || enemy.noWarnWait)) {
                 if (enemy.reset) enemy.reset[0]();
                 enemy[item](enemy);
                 enemy[item+"WarnCount"]--;
@@ -193,7 +193,7 @@ function enemyTick() {
         return true;
     })
 
-    enemies.push(...enemiesBuffer);
+    if (!game.menu) enemies.push(...enemiesBuffer);
     enemiesBuffer = [];
 }
 

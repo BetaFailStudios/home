@@ -17,7 +17,7 @@ const menuButtons = {
             window.location.reload()
         }
     ]],
-    "options": [[ "back", "- volume +" ],[
+    "options": [[ "back", "- volume +", "damage numbers" ],[
         () => {
             game.optionsMenu = false;
         },(lr) => {
@@ -25,6 +25,9 @@ const menuButtons = {
             game.audioVolume = Math.min(1,Math.max(0,game.audioVolume));
             music["Haunted Armory"][game.musicPos].file.volume = game.audioVolume;
             localStorage.setItem("htbs-audioVolume",game.audioVolume);
+        },() => {
+            game.showDamageNumbers = !game.showDamageNumbers;
+            localStorage.setItem("htbs-dmgNumbersOption",game.showDamageNumbers);
         }
     ]]
 }
@@ -78,7 +81,10 @@ function drawMenu() {
         ctx.strokeText(item.toUpperCase(),350,yPos-200);
         ctx.fillText(item.toUpperCase(),350,yPos-200)
 
-        if (game.optionsMenu && i == 1) {
+        if (game.optionsMenu) if (i == 1) {
+            ctx.strokeText("Lower Rez: CTRL +",350,yPos+200);
+            ctx.fillText("Lower Rez: CTRL +",350,yPos+200)
+
             ctx.lineCap = "round";
             ctx.lineWidth = 15;
             ctx.beginPath();
@@ -92,6 +98,20 @@ function drawMenu() {
             ctx.moveTo(350-xPos,yPos-125);
             ctx.lineTo(350-xPos+xPos*game.audioVolume*2,yPos-125);
             ctx.strokeStyle = "#999";
+            ctx.stroke();
+            ctx.lineCap = "butt";
+            ctx.lineWidth = 10;
+        } else if (i == 2) {
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(350-xPos,yPos-125);
+            ctx.lineTo(350+xPos,yPos-125);
+            ctx.lineWidth = 15;
+            ctx.strokeStyle = "#222";
+            ctx.stroke();
+            ctx.lineWidth = 5;
+            if (game.showDamageNumbers) ctx.strokeStyle = "#3c3";
+            else ctx.strokeStyle = "#c33";
             ctx.stroke();
             ctx.lineCap = "butt";
             ctx.lineWidth = 10;

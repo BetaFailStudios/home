@@ -130,3 +130,31 @@ function drawEnvironment() {
         //ctx.rect(...block);
     })
 }
+
+let dmgNumbers = [];
+
+function drawDamageNumbers() {
+    ctx.beginPath();
+    ctx.fillStyle = "#999";
+    ctx.strokeStyle = "#222";
+    ctx.lineWidth = 7;
+    dmgNumbers = dmgNumbers.filter((item) => {
+        ctx.font = animationRatio(item.timeLeft,item.timeLeftMax,10)*70*Number(item.damage)+"px share tech";
+        ctx.strokeText(item.damage,item.x,item.y);
+        ctx.fillText(item.damage,item.x,item.y);
+
+        item.timeLeft++;
+        return item.timeLeft < item.timeLeftMax;
+    });
+    ctx.lineWidth = 3;
+}
+
+class DamageNumber {
+    constructor(x,y,damage) {
+        this.x = x + Math.random()*20-10;
+        this.y = y + Math.random()*20-10;
+        this.damage = damage;
+        this.timeLeft = 0;
+        this.timeLeftMax = 30;
+    }
+}

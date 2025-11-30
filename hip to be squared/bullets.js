@@ -93,6 +93,7 @@ function bulletTick() {
                     stats.damageBoosts.forEach( (item) => damage *= item[1](item[0],bullet,enemy));
                     if (bullet.jackpot) effects.push(new Effect(bullet.x,bullet.y,"jackpot",40,40));
                     enemy.health -= damage;
+                    dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,damage.toFixed(1)));
                     if (bullet.pierce) bullet.pierce--;
                     else if (!enemy.projectiles || enemy.health > 0) {
                         bullet.alive = false;

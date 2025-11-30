@@ -255,6 +255,8 @@ const game = {
 
 if (localStorage.getItem("htbs-audioVolume")) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));
 else localStorage.setItem("htbs-audioVolume",game.audioVolume);
+if (localStorage.getItem("htbs-dmgNumbersOption")) game.showDamageNumbers = localStorage.getItem("htbs-dmgNumbersOption");
+else localStorage.setItem("htbs-dmgNumbersOption",game.showDamageNumbers);
 let bullets = [];
 let enemies = [];
 let attackWarnings = [];

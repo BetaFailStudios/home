@@ -86,7 +86,7 @@ function playerTick() {
     if (player.iFrames > 0) player.iFrames--;
     else {
         enemies.forEach((enemy) => {
-            if (enemy.spawning) return;
+            if (enemy.spawning || player.iFrames) return;
             const x = (player.x-enemy.x);
             const y = (player.y-enemy.y);
             const hypot = Math.hypot(x,y);

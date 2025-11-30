@@ -148,7 +148,7 @@ const weapons = [
         }
 /*SH*/},{
         name: "Sledgehammer",
-        desc: "Bulllets pop with AoE",
+        desc: "Large melee attack with massive damage",
         drawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":225},{"type":"point","x":225,"y":-250},{"type":"point","x":250,"y":-225},{"type":"point","x":-225,"y":250},{"type":"close"},{"type":"fill","r":125,"g":125,"b":50},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":125,"y":-225},{"type":"point","x":225,"y":-125},{"type":"point","x":275,"y":-175},{"type":"point","x":175,"y":-275},{"type":"close"},{"type":"fill","r":75,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50}]`
         ),
@@ -213,7 +213,7 @@ const weapons = [
         }
 /*MS*/},{
         name: "Mirror Sheild",
-        desc: "Bullets parry enemies and their projectiles",
+        desc: "Melee attack that parries enemy attacks",
         drawPath: JSON.parse(
             `[{"type":"point","x":-125,"y":-300},{"type":"point","x":150,"y":-250},{"type":"point","x":150,"y":250},{"type":"point","x":-125,"y":300},{"type":"close"},{"type":"fill","r":125,"g":125,"b":125},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-100,"y":262.5},{"type":"point","x":125,"y":225},{"type":"point","x":125,"y":-225},{"type":"point","x":-100,"y":-262.5},{"type":"close"},{"type":"fill","r":150,"g":200,"b":200},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":100,"y":-200},{"type":"point","x":100,"y":-100},{"type":"point","x":62.5,"y":-112.5},{"type":"point","x":62.5,"y":-212.5},{"type":"close"},{"type":"fill","r":200,"g":200,"b":200}]`
         ),
@@ -403,11 +403,11 @@ const relics = [
         }
 /*BH*/},{
         name: "Bull's Horn",
-        desc: "Increased damage on low health",
+        desc: "Increased damage at or below 4 health",
         drawPath: JSON.parse(
             `[{"type":"point","x":-175,"y":100},{"type":"point","x":-125,"y":100},{"type":"point","x":-100,"y":125},{"type":"point","x":-100,"y":175},{"type":"point","x":-150,"y":175},{"type":"point","x":-175,"y":150},{"type":"point","x":-175,"y":100},{"type":"point","x":-75,"y":0},{"type":"point","x":-25,"y":-75},{"type":"point","x":-12.5,"y":-150},{"type":"point","x":-25,"y":-200},{"type":"point","x":-50,"y":-225},{"type":"point","x":0,"y":-212.5},{"type":"point","x":25,"y":-175},{"type":"point","x":50,"y":-75},{"type":"point","x":37.5,"y":-25},{"type":"point","x":0,"y":50},{"type":"point","x":-100,"y":175},{"type":"fill","r":135,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-150,"y":175},{"type":"point","x":-100,"y":175},{"type":"point","x":-100,"y":125},{"type":"point","x":-125,"y":100},{"type":"point","x":-175,"y":100},{"type":"point","x":-175,"y":150},{"type":"close"},{"type":"fill","r":25,"g":25,"b":25},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), damageBoost(rarity,bullet,enemy) {
-            if (player.helath <= 3+rarity) return 2;
+            if (player.health <= 4) return 2 + 0.25*rarity;
             else return 1;
         }
 /*SG*/},{
@@ -461,12 +461,11 @@ const relics = [
         }
 /*RP*/},{
         name: "Red Pen",
-        desc: "Increased damage at high red health",
+        desc: "Increased damage the more red health you have",
         drawPath: JSON.parse(
             `[{"type":"point","x":-200,"y":-175},{"type":"point","x":-125,"y":-100},{"type":"point","x":-100,"y":-125},{"type":"point","x":-175,"y":-200},{"type":"close"},{"type":"point","x":-200,"y":-150,"move":false},{"type":"point","x":-150,"y":-100,"move":true},{"type":"point","x":-200,"y":-150,"move":false},{"type":"point","x":125,"y":150,"move":true},{"type":"point","x":200,"y":200,"move":false},{"type":"point","x":150,"y":125,"move":false},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-125,"y":-100,"move":false},{"type":"point","x":125,"y":150,"move":false},{"type":"point","x":150,"y":125,"move":false},{"type":"point","x":-100,"y":-125,"move":false},{"type":"point","x":-125,"y":-100,"move":false},{"type":"fill","r":255,"g":50,"b":50},{"type":"stroke","r":80,"g":40,"b":40}]`
         ), damageBoost(rarity,bullet,enemy) {
-            if (player.health >= player.healthMax-3) return 1.4 + 0.08*rarity;
-            else return 1;
+            return 1 + game.health*0.03;
         }
 /*SP*/},{
         name: "Spectacles",

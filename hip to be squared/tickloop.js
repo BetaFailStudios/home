@@ -30,6 +30,7 @@ function tickloop() {
     handleEffects();
     playerTick();
     itemTick();
+    drawDamageNumbers();
     if (game.bossName) drawBossName();
     drawRoommEffects();
 
@@ -243,7 +244,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.0.6.2",700,470);
+    ctx.fillText("Version: b.0.6.3",700,470);
 }
 
 setInterval( tickloop, 1000/60 );
