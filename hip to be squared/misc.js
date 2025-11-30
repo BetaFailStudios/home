@@ -139,7 +139,7 @@ function drawDamageNumbers() {
     ctx.strokeStyle = "#222";
     ctx.lineWidth = 7;
     dmgNumbers = dmgNumbers.filter((item) => {
-        ctx.font = animationRatio(item.timeLeft,item.timeLeftMax,10)*70*Number(item.damage)+"px share tech";
+        ctx.font = animationRatio(item.timeLeft,item.timeLeftMax,10)*70*Math.max(0.3,Number(item.damage))+"px share tech";
         ctx.strokeText(item.damage,item.x,item.y);
         ctx.fillText(item.damage,item.x,item.y);
 
@@ -151,8 +151,8 @@ function drawDamageNumbers() {
 
 class DamageNumber {
     constructor(x,y,damage) {
-        this.x = x + Math.random()*20-10;
-        this.y = y + Math.random()*20-10;
+        this.x = x + Math.random()*50-25;
+        this.y = y + Math.random()*50-25;
         this.damage = damage;
         this.timeLeft = 0;
         this.timeLeftMax = 30;
