@@ -57,7 +57,7 @@ const enemyBlueprints = [
         size: 55, health: 9, rotateToTarget: true, speed: -0.05, target: "player", drawPath: JSON.parse(
             `[{"type":"point","x":-200,"y":175,"move":false},{"type":"point","x":-175,"y":200,"move":false},{"type":"point","x":200,"y":-175,"move":false},{"type":"point","x":175,"y":-200,"move":false},{"type":"close"},{"type":"fill","r":75,"g":50,"b":0},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":125,"y":-200,"move":false},{"type":"point","x":200,"y":-125,"move":false},{"type":"point","x":225,"y":-50,"move":false},{"type":"point","x":225,"y":25,"move":false},{"type":"point","x":200,"y":75,"move":false},{"type":"point","x":175,"y":-50,"move":false},{"type":"point","x":150,"y":-100,"move":false},{"type":"point","x":100,"y":-150,"move":false},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), a1(enemy, warn) {
-            if (!warn) enemiesBuffer.push(new Enemy(enemyBlueprints[5], {x: enemy.x + Math.cos(enemy.dirToTarget)*25, y: enemy.y + Math.sin(enemy.dirToTarget)*25, dirToTarget: enemy.dirToTarget, size: 40, speed: 0.2}));
+            if (!warn) enemiesBuffer.push(new Enemy(enemyBlueprints[2], {x: enemy.x + Math.cos(enemy.dirToTarget)*25, y: enemy.y + Math.sin(enemy.dirToTarget)*25, dirToTarget: enemy.dirToTarget, size: 40, speed: 0.2}));
         }, a3(enemy, warn) {
             if (warn) {
                 enemy.attackLista3.push([-800+Math.random()*1600,-400+Math.random()*800]);

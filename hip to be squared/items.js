@@ -465,7 +465,7 @@ const relics = [
         drawPath: JSON.parse(
             `[{"type":"point","x":-200,"y":-175},{"type":"point","x":-125,"y":-100},{"type":"point","x":-100,"y":-125},{"type":"point","x":-175,"y":-200},{"type":"close"},{"type":"point","x":-200,"y":-150,"move":false},{"type":"point","x":-150,"y":-100,"move":true},{"type":"point","x":-200,"y":-150,"move":false},{"type":"point","x":125,"y":150,"move":true},{"type":"point","x":200,"y":200,"move":false},{"type":"point","x":150,"y":125,"move":false},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-125,"y":-100,"move":false},{"type":"point","x":125,"y":150,"move":false},{"type":"point","x":150,"y":125,"move":false},{"type":"point","x":-100,"y":-125,"move":false},{"type":"point","x":-125,"y":-100,"move":false},{"type":"fill","r":255,"g":50,"b":50},{"type":"stroke","r":80,"g":40,"b":40}]`
         ), damageBoost(rarity,bullet,enemy) {
-            return 1 + game.health*0.03;
+            return 1 + stats.health*0.03;
         }
 /*SP*/},{
         name: "Spectacles",
@@ -531,7 +531,7 @@ const relics = [
         ),flashPath: JSON.parse(
             `[{"type":"point","x":-250,"y":0},{"type":"point","x":-100,"y":-37.5},{"type":"point","x":-175,"y":-175},{"type":"point","x":-37.5,"y":-100},{"type":"point","x":0,"y":-250},{"type":"point","x":37.5,"y":-100},{"type":"point","x":175,"y":-175},{"type":"point","x":100,"y":-37.5},{"type":"point","x":250,"y":0},{"type":"point","x":100,"y":37.5},{"type":"point","x":175,"y":175},{"type":"point","x":37.5,"y":100},{"type":"point","x":0,"y":250},{"type":"point","x":-37.5,"y":100},{"type":"point","x":-175,"y":175},{"type":"point","x":-100,"y":37.5},{"type":"close"},{"type":"fill","r":200,"g":200,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), onSpawn(rarity,bullet) {
-            bullets.push(new Bullet({x: bullet.x, y: bullet.y, speed: 20+rarity*5, direction: bullet.direction, size: 50+stats.bulletSize*(1+0.5*rarity), damage: bullet.damage * (0.6 + 0.2*rarity), lifetime: 0.2, drawPath: relics[28].flashPath, wallPierce: true,}));
+            bullets.push(new Bullet({x: bullet.x, y: bullet.y, speed: 20+rarity*5, direction: bullet.direction, size: 50+stats.bulletSize*(1+0.5*rarity), damage: bullet.damage * (0.6 + 0.2*rarity), lifetime: 0.2, drawPath: relics[27].flashPath, wallPierce: true,}));
         }
 /*GH*/},{
         name: "Giant's Helmet",
