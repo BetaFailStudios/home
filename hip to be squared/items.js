@@ -558,7 +558,7 @@ class Item {
             if (random < 0.65) this.rarity = 0;
             else if (random < 0.90) this.rarity = 1;
             else if (random < 0.98) this.rarity = 2;
-            else if (random < 0.995) this.rarity = 3;
+            else if (random < 0.9975) this.rarity = 3;
             else this.rarity = 4;
         }
         if (reference) this.reference = reference;
