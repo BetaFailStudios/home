@@ -139,7 +139,7 @@ function drawDamageNumbers() {
     ctx.strokeStyle = "#222";
     ctx.lineWidth = 7;
     dmgNumbers = dmgNumbers.filter((item) => {
-        ctx.font = animationRatio(item.timeLeft,item.timeLeftMax,10)*70*Math.min(10,Math.max(0.3,Number(item.damage)))+"px share tech";
+        ctx.font = animationRatio(item.timeLeft,item.timeLeftMax,10)*item.fontSize+"px share tech";
         ctx.strokeText(item.damage,item.x,item.y);
         ctx.fillText(item.damage,item.x,item.y);
 
@@ -153,7 +153,12 @@ class DamageNumber {
     constructor(x,y,damage) {
         this.x = x + Math.random()*50-25;
         this.y = y + Math.random()*50-25;
-        this.damage = damage;
+        
+        let decimalPoint = 0;
+        while (damage < 10**(1-decimalPoint)) decimalPoint++;
+        this.damage = damage.toFixed(decimalPoint);
+
+        this.fontSize = 70*Math.min(10,Math.max(0.3,Number(damage)/(1+0.05*game.discoveredRooms)))
         this.timeLeft = 0;
         this.timeLeftMax = 30;
     }
