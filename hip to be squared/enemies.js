@@ -199,7 +199,7 @@ function enemyTick() {
 
 function spawnEnemies(num) {
     for(var i = 0; i < (num || 1); i++) {
-        const enemyIndexes = [0,1,3,4,6,13];
+        const enemyIndexes = game.region.enemies;
         const enemy = new Enemy(enemyBlueprints[enemyIndexes[Math.floor(Math.random()*enemyIndexes.length)]]);
         enemy.x = Math.random()*1600-800;
         enemy.y = Math.random()*800-400;

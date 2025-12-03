@@ -43,7 +43,7 @@ const music = {
 function startMusic() {
     const posToCheck = game.musicPos;
 
-    const song = music["Haunted Armory"][game.musicPos];
+    const song = music[game.region.name][game.musicPos];
 
     song.attacklist.forEach((item) => { 
         if (item[2] && item[3]) for (var i = 0; i < item[2]; i++) {
@@ -71,11 +71,11 @@ function startMusic() {
 }
 
 function restartMusic(input) {
-    ease(music["Haunted Armory"][game.musicPos].file,"volume",0,1);
+    ease(music[game.region.name][game.musicPos].file,"volume",0,1);
     game.musicPos = input;
-    music["Haunted Armory"][game.musicPos].file.volume = 0;
+    music[game.region.name][game.musicPos].file.volume = 0;
     setTimeout(() => {
-        ease(music["Haunted Armory"][game.musicPos].file,"volume",game.audioVolume,1.5);
+        ease(music[game.region.name][game.musicPos].file,"volume",game.audioVolume,1.5);
         startMusic();
     },1000)
 }

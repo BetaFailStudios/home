@@ -6,7 +6,8 @@ class Bullet {
         this.y = inputStats.y || 0;
         this.size = 0;
         this.damage = inputStats.damage || stats.damage;
-        ease(this,"size", inputStats.size || stats.bulletSize, 0.1);
+        const bulletSize = inputStats.size || stats.bulletSize;
+        ease(this,"size", bulletSize, 0.1);
         this.drawPath = inputStats.drawPath || game.weapon.reference.bulletDrawPath;
         this.enemiesTouched = [];
         if (inputStats.direction) {
@@ -36,6 +37,10 @@ class Bullet {
 
         this.triggerExpire = inputStats.triggerExpire;
 
+        const size = bulletSize * 25 / Math.PI * stats.bloom;
+        this.x += size * Math.random() - size/2;
+        this.y += size * Math.random() - size/2;
+
         if (stats.trailColor) {
             this.trailPoints = [];
         }
@@ -53,6 +58,7 @@ function bulletTick() {
     bullets = bullets.filter((bullet,i) => {
         bullet.x += bullet.vx;
         bullet.y += bullet.vy;
+        bullet.speed = Math.hypot(bullet.vx, bullet.vy);
 
         let sineRatio = 0;
 
@@ -81,30 +87,47 @@ function bulletTick() {
 
         if (!bullet.alive) return bullet.size;
 
-        enemies.forEach((enemy) => {
-            if (enemy.projectile && !(stats.projHit && bullet.triggerExpire) || enemy.spawning) return;
-            const hypot = Math.hypot(enemy.x-bullet.x,enemy.y-bullet.y);
+        const pos = [bullet.x, bullet.y];
+        let numOfMoves = 1;
+        if (bullet.speed-bullet.size*2 > 25) numOfMoves += Math.floor((bullet.speed-bullet.size*2)/25);
 
-            if (hypot < bullet.size+enemy.size*0.8) {
-                if (bullet.enemiesTouched.includes(enemy)) return;
-                else {
-                    bullet.enemiesTouched.push(enemy);
-                    let damage = bullet.damage;
-                    stats.damageBoosts.forEach( (item) => damage *= item[1](item[0],bullet,enemy));
-                    if (bullet.jackpot) effects.push(new Effect(bullet.x,bullet.y,"jackpot",40,40));
-                    enemy.health -= damage;
-                    dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,damage));
-                    if (bullet.pierce) bullet.pierce--;
-                    else if (!enemy.projectiles || enemy.health > 0) {
-                        bullet.alive = false;
-                        ease(bullet,"size",0,0.05);
-                        if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
+        for (var i = 0; i < numOfMoves; i++) {
+            enemies.forEach((enemy) => {
+                if (enemy.projectile && !(stats.projHit && bullet.triggerExpire) || enemy.spawning) return;
+                const hypot = Math.hypot(enemy.x-bullet.x,enemy.y-bullet.y);
+
+                if (hypot < bullet.size+enemy.size*0.8) {
+                    if (bullet.enemiesTouched.includes(enemy)) return;
+                    else {
+                        bullet.enemiesTouched.push(enemy);
+                        let damage = bullet.damage;
+                        stats.damageBoosts.forEach( (item) => damage *= item[1](item[0],bullet,enemy));
+                        if (bullet.jackpot) effects.push(new Effect(bullet.x,bullet.y,"jackpot",40,40));
+                        enemy.health -= damage;
+                        dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,damage));
+                        if (bullet.pierce) bullet.pierce--;
+                        else if (!enemy.projectiles || enemy.health > 0) {
+                            bullet.alive = false;
+                            ease(bullet,"size",0,0.05);
+                            if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
+                        }
+                        
+                        stats.onHits.forEach( (item) => item[1](item[0],bullet,enemy));
                     }
-                    
-                    stats.onHits.forEach( (item) => item[1](item[0],bullet,enemy));
-                }
-            } else if (bullet.enemiesTouched.includes(enemy)) bullet.enemiesTouched.splice(bullet.enemiesTouched.indexOf(enemy), 1);
-        })
+                } else if (bullet.enemiesTouched.includes(enemy)) bullet.enemiesTouched.splice(bullet.enemiesTouched.indexOf(enemy), 1);
+            })
+            
+            bullet.x -= bullet.vx/numOfMoves;
+            bullet.y -= bullet.vy/numOfMoves;
+        }
+
+        bullet.x = pos[0];
+        bullet.y = pos[1];
+
+        if (stats.sineWaveMovement) {
+            bullet.x -= bullet.vy * sineRatio;
+            bullet.y += bullet.vx * sineRatio;
+        }
 
         if (Math.abs(bullet.x-bullet.size) > 1000 || Math.abs(bullet.y-bullet.size) > 600) return false;
         if (!bullet.wallPierce) if (Math.abs(bullet.x) > 850-collisionSize || Math.abs(bullet.y) > 450-collisionSize) {
@@ -126,11 +149,6 @@ function bulletTick() {
                 ease(bullet,"size",0,0.05);
                 if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
             }
-        }
-
-        if (stats.sineWaveMovement) {
-            bullet.x -= bullet.vy * sineRatio;
-            bullet.y += bullet.vx * sineRatio;
         }
 
         if (!bullet.wallPierce) blocks.forEach((block) => {

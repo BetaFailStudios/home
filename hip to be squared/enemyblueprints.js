@@ -1,6 +1,6 @@
 const enemyBlueprints = [
     { // 0 spear
-        size: 60, health: 8, rotateToTarget: true, speed: 0.15, drawPath: JSON.parse(
+        size: 60, health: 7, rotateToTarget: true, speed: 0.15, drawPath: JSON.parse(
             `[{"type":"point","x":-253.125,"y":-14.0625},{"type":"point","x":225,"y":-14.0625},{"type":"point","x":225,"y":14.0625},{"type":"point","x":-253.125,"y":14.0625},{"type":"close"},{"type":"fill","r":75,"g":50,"b":0},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-281.25,"y":0},{"type":"point","x":-253.125,"y":-28.125},{"type":"point","x":-225,"y":0},{"type":"point","x":-253.125,"y":28.125},{"type":"close"},{"type":"point","x":140.625,"y":0,"move":true},{"type":"point","x":225,"y":-56.25,"move":false},{"type":"point","x":210.9375,"y":-28.125,"move":false},{"type":"point","x":239.0625,"y":-14.0625,"move":false},{"type":"point","x":337.5,"y":0,"move":false},{"type":"point","x":239.0625,"y":14.0625,"move":false},{"type":"point","x":210.9375,"y":28.125,"move":false},{"type":"point","x":225,"y":56.25,"move":false},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), a1(enemy, warn) {
             if (!warn) enemiesBuffer.push(new Enemy(enemyBlueprints[5], {x: enemy.x + Math.cos(enemy.dirToTarget)*25, y: enemy.y + Math.sin(enemy.dirToTarget)*25, dirToTarget: enemy.dirToTarget, size: 25, speed: 0.3}));

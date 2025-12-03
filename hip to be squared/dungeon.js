@@ -27,9 +27,6 @@ const roomEffectList = {
 const roomEffects = [
 ];
 
-for (var i = 0; i < 6; i++) 
-    roomEffects.push({moveSpeed: 0.5 + Math.random()*2,x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:600+Math.random()*400,reference:roomEffectList["Haunted Armory"][Math.floor(Math.random()*roomEffectList["Haunted Armory"].length)]});
-
 function drawRoommEffects() {
     roomEffects.forEach((item) => {
         draw(item.x,item.y,item.reference,item.size,0,0.15);
