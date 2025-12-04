@@ -250,11 +250,10 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.0.6.8",700,470);
+    ctx.fillText("Version: b.0.6.9",700,470);
 }
 
 setInterval( tickloop, 1000/60 );
 
 //enemies.push(new Enemy(enemyBlueprints[4],{x:600}));
-
 //game.musicPos = 1;

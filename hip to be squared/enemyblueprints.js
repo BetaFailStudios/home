@@ -3,7 +3,7 @@ const enemyBlueprints = [
         size: 60, health: 7, rotateToTarget: true, speed: 0.15, drawPath: JSON.parse(
             `[{"type":"point","x":-253.125,"y":-14.0625},{"type":"point","x":225,"y":-14.0625},{"type":"point","x":225,"y":14.0625},{"type":"point","x":-253.125,"y":14.0625},{"type":"close"},{"type":"fill","r":75,"g":50,"b":0},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-281.25,"y":0},{"type":"point","x":-253.125,"y":-28.125},{"type":"point","x":-225,"y":0},{"type":"point","x":-253.125,"y":28.125},{"type":"close"},{"type":"point","x":140.625,"y":0,"move":true},{"type":"point","x":225,"y":-56.25,"move":false},{"type":"point","x":210.9375,"y":-28.125,"move":false},{"type":"point","x":239.0625,"y":-14.0625,"move":false},{"type":"point","x":337.5,"y":0,"move":false},{"type":"point","x":239.0625,"y":14.0625,"move":false},{"type":"point","x":210.9375,"y":28.125,"move":false},{"type":"point","x":225,"y":56.25,"move":false},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), a1(enemy, warn) {
-            if (!warn) enemiesBuffer.push(new Enemy(enemyBlueprints[5], {x: enemy.x + Math.cos(enemy.dirToTarget)*25, y: enemy.y + Math.sin(enemy.dirToTarget)*25, dirToTarget: enemy.dirToTarget, size: 25, speed: 0.3}));
+            if (!warn) enemiesBuffer.push(new Enemy(enemyBlueprints[5], {x: enemy.x + Math.cos(enemy.dirToTarget)*25, y: enemy.y + Math.sin(enemy.dirToTarget)*25, dirToTarget: enemy.dirToTarget, size: 15, speed: 0.3}));
         }, a2(enemy, warn) {
             if (warn) {
                 enemy.target = "direction";
@@ -54,11 +54,11 @@ const enemyBlueprints = [
             `[{"type":"point","x":125,"y":-50},{"type":"point","x":125,"y":50},{"type":"point","x":100,"y":125},{"type":"point","x":50,"y":200},{"type":"point","x":0,"y":175},{"type":"point","x":50,"y":100},{"type":"point","x":75,"y":0},{"type":"point","x":50,"y":-100},{"type":"point","x":0,"y":-175},{"type":"point","x":50,"y":-200},{"type":"point","x":100,"y":-125},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40}]`
         )
     },{ // 3 scythe
-        size: 55, health: 9, rotateToTarget: true, speed: -0.05, target: "player", drawPath: JSON.parse(
+        size: 55, health: 7, rotateToTarget: true, speed: -0.05, target: "player", drawPath: JSON.parse(
             `[{"type":"point","x":-200,"y":175,"move":false},{"type":"point","x":-175,"y":200,"move":false},{"type":"point","x":200,"y":-175,"move":false},{"type":"point","x":175,"y":-200,"move":false},{"type":"close"},{"type":"fill","r":75,"g":50,"b":0},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":125,"y":-200,"move":false},{"type":"point","x":200,"y":-125,"move":false},{"type":"point","x":225,"y":-50,"move":false},{"type":"point","x":225,"y":25,"move":false},{"type":"point","x":200,"y":75,"move":false},{"type":"point","x":175,"y":-50,"move":false},{"type":"point","x":150,"y":-100,"move":false},{"type":"point","x":100,"y":-150,"move":false},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), a1(enemy, warn) {
             if (!warn) {
-                enemiesBuffer.push(new Enemy(enemyBlueprints[2], {x: enemy.x + Math.cos(enemy.dirToTarget)*25, y: enemy.y + Math.sin(enemy.dirToTarget)*25, dirToTarget: enemy.dirToTarget, size: 40, speed: 0.2}));
+                enemiesBuffer.push(new Enemy(enemyBlueprints[2], {x: enemy.x + Math.cos(enemy.dirToTarget)*25, y: enemy.y + Math.sin(enemy.dirToTarget)*25, dirToTarget: enemy.dirToTarget, size: 30, speed: 0.2}));
                 enemy.vx *= 0.5;
                 enemy.vy *= 0.5;
             }
