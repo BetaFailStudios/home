@@ -548,10 +548,33 @@ const relics = [
             stats.health += 5 + 4*rarity;
             stats.healthMax += 5 + 4*rarity;
         }
+/*BS*/},{
+        name: "Blue Scale",
+        desc: "Small chance to gain blue health on hit",
+        drawPath: JSON.parse(
+            `[{"type":"point","x":-250,"y":200},{"type":"point","x":-175,"y":150},{"type":"point","x":0,"y":100},{"type":"point","x":175,"y":150},{"type":"point","x":250,"y":200},{"type":"point","x":200,"y":-125},{"type":"point","x":-200,"y":-125},{"type":"close"},{"type":"fill","r":25,"g":20,"b":20},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-175,"y":225},{"type":"point","x":-250,"y":200},{"type":"point","x":-250,"y":-175},{"type":"point","x":-175,"y":-225},{"type":"point","x":-50,"y":-250},{"type":"point","x":50,"y":-250},{"type":"point","x":175,"y":-225},{"type":"point","x":250,"y":-175},{"type":"point","x":250,"y":200},{"type":"point","x":175,"y":225},{"type":"point","x":175,"y":-50},{"type":"point","x":100,"y":-75},{"type":"point","x":50,"y":-50},{"type":"point","x":50,"y":112.5},{"type":"point","x":0,"y":125},{"type":"point","x":-50,"y":112.5},{"type":"point","x":-50,"y":-50},{"type":"point","x":-100,"y":-75},{"type":"point","x":-175,"y":-50},{"type":"close"},{"type":"fill","r":75,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ), onHit(rarity, bullet, enemy) {
+            if (Math.random() < (0.05 + 0.025*rarity)*bullet.damage && stats.extraHealth < stats.extraHealthMax) stats.extraHealth++;
+        }
     }
 ]
 
 relics.forEach((item) => item.type = "relic");
+
+const artifacts = [
+/*GP*/{
+        name: "Big Bomb",
+        desc: "Bullets explode on expiration",
+        drawPath: JSON.parse(
+            `[{"type":"point","x":-200,"y":200},{"type":"point","x":-225,"y":150},{"type":"point","x":-225,"y":50},{"type":"point","x":-175,"y":-25},{"type":"point","x":-100,"y":-100},{"type":"point","x":100,"y":100},{"type":"point","x":25,"y":175},{"type":"point","x":-50,"y":225},{"type":"point","x":-150,"y":225},{"type":"close"},{"type":"fill","r":175,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-100,"y":-100},{"type":"point","x":100,"y":100},{"type":"point","x":175,"y":25},{"type":"point","x":225,"y":-50},{"type":"point","x":225,"y":-150},{"type":"point","x":200,"y":-200},{"type":"point","x":150,"y":-225},{"type":"point","x":50,"y":-225},{"type":"point","x":-25,"y":-175},{"type":"close"},{"type":"fill","r":175,"g":175,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ), statChange(rarity) {
+            stats.damage *= 1.20 + 0.1*rarity;
+            stats.bulletSize *= 1.60 + 0.40*rarity;
+        }
+    }
+]
+
+artifacts.forEach((item) => item.type = "artifact");
 
 class Item {
     constructor(x,y,reference, rarity, type) {

@@ -33,6 +33,21 @@ const menuButtons = {
 }
 
 function drawMenu() {
+    if (game.menu == "death") {
+        ctx.beginPath();
+        ctx.fillStyle = "#000000cc";
+        ctx.fillRect(-900,-500,1800,1000);
+
+        ctx.beginPath();
+        ctx.strokeStyle = "#777";
+        ctx.fillStyle = "#ccc";
+        ctx.font = "100px share tech"
+        ctx.strokeText("Game over, ctrl + r to restart", 0, 0);
+        ctx.fillText("Game over, ctrl + r to restart", 0, 0);
+
+        return;
+    }
+
     ctx.fillStyle = "#cccccc99";
     ctx.fillRect(-900,-500,1800,1000);
     
@@ -223,4 +238,163 @@ function drawInventory() {
             if (Math.hypot(mouse.x-item[0],mouse.y-item[1]) < 200) drawItemDesc(game.relicsEquipped[i],...item);
         }
     })
+}
+
+function drawHealthBars() {
+    if (game.bossHealth) {
+        ctx.lineWidth = 7;
+        ctx.beginPath();
+        const maxBounds = 1600;
+        ctx.moveTo(-900, -500+5);
+        ctx.lineTo(maxBounds+55-900, -500+5);
+        ctx.lineTo(maxBounds+20-900, -500+40);
+        ctx.lineTo(-900, -500+40);
+        ctx.closePath();
+        ctx.fillStyle = "#333"
+        ctx.strokeStyle = "#222";
+        ctx.fill();
+        ctx.stroke();
+
+        const healthBounds = 1600*game.bossHealth/game.bossHealthMax;
+        ctx.beginPath();
+        ctx.moveTo(-900, -500+5);
+        ctx.lineTo(healthBounds+55-900, -500+5);
+        ctx.lineTo(healthBounds+20-900, -500+40);
+        ctx.lineTo(-900, -500+40);
+        ctx.closePath();
+        ctx.fillStyle = "#900";
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    const maxBounds = 500;
+    ctx.moveTo(-900, 500-5);
+    ctx.lineTo(maxBounds+40-900, 500-5);
+    ctx.lineTo(maxBounds+20-900, 500-25);
+    ctx.lineTo(-900, 500-25);
+    ctx.closePath();
+    ctx.fillStyle = "#333"
+    ctx.strokeStyle = "#222";
+    ctx.fill();
+    ctx.stroke();
+        
+    if (stats.health > 0) {
+        const healthBounds = 500*stats.health/stats.healthMax;
+        ctx.beginPath();
+        ctx.moveTo(-900, 500-5);
+        ctx.lineTo(healthBounds+40-900, 500-5);
+        ctx.lineTo(healthBounds+20-900, 500-25);
+        ctx.lineTo(-900, 500-25);
+        ctx.closePath();
+        ctx.fillStyle = "#900";
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    const maxExtraBounds = 250;
+    ctx.moveTo(maxBounds+40-900, 500-5);
+    ctx.lineTo(maxBounds+maxExtraBounds+40-900, 500-5);
+    ctx.lineTo(maxBounds+maxExtraBounds+20-900, 500-25);
+    ctx.lineTo(maxBounds+20-900, 500-25);
+    ctx.closePath();
+    ctx.fillStyle = "#333"
+    ctx.strokeStyle = "#222";
+    ctx.fill();
+    ctx.stroke();
+        
+    if (stats.extraHealth > 0 ) {
+        const extraBounds = 250*(stats.extraHealth/stats.extraHealthMax);
+        ctx.beginPath();
+        ctx.moveTo(maxBounds+40-900, 500-5);
+        ctx.lineTo(maxBounds+extraBounds+40-900, 500-5);
+        ctx.lineTo(maxBounds+extraBounds+20-900, 500-25);
+        ctx.lineTo(maxBounds+20-900, 500-25);
+        ctx.closePath();
+        ctx.fillStyle = "#29c";
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    ctx.beginPath();
+    for(var i = 1; i < stats.healthMax; i++) {
+        ctx.moveTo(maxBounds*i/stats.healthMax+40-900, 500-5);
+        ctx.lineTo(maxBounds*i/stats.healthMax+20-900, 500-25);
+    }
+    for(var i = 1; i < stats.extraHealthMax; i++) {
+        ctx.moveTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+40-900, 500-5);
+        ctx.lineTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+20-900, 500-25);
+    }
+    ctx.strokeStyle = "#22222244";
+    ctx.stroke();
+
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    const maxBoundsDash = 400;
+    ctx.moveTo(-900+20, 500-25);
+    ctx.lineTo(maxBoundsDash+35-900, 500-25);
+    ctx.lineTo(maxBoundsDash+20-900, 500-40);
+    ctx.lineTo(-900+20, 500-40);
+    ctx.closePath();
+    ctx.fillStyle = "#333"
+    ctx.strokeStyle = "#222";
+    ctx.fill();
+    ctx.stroke();
+        
+    if (player.dashCooldown <= 1 ) {
+        const dashBounds = 400*Math.min(1,1-player.dashCooldown);
+        ctx.beginPath();
+        ctx.moveTo(-900+20, 500-25);
+        ctx.lineTo(dashBounds+35-900, 500-25);
+        ctx.lineTo(dashBounds+20-900, 500-40);
+        ctx.lineTo(-900+20, 500-40);
+        ctx.closePath();
+        ctx.fillStyle = "#ccc";
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    if (game.showHit > 0) {
+        game.showHit -= 1/75;
+        if (game.showHit > 1) game.showHit = 1;
+        else if (game.showHit < 0) game.showHit = 0;
+
+        const grid = 300;
+        const offset = 200*(1-game.showHit);
+
+        ctx.lineWidth = 6;
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.rect(1800,-1000,-3600,2000);
+        ctx.moveTo(-offset-800 + Math.random()*50,-offset-400 + Math.random()*50);
+        for (var i = -800+grid; i < 800; i += grid) ctx.lineTo(i,-offset-400 + Math.random()*50);
+        ctx.lineTo(offset+800 - Math.random()*50,-offset-400 + Math.random()*50);
+        for (var i = -400+grid; i < 400; i += grid) ctx.lineTo(offset+800 - Math.random()*50,i);
+        ctx.lineTo(offset+800 - Math.random()*50,offset+400 - Math.random()*50);
+        for (var i = 800-grid; i > -800; i -= grid) ctx.lineTo(i,offset+400 - Math.random()*50);
+        ctx.lineTo(-offset-800 + Math.random()*50,offset+400 - Math.random()*50);
+        for (var i = 400-grid; i > -400; i -= grid) ctx.lineTo(-offset-800 + Math.random()*50,i);
+        ctx.closePath();
+        
+        ctx.strokeStyle = "#522";
+        ctx.fillStyle = "#922";
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.globalAlpha = 1;
+    }
+}
+
+function drawMusicPopup() {
+    ctx.beginPath();
+    ctx.fillStyle = "#ccc";
+    ctx.strokeStyle = "#222";
+    ctx.font = "40px share tech";
+    ctx.lineWidth = 20;
+    ctx.strokeText(music[game.region.name][game.musicPos].popup,300,450+100*game.musicPopup**5);
+    ctx.fillText(music[game.region.name][game.musicPos].popup,300,450+100*game.musicPopup**5);
+    ctx.lineWidth = 3;
 }

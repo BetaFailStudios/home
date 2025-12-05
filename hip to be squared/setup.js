@@ -250,12 +250,14 @@ const game = {
     showHit: 0,
     menu: "main",
     audioVolume: 0.8,
+    showDamageNumbers: true,
     discoveredRooms: 0,
+    musicPopup: 1
 };
 
 if (localStorage.getItem("htbs-audioVolume")) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));
 else localStorage.setItem("htbs-audioVolume",game.audioVolume);
-if (localStorage.getItem("htbs-dmgNumbersOption")) game.showDamageNumbers = localStorage.getItem("htbs-dmgNumbersOption");
+if (localStorage.getItem("htbs-dmgNumbersOption")) game.showDamageNumbers = eval(localStorage.getItem("htbs-dmgNumbersOption"));
 else localStorage.setItem("htbs-dmgNumbersOption",game.showDamageNumbers);
 let bullets = [];
 let enemies = [];
