@@ -143,8 +143,8 @@ function dungeonMove(change) {
         game.discoveredRooms++;
 
         if (room.boss) {
-            restartMusic(1);
-            enemies.push( new Enemy(enemyBlueprints[8]) );
+            enemies.push( new Enemy(enemyBlueprints[game.region.bosses[Math.floor(game.region.bosses.length*Math.random())]]) );
+            restartMusic(enemies[0].boss[2]);
             game.bossEase = 1;
             ease(game,"bossEase",0,5);
         }

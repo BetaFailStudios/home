@@ -366,7 +366,7 @@ const relics = [
         drawPath: JSON.parse(
             `[{"type":"point","x":75,"y":-150},{"type":"point","x":125,"y":-250},{"type":"point","x":175,"y":-225},{"type":"point","x":125,"y":-125},{"type":"fill","r":150,"g":150,"b":50},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":0,"y":-225},{"type":"point","x":162.5,"y":-162.5},{"type":"point","x":225,"y":0},{"type":"point","x":162.5,"y":162.5},{"type":"point","x":0,"y":225},{"type":"point","x":-162.5,"y":162.5},{"type":"point","x":-225,"y":0},{"type":"point","x":-162.5,"y":-162.5},{"type":"close"},{"type":"fill","r":150,"g":150,"b":75},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":50,"y":-162.5},{"type":"point","x":0,"y":-12.5},{"type":"point","x":50,"y":100},{"type":"stroke","r":20,"g":20,"b":20}]`
         ), statChange(rarity) {
-            stats.extraIframes = (stats.extraIframes || 0) + 75 + 45*rarity;
+            stats.extraIframes = (stats.extraIframes || 0) + 75 + 30*rarity;
         }
 /*SH*/},{
         name: "Shadow",
@@ -554,7 +554,7 @@ const relics = [
         drawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":0},{"type":"point","x":-150,"y":25},{"type":"point","x":-100,"y":50},{"type":"point","x":-50,"y":100},{"type":"point","x":-25,"y":150},{"type":"point","x":0,"y":250},{"type":"point","x":125,"y":125},{"type":"point","x":200,"y":0},{"type":"point","x":225,"y":-150},{"type":"point","x":225,"y":-225},{"type":"point","x":150,"y":-225},{"type":"point","x":0,"y":-200},{"type":"point","x":-125,"y":-125},{"type":"close"},{"type":"fill","r":40,"g":115,"b":170},{"type":"stroke","r":50,"g":75,"b":75},{"type":"point","x":-200,"y":-12.5},{"type":"point","x":-125,"y":0},{"type":"point","x":-50,"y":50},{"type":"point","x":0,"y":125},{"type":"point","x":0,"y":200},{"type":"point","x":150,"y":25},{"type":"point","x":200,"y":-125},{"type":"point","x":200,"y":-200},{"type":"point","x":125,"y":-200},{"type":"point","x":-25,"y":-150},{"type":"close"},{"type":"fill","r":45,"g":140,"b":175}]`
         ), onHit(rarity, bullet, enemy) {
-            if (Math.random() < (0.05 + 0.025*rarity)*bullet.damage && stats.extraHealth < stats.extraHealthMax) stats.extraHealth++;
+            if (Math.random() < (0.05 + 0.025*rarity) && !player.iFrames && stats.extraHealth < stats.extraHealthMax) stats.extraHealth++;
         }
     }
 ]
@@ -562,7 +562,7 @@ const relics = [
 relics.forEach((item) => item.type = "relic");
 
 const artifacts = [
-/*GP*/{
+/*BB*/{
         name: "Big Bomb",
         desc: "Bullets explode on expiration",
         drawPath: JSON.parse(
@@ -781,8 +781,8 @@ function updateStats() {
         playerSpeed: 2,
         health: 10,
         healthMax: 10,
-        extraHealth: 6,
-        extraHealthMax: 6,
+        extraHealth: 5,
+        extraHealthMax: 5,
         projectiles: 1, spread: Math.PI/8,
         bursts: 1,
         bloom: Math.PI/65,
@@ -879,5 +879,4 @@ function pickUpItem() {
             stats.damage *= 1.1 + 0.05*rarity;
         }, onHit(rarity,bullet,enemy) {
             bullet.damage *= 1.2 + 0.05*rarity;
-
         }*/

@@ -11,6 +11,7 @@ class Enemy {
         this.target = "-".repeat(Math.random() < 0.5) + "player";
         this.dirToTarget = 0;
         this.alive = true;
+        this.id = enemyBlueprints.indexOf(inputStats);
 
         if (inputStats) Object.keys(inputStats).forEach((key) => this[key] = inputStats[key]);
         if (override) Object.keys(override).forEach((key) => this[key] = override[key]);
@@ -30,7 +31,6 @@ class Enemy {
 let enemiesBuffer = [];
 
 function enemyTick() {
-    const attackTypes = ["a1","a2","a3","a4","a5","a6","a7","a8","a9"];
     game.bossName = false;
     game.bossHealth = 0;
     game.bossHealthMax = 0;
@@ -67,10 +67,10 @@ function enemyTick() {
 
         let triggerWarn = true;
         let triggerAttack = true;
-        attackTypes.forEach((item) => {
+        game.enemyAttackWarning.forEach((item) => {
             if (!enemy[item]/* || (enemy.noAttack && enemy.noAttack != item)*/) return;
             if (!enemy["attackList" + item]) enemy["attackList" + item] = [];
-            if (game.enemyAttackWarning.includes(item) && triggerWarn) {
+            if (triggerWarn) {
                 //if (enemy.reset) enemy.reset[0]();
                 enemy[item](enemy,30);
                 if (!enemy[item+"WarnCount"]) enemy[item+"WarnCount"] = 0;
@@ -78,7 +78,11 @@ function enemyTick() {
                 //triggerWarn = false;
                 enemy.lastWarning = item;
             }
-            if (game.enemyAttack.includes(item) && triggerAttack && (enemy[item+"WarnCount"] > 0 || enemy.noWarnWait)) {
+        })
+        game.enemyAttack.forEach((item) => {
+            if (!enemy[item]/* || (enemy.noAttack && enemy.noAttack != item)*/) return;
+            if (!enemy["attackList" + item]) enemy["attackList" + item] = [];
+            if (triggerAttack && (enemy[item+"WarnCount"] > 0 || enemy.noWarnWait)) {
                 if (enemy.reset) enemy.reset[0]();
                 enemy[item](enemy);
                 enemy[item+"WarnCount"]--;
@@ -200,7 +204,8 @@ function enemyTick() {
 function spawnEnemies(num) {
     for(var i = 0; i < (num || 1); i++) {
         const enemyIndexes = game.region.enemies;
-        const enemy = new Enemy(enemyBlueprints[enemyIndexes[Math.floor(Math.random()*enemyIndexes.length)]]);
+        const id = enemyIndexes[Math.floor(Math.random()*enemyIndexes.length)]
+        const enemy = new Enemy(enemyBlueprints[id]);
         enemy.x = Math.random()*1600-800;
         enemy.y = Math.random()*800-400;
         enemies.push(enemy);

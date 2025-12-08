@@ -93,7 +93,7 @@
 
         let notes = [];
 
-        const bpb = 8;
+        const bpb = 6;
         let offset = 0;
 
         //detect keypresses
@@ -111,7 +111,6 @@
                 let closest = -1;
                 let closestDist = bpb;
                 let type = "a" + Math.floor((mouse.y+140)/20);
-                console.log(type)
                 notes.forEach((item, i) => {
                     const dist = Math.abs(pos-item[0]);
                     if (dist < bpb && dist < closestDist && item[1] == type) {
@@ -120,7 +119,7 @@
                     }
                 })
 
-                if (closest != -1) {
+                if (closest != -1 && Math.abs(closestDist) < 1) {
                     notes.splice(closest,1);
                 }
             }
@@ -166,12 +165,12 @@
             ctx.strokeStyle = "#444";
             ctx.stroke();
             ctx.beginPath();
-            for (var i = -800; i <= 800; i += 1600/bpb/2) {
+            for (var i = -bpb; i <= bpb; i++) {
                 //ctx.moveTo(-250,i);
                 //ctx.lineTo(250,i);
-                const size = 200 + 50 * ( i % (1600/bpb) == 0 ) + 50 * ( i % (1600/bpb*2) == 0 );;
-                ctx.moveTo(i,-size);
-                ctx.lineTo(i,size);
+                const size = 200 + 50 * ( i % 2 == 0 ) + 50 * ( i % 2 == 0 );
+                ctx.moveTo(i*1600/bpb/2,-size);
+                ctx.lineTo(i*1600/bpb/2,size);
             }
             ctx.strokeStyle = "#666";
             ctx.stroke();

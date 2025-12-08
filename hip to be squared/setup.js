@@ -237,8 +237,8 @@ const game = {
     ), stabAttackWarnPath: JSON.parse(
         `[{"type":"point","x":-250,"y":-25},{"type":"point","x":-225,"y":0},{"type":"point","x":-250,"y":25},{"type":"point","x":225,"y":25},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":-25},{"type":"close"}]`
     ),
-    enemyAttack:"",
-    enemyAttackWarning:"",
+    enemyAttack:[],
+    enemyAttackWarning:[],
     dungeonPosition: [0,0],
     notLocked: 0,
     openings: [  ],

@@ -3,7 +3,7 @@ const regions = [
         {
             name: "Haunted Armory",
             enemies: [0,1,3,4,6,13],
-            bosses: [8]
+            bosses: [8,15]
         }
     ]
 ]

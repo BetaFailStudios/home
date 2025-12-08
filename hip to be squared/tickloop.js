@@ -66,15 +66,15 @@ function tickloop() {
     }
 
     draw(mouse.x,mouse.y,game.cursorPath,30,player.rotationTick);
-    game.enemyAttack = "";
-    game.enemyAttackWarning = "";
+    game.enemyAttack = [];
+    game.enemyAttackWarning = [];
 
     toEaseVariables = toEaseVariables.filter(changeEaseable);
 
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.0.6.10",700,470);
+    ctx.fillText("Version: b.0.7.0",700,470);
 }
 
 setInterval( tickloop, 1000/60 );
