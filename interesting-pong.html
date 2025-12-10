@@ -96,11 +96,12 @@
             const game = {
                 fps: 60,
                 tick: 0,
-                friction: 0.02,
+                friction: 0.015,
                 playerSize: 50,
                 sawSize: 150,
-                playerAcceleration: 0.5,
-                playerBrake: 0.1
+                playerAcceleration: 0.35,
+                playerBrake: 0.03,
+                playerTurnSpeed: 1
             }
 
             const saws = [
@@ -112,6 +113,7 @@
 
             ctx.textBaseline = 'middle';
             ctx.textAlign = 'center';
+            ctx.lineCap = 'round';
 
             const players = [
                 {
@@ -132,6 +134,54 @@
                 }
             ]
 
+            tickloop();
+
+            let count = 0;
+
+            //random effects
+            if (false) {
+
+                ctx.font = "100px Share Tech";
+                
+                ctx.fillStyle = "#c55";
+
+                if (Math.random() < 0.1) {
+                    saws.push({x:0,y:0});
+                    ctx.fillText("Middle Saw",0,-400+200*count);count++;
+                } else if (Math.random() < 0.1) {
+                    saws.push({x:0,y:-400},{x:0,y:400});
+                    ctx.fillText("Top/Bottom Saws",0,-300+200*count);count++;
+                }
+                
+                if (Math.random() < 0.1) {
+                    game.sawSize = 250;
+                    ctx.fillText("Large Saws",0,-300+200*count);count++;
+                }
+                if (Math.random() < 0.1) {
+                    game.playerSize = 100;
+                    ctx.fillText("Large Players",0,-300+200*count);count++;
+                } else if (Math.random() < 0.1) {
+                    game.playerSize = 25;
+                    ctx.fillText("Small Players",0,-300+200*count);count++;
+                }
+
+                if (Math.random() < 0.1) {
+                    game.playerAcceleration = 0.75;
+                    ctx.fillText("Fast Players",0,-300+200*count);count++;
+                } else if (Math.random() < 0.1) {
+                    game.playerAcceleration = 0.25;
+                    ctx.fillText("Slow Players",0,-300+200*count);count++;
+                }
+            }
+
+            setTimeout( () => {if(navigator.userAgent.toLowerCase().includes("firefox"))
+                startAnimating(60);
+            else
+                setInterval( () => {
+                    tickloop()
+                }, 16.66);
+            },2000*!!count)
+
             function tickloop() {
                 game.tick++;
                 if (game.tick > 200) game.tick -= 200;
@@ -150,9 +200,9 @@
                     ctx.font = "350px Share Tech";
                     
                     ctx.fillStyle = players[game.win].color;
-                    ctx.lineWidth = 15;
-                    ctx.globalAlpha = 0.2;
+                    ctx.lineWidth = 10;
                     ctx.fillText("P" + (game.win + 1) + " WINS",0,0);
+                    ctx.globalAlpha = 1;
                 } else playerTicks();
 
                 ctx.beginPath();
@@ -175,18 +225,27 @@
 
                     ctx.beginPath();
                     ctx.arc(player.x,player.y,game.playerSize,0,Math.PI*2);
-                    ctx.moveTo(player.x+game.playerSize-25,player.y);
-                    ctx.arc(player.x,player.y,game.playerSize-25,0,Math.PI*2);
-                    ctx.moveTo(player.x+Math.cos(player.direction)*(game.playerSize-25),player.y+Math.sin(player.direction)*(game.playerSize-25));
+                    ctx.moveTo(player.x+game.playerSize/2,player.y);
+                    ctx.arc(player.x,player.y,game.playerSize/2,0,Math.PI*2);
+                    ctx.moveTo(player.x+Math.cos(player.direction)*game.playerSize/2,player.y+Math.sin(player.direction)*game.playerSize/2);
                     ctx.lineTo(player.x+Math.cos(player.direction)*game.playerSize,player.y+Math.sin(player.direction)*game.playerSize);
                     
                     ctx.strokeStyle = player.color;
                     ctx.lineWidth = 15;
                     ctx.globalAlpha = 0.2;
                     ctx.stroke();
-                    ctx.globalAlpha = 1;
+                    ctx.globalAlpha = 1 - 0.8*(!!player.invincible);
                     ctx.lineWidth = 5;
                     ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(player.x,player.y);
+                    ctx.lineTo(player.x+Math.cos(player.direction)*500,player.y+Math.sin(player.direction)*500);
+
+                    ctx.globalAlpha = 0.01;
+                    ctx.lineWidth = game.playerSize*2;
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
 
                     player.x += player.vx;
                     player.y += player.vy;
@@ -197,7 +256,7 @@
                     const lr = keys.includes(player.controls[1])-keys.includes(player.controls[0]);
                     const ud = keys.includes(player.controls[2])-keys.includes(player.controls[3]);
 
-                    if (lr) player.direction += lr*Math.PI/45
+                    if (lr) player.direction += lr*game.playerTurnSpeed*Math.PI/45
 
                     if (ud > 0) {
                         player.vx += Math.cos(player.direction) * game.playerAcceleration * ud;
@@ -207,8 +266,8 @@
                         player.vy *= 1-game.playerBrake;
                     }
                     
-                    players.forEach((player2,i2) => {
-                        if (i == i2) return;
+                    if (!player.invincible) players.forEach((player2,i2) => {
+                        if (i == i2 || player2.invincible) return;
 
                         const dist = {x: player2.x-player.x, y: player2.y-player.y};
                         dist.hypot = Math.hypot(dist.x,dist.y);
@@ -220,7 +279,7 @@
                             dist.y /= dist.hypot;
 
                             // collision code formula because nothing is original in the programming industry
-                            const velChange = (player.vx*dist.x + player.vy*dist.y - player2.vx*dist.x - player2.vy*dist.y);
+                            const velChange = 2*(player.vx*dist.x + player.vy*dist.y - player2.vx*dist.x - player2.vy*dist.y);
 
                             player.vx -= velChange*dist.x;
                             player.vy -= velChange*dist.y;
@@ -236,7 +295,7 @@
                             player2.y = dist.my + dist.y;
                         }
                     });
-                    saws.forEach((saw,i2) => {
+                    if (!player.invincible) saws.forEach((saw,i2) => {
                         const dist = {x: saw.x-player.x, y: saw.y-player.y};
                         dist.hypot = Math.hypot(dist.x,dist.y);
                         if (dist.hypot < game.playerSize+5+game.sawSize) {
@@ -246,12 +305,22 @@
 
                             const velChange = 30;
 
-                            player.vx -= velChange*dist.x;
-                            player.vy -= velChange*dist.y;
+                            player.x = saw.x - dist.x*(game.playerSize+5+game.sawSize);
+                            player.y = saw.y - dist.y*(game.playerSize+5+game.sawSize);
+
+                            player.vx = -velChange*dist.x;
+                            player.vy = -velChange*dist.y;
+
+                            player.invincible = true;
+                            setTimeout(() => {
+                                player.invincible = false;
+                            }, 2000);
 
                             players[1-i].score++;
                             if (players[1-i].score > 4) {
                                 game.win = 1-i;
+
+                                setTimeout(() => {window.location.reload()}, 1000)
                             }
                         }
                     });
@@ -273,7 +342,7 @@
                     ctx.strokeStyle = "#f55";
                     let odd = false;
                     for (var i = game.tick*Math.PI/200; i <= Math.PI*2+game.tick*Math.PI/200; i += Math.PI/20) {
-                        if (i) ctx.lineTo(saw.x+Math.cos(i)*(game.sawSize-25+odd*50),saw.y+Math.sin(i)*(game.sawSize+odd*50))
+                        if (i) ctx.lineTo(saw.x+Math.cos(i)*(game.sawSize-25+odd*50),saw.y+Math.sin(i)*(game.sawSize-25+odd*50))
                         odd = !odd;
                     }
                     ctx.closePath();
@@ -286,16 +355,8 @@
                     ctx.stroke();
                 });
             }
-
-            if (navigator.userAgent.toLowerCase().includes("firefox"))
-                startAnimating(60);
-            else
-                setInterval( () => {
-                    tickloop()
-                }
-                , 16.66);
             
-            let chanId = "betafailStudiosmultiplayergame" + prompt("Channel Id")
+            /*let chanId = "betafailStudiosmultiplayergame" + prompt("Channel Id")
 
             function updatePosition(chanId) {
                 $.get('https://demo.httprelay.io/sync/'+chanId+'?lat='+JSON.stringify(players[1]))
@@ -305,7 +366,7 @@
                     players[1] = JSON.parse(data);
                 }).always(() => setTimeout(() => updatePosition(chanId), 5000))
             }
-            updatePosition(chanId);
+            updatePosition(chanId);*/
         </script>
     </body>
 </html>
