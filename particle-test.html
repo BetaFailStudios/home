@@ -2,7 +2,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>BFS Multiplayer-1</title>
+        <title>Particle Test</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
@@ -99,10 +99,10 @@
             }
 
             const refererences = [
-                { color: "#c55", forces: [    1,   1,   1, -1 ] },
-                { color: "#5c5", forces: [ -0.3,   1,  -1,  0 ] },
-                { color: "#55c", forces: [ -0.1,-0.1,-0.1,  0 ] },
-                { color: "#5cc", forces: [ -0.1, 0.5,   1,  0 ] },
+                { color: "#c55", forces: [    1,   1,   1,  -1 ] },
+                { color: "#5c5", forces: [ -0.3,   1,-0.2,   0 ] },
+                { color: "#55c", forces: [  0.2,-0.5,-0.5, 0.2 ] },
+                { color: "#5cc", forces: [ -0.5, 0.2, 0.2,-0.5 ] },
             ]
 // ----------------------------------------------------------------------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -111,7 +111,7 @@
             const game = {
                 fps: 60,
                 tick: 0,
-                particleSize: 6,
+                particleSize: 4,
                 particleRange: 150,
                 forceMultiplier: 0.001,
                 collisionForce: 0.25
@@ -122,7 +122,7 @@
             //ctx.lineCap = 'round'; // reduced performance
 
             const particles = [];
-            for (var i = 0; i < 750; i++) {
+            for (var i = 0; i < 800; i++) {
                 particles.push( { x: -800+Math.random()*1600, y: -400+Math.random()*800, vx: 0, vy: 0, referenceIndex: Math.floor(refererences.length*Math.random()) } );
                 particles[particles.length-1].reference = refererences[particles[particles.length-1].referenceIndex];
             }
@@ -165,7 +165,7 @@
                     ctx.stroke();
 
                     particles.forEach((particle2,i2) => {
-                        if (i == i2) return;
+                        if (i >= i2) return;
                         
                         const dist = {x: particle2.x-particle.x, y: particle2.y-particle.y};
                         dist.hypot = Math.hypot(dist.x,dist.y);
@@ -194,8 +194,7 @@
                             particle.y = dist.my - dist.y;
                             particle2.x = dist.mx + dist.x;
                             particle2.y = dist.my + dist.y;
-                        }
-                        if (dist.hypot < game.particleRange) {
+                        } else if (dist.hypot < game.particleRange) {
 
                             const forceAmount = game.forceMultiplier * ( ( game.particleRange - dist.hypot ) / game.particleRange) / dist.hypot;
 
