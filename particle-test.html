@@ -1,0 +1,230 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BFS Multiplayer-1</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
+        <!-- Jquery <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> -->
+    </head>
+    <body>
+        <style>
+            body {
+                background-color: #222;
+                margin: auto;
+                height: 100%;
+                overflow: hidden;
+                cursor: none;
+            }
+
+            .share-tech-regular {
+                font-family: "Share Tech", sans-serif;
+                font-weight: 400;
+                font-style: normal;
+            }
+        </style>
+        <canvas id="gameScreen" width="1800" height="1000"></canvas>
+        <p id="fps">60</p>
+        <script>
+            //canvas or gamescreen
+            var canvas = document.getElementById("gameScreen");
+            //context, for drawing
+            var ctx = canvas.getContext("2d");
+            //settings canvas size and scale
+            var screenScale = window.innerWidth / canvas.width
+            if (window.innerHeight / canvas.height < screenScale)
+                screenScale = window.innerHeight / canvas.height;
+
+            var stop = false;
+            var frameCount = 0;
+            var fps, fpsInterval, startTime, now, then, elapsed;
+            function startAnimating(fps) {
+                fpsInterval = 1000 / fps;
+                then = Date.now();
+                startTime = then;
+                animate();
+            }
+            function animate() {
+                requestAnimationFrame(animate)
+                now = Date.now();
+                elapsed = now - then;
+                if (elapsed > fpsInterval) {
+                    then = now - (elapsed % fpsInterval);
+                    tickloop();
+                }
+            }
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            ctx.translate(window.innerWidth/2,window.innerHeight/2);
+
+            ctx.scale(screenScale, screenScale);
+
+            var filterStrength = 10;
+            //used  to be 20
+            var frameTime = 0, lastLoop = new Date, thisLoop;
+            var fpsOut = document.getElementById('fps');
+
+            // Report the fps only every second, to only lightly affect measurements
+            setInterval(function() {
+                fpsOut.innerHTML = (1000 / frameTime).toFixed(1);
+                game.fps = Math.max(30, Number(fpsOut.innerHTML));
+            }, 1000);
+
+            const keys = [];
+            let keyBuffer = [];
+
+            //detect keypresses
+            window.addEventListener('keydown', function(e) {
+                if (!e.repeat) {
+                    const key = e.key.toLowerCase();
+                    if (!keys.includes(key))
+                        keys.push(key);
+                }
+
+                if (e.key.toLowerCase() == "r") randomizeForces();
+            }, false);
+            window.addEventListener('keyup', function(e) {
+                const key = e.key.toLowerCase();
+                while (keys.includes(key)) {
+                    keys.splice(keys.indexOf(key), 1);
+                }
+            }, false);
+
+            ctx.lineWidth = 3;
+
+            function randomizeForces() {
+                refererences.forEach((reference) => reference.forces.forEach((force,i) => reference.forces[i] = -1 + Math.random()*2))
+            }
+
+            const refererences = [
+                { color: "#c55", forces: [    1,   1,   1, -1 ] },
+                { color: "#5c5", forces: [ -0.3,   1,  -1,  0 ] },
+                { color: "#55c", forces: [ -0.1,-0.1,-0.1,  0 ] },
+                { color: "#5cc", forces: [ -0.1, 0.5,   1,  0 ] },
+            ]
+// ----------------------------------------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+            const game = {
+                fps: 60,
+                tick: 0,
+                particleSize: 6,
+                particleRange: 150,
+                forceMultiplier: 0.001,
+                collisionForce: 0.25
+            }
+
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center';
+            //ctx.lineCap = 'round'; // reduced performance
+
+            const particles = [];
+            for (var i = 0; i < 750; i++) {
+                particles.push( { x: -800+Math.random()*1600, y: -400+Math.random()*800, vx: 0, vy: 0, referenceIndex: Math.floor(refererences.length*Math.random()) } );
+                particles[particles.length-1].reference = refererences[particles[particles.length-1].referenceIndex];
+            }
+
+            // uses "startanimating" instead of setInterval on firefox (does not work well with setinterval)
+            if(navigator.userAgent.toLowerCase().includes("firefox"))
+                startAnimating(60);
+            else setInterval( () => { tickloop() }, 16.66);
+
+            function tickloop() {
+                game.tick++;
+                if (game.tick > 200) game.tick -= 600;
+                //check frameRate
+                var thisFrameTime = (thisLoop = new Date) - lastLoop;
+                frameTime += (thisFrameTime - frameTime) / filterStrength;
+                lastLoop = thisLoop;
+
+                ctx.fillStyle = "#22222290"; // 50
+                ctx.fillRect(850, -450, -1700, 900);
+
+                ctx.lineWidth = 10;
+
+                particles.forEach((particle,i) => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+
+                    if (Math.abs(particle.x) > 850) {
+                        particle.x = Math.sign(particle.x)*850;
+                        particle.vx = -Math.sign(particle.x)*1000*game.forceMultiplier;
+                    }
+                    if (Math.abs(particle.y) > 450) {
+                        particle.y = Math.sign(particle.y)*450;
+                        particle.vy = -Math.sign(particle.y)*1000*game.forceMultiplier;
+                    }
+
+                    ctx.beginPath();
+                    ctx.moveTo(particle.x, particle.y-5);
+                    ctx.lineTo(particle.x, particle.y+5);
+                    ctx.strokeStyle = particle.reference.color;
+                    ctx.stroke();
+
+                    particles.forEach((particle2,i2) => {
+                        if (i == i2) return;
+                        
+                        const dist = {x: particle2.x-particle.x, y: particle2.y-particle.y};
+                        dist.hypot = Math.hypot(dist.x,dist.y);
+
+                        if (!dist.hypot) return;
+
+                        if (dist.hypot < game.particleSize*2) {
+                            dist.mx = particle.x+dist.x/2;
+                            dist.my = particle.y+dist.y/2;
+
+                            dist.x /= dist.hypot;
+                            dist.y /= dist.hypot;
+
+                            // collision code formula because nothing is original in the programming industry
+                            const velChange = game.collisionForce * (particle.vx*dist.x + particle.vy*dist.y - particle2.vx*dist.x - particle2.vy*dist.y);
+
+                            particle.vx -= velChange*dist.x;
+                            particle.vy -= velChange*dist.y;
+                            particle2.vx += velChange*dist.x;
+                            particle2.vy += velChange*dist.y;
+
+                            dist.x *= game.particleSize;
+                            dist.y *= game.particleSize;
+
+                            particle.x = dist.mx - dist.x;
+                            particle.y = dist.my - dist.y;
+                            particle2.x = dist.mx + dist.x;
+                            particle2.y = dist.my + dist.y;
+                        }
+                        if (dist.hypot < game.particleRange) {
+
+                            const forceAmount = game.forceMultiplier * ( ( game.particleRange - dist.hypot ) / game.particleRange) / dist.hypot;
+
+                            //console.log(forceAmount/0.1*dist.hypot)
+
+                            dist.x *= forceAmount;
+                            dist.y *= forceAmount;
+
+                            let forceMult = particle.reference.forces[particle2.referenceIndex];
+                            particle.vx += dist.x*forceMult;
+                            particle.vy += dist.y*forceMult;
+                            forceMult = particle2.reference.forces[particle.referenceIndex];
+                            particle2.vx -= dist.x*forceMult;
+                            particle2.vy -= dist.y*forceMult;
+                        }
+                    })
+                })
+
+                ctx.stroke();
+                
+                ctx.fillStyle = "#000";
+                ctx.rect(-2500, -1750, 5000, 3500);
+                ctx.rect(850, -450, -1700, 900);
+                ctx.fill();
+
+                ctx.fillStyle = "#555";
+                ctx.font = "30px share tech";
+                ctx.fillText(game.fps,0,-485);
+            }
+        </script>
+    </body>
+</html>
