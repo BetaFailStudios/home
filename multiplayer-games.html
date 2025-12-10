@@ -1,0 +1,311 @@
+<html lang="en">
+    <head>
+        <!--<meta http-equiv="Access-Control-Allow-Origin" content="null"/>-->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BFS Multiplayer-1</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <style>
+            body {
+                background-color: #222;
+                margin: auto;
+                height: 100%;
+                overflow: hidden;
+                cursor: none;
+            }
+
+            .share-tech-regular {
+                font-family: "Share Tech", sans-serif;
+                font-weight: 400;
+                font-style: normal;
+            }
+        </style>
+        <canvas id="gameScreen" width="1800" height="1000"></canvas>
+        <p id="fps">60</p>
+        <script>
+            //canvas or gamescreen
+            var canvas = document.getElementById("gameScreen");
+            //context, for drawing
+            var ctx = canvas.getContext("2d");
+            //settings canvas size and scale
+            var screenScale = window.innerWidth / canvas.width
+            if (window.innerHeight / canvas.height < screenScale)
+                screenScale = window.innerHeight / canvas.height;
+
+            var stop = false;
+            var frameCount = 0;
+            var fps, fpsInterval, startTime, now, then, elapsed;
+            function startAnimating(fps) {
+                fpsInterval = 1000 / fps;
+                then = Date.now();
+                startTime = then;
+                animate();
+            }
+            function animate() {
+                requestAnimationFrame(animate)
+                now = Date.now();
+                elapsed = now - then;
+                if (elapsed > fpsInterval) {
+                    then = now - (elapsed % fpsInterval);
+                    tickloop();
+                }
+            }
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            ctx.translate(window.innerWidth/2,window.innerHeight/2);
+
+            ctx.scale(screenScale, screenScale);
+
+            var filterStrength = 10;
+            //used  to be 20
+            var frameTime = 0, lastLoop = new Date, thisLoop;
+            var fpsOut = document.getElementById('fps');
+
+            // Report the fps only every second, to only lightly affect measurements
+            setInterval(function() {
+                fpsOut.innerHTML = (1000 / frameTime).toFixed(1);
+                game.fps = Math.max(30, Number(fpsOut.innerHTML));
+            }, 1000);
+
+            const keys = [];
+            let keyBuffer = [];
+
+            //detect keypresses
+            window.addEventListener('keydown', function(e) {
+                if (!e.repeat) {
+                    const key = e.key.toLowerCase();
+                    if (!keys.includes(key))
+                        keys.push(key);
+                }
+            }, false);
+            window.addEventListener('keyup', function(e) {
+                const key = e.key.toLowerCase();
+                while (keys.includes(key)) {
+                    keys.splice(keys.indexOf(key), 1);
+                }
+            }, false);
+
+            ctx.lineWidth = 3;
+
+            const game = {
+                fps: 60,
+                tick: 0,
+                friction: 0.02,
+                playerSize: 50,
+                sawSize: 150,
+                playerAcceleration: 0.5,
+                playerBrake: 0.1
+            }
+
+            const saws = [
+                {x:-800,y:-400},
+                {x:800,y:-400},
+                {x:-800,y:400},
+                {x:800,y:400}
+            ]
+
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center';
+
+            const players = [
+                {
+                    x: -500, y: 0,
+                    vx: 0, vy: 0,
+                    direction: 0,
+                    controls: "adws",
+                    color: "#5f5",
+                    score: 0
+                },
+                {
+                    x: 500, y: 0,
+                    vx: 0, vy: 0,
+                    direction: Math.PI,
+                    controls: "jlik",
+                    color: "#55f",
+                    score: 0
+                }
+            ]
+
+            function tickloop() {
+                game.tick++;
+                if (game.tick > 200) game.tick -= 200;
+                //check frameRate
+                var thisFrameTime = (thisLoop = new Date) - lastLoop;
+                frameTime += (thisFrameTime - frameTime) / filterStrength;
+                lastLoop = thisLoop;
+
+                ctx.fillStyle = "#22222250";
+                ctx.fillRect(800, -400, -1600, 800);
+
+                drawSaws();
+
+                if (game.win !== undefined) {
+                    ctx.beginPath();
+                    ctx.font = "350px Share Tech";
+                    
+                    ctx.fillStyle = players[game.win].color;
+                    ctx.lineWidth = 15;
+                    ctx.globalAlpha = 0.2;
+                    ctx.fillText("P" + (game.win + 1) + " WINS",0,0);
+                } else playerTicks();
+
+                ctx.beginPath();
+                
+                ctx.fillStyle = "#000";
+                ctx.rect(-2500, -1750, 5000, 3500);
+                ctx.rect(800, -400, -1600, 800);
+                ctx.fill();
+            }
+
+            function playerTicks() {
+                players.forEach((player,i) => {
+                    ctx.beginPath();
+                    ctx.font = "250px Share Tech";
+                    
+                    ctx.fillStyle = player.color;
+                    ctx.lineWidth = 15;
+                    ctx.globalAlpha = 0.2;
+                    ctx.fillText(player.score,-200+400*i,0);
+
+                    ctx.beginPath();
+                    ctx.arc(player.x,player.y,game.playerSize,0,Math.PI*2);
+                    ctx.moveTo(player.x+game.playerSize-25,player.y);
+                    ctx.arc(player.x,player.y,game.playerSize-25,0,Math.PI*2);
+                    ctx.moveTo(player.x+Math.cos(player.direction)*(game.playerSize-25),player.y+Math.sin(player.direction)*(game.playerSize-25));
+                    ctx.lineTo(player.x+Math.cos(player.direction)*game.playerSize,player.y+Math.sin(player.direction)*game.playerSize);
+                    
+                    ctx.strokeStyle = player.color;
+                    ctx.lineWidth = 15;
+                    ctx.globalAlpha = 0.2;
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                    ctx.lineWidth = 5;
+                    ctx.stroke();
+
+                    player.x += player.vx;
+                    player.y += player.vy;
+                    
+                    player.vx *= 1-game.friction;
+                    player.vy *= 1-game.friction;
+
+                    const lr = keys.includes(player.controls[1])-keys.includes(player.controls[0]);
+                    const ud = keys.includes(player.controls[2])-keys.includes(player.controls[3]);
+
+                    if (lr) player.direction += lr*Math.PI/45
+
+                    if (ud > 0) {
+                        player.vx += Math.cos(player.direction) * game.playerAcceleration * ud;
+                        player.vy += Math.sin(player.direction) * game.playerAcceleration * ud;
+                    } else if (ud < 0) {
+                        player.vx *= 1-game.playerBrake;
+                        player.vy *= 1-game.playerBrake;
+                    }
+                    
+                    players.forEach((player2,i2) => {
+                        if (i == i2) return;
+
+                        const dist = {x: player2.x-player.x, y: player2.y-player.y};
+                        dist.hypot = Math.hypot(dist.x,dist.y);
+                        if (dist.hypot < game.playerSize*2+5) {
+                            dist.mx = player.x+dist.x/2;
+                            dist.my = player.y+dist.y/2;
+
+                            dist.x /= dist.hypot;
+                            dist.y /= dist.hypot;
+
+                            // collision code formula because nothing is original in the programming industry
+                            const velChange = (player.vx*dist.x + player.vy*dist.y - player2.vx*dist.x - player2.vy*dist.y);
+
+                            player.vx -= velChange*dist.x;
+                            player.vy -= velChange*dist.y;
+                            player2.vx += velChange*dist.x;
+                            player2.vy += velChange*dist.y;
+
+                            dist.x *= game.playerSize+3;
+                            dist.y *= game.playerSize+3;
+
+                            player.x = dist.mx - dist.x;
+                            player.y = dist.my - dist.y;
+                            player2.x = dist.mx + dist.x;
+                            player2.y = dist.my + dist.y;
+                        }
+                    });
+                    saws.forEach((saw,i2) => {
+                        const dist = {x: saw.x-player.x, y: saw.y-player.y};
+                        dist.hypot = Math.hypot(dist.x,dist.y);
+                        if (dist.hypot < game.playerSize+5+game.sawSize) {
+
+                            dist.x /= dist.hypot;
+                            dist.y /= dist.hypot;
+
+                            const velChange = 30;
+
+                            player.vx -= velChange*dist.x;
+                            player.vy -= velChange*dist.y;
+
+                            players[1-i].score++;
+                            if (players[1-i].score > 4) {
+                                game.win = 1-i;
+                            }
+                        }
+                    });
+
+                    if (Math.abs(player.x) > 800-game.playerSize) {
+                        player.x = Math.sign(player.x) * (800-game.playerSize);
+                        player.vx *= -0.5;
+                    }
+                    if (Math.abs(player.y) > 400-game.playerSize) {
+                        player.y = Math.sign(player.y) * (400-game.playerSize);
+                        player.vy *= -0.5;
+                    }
+                });
+            }
+
+            function drawSaws() {
+                saws.forEach((saw,i) => {
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#f55";
+                    let odd = false;
+                    for (var i = game.tick*Math.PI/200; i <= Math.PI*2+game.tick*Math.PI/200; i += Math.PI/20) {
+                        if (i) ctx.lineTo(saw.x+Math.cos(i)*(game.sawSize-25+odd*50),saw.y+Math.sin(i)*(game.sawSize+odd*50))
+                        odd = !odd;
+                    }
+                    ctx.closePath();
+                    
+                    ctx.lineWidth = 15;
+                    ctx.globalAlpha = 0.2;
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                    ctx.lineWidth = 5;
+                    ctx.stroke();
+                });
+            }
+
+            if (navigator.userAgent.toLowerCase().includes("firefox"))
+                startAnimating(60);
+            else
+                setInterval( () => {
+                    tickloop()
+                }
+                , 16.66);
+            
+            let chanId = "betafailStudiosmultiplayergame" + prompt("Channel Id")
+
+            function updatePosition(chanId) {
+                $.get('https://demo.httprelay.io/sync/'+chanId+'?lat='+JSON.stringify(players[1]))
+                .done((data, textStatus, request) => {
+                            let query = new URLSearchParams(request.getResponseHeader('Httprelay-Query'))
+                            let position = { lat: parseFloat(query.get('lat')), lng: parseFloat(query.get('lng'))}
+                    players[1] = JSON.parse(data);
+                }).always(() => setTimeout(() => updatePosition(chanId), 5000))
+            }
+            updatePosition(chanId);
+        </script>
+    </body>
+</html>
