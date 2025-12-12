@@ -6,7 +6,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
-        <!-- Jquery <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> -->
+        <script src="https://unpkg.com/gpu.js@2.16.0/dist/gpu-browser.min.js"></script> <!-- gpu acceleration -->
     </head>
     <body>
         <style>
@@ -31,6 +31,9 @@
             var canvas = document.getElementById("gameScreen");
             //context, for drawing
             var ctx = canvas.getContext("2d");
+
+            var gl = canvas.getContext("webgl");
+
             //settings canvas size and scale
             var screenScale = window.innerWidth / canvas.width
             if (window.innerHeight / canvas.height < screenScale)
@@ -94,16 +97,19 @@
 
             ctx.lineWidth = 3;
 
+            const gpu = new GPU.GPU();
+
             function randomizeForces() {
-                refererences.forEach((reference) => reference.forces.forEach((force,i) => reference.forces[i] = -1 + Math.random()*2))
+                refererences.forEach((reference) => reference.forEach((force,i) => reference[i] = -1.5 + Math.random()*3))
             }
 
-            const refererences = [
-                { color: "#c55", forces: [    1,   1,   1,  -1 ] },
-                { color: "#5c5", forces: [ -0.3,   1,-0.2,   0 ] },
-                { color: "#55c", forces: [  0.2,-0.5,-0.5, 0.2 ] },
-                { color: "#5cc", forces: [ -0.5, 0.2, 0.2,-0.5 ] },
-            ]
+            let refererences = [
+                [    1,   1 ],
+                [   -1,   1 ]
+            ];
+
+            let refererenceColors = [ "#c55", "#cc5", "#5c5", "#5cc", "#55c", "#c5c" ];
+
 // ----------------------------------------------------------------------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -111,26 +117,326 @@
             const game = {
                 fps: 60,
                 tick: 0,
-                particleSize: 4,
-                particleRange: 150,
+                drawSize: 12,
+                particleAlpha: 0.7,
+                particleSize: 8,
+                particleRange: 200,
                 forceMultiplier: 0.001,
-                collisionForce: 0.25
+                collisionForce: 0.003,
+                takeOver: false
             }
+
+            switch("redrule") {
+                case "clump": {
+                    refererences = [
+                        [ "#999", [    1 ] ]
+                    ]
+
+                    break;
+                }
+                case "disperse": {
+                    refererences = [
+                        [ "#999", [   -1 ] ]
+                    ]
+
+                    break;
+                }
+                case "tag": {
+                    refererences = [
+                        { color: "#c55", forces: [    1, 0.3,-0.7 ] },
+                        { color: "#5c5", forces: [ -0.7,   1, 0.3 ] },
+                        { color: "#55c", forces: [  0.3,-0.7,   1 ] },
+                    ]
+
+                    game.takeOver = true;
+                    break;
+                }
+                case "random": {
+                    refererences = [
+                        { color: "#c55", forces: [    1,   1,-0.2,-0.2,-0.2,  -1 ] },
+                        { color: "#cc5", forces: [   -1,   1,   1,-0.2,-0.2,-0.2 ] },
+                        { color: "#5c5", forces: [ -0.2,  -1,   1,   1,-0.2,-0.2 ] },
+                        { color: "#5cc", forces: [ -0.2,-0.2,  -1,   1,   1,-0.2 ] },
+                        { color: "#55c", forces: [ -0.2,-0.2,-0.2,  -1,   1,   1 ] },
+                        { color: "#c5c", forces: [    1,-0.2,-0.2,-0.2,  -1,   1 ] },
+                    ]
+
+                    randomizeForces();
+
+                    break;
+                }
+                case "redrule": {
+                    refererences = [
+                        [  1.5, 0.3, 0.3, 0.3, 0.3, 0.3 ],
+                        [   -1,   1, 0.3, 0.3, 0.3, 0.3 ],
+                        [   -1, 0.3,   1, 0.3, 0.3, 0.3 ],
+                        [   -1, 0.3, 0.3,   1, 0.3, 0.3 ],
+                        [   -1, 0.3, 0.3, 0.3,   1, 0.3 ],
+                        [   -1, 0.3, 0.3, 0.3, 0.3,   1 ]
+                    ]
+                    refererenceColors = [ "#c55", "#cc5", "#5c5", "#5cc", "#55c", "#c5c" ];
+
+                    break;
+                }
+                case "test1": {
+                    refererences = [
+                        [    1, 0.5],
+                        [ -0.5,   1],
+                    ]
+
+                    break;
+                }
+                case "test2": {
+                    refererences = [
+                        { color: "#c55", forces: [    1, 0.5,   0,-0.0 ] },
+                        { color: "#cc5", forces: [ -0.0,   1, 0.5,   0 ] },
+                        { color: "#5c5", forces: [    0,-0.0,   1, 0.5 ] },
+                        { color: "#5cc", forces: [  0.5,   0,-0.0,   1 ] },
+                    ]
+
+                    break;
+                }
+            }
+
+            const particles = [];
+            for (var i = 0; i < 5000; i++) {
+                //particles.push( { x: -800+Math.random()*1600, y: -400+Math.random()*800, vx: 0, vy: 0, referenceIndex: Math.floor(refererences.length*Math.random()) } );
+                particles.push( [ -800+Math.random()*1600, -400+Math.random()*800, 0, 0, Math.floor(refererences.length*Math.random()) ] );
+                //particles[particles.length-1].reference = refererences[particles[particles.length-1].referenceIndex];
+            }
+
+            const particleStats = [ 
+                particles.length, 
+                refererences, 
+                game.drawSize,
+                game.particleAlpha,
+                game.particleSize,
+                game.particleRange,
+                game.forceMultiplier,
+                game.collisionForce 
+            ]
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------------------------------------------------------
 
             ctx.textBaseline = 'middle';
             ctx.textAlign = 'center';
-            //ctx.lineCap = 'round'; // reduced performance
-
-            const particles = [];
-            for (var i = 0; i < 800; i++) {
-                particles.push( { x: -800+Math.random()*1600, y: -400+Math.random()*800, vx: 0, vy: 0, referenceIndex: Math.floor(refererences.length*Math.random()) } );
-                particles[particles.length-1].reference = refererences[particles[particles.length-1].referenceIndex];
+            // round particles, reduces performance
+            if (true) {
+                ctx.lineCap = 'round';
+                game.roundLines = true;
             }
+
+            const renderParticles = gpu.createKernel(function(particles, particleStats, refererences) {
+                let i = this.thread.x;
+                let x = particles[i][0];
+                let y = particles[i][1];
+                let vx = particles[i][2];
+                let vy = particles[i][3];
+                let referenceIndex = particles[i][4];
+
+                let x2 = 0;
+                let y2 = 0;
+                let vx2 = 0;
+                let vy2 = 0;
+                let referenceIndex2 = 0;
+
+                x += vx;
+                y += vy;
+                
+                if (Math.abs(x) > 850) {
+                    x = Math.sign(x)*850;
+                    vx = -Math.sign(x)*1000*particleStats[6];
+                }
+                if (Math.abs(y) > 450) {
+                    y = Math.sign(y)*450;
+                    vy = -Math.sign(y)*1000*particleStats[6];
+                }
+                
+                for (let i2 = 0; i2 < particleStats[0]; i2++) if (i != i2) {
+                    x2 = particles[i2][0];
+                    y2 = particles[i2][1];
+                    vx2 = particles[i2][2];
+                    vy2 = particles[i2][3];
+                    referenceIndex2 = particles[i2][4];
+                    
+                    const dist = [ x2 - x, y2 - y, 0 ];
+                    dist[2] = Math.sqrt(dist[0]*dist[0] + dist[1]*dist[1]);
+
+                    let hitSize = particleStats[4];
+                    if (referenceIndex != referenceIndex2) hitSize *= 2;
+
+                    if (dist[2] > 0) if (dist[2] < hitSize) {
+                        //dist.mx = particle.x+dist.x/2;
+                        //dist.my = particle.y+dist.y/2;
+
+                        dist[0] /= dist[2];
+                        dist[1] /= dist[2];
+
+                        // collision code formula because nothing is original in the programming industry
+                        const velChange = particleStats[7] * (vx*dist[0] + vy*dist[1] - vx2*dist[0] - vy2*dist[1]);
+
+                        vx -= velChange*dist[0] + particleStats[7] *dist[0];
+                        vy -= velChange*dist[1] + particleStats[7] *dist[1];
+                        //vx2 += velChange*dist[0];
+                        //vy2 += velChange*dist[1];
+
+                        dist[0] *= hitSize/2;
+                        dist[1] *= hitSize/2;
+
+                        //x -= dist[0]/2;
+                        //y -= dist[1]/2;
+                        //x2 += dist[0]/2;
+                        //y2 += dist[1]/2;
+
+                        //let particle2 = particles[i2];
+                        //particle2[0] = 1, x2;
+                    } else if (dist[2] < particleStats[5]) {
+
+                        const forceAmount = particleStats[6] * ( ( particleStats[5] - dist[2] ) / particleStats[5]) / dist[2];
+
+                        dist[0] *= forceAmount;
+                        dist[1] *= forceAmount;
+
+                        vx += dist[0] * ( refererences[referenceIndex][referenceIndex2] );
+                        vy += dist[1] * ( refererences[referenceIndex][referenceIndex2] );
+
+                        /*if (dist.hypot < game.particleSize*5) {
+                            if (game.takeOver && particle.referenceIndex != particle2.referenceIndex) {
+                                if (particle.reference.forces[particle2.referenceIndex] < 0) {
+                                    particle.reference = particle2.reference;
+                                    particle.referenceIndex = particle2.referenceIndex;
+                                } else {
+                                    particle2.reference = particle.reference;
+                                    particle2.referenceIndex = particle.referenceIndex;
+                                }
+                            }
+                        }*/
+                    }
+                }
+                
+                /*
+                particle.x = particle.vx;
+                particle.y = particle.vy;
+                
+                
+                if (Math.abs(particle.x) > 850) {
+                    particle.x = Math.sign(particle.x)*850;
+                    particle.vx = -Math.sign(particle.x)*1000*game.forceMultiplier;
+                }
+                if (Math.abs(particle.y) > 450) {
+                    particle.y = Math.sign(particle.y)*450;
+                    particle.vy = -Math.sign(particle.y)*1000*game.forceMultiplier;
+                }
+                
+                ctx.beginPath();
+                if (game.roundLines){
+                    ctx.moveTo(particle.x, particle.y);
+                    ctx.lineTo(particle.x, particle.y);
+                }
+                else {
+                    ctx.moveTo(particle.x, particle.y-game.drawSize/2);
+                    ctx.lineTo(particle.x, particle.y+game.drawSize/2);
+                }
+                ctx.strokeStyle = particle.reference.color;
+                ctx.stroke();
+                
+                particles.forEach(function(particle2,i2) {
+                    if (i >= i2) return;
+                    
+                    const dist = {x: particle2.x-particle.x, y: particle2.y-particle.y};
+                    dist.hypot = Math.hypot(dist.x,dist.y);
+
+                    if (!dist.hypot) return;
+
+                    const hitSize = game.particleSize * (2 + 2* (particle.referenceIndex != particle2.referenceIndex));
+
+                    if (dist.hypot < hitSize) {
+                        dist.mx = particle.x+dist.x/2;
+                        dist.my = particle.y+dist.y/2;
+
+                        dist.x /= dist.hypot;
+                        dist.y /= dist.hypot;
+
+                        // collision code formula because nothing is original in the programming industry
+                        const velChange = game.collisionForce * (particle.vx*dist.x + particle.vy*dist.y - particle2.vx*dist.x - particle2.vy*dist.y);
+
+                        particle.vx -= velChange*dist.x;
+                        particle.vy -= velChange*dist.y;
+                        particle2.vx += velChange*dist.x;
+                        particle2.vy += velChange*dist.y;
+
+                        dist.x *= hitSize/2;
+                        dist.y *= hitSize/2;
+
+                        particle.x = dist.mx - dist.x;
+                        particle.y = dist.my - dist.y;
+                        particle2.x = dist.mx + dist.x;
+                        particle2.y = dist.my + dist.y;
+                    } else if (dist.hypot < game.particleRange) {
+
+                        const forceAmount = game.forceMultiplier * ( ( game.particleRange - dist.hypot ) / game.particleRange) / dist.hypot;
+
+                        //console.log(forceAmount/0.1*dist.hypot)
+
+                        dist.x *= forceAmount;
+                        dist.y *= forceAmount;
+
+                        let forceMult = particle.reference.forces[particle2.referenceIndex];
+                        particle.vx += dist.x*forceMult;
+                        particle.vy += dist.y*forceMult;
+                        forceMult = particle2.reference.forces[particle.referenceIndex];
+                        particle2.vx -= dist.x*forceMult;
+                        particle2.vy -= dist.y*forceMult;
+
+                        if (dist.hypot < game.particleSize*5) {
+                            if (game.takeOver && particle.referenceIndex != particle2.referenceIndex) {
+                                if (particle.reference.forces[particle2.referenceIndex] < 0) {
+                                    particle.reference = particle2.reference;
+                                    particle.referenceIndex = particle2.referenceIndex;
+                                } else {
+                                    particle2.reference = particle.reference;
+                                    particle2.referenceIndex = particle.referenceIndex;
+                                }
+                            }
+                        }
+                    }
+                })*/
+                const returnArray = [ x, y, vx, vy + referenceIndex*1000 ];
+                return returnArray;
+            }, {
+                output: [particles.length],
+                dynamicArguments: true
+            })
 
             // uses "startanimating" instead of setInterval on firefox (does not work well with setinterval)
             if(navigator.userAgent.toLowerCase().includes("firefox"))
                 startAnimating(60);
             else setInterval( () => { tickloop() }, 16.66);
+
+            ctx.fillStyle = "#200000"; // 50
+            ctx.fillRect(850, -450, -1700, 900);
+
+            ctx.lineWidth = game.drawSize;
+            ctx.globalAlpha = game.particleAlpha;
+
+            if (false) renderParticles(particles, particleStats).forEach((particle, i) => {
+                ctx.beginPath();
+                if (game.roundLines){
+                    ctx.moveTo(particle[0], particle[1]);
+                    ctx.lineTo(particle[0], particle[1]);
+                }
+                else {
+                    ctx.moveTo(particle[0], particle[1]-game.drawSize/2);
+                    ctx.lineTo(particle[0], particle[1]+game.drawSize/2);
+                }
+                ctx.strokeStyle = "#999";//refererences[particle[4]].color;
+                ctx.stroke();
+            })
+
+            ctx.globalAlpha = 1;
+
 
             function tickloop() {
                 game.tick++;
@@ -140,80 +446,33 @@
                 frameTime += (thisFrameTime - frameTime) / filterStrength;
                 lastLoop = thisLoop;
 
-                ctx.fillStyle = "#22222290"; // 50
+                ctx.fillStyle = "#00000090"; // 50
                 ctx.fillRect(850, -450, -1700, 900);
 
-                ctx.lineWidth = 10;
+                ctx.lineWidth = game.drawSize;
+                ctx.globalAlpha = game.particleAlpha;
 
-                particles.forEach((particle,i) => {
-                    particle.x += particle.vx;
-                    particle.y += particle.vy;
-
-                    if (Math.abs(particle.x) > 850) {
-                        particle.x = Math.sign(particle.x)*850;
-                        particle.vx = -Math.sign(particle.x)*1000*game.forceMultiplier;
-                    }
-                    if (Math.abs(particle.y) > 450) {
-                        particle.y = Math.sign(particle.y)*450;
-                        particle.vy = -Math.sign(particle.y)*1000*game.forceMultiplier;
-                    }
-
+                renderParticles(particles, particleStats, refererences).forEach((particle, i) => {
                     ctx.beginPath();
-                    ctx.moveTo(particle.x, particle.y-5);
-                    ctx.lineTo(particle.x, particle.y+5);
-                    ctx.strokeStyle = particle.reference.color;
+                    if (game.roundLines){
+                        ctx.moveTo(particle[0], particle[1]);
+                        ctx.lineTo(particle[0], particle[1]);
+                    }
+                    else {
+                        ctx.moveTo(particle[0], particle[1]-game.drawSize/2);
+                        ctx.lineTo(particle[0], particle[1]+game.drawSize/2);
+                    }
+                    const referenceIndex = Math.round(particle[3]/1000);
+                    ctx.strokeStyle = refererenceColors[referenceIndex];
                     ctx.stroke();
 
-                    particles.forEach((particle2,i2) => {
-                        if (i >= i2) return;
-                        
-                        const dist = {x: particle2.x-particle.x, y: particle2.y-particle.y};
-                        dist.hypot = Math.hypot(dist.x,dist.y);
+                    let vy = particle[3]%1000;
+                    if (Math.abs(vy) > 900) vy -= Math.sign(vy)*1000;
 
-                        if (!dist.hypot) return;
-
-                        if (dist.hypot < game.particleSize*2) {
-                            dist.mx = particle.x+dist.x/2;
-                            dist.my = particle.y+dist.y/2;
-
-                            dist.x /= dist.hypot;
-                            dist.y /= dist.hypot;
-
-                            // collision code formula because nothing is original in the programming industry
-                            const velChange = game.collisionForce * (particle.vx*dist.x + particle.vy*dist.y - particle2.vx*dist.x - particle2.vy*dist.y);
-
-                            particle.vx -= velChange*dist.x;
-                            particle.vy -= velChange*dist.y;
-                            particle2.vx += velChange*dist.x;
-                            particle2.vy += velChange*dist.y;
-
-                            dist.x *= game.particleSize;
-                            dist.y *= game.particleSize;
-
-                            particle.x = dist.mx - dist.x;
-                            particle.y = dist.my - dist.y;
-                            particle2.x = dist.mx + dist.x;
-                            particle2.y = dist.my + dist.y;
-                        } else if (dist.hypot < game.particleRange) {
-
-                            const forceAmount = game.forceMultiplier * ( ( game.particleRange - dist.hypot ) / game.particleRange) / dist.hypot;
-
-                            //console.log(forceAmount/0.1*dist.hypot)
-
-                            dist.x *= forceAmount;
-                            dist.y *= forceAmount;
-
-                            let forceMult = particle.reference.forces[particle2.referenceIndex];
-                            particle.vx += dist.x*forceMult;
-                            particle.vy += dist.y*forceMult;
-                            forceMult = particle2.reference.forces[particle.referenceIndex];
-                            particle2.vx -= dist.x*forceMult;
-                            particle2.vy -= dist.y*forceMult;
-                        }
-                    })
+                    particles[i] = [particle[0], particle[1], particle[2], vy, referenceIndex];
                 })
 
-                ctx.stroke();
+                ctx.globalAlpha = 1;
                 
                 ctx.fillStyle = "#000";
                 ctx.rect(-2500, -1750, 5000, 3500);
@@ -224,6 +483,6 @@
                 ctx.font = "30px share tech";
                 ctx.fillText(game.fps,0,-485);
             }
-        </script>
+       </script>
     </body>
 </html>
