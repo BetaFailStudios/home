@@ -119,14 +119,15 @@
                 tick: 0,
                 drawSize: 10,
                 particleAlpha: 0.5,
-                particleSize: 5,
-                particleRange: 125,
+                particleSize: 10,
+                particleRange: 150,
                 forceMultiplier: 0.001,
-                collisionForce: 0.05,
+                collisionForce: 0.01,
+                dispersalForce: 0.005,
                 takeOver: false
             }
 
-            switch("random") {
+            switch("redrule") {
                 case "clump": {
                     refererences = [
                         [ "#999", [    1 ] ]
@@ -199,7 +200,7 @@
             }
 
             const particles = [];
-            for (var i = 0; i < 3000; i++) {
+            for (var i = 0; i < 2500; i++) {
                 particles.push( [ -800+Math.random()*1600, -400+Math.random()*800, 0, 0, Math.floor(refererences.length*Math.random()) ] );
             }
 
@@ -211,7 +212,8 @@
                 game.particleSize,
                 game.particleRange,
                 game.forceMultiplier,
-                game.collisionForce 
+                game.collisionForce,
+                game.dispersalForce
             ]
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -270,10 +272,10 @@
                         dist[1] /= dist[2];
 
                         // collision code formula because nothing is original in the programming industry
-                        const velChange = particleStats[7] * (vx*dist[0] + vy*dist[1] - vx2*dist[0] - vy2*dist[1]);
+                        const velChange = particleStats[8];// + particleStats[7] * (vx*dist[0] + vy*dist[1] - vx2*dist[0] - vy2*dist[1]);
 
-                        vx -= velChange*dist[0] + particleStats[7] *dist[0];
-                        vy -= velChange*dist[1] + particleStats[7] *dist[1];
+                        vx -= (vx-vx2) * particleStats[7] + velChange*dist[0];
+                        vy -= (vy-vy2) * particleStats[7] + velChange*dist[1];
 
                         //dist[0] *= hitSize/2;
                         //dist[1] *= hitSize/2;
