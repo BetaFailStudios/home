@@ -123,84 +123,87 @@
                 particleRange: 150,
                 forceMultiplier: 0.001,
                 collisionForce: 0.01,
-                dispersalForce: 0.005,
+                dispersalForce: 0.1,
                 takeOver: false
             }
 
-            switch("redrule") {
+            switch("snake") {
                 case "clump": {
                     refererences = [
-                        [ "#999", [    1 ] ]
+                        [    1 ]
                     ]
 
                     break;
                 }
                 case "disperse": {
                     refererences = [
-                        [ "#999", [   -1 ] ]
+                        [   -1 ]
                     ]
-
-                    break;
-                }
-                case "tag": {
-                    refererences = [
-                        { color: "#c55", forces: [    1, 0.3,-0.7 ] },
-                        { color: "#5c5", forces: [ -0.7,   1, 0.3 ] },
-                        { color: "#55c", forces: [  0.3,-0.7,   1 ] },
-                    ]
-
-                    game.takeOver = true;
-                    break;
-                }
-                case "random": {
-                    refererences = [
-                        [  1.5, 0.3, 0.3, 0.3, 0.3, 0.3 ],
-                        [   -1,   1, 0.3, 0.3, 0.3, 0.3 ],
-                        [   -1, 0.3,   1, 0.3, 0.3, 0.3 ],
-                        [   -1, 0.3, 0.3,   1, 0.3, 0.3 ],
-                        [   -1, 0.3, 0.3, 0.3,   1, 0.3 ],
-                        [   -1, 0.3, 0.3, 0.3, 0.3,   1 ]
-                    ]
-
-                    randomizeForces();
 
                     break;
                 }
                 case "redrule": {
                     refererences = [
                         [  1.5, 0.3, 0.3, 0.3, 0.3, 0.3 ],
-                        [   -1,   1, 0.3, 0.3, 0.3, 0.3 ],
-                        [   -1, 0.3,   1, 0.3, 0.3, 0.3 ],
-                        [   -1, 0.3, 0.3,   1, 0.3, 0.3 ],
-                        [   -1, 0.3, 0.3, 0.3,   1, 0.3 ],
-                        [   -1, 0.3, 0.3, 0.3, 0.3,   1 ]
+                        [  0.5,   1, 0.3, 0.3, 0.3, 0.3 ],
+                        [   -1,-0.3,   1, 0.3, 0.3, 0.3 ],
+                        [   -1,-0.3,-0.3,   1, 0.3, 0.3 ],
+                        [   -1,-0.3,-0.3,-0.3,   1, 0.3 ],
+                        [   -1,-0.3,-0.3,-0.3,-0.3,   1 ]
                     ]
                     refererenceColors = [ "#c55", "#cc5", "#5c5", "#5cc", "#55c", "#c5c" ];
 
                     break;
                 }
-                case "test1": {
+                case "pyramid": {
                     refererences = [
-                        [    1, 0.5],
-                        [ -0.5,   1],
+                        [    1, 0.5, 0.5, 0.5, 0.5, 0.5 ],
+                        [ -0.3,   1, 0.5, 0.5, 0.5, 0.5 ],
+                        [ -0.3,-0.3,   1, 0.5, 0.5, 0.5 ],
+                        [ -0.3,-0.3,-0.3,   1, 0.5, 0.5 ],
+                        [ -0.3,-0.3,-0.3,-0.3,   1, 0.5 ],
+                        [ -0.3,-0.3,-0.3,-0.3,-0.3,   1 ]
+                    ]
+                    refererenceColors = [ "#c55", "#cc5", "#5c5", "#5cc", "#55c", "#c5c" ];
+
+                    break;
+                }
+                case "snake": {
+                    refererences = [
+                        [  0.5,   1,-0.2,-0.2,-0.2,-0.2 ],
+                        [ -0.2, 0.5,   1,-0.2,-0.2,-0.2 ],
+                        [ -0.2,-0.2, 0.5,   1,-0.2,-0.2 ],
+                        [ -0.2,-0.2,-0.2, 0.5,   1,-0.2 ],
+                        [ -0.2,-0.2,-0.2,-0.2, 0.5,   1 ],
+                        [    1,-0.2,-0.2,-0.2,-0.2, 0.5 ]
+                    ]
+
+                    //game.particleRange = 400;
+
+                    break;
+                }
+                case "circles": {
+                    refererences = [
+                        [    1,   0],
+                        [    1,  -1],
                     ]
 
                     break;
                 }
-                case "test2": {
+                case "test1": {
                     refererences = [
-                        { color: "#c55", forces: [    1, 0.5,   0,-0.0 ] },
-                        { color: "#cc5", forces: [ -0.0,   1, 0.5,   0 ] },
-                        { color: "#5c5", forces: [    0,-0.0,   1, 0.5 ] },
-                        { color: "#5cc", forces: [  0.5,   0,-0.0,   1 ] },
+                        [   1,-0.5],
+                        [   1,   1],
                     ]
+
+                    refererenceColors = [ "#ccc", "#111" ];
 
                     break;
                 }
             }
 
             const particles = [];
-            for (var i = 0; i < 2500; i++) {
+            for (var i = 0; i < 5000; i++) {
                 particles.push( [ -800+Math.random()*1600, -400+Math.random()*800, 0, 0, Math.floor(refererences.length*Math.random()) ] );
             }
 
@@ -241,17 +244,23 @@
                 let vx2 = 0;
                 let vy2 = 0;
                 let referenceIndex2 = 0;
-
-                x += vx;
-                y += vy;
                 
-                if (Math.abs(x) > 850) {
+                /*if (Math.abs(x) > 850) {
                     x = Math.sign(x)*850;
                     vx = -Math.sign(x)*1000*particleStats[6];
                 }
                 if (Math.abs(y) > 450) {
                     y = Math.sign(y)*450;
                     vy = -Math.sign(y)*1000*particleStats[6];
+                }*/
+                
+                if (Math.abs(x) > 850) {
+                    x -= Math.sign(x)*1700;
+                    vx *= 0.9;
+                }
+                if (Math.abs(y) > 450) {
+                    y -= Math.sign(y)*900;
+                    vy *= 0.9;
                 }
                 
                 for (let i2 = 0; i2 < particleStats[0]; i2++) if (i != i2) {
@@ -273,12 +282,10 @@
 
                         // collision code formula because nothing is original in the programming industry
                         const velChange = particleStats[8];// + particleStats[7] * (vx*dist[0] + vy*dist[1] - vx2*dist[0] - vy2*dist[1]);
+                        let collisionForce = (hitSize-dist[2])/hitSize;
 
-                        vx -= (vx-vx2) * particleStats[7] + velChange*dist[0];
-                        vy -= (vy-vy2) * particleStats[7] + velChange*dist[1];
-
-                        //dist[0] *= hitSize/2;
-                        //dist[1] *= hitSize/2;
+                        vx -= (vx-vx2) * particleStats[7] + velChange*dist[0]*collisionForce*collisionForce;
+                        vy -= (vy-vy2) * particleStats[7] + velChange*dist[1]*collisionForce*collisionForce;
                     } else if (dist[2] < particleStats[5]) {
 
                         const forceAmount = particleStats[6] * ( ( particleStats[5] - dist[2] ) / particleStats[5]) / dist[2];
@@ -290,103 +297,18 @@
                         vy += dist[1] * ( refererences[referenceIndex][referenceIndex2] );
                     }
                 }
+
+                x += vx;
+                y += vy;
                 
-                /*
-                particle.x = particle.vx;
-                particle.y = particle.vy;
-                
-                
-                if (Math.abs(particle.x) > 850) {
-                    particle.x = Math.sign(particle.x)*850;
-                    particle.vx = -Math.sign(particle.x)*1000*game.forceMultiplier;
-                }
-                if (Math.abs(particle.y) > 450) {
-                    particle.y = Math.sign(particle.y)*450;
-                    particle.vy = -Math.sign(particle.y)*1000*game.forceMultiplier;
-                }
-                
-                ctx.beginPath();
-                if (game.roundLines){
-                    ctx.moveTo(particle.x, particle.y);
-                    ctx.lineTo(particle.x, particle.y);
-                }
-                else {
-                    ctx.moveTo(particle.x, particle.y-game.drawSize/2);
-                    ctx.lineTo(particle.x, particle.y+game.drawSize/2);
-                }
-                ctx.strokeStyle = particle.reference.color;
-                ctx.stroke();
-                
-                particles.forEach(function(particle2,i2) {
-                    if (i >= i2) return;
-                    
-                    const dist = {x: particle2.x-particle.x, y: particle2.y-particle.y};
-                    dist.hypot = Math.hypot(dist.x,dist.y);
-
-                    if (!dist.hypot) return;
-
-                    const hitSize = game.particleSize * (2 + 2* (particle.referenceIndex != particle2.referenceIndex));
-
-                    if (dist.hypot < hitSize) {
-                        dist.mx = particle.x+dist.x/2;
-                        dist.my = particle.y+dist.y/2;
-
-                        dist.x /= dist.hypot;
-                        dist.y /= dist.hypot;
-
-                        // collision code formula because nothing is original in the programming industry
-                        const velChange = game.collisionForce * (particle.vx*dist.x + particle.vy*dist.y - particle2.vx*dist.x - particle2.vy*dist.y);
-
-                        particle.vx -= velChange*dist.x;
-                        particle.vy -= velChange*dist.y;
-                        particle2.vx += velChange*dist.x;
-                        particle2.vy += velChange*dist.y;
-
-                        dist.x *= hitSize/2;
-                        dist.y *= hitSize/2;
-
-                        particle.x = dist.mx - dist.x;
-                        particle.y = dist.my - dist.y;
-                        particle2.x = dist.mx + dist.x;
-                        particle2.y = dist.my + dist.y;
-                    } else if (dist.hypot < game.particleRange) {
-
-                        const forceAmount = game.forceMultiplier * ( ( game.particleRange - dist.hypot ) / game.particleRange) / dist.hypot;
-
-                        //console.log(forceAmount/0.1*dist.hypot)
-
-                        dist.x *= forceAmount;
-                        dist.y *= forceAmount;
-
-                        let forceMult = particle.reference.forces[particle2.referenceIndex];
-                        particle.vx += dist.x*forceMult;
-                        particle.vy += dist.y*forceMult;
-                        forceMult = particle2.reference.forces[particle.referenceIndex];
-                        particle2.vx -= dist.x*forceMult;
-                        particle2.vy -= dist.y*forceMult;
-
-                        if (dist.hypot < game.particleSize*5) {
-                            if (game.takeOver && particle.referenceIndex != particle2.referenceIndex) {
-                                if (particle.reference.forces[particle2.referenceIndex] < 0) {
-                                    particle.reference = particle2.reference;
-                                    particle.referenceIndex = particle2.referenceIndex;
-                                } else {
-                                    particle2.reference = particle.reference;
-                                    particle2.referenceIndex = particle.referenceIndex;
-                                }
-                            }
-                        }
-                    }
-                })*/
-                const returnArray = [ x, y, vx, vy + referenceIndex*1000 ];
-                return returnArray;
+                return [ x, y, vx, vy + referenceIndex*1000 ];
             }, {
                 output: [particles.length],
                 dynamicArguments: true
             })
 
             // uses "startanimating" instead of setInterval on firefox (does not work well with setinterval)
-            if(navigator.userAgent.toLowerCase().includes("firefox"))
+            if (false) if(navigator.userAgent.toLowerCase().includes("firefox"))
                 startAnimating(60);
             else setInterval( () => { tickloop() }, 16.66);
 
@@ -412,6 +334,7 @@
 
             ctx.globalAlpha = 1;
 
+            tickloop();
 
             function tickloop() {
                 game.tick++;
@@ -457,6 +380,8 @@
                 ctx.fillStyle = "#555";
                 ctx.font = "30px share tech";
                 ctx.fillText(game.fps,0,-485);
+
+                requestAnimationFrame(tickloop);
             }
        </script>
     </body>
