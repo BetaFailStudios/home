@@ -1,13 +1,14 @@
 class Bullet {
     constructor(inputStats) {
+        if (inputStats.drawAlpha) this.drawAlpha = inputStats.drawAlpha;
         this.tick = 0;
         if (stats.sineWaveMovement) this.tick = Math.random()*12;
         this.x = inputStats.x || 0;
         this.y = inputStats.y || 0;
         this.size = 0;
         this.damage = inputStats.damage || stats.damage;
-        const bulletSize = inputStats.size || stats.bulletSize;
-        ease(this,"size", bulletSize, 0.1);
+        this.targetSize = inputStats.size || stats.bulletSize;
+        ease(this,"size", this.targetSize, 0.1);
         this.drawPath = inputStats.drawPath || game.weapon.reference.bulletDrawPath;
         this.enemiesTouched = [];
         if (inputStats.direction) {
@@ -37,7 +38,7 @@ class Bullet {
 
         this.triggerExpire = inputStats.triggerExpire;
 
-        const size = bulletSize * 25 / Math.PI * stats.bloom;
+        const size = this.targetSize * 25 / Math.PI * stats.bloom;
         this.x += size * Math.random() - size/2;
         this.y += size * Math.random() - size/2;
 
@@ -56,11 +57,31 @@ let bulletBuffer = [];
 
 function bulletTick() {
     bullets = bullets.filter((bullet,i) => {
+        if (bullet.triggerExpire) stats.bulletTicks.forEach( (item) => item[1](item[0],bullet))
+
+        if (stats.trailColor && bullet.trailPoints) {
+            if (bullet.alive) bullet.trailPoints.push([bullet.x,bullet.y]);
+            if (bullet.trailPoints.length > (stats.trailLength || 8)) bullet.trailPoints.splice(0,1);
+            ctx.beginPath();
+            bullet.trailPoints.forEach((points) => ctx.lineTo(...points));
+            ctx.strokeStyle = stats.trailColor;
+            ctx.globalAlpha = 0.25;
+            ctx.lineWidth = bullet.targetSize*0.8 + 2;
+            ctx.stroke();
+            ctx.lineWidth = 3;
+            ctx.globalAlpha = 1;
+        }
+
+        const prePos = [bullet.x, bullet.y];
         bullet.x += bullet.vx;
         bullet.y += bullet.vy;
+
+        const pos = [bullet.x, bullet.y];
         bullet.speed = Math.hypot(bullet.vx, bullet.vy);
 
         let sineRatio = 0;
+
+        const collisionSize = Math.min(150,bullet.size/2.2);
 
         if (stats.sineWaveMovement) {
             sineRatio = Math.sin(bullet.tick*Math.PI/9)*2;
@@ -68,30 +89,28 @@ function bulletTick() {
             bullet.y -= bullet.vx * sineRatio;
         }
 
-        const collisionSize = Math.min(150,bullet.size/2.2);
-
-        draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction);
-
-        if (stats.trailColor && bullet.trailPoints) {
-            bullet.trailPoints.push([bullet.x,bullet.y]);
-            if (bullet.trailPoints.length > (stats.trailLength || 8)) bullet.trailPoints.splice(0,1);
-            ctx.beginPath();
-            bullet.trailPoints.forEach((points) => ctx.lineTo(...points));
-            ctx.strokeStyle = stats.trailColor;
-            ctx.globalAlpha = 0.25;
-            ctx.lineWidth = 5;
-            ctx.stroke();
-            ctx.lineWidth = 3;
-            ctx.globalAlpha = 1;
-        }
+        if (!stats.noDrawBullets) draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
 
         if (!bullet.alive) return bullet.size;
 
-        const pos = [bullet.x, bullet.y];
         let numOfMoves = 1;
-        if (bullet.speed-bullet.size*2 > 25) numOfMoves += Math.floor((bullet.speed-bullet.size*2)/25);
+        if (bullet.speed-bullet.size*2 > 20) numOfMoves += Math.floor((bullet.speed-bullet.size*2)/25);
 
-        for (var i = 0; i < numOfMoves; i++) {
+        bullet.x = prePos[0];
+        bullet.y = prePos[1];
+
+        for (var i = 0; i < numOfMoves && bullet.alive; i++) {
+            //effects.push(new Effect(bullet.x,bullet.y,"jackpot",10,0))
+
+            if (!i && stats.sineWaveMovement) {
+                sineRatio = Math.sin(bullet.tick*Math.PI/9)*2;
+                bullet.x += bullet.vy * sineRatio;
+                bullet.y -= bullet.vx * sineRatio;
+            }
+            
+            bullet.x += bullet.vx/numOfMoves;
+            bullet.y += bullet.vy/numOfMoves;
+
             enemies.forEach((enemy) => {
                 if (enemy.projectile && !(stats.projHit && bullet.triggerExpire) || enemy.spawning) return;
                 const hypot = Math.hypot(enemy.x-bullet.x,enemy.y-bullet.y);
@@ -108,32 +127,73 @@ function bulletTick() {
                         if (bullet.pierce) bullet.pierce--;
                         else if (!enemy.projectiles || enemy.health > 0) {
                             bullet.alive = false;
-                            ease(bullet,"size",0,0.05);
-                            if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
                         }
                         
                         stats.onHits.forEach( (item) => item[1](item[0],bullet,enemy));
                     }
                 } else if (bullet.enemiesTouched.includes(enemy)) bullet.enemiesTouched.splice(bullet.enemiesTouched.indexOf(enemy), 1);
             })
-            
-            bullet.x -= bullet.vx/numOfMoves;
-            bullet.y -= bullet.vy/numOfMoves;
+
+            if (stats.sineWaveMovement) {
+                bullet.x -= bullet.vy * sineRatio;
+                bullet.y += bullet.vx * sineRatio;
+            }
+
+            if (!bullet.wallPierce) blocks.forEach((block) => {
+                const diffx = bullet.x + collisionSize/2.5 - block[0];
+                const diffy = bullet.y + collisionSize/2.5 - block[1];
+                const diffx1 = -bullet.x + collisionSize/2.5 + block[0]+block[2];
+                const diffy1 = -bullet.y + collisionSize/2.5 + block[1]+block[3];
+
+                if (diffx > 0 && diffx1 > 0 && diffy > 0 && diffy1 > 0) {
+                    if (bullet.bulletBounce) {
+                        bullet.bulletBounce--;
+                        bullet.damage *= 1.15;
+                        bullet.direction = Math.PI*2*Math.random();
+                        if (Math.min(diffx, diffx1) < Math.min(diffy,diffy1)) {
+                            bullet.vx *= -1;
+
+                            if (diffx < diffx1) bullet.x = block[0]-collisionSize;
+                            else bullet.x = block[0]+block[2]+collisionSize;
+                        } else {
+                            bullet.vy *= -1;
+
+                            if (diffy < diffy1) bullet.y = block[1]-collisionSize;
+                            else bullet.y = block[1]+block[3]+collisionSize;
+                        }
+                    } else  {
+                        bullet.alive = false;
+                    }
+                }
+            })
+
+            bullet.tick += 1/numOfMoves;
+
+            if (bullet.lifetime < 0) {
+                bullet.alive = false;
+            } else if (bullet.lifetime) bullet.lifetime -= (1/30 - Math.random()/45)*(1 + (stats.previousBulletSpeed/5 || 0));
+
+            if (!bullet.alive) if (stats.trailColor && bullet.trailPoints) {
+                bullet.trailPoints.push([bullet.x,bullet.y]);
+                if (bullet.trailPoints.length > (stats.trailLength || 8)) bullet.trailPoints.splice(0,1);
+                ctx.beginPath();
+                bullet.trailPoints.forEach((points) => ctx.lineTo(...points));
+                ctx.strokeStyle = stats.trailColor;
+                ctx.globalAlpha = 0.25;
+                ctx.lineWidth = bullet.targetSize*0.8 + 2;
+                ctx.stroke();
+                ctx.lineWidth = 3;
+                ctx.globalAlpha = 1;
+            }
         }
 
         bullet.x = pos[0];
         bullet.y = pos[1];
 
-        if (stats.sineWaveMovement) {
-            bullet.x -= bullet.vy * sineRatio;
-            bullet.y += bullet.vx * sineRatio;
-        }
-
-        if (Math.abs(bullet.x-bullet.size) > 1000 || Math.abs(bullet.y-bullet.size) > 600) return false;
         if (!bullet.wallPierce) if (Math.abs(bullet.x) > 850-collisionSize || Math.abs(bullet.y) > 450-collisionSize) {
             if (bullet.bulletBounce) {
                 bullet.bulletBounce--;
-                bullet.damage *= 1.75;
+                bullet.damage *= 1.15;
                 bullet.direction = Math.PI*2*Math.random();
 
                 if (Math.abs(bullet.x) > 850-collisionSize) {
@@ -146,48 +206,26 @@ function bulletTick() {
                 }
             } else {
                 bullet.alive = false;
-                ease(bullet,"size",0,0.05);
-                if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
+                
+                if (stats.trailColor && bullet.trailPoints) {
+                bullet.trailPoints.push([bullet.x,bullet.y]);
+                if (bullet.trailPoints.length > (stats.trailLength || 8)) bullet.trailPoints.splice(0,1);
+                ctx.beginPath();
+                bullet.trailPoints.forEach((points) => ctx.lineTo(...points));
+                ctx.strokeStyle = stats.trailColor;
+                ctx.globalAlpha = 0.25;
+                ctx.lineWidth = bullet.targetSize*0.8 + 2;
+                ctx.stroke();
+                ctx.lineWidth = 3;
+                ctx.globalAlpha = 1;
             }
-        }
-
-        if (!bullet.wallPierce) blocks.forEach((block) => {
-            const diffx = bullet.x + collisionSize/2.5 - block[0];
-            const diffy = bullet.y + collisionSize/2.5 - block[1];
-            const diffx1 = -bullet.x + collisionSize/2.5 + block[0]+block[2];
-            const diffy1 = -bullet.y + collisionSize/2.5 + block[1]+block[3];
-
-            if (diffx > 0 && diffx1 > 0 && diffy > 0 && diffy1 > 0) {
-                if (bullet.bulletBounce) {
-                    bullet.bulletBounce--;
-                    bullet.damage *= 1.15;
-                    bullet.direction = Math.PI*2*Math.random();
-                    if (Math.min(diffx, diffx1) < Math.min(diffy,diffy1)) {
-                        bullet.vx *= -1;
-
-                        if (diffx < diffx1) bullet.x = block[0]-collisionSize;
-                        else bullet.x = block[0]+block[2]+collisionSize;
-                    } else {
-                        bullet.vy *= -1;
-
-                        if (diffy < diffy1) bullet.y = block[1]-collisionSize;
-                        else bullet.y = block[1]+block[3]+collisionSize;
-                    }
-                } else  {
-                    bullet.alive = false;
-                    ease(bullet,"size",0,0.05);
-                    if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
-                }
             }
-        })
+        } else if (Math.abs(bullet.x)-bullet.size > 1000 || Math.abs(bullet.y)-bullet.size > 600 && bullet.alive) return false;
 
-        if (bullet.lifetime < 0 || bullet.lifetime === 0) {
-            bullet.alive = false;
-            ease(bullet,"size",0,0.05);
+        if (!bullet.alive) {
+            ease(bullet,"size",0,0.05 + 0.15*(!!stats.noDrawBullets));
             if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
-        } else if (bullet.lifetime) bullet.lifetime -= 1/30 - Math.random()/45;
-
-        bullet.tick++;
+        }
 
         return true;
     })

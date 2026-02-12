@@ -1,5 +1,5 @@
 const player = {
-    x: 0, y: 0,
+    x: 0, y: 200,
     vx: 0, vy: 0,
     rotationTick: 0,
     drawPath: JSON.parse(
@@ -14,7 +14,9 @@ const player = {
 
 function playerTick() {
     if (player.iFrames > 0) ctx.globalAlpha = 0.4;
-    draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
+    if (game.regionTransfer > 1) draw(player.x,player.y,player.drawPath,stats.playerSize*(-1+game.regionTransfer),player.rotationTick);
+    else if (game.regionTransfer > 0) draw(player.x,player.y,player.drawPath,stats.playerSize*(1+10*game.regionTransfer**4),player.rotationTick,1-game.regionTransfer);
+    else draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
     //draw(player.x,player.y,player.eyesPath,stats.playerSize);
     if (player.iFrames > 0) ctx.globalAlpha = 1;
 
@@ -91,6 +93,8 @@ function playerTick() {
             const y = (player.y-enemy.y);
             const hypot = Math.hypot(x,y);
             if (hypot && hypot < stats.playerSize+enemy.size/2.5) {
+                stats.onPlayerHits.forEach( (item) => item[1](item[0],enemy));
+                
                 player.vx += 150*Math.sign(x)/hypot + enemy.vx/2;
                 player.vy += 150*Math.sign(y)/hypot + enemy.vy/2;
                 if (!enemy.immovable) {
@@ -101,8 +105,6 @@ function playerTick() {
                 for (var i = 0; i < 1 + (stats.extraReceivedDamage || 0); i++) if (stats.extraHealth) stats.extraHealth--;
                 else stats.health--;
                 game.showHit += 0.75;
-
-                stats.onPlayerHits.forEach( (item) => item[1](item[0],enemy));
             }
         })
     }

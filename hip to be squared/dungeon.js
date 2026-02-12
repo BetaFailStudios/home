@@ -1,4 +1,4 @@
-let dungeon = { "0,0": { blocks: [], items: [], connections: [], visited: true } };
+let dungeon = { "0,0": { blocks: [], items: [], connections: [], visited: true, boss: true } };
 
 const dungeonPresets = [
     `[[-425,-125,50,250],[375,-125,50,250]]`,
@@ -12,19 +12,7 @@ const dungeonPresets = [
     `[[-525,-125,250,250],[275,-125,250,250]]`,
 ]
 
-const roomEffectList = {
-    "Haunted Armory": [
-        JSON.parse(
-            `[{"type":"point","x":-225,"y":100},{"type":"point","x":-250,"y":75},{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":-25},{"type":"point","x":-150,"y":-25},{"type":"point","x":-175,"y":-25},{"type":"point","x":-200,"y":-50},{"type":"point","x":-200,"y":-75},{"type":"point","x":-175,"y":-100},{"type":"point","x":0,"y":-100},{"type":"point","x":-25,"y":-100},{"type":"point","x":-50,"y":-125},{"type":"point","x":-50,"y":-150},{"type":"point","x":-25,"y":-175},{"type":"point","x":125,"y":-175},{"type":"point","x":150,"y":-150},{"type":"point","x":150,"y":-125},{"type":"point","x":125,"y":-100},{"type":"point","x":100,"y":-100},{"type":"point","x":200,"y":-100},{"type":"point","x":225,"y":-75},{"type":"point","x":225,"y":-50},{"type":"point","x":200,"y":-25},{"type":"point","x":100,"y":-25},{"type":"point","x":125,"y":-25},{"type":"point","x":150,"y":0},{"type":"point","x":150,"y":25},{"type":"point","x":125,"y":50},{"type":"point","x":0,"y":50},{"type":"point","x":25,"y":50},{"type":"point","x":50,"y":75},{"type":"point","x":50,"y":150},{"type":"point","x":25,"y":175},{"type":"point","x":-150,"y":175},{"type":"point","x":-175,"y":150},{"type":"point","x":-175,"y":125},{"type":"point","x":-150,"y":100},{"type":"point","x":-125,"y":100},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
-        ),JSON.parse(
-            `[{"type":"point","x":-100,"y":250},{"type":"point","x":-125,"y":225},{"type":"point","x":-125,"y":200},{"type":"point","x":-150,"y":175},{"type":"point","x":-225,"y":175},{"type":"point","x":-250,"y":150},{"type":"point","x":-250,"y":100},{"type":"point","x":-225,"y":75},{"type":"point","x":-150,"y":75},{"type":"point","x":-175,"y":75},{"type":"point","x":-200,"y":50},{"type":"point","x":-200,"y":-50},{"type":"point","x":-175,"y":-75},{"type":"point","x":-75,"y":-75},{"type":"point","x":-50,"y":-100},{"type":"point","x":-50,"y":-175},{"type":"point","x":-25,"y":-200},{"type":"point","x":175,"y":-200},{"type":"point","x":200,"y":-175},{"type":"point","x":200,"y":-125},{"type":"point","x":175,"y":-100},{"type":"point","x":125,"y":-100},{"type":"point","x":100,"y":-75},{"type":"point","x":100,"y":0},{"type":"point","x":75,"y":25},{"type":"point","x":50,"y":25},{"type":"point","x":200,"y":25},{"type":"point","x":225,"y":50},{"type":"point","x":225,"y":150},{"type":"point","x":200,"y":175},{"type":"point","x":25,"y":175},{"type":"point","x":50,"y":175},{"type":"point","x":75,"y":200},{"type":"point","x":75,"y":225},{"type":"point","x":50,"y":250},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
-        ),JSON.parse(
-            `[{"type":"point","x":-225,"y":-250},{"type":"point","x":-250,"y":-225},{"type":"point","x":-250,"y":-100},{"type":"point","x":-225,"y":-75},{"type":"point","x":-150,"y":-75},{"type":"point","x":-125,"y":-50},{"type":"point","x":-125,"y":100},{"type":"point","x":-100,"y":125},{"type":"point","x":-75,"y":125},{"type":"point","x":-175,"y":125},{"type":"point","x":-200,"y":150},{"type":"point","x":-200,"y":200},{"type":"point","x":-175,"y":225},{"type":"point","x":200,"y":225},{"type":"point","x":225,"y":200},{"type":"point","x":225,"y":100},{"type":"point","x":200,"y":75},{"type":"point","x":125,"y":75},{"type":"point","x":100,"y":50},{"type":"point","x":100,"y":-25},{"type":"point","x":75,"y":-50},{"type":"point","x":50,"y":-50},{"type":"point","x":175,"y":-50},{"type":"point","x":200,"y":-75},{"type":"point","x":200,"y":-175},{"type":"point","x":175,"y":-200},{"type":"point","x":25,"y":-200},{"type":"point","x":0,"y":-225},{"type":"point","x":-25,"y":-250},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
-        )
-    ]
-}
-
-const roomEffects = [
+let roomEffects = [
 ];
 
 function drawRoommEffects() {
@@ -59,6 +47,16 @@ function generateDungeon() {
             dungeon[pos[0] + "," + pos[1]].blocks = [];
         } else if (Math.random() < 1) dungeon[pos[0] + "," + pos[1]].blocks.forEach( (item) => item[0] = (item[0]+item[2]/2)*-1 - item[2]/2 );
     }
+
+    dungeon["0,0"].connections.forEach((item) => {
+        if (item[0] == 0) {
+            if (item[1] == -1) game.openings.push("left");
+            else game.openings.push("right");
+        } else {
+            if (item[1] == -1) game.openings.push("up");
+            else game.openings.push("down");
+        }
+    })
 }
 
 function drawMap() {
@@ -119,7 +117,7 @@ function dungeonMove(change) {
     floor = [];
 
     for (var i = 0; i < 6; i++) 
-        floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:floorPaths[Math.floor(Math.random()*floorPaths.length)]});
+        floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
 
     roomEffects.forEach((item) => {
         if (change[0] == 0) item.x -= 1800*change[1]*Math.random();
@@ -148,7 +146,7 @@ function dungeonMove(change) {
             game.bossEase = 1;
             ease(game,"bossEase",0,5);
         }
-        else spawnEnemies(Math.floor(1 + Math.random()*0.6+0.2*game.discoveredRooms));
+        else spawnEnemies(Math.floor(1 + Math.random()*0.6+0.2*game.discoveredRooms+1.2*game.regionNum));
         
         ease(game,"notLocked",0,0.2);
         
@@ -168,20 +166,8 @@ function dungeonMove(change) {
     items = room.items;
 }
 
-function drawBlock(block) {
-    ctx.beginPath()
-    ctx.rect(...block);
-    for (var i = block[1]; i <= block[1]+block[3]-25; i += 25) {
-        ctx.moveTo(block[0],i);
-        ctx.lineTo(block[0]+block[2],i);
-        for (var i2 = block[0]+25+25*((i-block[1])%50 == 0); i2 <= block[0]+block[2]-25; i2 += 50) {
-            ctx.moveTo(i2,i);
-            ctx.lineTo(i2,i+25);
-        }
-    }
-    ctx.lineWidth = 3;
-    ctx.fillStyle = "#666";
-    ctx.fill();
-    ctx.strokeStyle = "#222";
-    ctx.stroke();
-}
+for (var i = 0; i < 6; i++) roomEffects.push({
+    moveSpeed: 0.5 + Math.random()*2,
+    x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:600+Math.random()*400,
+    reference:game.region.roomEffects[Math.floor(Math.random()*game.region.roomEffects.length)]
+});

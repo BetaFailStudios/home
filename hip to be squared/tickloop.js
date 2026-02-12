@@ -1,4 +1,7 @@
 function tickloop() {
+    game.tick++;
+    if (game.tick > 1000000000) game.tick = 0;
+
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.fillRect(-1800,-1000,3600,2000);
@@ -13,6 +16,7 @@ function tickloop() {
     drawDamageNumbers();
     if (game.bossName) drawBossName();
     if (game.musicPopup != 1) drawMusicPopup();
+    if (game.regionTransfer && game.regionTransfer < 1) drawRegionName();
     drawRoommEffects();
     drawHealthBars();
     
@@ -36,7 +40,27 @@ function tickloop() {
     ctx.fill();
     ctx.lineWidth = 3;
 
+    if (game.regionTransfer > 1) {
+        ctx.beginPath();
+        ctx.globalAlpha = 2-game.regionTransfer;
+        ctx.rect(1800,-1000,-3600,2000);
+        ctx.fillStyle = "#000";
+        ctx.fill();
+        ctx.globalAlpha = 1;
+    }
+
     if (stats.health <= 0) game.menu = "death";
+
+    if (keys.q && enemies.length) {
+        ctx.strokeStyle = "#222";
+        ctx.fillStyle = "#00000077";
+        ctx.rect(-400,-50,800,100);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "#cccccc99";
+        ctx.font = "50px share tech"
+        ctx.fillText("Inventory not available during battle",0,0);
+    }
 
     if (game.menu == "inventory") drawInventory();
     else if (game.menu) drawMenu();
@@ -45,9 +69,20 @@ function tickloop() {
     if (!enemies.length && !game.notLocked) {
         ease(game,"notLocked", 1,0.2);
 
-        if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].boss) restartMusic(0);
+        if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].boss && game.regionNum >= 0) {
+            if (game.musicStarted) restartMusic(0);
 
-        if (game.relicTick >= 1) {
+            items.push(new Item(player.x-200,player.y,false,false,"artifact"), new Item(player.x+200,player.y,false,false,"artifact"));
+
+            while (items[items.length-1].reference == items[items.length-2].reference) {
+                items.splice(items.length-1);
+                items.push(new Item(player.x+200,player.y,false,false,"artifact"))
+            }
+
+            game.relicTick = 0;
+            dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems = true;
+            dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos = items.length-2;
+        } else if (game.relicTick >= 1) {
             if (game.firstWeapon) items.push(new Item(player.x-200,player.y,false,false,"weapon"), new Item(player.x+200,player.y,false,false,"weapon"));
             else items.push(new Item(player.x-200,player.y), new Item(player.x+200,player.y));
 
@@ -74,7 +109,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.0.7.0",700,470);
+    ctx.fillText("Version: b.1.0.0",700,470);
 }
 
 setInterval( tickloop, 1000/60 );

@@ -93,7 +93,7 @@
 
         let notes = [];
 
-        const bpb = 6;
+        const bpb = 8;
         let offset = 0;
 
         //detect keypresses
@@ -122,6 +122,13 @@
                 if (closest != -1 && Math.abs(closestDist) < 1) {
                     notes.splice(closest,1);
                 }
+            }
+            if (e.key.toLowerCase() == "c") {
+                const barToCopy = Number(prompt("Bar to copy"));
+
+                notes.forEach((note) => {
+                    if (note[0] >= barToCopy-1 && note[0] < barToCopy) notes.push([note[0]-barToCopy+1+offset/bpb,note[1]]);
+                })
             }
         }, false);
         window.addEventListener('keyup', function (e) {

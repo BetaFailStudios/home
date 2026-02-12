@@ -42,50 +42,33 @@ function drawEnemyAttacks() {
     ctx.lineWidth = 3;
 }
 
-let floorPaths = [
-    JSON.parse(
-        `[{"type":"point","x":-250,"y":-25},{"type":"point","x":-250,"y":-87.5},{"type":"point","x":-225,"y":-125},{"type":"point","x":-150,"y":-175},{"type":"point","x":-125,"y":-225},{"type":"point","x":-25,"y":-250},{"type":"point","x":75,"y":-225},{"type":"point","x":100,"y":-150},{"type":"point","x":225,"y":-100},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":225},{"type":"point","x":75,"y":250},{"type":"point","x":-50,"y":225},{"type":"point","x":-200,"y":250},{"type":"point","x":-225,"y":200},{"type":"point","x":-200,"y":50},{"type":"close"},{"type":"fill","r":75,"g":60,"b":0},{"type":"stroke","r":50,"g":35,"b":0}]`
-    ), JSON.parse(
-        `[{"type":"point","x":-250,"y":12.5,"move":false},{"type":"point","x":-212.5,"y":-125,"move":false},{"type":"point","x":-62.5,"y":-225,"move":false},{"type":"point","x":112.5,"y":-250,"move":false},{"type":"point","x":237.5,"y":-112.5,"move":false},{"type":"point","x":200,"y":50,"move":false},{"type":"point","x":237.5,"y":187.5,"move":false},{"type":"point","x":212.5,"y":237.5,"move":false},{"type":"point","x":62.5,"y":250,"move":false},{"type":"point","x":-50,"y":187.5,"move":false},{"type":"point","x":-200,"y":150,"move":false},{"type":"close"},{"type":"fill","r":55,"g":80,"b":150},{"type":"stroke","r":45,"g":50,"b":90}]`
-    )
-];
-
 let floor = [];
 
 for (var i = 0; i < 6; i++) 
-    floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:floorPaths[Math.floor(Math.random()*floorPaths.length)]});
+    floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
 
 let brickId = [];//[[2,1,15],[1,-2,5]]
 
-for (var i = 0; i < 30; i++) brickId.push([Math.round(3-6*Math.random()),Math.round(3-6*Math.random()),Math.floor(20-40*Math.random())])
-brickId = brickId.filter((item) => !item.includes(0) && !item.includes(-0))
+game.region.generateBrickId();
 
 function drawEnvironment() {
-    ctx.beginPath();
-    ctx.fillStyle = "#777";
-    //if (game.motionBlur) ctx.fillStyle += "88";
-    ctx.fillRect(-900, -500, 1800, 1000);
-
-    ctx.beginPath();
-    ctx.strokeStyle = "#222";
-    for (var i = -500; i <= 500; i += 60) {
-        ctx.moveTo(-900,i);
-        ctx.lineTo(900,i);
-        for (var i2 = -900+60*((i+500)%120 == 0); i2 <= 900-60; i2 += 130) {
-            const t = (i+500)/60;
-            const t2 = (i2+900)/130;
-            let contin = true;
-            brickId.forEach((item) => { if (item[0]*t + item[1]*t2 == item[2]) contin = false })
-            if (contin) {
-                ctx.moveTo(i2,i);
-                ctx.lineTo(i2,i+60);
-            }
-        }
-    }
-    //ctx.fill();
-    ctx.stroke();
+    game.region.drawFloor()
 
     floor.forEach((item) => { draw(item.x,item.y,item.reference,item.size,item.rotation,0.25) })
+
+    if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].boss && game.notLocked) {
+        draw(0,0,game.nextRegion.entrancePath,75 * game.notLocked );
+        if (!game.regionTransfer && game.notLocked == 1 && Math.abs(player.x) < 150 && Math.abs(player.y) < 150) {
+            ctx.beginPath();
+            ctx.fillStyle = "#ccc";
+            ctx.strokeStyle = "#222";
+            ctx.font = "40px share tech";
+            ctx.lineWidth = 15;
+            ctx.strokeText("Press E to enter", 0,-100);
+            ctx.fillText("Press E to enter", 0,-100);
+            ctx.lineWidth = 3;
+        }
+    }
 
     ctx.beginPath();
     if (game.openings.includes("left")) if (dungeon[(game.dungeonPosition[0]-1) + "," + (game.dungeonPosition[1])].boss) ctx.rect(-970,-500,100,1000);
@@ -120,13 +103,13 @@ function drawEnvironment() {
     ctx.lineTo(-100,-450);
     ctx.closePath();
     ctx.lineWidth = 3;
-    ctx.fillStyle = "#444";
+    ctx.fillStyle = game.region.wallColor;
     ctx.fill();
     ctx.strokeStyle = "#222";
     ctx.stroke();
 
     blocks.forEach((block) => {
-        drawBlock(block);
+        game.region.drawBlock(block);
         //ctx.rect(...block);
     })
 }

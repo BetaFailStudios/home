@@ -2,6 +2,7 @@ const menuButtons = {
     "main": [[ "start", "options", "quit" ],[
         () => {
             game.menu = false;
+            ease(game,"regionTransfer",0,2.5);
         },() => {
             game.optionsMenu = true;
         },() => {
@@ -23,7 +24,7 @@ const menuButtons = {
         },(lr) => {
             game.audioVolume += lr*0.1;
             game.audioVolume = Math.min(1,Math.max(0,game.audioVolume));
-            music["Haunted Armory"][game.musicPos].file.volume = game.audioVolume;
+            game.region.music[game.musicPos].file.volume = game.audioVolume;
             localStorage.setItem("htbs-audioVolume",game.audioVolume);
         },() => {
             game.showDamageNumbers = !game.showDamageNumbers;
@@ -153,10 +154,12 @@ function drawInventory() {
     ctx.fillRect(-900,-500,1800,1000);
     ctx.beginPath();
     const sizeWeapon = 250;
-    ctx.moveTo(-sizeWeapon,0);
-    ctx.lineTo(0,sizeWeapon);
-    ctx.lineTo(sizeWeapon,0);
-    ctx.lineTo(0,-sizeWeapon);
+    ctx.moveTo(200+sizeWeapon,0);
+    ctx.lineTo(200+sizeWeapon*0.5,0+sizeWeapon*0.866);
+    ctx.lineTo(200-sizeWeapon*0.5,0+sizeWeapon*0.866);
+    ctx.lineTo(200-sizeWeapon,0);
+    ctx.lineTo(200-sizeWeapon*0.5,0-sizeWeapon*0.866);
+    ctx.lineTo(200+sizeWeapon*0.5,0-sizeWeapon*0.866);
     ctx.closePath();
     ctx.fillStyle = "#ccc";
     ctx.fill();
@@ -189,10 +192,10 @@ function drawInventory() {
     ctx.fill();
     ctx.stroke();
 
-    draw(0,0,game.weapon.reference.drawPath,100,Math.sin(player.rotationTick*5)/3);
-    if (Math.hypot(mouse.x,mouse.y) < 200) drawItemDesc(game.weapon,0,0);
+    draw(200,0,game.weapon.reference.drawPath,100,Math.sin(player.rotationTick*5)/3);
+    if (Math.hypot(mouse.x-200,mouse.y) < 200) drawItemDesc(game.weapon,200,0);
 
-    [[-300,-300],[300,-300],[-450,0],[450,0],[-300,300],[300,300]].forEach((item, i) => {
+    [[-150,-300],[-550,-300],[-300,0],[-700,0],[-150,300],[-550,300]].forEach((item, i) => {
         if (game.relicsEquipped[i]) {
             ctx.beginPath();
 
@@ -236,6 +239,29 @@ function drawInventory() {
 
             draw(...item,game.relicsEquipped[i].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
             if (Math.hypot(mouse.x-item[0],mouse.y-item[1]) < 200) drawItemDesc(game.relicsEquipped[i],...item);
+        }
+    });
+    [[550,-300],[700,0],[550,300]].forEach((item, i) => {
+        if (game.artifactsEquipped[i]) {
+            ctx.beginPath();
+
+            const size = 135;
+            ctx.moveTo(item[0],item[1]-size);
+            ctx.lineTo(item[0]-size*0.866,item[1]+size*0.5);
+            ctx.lineTo(item[0]+size*0.866,item[1]+size*0.5);
+            ctx.closePath();
+            ctx.fillStyle = "#ccc";
+            ctx.fill();
+
+            ctx.fillStyle = "#cc555577";
+            ctx.strokeStyle = "#222";
+
+            ctx.fill();
+            ctx.stroke();
+
+
+            draw(...item,game.artifactsEquipped[i].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
+            if (Math.hypot(mouse.x-item[0],mouse.y-item[1]) < 200) drawItemDesc(game.artifactsEquipped[i],...item);
         }
     })
 }
@@ -393,8 +419,19 @@ function drawMusicPopup() {
     ctx.fillStyle = "#ccc";
     ctx.strokeStyle = "#222";
     ctx.font = "40px share tech";
-    ctx.lineWidth = 20;
-    ctx.strokeText(music[game.region.name][game.musicPos].popup,300,450+100*game.musicPopup**5);
-    ctx.fillText(music[game.region.name][game.musicPos].popup,300,450+100*game.musicPopup**5);
+    ctx.lineWidth = 15;
+    ctx.strokeText(game.region.music[game.musicPos].popup,300,450+100*game.musicPopup**5);
+    ctx.fillText(game.region.music[game.musicPos].popup,300,450+100*game.musicPopup**5);
+    ctx.lineWidth = 3;
+}
+
+function drawRegionName() {
+    ctx.beginPath();
+    ctx.fillStyle = game.region.name[1];
+    ctx.strokeStyle = "#222";
+    ctx.font = "75px share tech";
+    ctx.lineWidth = 15;
+    ctx.strokeText(game.region.name[0],0,-350-200*(1-game.regionTransfer)**5);
+    ctx.fillText(game.region.name[0],0,-350-200*(1-game.regionTransfer)**5);
     ctx.lineWidth = 3;
 }

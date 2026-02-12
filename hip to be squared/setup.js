@@ -68,7 +68,7 @@ const mouse = { x: 0, y: 0 };
 //detect keypresses
 window.addEventListener('keydown', async function (e) {
     if (e.key.toLowerCase() == "tab") e.preventDefault();
-    if (e.repeat) return;
+    if (e.repeat || game.regionTransfer) return;
 
     keys[e.key.toLowerCase()] = true;
 
@@ -99,8 +99,45 @@ window.addEventListener('keydown', async function (e) {
         }
         player.dashCooldown = 1;
     }
-    if (e.key.toLowerCase() == 'e') pickUpItem();
-    if (e.key.toLowerCase() == 'q') if (!game.menu) {
+    if (e.key.toLowerCase() == 'e') {
+        if (pickUpItem()) if (game.notLocked == 1 && dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].boss && Math.abs(player.x) < 150 && Math.abs(player.y) < 150) {
+            game.regionTransfer = 2;
+            ease(game.region.music[game.musicPos].file,"volume", 0, 2.5);
+            ease(game,"regionTransfer", 0, 5);
+            setTimeout(() => {
+                stats.health = stats.healthMax;
+                game.region.music[game.musicPos].file.pause();
+                game.region = game.nextRegion;
+                game.regionNum++;
+                if (game.regionNum+1 < regions.length) game.nextRegion = regions[game.regionNum+1][Math.floor(regions[game.regionNum+1].length*Math.random())];
+                startMusic();
+
+                roomEffects = [];
+                for (var i = 0; i < 6; i++) roomEffects.push({
+                    moveSpeed: 0.5 + Math.random()*2,
+                    x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:600+Math.random()*400,
+                    reference:game.region.roomEffects[Math.floor(Math.random()*game.region.roomEffects.length)]
+                });
+
+                floor = [];
+
+                for (var i = 0; i < 6; i++) 
+                    floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
+            
+                game.region.generateBrickId();
+
+                game.openings = [];
+                game.discoveredRooms = 0;
+                
+                game.dungeonPosition = [0,0];
+                dungeon = { "0,0": { blocks: [], items: [], connections: [], visited: true } };
+                generateDungeon();
+
+                blocks = [];
+            }, 2400);
+        }
+    }
+    if (e.key.toLowerCase() == 'q' && !enemies.length) if (!game.menu) {
         game.menu = "inventory";
     } else if (game.menu == "inventory") {
         game.menu = false;
@@ -124,17 +161,31 @@ window.addEventListener('mousedown', function () {
         startMusic();
     }
     if (game.menu == "inventory") {
-        let relicPos = -1;
-        if (game.relicsEquipped[0] && Math.hypot(mouse.x+300,mouse.y+300) < 200) relicPos = 0;
-        if (game.relicsEquipped[1] && Math.hypot(mouse.x-300,mouse.y+300) < 200) relicPos = 1;
-        if (game.relicsEquipped[2] && Math.hypot(mouse.x+450,mouse.y) < 200) relicPos = 2;
-        if (game.relicsEquipped[3] && Math.hypot(mouse.x-450,mouse.y) < 200) relicPos = 3;
-        if (game.relicsEquipped[4] && Math.hypot(mouse.x+300,mouse.y-300) < 200) relicPos = 4;
-        if (game.relicsEquipped[5] && Math.hypot(mouse.x-300,mouse.y-300) < 200) relicPos = 5;
+        let relicPos = 0;
+        if (game.relicsEquipped[0] && Math.hypot(mouse.x+150,mouse.y+300) < 200) relicPos = 1;
+        else if (game.relicsEquipped[1] && Math.hypot(mouse.x+550,mouse.y+300) < 200) relicPos = 2;
+        else if (game.relicsEquipped[2] && Math.hypot(mouse.x+300,mouse.y) < 200) relicPos = 3;
+        else if (game.relicsEquipped[3] && Math.hypot(mouse.x+700,mouse.y) < 200) relicPos = 4;
+        else if (game.relicsEquipped[4] && Math.hypot(mouse.x+150,mouse.y-300) < 200) relicPos = 5;
+        else if (game.relicsEquipped[5] && Math.hypot(mouse.x+550,mouse.y-300) < 200) relicPos = 6;
+        else if (game.artifactsEquipped[0] && Math.hypot(mouse.x-550,mouse.y+300) < 200) relicPos = -1;
+        else if (game.artifactsEquipped[1] && Math.hypot(mouse.x-700,mouse.y) < 200) relicPos = -2;
+        else if (game.artifactsEquipped[2] && Math.hypot(mouse.x+-550,mouse.y-300) < 200) relicPos = -3;
 
-        if (relicPos != -1) {
-            const relicToPush = game.relicsEquipped[relicPos];
-            game.relicsEquipped[relicPos] = false;
+        if (relicPos > 0) {
+            const relicToPush = game.relicsEquipped[relicPos-1];
+            game.relicsEquipped[relicPos-1] = false;
+            if (game.replaceItem) {
+                pickUpItem();
+                game.replaceItem = false;
+            }
+            items.push(new Item(player.x,player.y,relicToPush.reference,relicToPush.rarity));
+            game.menu = false;
+
+            updateStats();
+        } else if (relicPos < 0) {
+            const relicToPush = game.artifactsEquipped[-relicPos-1];
+            game.artifactsEquipped[-relicPos-1] = false;
             if (game.replaceItem) {
                 pickUpItem();
                 game.replaceItem = false;
@@ -186,7 +237,7 @@ function draw(x,y,path, size, rotate, alpha, noClear) {
     ctx.translate(x,y);
     if (rotate) ctx.rotate(rotate);
 
-    if (alpha) ctx.globalAlpha = alpha;
+    if (alpha !== undefined) ctx.globalAlpha = alpha;
 
     if (!noClear) ctx.beginPath();
     path.forEach((item,i) => {
@@ -217,7 +268,9 @@ function draw(x,y,path, size, rotate, alpha, noClear) {
     ctx.restore();
 }
 
-let blocks = [];
+let blocks = JSON.parse(
+    `[[-775,-375,150,150],[-550,-375,150,150],[-325,-375,150,150],[625,-375,150,150],[400,-375,150,150],[175,-375,150,150],[-775,225,150,150],[-550,225,150,150],[-325,225,150,150],[625,225,150,150],[400,225,150,150],[175,225,150,150],[-775,-150,300,300],[475,-150,300,300]]`
+);
 
 const game = {
     cursorPath: JSON.parse(
@@ -236,6 +289,10 @@ const game = {
         `[{"type":"point","x":-250,"y":-100},{"type":"point","x":-225,"y":-75},{"type":"point","x":-200,"y":-25},{"type":"point","x":-200,"y":25},{"type":"point","x":-225,"y":75},{"type":"point","x":-250,"y":100},{"type":"point","x":200,"y":100},{"type":"point","x":225,"y":75},{"type":"point","x":250,"y":25},{"type":"point","x":250,"y":-25},{"type":"point","x":225,"y":-75},{"type":"point","x":200,"y":-100},{"type":"close"}]`
     ), stabAttackWarnPath: JSON.parse(
         `[{"type":"point","x":-250,"y":-25},{"type":"point","x":-225,"y":0},{"type":"point","x":-250,"y":25},{"type":"point","x":225,"y":25},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":-25},{"type":"close"}]`
+    ), rectAttackWarnPath: JSON.parse(
+        `[{"type":"point","x":-250,"y":-100},{"type":"point","x":250,"y":-100},{"type":"point","x":250,"y":100},{"type":"point","x":-250,"y":100},{"type":"close"}]`
+    ), longrectAttackWarnPath: JSON.parse(
+        `[{"type":"point","x":-250,"y":-25},{"type":"point","x":-250,"y":25},{"type":"point","x":250,"y":25},{"type":"point","x":250,"y":-25},{"type":"close"}]`
     ),
     enemyAttack:[],
     enemyAttackWarning:[],
@@ -243,6 +300,7 @@ const game = {
     notLocked: 0,
     openings: [  ],
     relicsEquipped: [0,0,0,0,0,0],
+    artifactsEquipped: [0,0,0],
     weapon: new Item(0,0,weapons[0],0),
     relicTick: 0,
     firstWeapon: true,
@@ -252,7 +310,8 @@ const game = {
     audioVolume: 0.8,
     showDamageNumbers: true,
     discoveredRooms: 0,
-    musicPopup: 1
+    musicPopup: 1,
+    tick: 0
 };
 
 if (localStorage.getItem("htbs-audioVolume")) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));
@@ -267,18 +326,6 @@ let stats = {
 }
 
 updateStats();
-
-generateDungeon();
-
-dungeon["0,0"].connections.forEach((item) => {
-    if (item[0] == 0) {
-        if (item[1] == -1) game.openings.push("left");
-        else game.openings.push("right");
-    } else {
-        if (item[1] == -1) game.openings.push("up");
-        else game.openings.push("down");
-    }
-})
 
 function animationRatio(x,t,r) {
     return 1 - Math.abs( ( 2*x/t - 1 ) **r );

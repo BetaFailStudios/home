@@ -43,7 +43,8 @@ function enemyTick() {
 
         if (enemy.spawning && enemy.rotateToTarget) enemy.dirToTarget = (Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x));
         if (enemy.ephemeral) ctx.globalAlpha = 0.6;
-        draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4);
+        if (enemy.randomRotation) draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, Math.random()*Math.PI*2);
+        else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4);
         if (enemy.ephemeral) ctx.globalAlpha = 1;
         if (enemy.spawning) {
             draw(enemy.x, enemy.y, game.enemySpawnPath, enemy.spawnSize, 0, enemy.spawning);
@@ -106,10 +107,6 @@ function enemyTick() {
             delete enemy.reset;
         }
 
-        if (enemy.target == "random") {
-            enemy.actualDirection = Math.random()*Math.PI*2;
-        }
-
         if (enemy.projectile) { if (Math.abs(enemy.x) > 1000+enemy.size || Math.abs(enemy.y) > 600+enemy.size) return false;
         } else if (!enemy.offscreen) {        
             if (Math.abs(enemy.x) > 850-enemy.size) {
@@ -117,7 +114,7 @@ function enemyTick() {
                 
                 if (enemy.immovable) {
                     enemy.vx = 0;
-                } else if (enemy.frictionless) enemy.vx *= -1;
+                } else if (enemy.wallBounce && Math.sign(enemy.vx) == Math.sign(enemy.x)) enemy.vx *= -1;
                 else if (!enemy.noVelocityChange) enemy.vx = 0;            
             }
             if (Math.abs(enemy.y) > 450-enemy.size) {
@@ -125,7 +122,7 @@ function enemyTick() {
 
                 if (enemy.immovable) {
                     enemy.vy = 0;
-                } else if (enemy.frictionless) enemy.vy *= -1;
+                } else if (enemy.wallBounce && Math.sign(enemy.vy) == Math.sign(enemy.y)) enemy.vy *= -1;
                 else if (!enemy.noVelocityChange) enemy.vy = 0;            
             }
         }
@@ -140,13 +137,13 @@ function enemyTick() {
                     if (enemy.target == "player") enemy.target = "-player";
                     else if (enemy.target == "-player") enemy.target = "player";
                     if (Math.min(diffx, diffx1) < Math.min(diffy,diffy1)) {
-                        if (enemy.frictionless) enemy.vx *= -1;
+                        if (enemy.wallBounce && Math.sign(enemy.vx) == Math.sign(diffx)) enemy.vx *= -1;
                         else if (!enemy.noVelocityChange) enemy.vx = 0;
 
                         if (diffx < diffx1) enemy.x = block[0]-enemy.size;
                         else enemy.x = block[0]+block[2]+enemy.size;
                     } else {
-                        if (enemy.frictionless) enemy.vy *= -1;
+                        if (enemy.wallBounce && Math.sign(enemy.vy) == Math.sign(diffy)) enemy.vy *= -1;
                         else if (!enemy.noVelocityChange) enemy.vy = 0;
 
                         if (diffy < diffy1) enemy.y = block[1]-enemy.size;
@@ -173,8 +170,8 @@ function enemyTick() {
         if (diffToActualDir < -Math.PI) diffToActualDir += Math.PI*2;
         enemy.actualDirection += diffToActualDir/3;
 
-        enemies.forEach((enemy2,i2) => {
-            if (i == i2) return;
+        if (!enemy.projectile) enemies.forEach((enemy2,i2) => {
+            if (i == i2 || enemy2.projectile) return;
             const x = (enemy.x-enemy2.x);
             const y = (enemy.y-enemy2.y);
             const hypot = Math.hypot(x,y);
@@ -202,8 +199,8 @@ function enemyTick() {
 }
 
 function spawnEnemies(num) {
+    const enemyIndexes = game.region.enemies;
     for(var i = 0; i < (num || 1); i++) {
-        const enemyIndexes = game.region.enemies;
         const id = enemyIndexes[Math.floor(Math.random()*enemyIndexes.length)]
         const enemy = new Enemy(enemyBlueprints[id]);
         enemy.x = Math.random()*1600-800;
