@@ -7,10 +7,10 @@ function tickloop() {
     ctx.fillRect(-1800,-1000,3600,2000);
 
     drawEnvironment();
-    drawEnemyAttacks();
     bulletTick();
-    enemyTick();
     handleEffects();
+    drawEnemyAttacks();
+    enemyTick();
     playerTick();
     itemTick();
     drawDamageNumbers();
@@ -109,7 +109,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.0.0",700,470);
+    ctx.fillText("Version: b.1.0.1",700,470);
 }
 
 setInterval( tickloop, 1000/60 );
