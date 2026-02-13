@@ -58,29 +58,27 @@ let bulletBuffer = [];
 
 function bulletTick() {
     bullets = bullets.filter((bullet,i) => {
-
-
         bullet.speed = Math.hypot(bullet.vx, bullet.vy);
         let numOfMoves = 1;
         if (bullet.speed-bullet.size*2 > 20) numOfMoves += Math.floor((bullet.speed-bullet.size*2)/25);
 
         // handle afterdeath
         if (!bullet.alive) {
-            if (!stats.noDrawBullets) draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
+            if (!stats.noDrawBullets || !bullet.triggerExpire) draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
 
-            if (stats.trailColor && bullet.trailPoints) {
-                bullet.trailPoints.push([bullet.x,bullet.y]);
-                if (bullet.trailPoints.length > (stats.trailLength || 8)*numOfMoves) bullet.trailPoints.splice(0,1);
+            if (bullet.triggerExpire && stats.trailColor && bullet.trailPoints) {
+                bullet.trailPoints.splice(0,1);
                 ctx.beginPath();
                 bullet.trailPoints.forEach((points) => ctx.lineTo(...points));
                 ctx.strokeStyle = stats.trailColor;
                 ctx.globalAlpha = 0.25;
-                ctx.lineWidth = bullet.targetSize*0.8 + 2;
+                ctx.lineWidth = bullet.targetSize*1.3 + 2;
                 ctx.lineCap = "round";
                 ctx.stroke();
                 ctx.lineWidth = 3;
                 ctx.globalAlpha = 1;
             }
+
             return bullet.size;
         }
         let sineRatio = 0;
@@ -88,7 +86,7 @@ function bulletTick() {
         const collisionSize = Math.min(150,bullet.size/2.2);
 
         for (var i = 0; i < numOfMoves && bullet.alive; i++) {
-            if (stats.sineWaveMovement) {
+            if (stats.sineWaveMovement && bullet.triggerExpire) {
                 sineRatio = Math.sin(bullet.tick*Math.PI/9)*2 * ((stats.previousBulletSpeed / bullet.speed) || 1);
                 bullet.x += bullet.vy * sineRatio;
                 bullet.y -= bullet.vx * sineRatio;
@@ -96,10 +94,10 @@ function bulletTick() {
 
             if (bullet.triggerExpire) stats.bulletTicks.forEach( (item) => item[1](item[0],bullet));
 
-            if (!i && !stats.noDrawBullets) draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
+            if (!i && (!stats.noDrawBullets || !bullet.triggerExpire)) draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
             //effects.push(new Effect(bullet.x,bullet.y,"glasses",10,0))
 
-            if (stats.trailColor && bullet.trailPoints) {
+            if (bullet.triggerExpire && stats.trailColor && bullet.trailPoints) {
                 bullet.trailPoints.push([bullet.x,bullet.y]);
                 if (bullet.trailPoints.length > (stats.trailLength || 8)*numOfMoves) bullet.trailPoints.splice(0,1);
                 if (!i) {
@@ -107,7 +105,7 @@ function bulletTick() {
                     bullet.trailPoints.forEach((points) => ctx.lineTo(...points));
                     ctx.strokeStyle = stats.trailColor;
                     ctx.globalAlpha = 0.25;
-                    ctx.lineWidth = bullet.targetSize*0.8 + 2;
+                    ctx.lineWidth = bullet.targetSize*1.3 + 2;
                     ctx.lineCap = "round";
                     ctx.stroke();
                     ctx.lineWidth = 3;
@@ -138,7 +136,7 @@ function bulletTick() {
                 } else if (bullet.enemiesTouched.includes(enemy)) bullet.enemiesTouched.splice(bullet.enemiesTouched.indexOf(enemy), 1);
             })
 
-            if (stats.sineWaveMovement) {
+            if (stats.sineWaveMovement && bullet.triggerExpire) {
                 bullet.x -= bullet.vy * sineRatio;
                 bullet.y += bullet.vx * sineRatio;
             }

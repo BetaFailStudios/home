@@ -71,7 +71,7 @@ const weapons = [
             stats.bulletSize *= 2.5;
             stats.trailColor = "#0cc";
         }, damageBoost(rarity,bullet,enemy) {
-            return Math.hypot(bullet.vx,bullet.vy)/50;
+            return bullet.speed/50 || 1;
         }
 /*GC*/},{
         name: "Gas Can",
@@ -540,7 +540,7 @@ const artifacts = [
         ), bombPath: JSON.parse(
             `[{"type":"point","x":100,"y":-250},{"type":"point","x":250,"y":-100},{"type":"point","x":250,"y":100},{"type":"point","x":100,"y":250},{"type":"point","x":-100,"y":250},{"type":"point","x":-250,"y":100},{"type":"point","x":-250,"y":-100},{"type":"point","x":-100,"y":-250},{"type":"close"},{"type":"fill","r":255,"g":0,"b":0},{"type":"stroke","r":255,"g":75,"b":25},{"type":"point","x":0,"y":-175},{"type":"point","x":125,"y":-125},{"type":"point","x":175,"y":0},{"type":"point","x":125,"y":125},{"type":"point","x":0,"y":175},{"type":"point","x":-125,"y":125},{"type":"point","x":-175,"y":0},{"type":"point","x":-125,"y":-125},{"type":"close"},{"type":"fill","r":255,"g":150,"b":0},{"type":"stroke","r":125,"g":0,"b":0}]`
         ), expiration(_, bullet) {
-            bulletBuffer.push(new Bullet({x: bullet.x, y: bullet.y, speed: 0, size: bullet.size*3 + 75, damage: bullet.damage**1.1*0.7 + 0.15, drawPath: artifacts[0].bombPath, lifetime: 0.3, wallPierce: true, pierce: 10,direction:Math.random()*Math.PI,drawAlpha:0.7}))
+            bulletBuffer.push(new Bullet({x: bullet.x, y: bullet.y, speed: 0, size: bullet.size*4 + 85, damage: bullet.damage**1.1*0.7 + 0.15, drawPath: artifacts[0].bombPath, lifetime: 0.3, wallPierce: true, pierce: 10,direction:Math.random()*Math.PI,drawAlpha:0.7}))
         }
 /*IB*/},{
         name: "Ink Brush",
@@ -550,7 +550,7 @@ const artifacts = [
         ), inkPath: JSON.parse(
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":125,"y":-225},{"type":"point","x":225,"y":-125},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":125},{"type":"point","x":125,"y":225},{"type":"point","x":0,"y":250},{"type":"point","x":-125,"y":225},{"type":"point","x":-225,"y":125},{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":-125},{"type":"point","x":-125,"y":-225},{"type":"close"},{"type":"fill","r":10,"g":10,"b":10},{"type":"stroke","r":35,"g":35,"b":35}]`
         ), bulletTick(rarity, bullet) {
-            if (!(game.tick%10)) bulletBuffer.push(new Bullet({x: bullet.x, y: bullet.y, speed: 0, size: bullet.targetSize + 15, damage: bullet.damage**1.1*0.4 + 0.15, drawPath: artifacts[1].inkPath, lifetime: 1, wallPierce: true, pierce: 10,direction:Math.random()*Math.PI,drawAlpha:0.7}))
+            if (Math.random() < 0.3) bulletBuffer.push(new Bullet({x: bullet.x, y: bullet.y, speed: 0, size: bullet.targetSize*0.6 + 15, damage: bullet.damage**1.1*0.4 + 0.15, drawPath: artifacts[1].inkPath, lifetime: 0.75, wallPierce: true, pierce: 10,direction:Math.random()*Math.PI,drawAlpha:0.7}))
         }
     },{
         name: "Barcode Scanner",
@@ -578,7 +578,7 @@ class Item {
         this.rarity = rarity || 0;
         if (!rarity && rarity !== 0) {
             let random = Math.random();
-            for (var i = 0; i < game.regionNum*1.5; i++) {
+            for (var i = 0; i < game.regionNum*2; i++) {
                 const random2 = Math.random();
                 if (random2 > random) random = random2;
             }
@@ -911,6 +911,8 @@ function pickUpItem() {
             if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems && ( closestIndex == itemPos || closestIndex == itemPos+1 ) ) {
                 items.splice(itemPos,1);
                 dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems = false;
+
+                if (!dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].regionTransfer) dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].regionTransfer = true;
             }
         } else if (closestItem.reference.type == "relic") {
             let emptyIndex = 0;

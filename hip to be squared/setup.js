@@ -100,7 +100,7 @@ window.addEventListener('keydown', async function (e) {
         player.dashCooldown = 1;
     }
     if (e.key.toLowerCase() == 'e') {
-        if (pickUpItem()) if (game.notLocked == 1 && dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].boss && Math.abs(player.x) < 150 && Math.abs(player.y) < 150) {
+        if (pickUpItem()) if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].regionTransfer && Math.abs(player.x) < 150 && Math.abs(player.y) < 150) {
             game.regionTransfer = 2;
             ease(game.region.music[game.musicPos].file,"volume", 0, 2.5);
             ease(game,"regionTransfer", 0, 5);
@@ -128,6 +128,7 @@ window.addEventListener('keydown', async function (e) {
 
                 game.openings = [];
                 game.discoveredRooms = 0;
+                game.firstWeapon = true;
                 
                 game.dungeonPosition = [0,0];
                 dungeon = { "0,0": { blocks: [], items: [], connections: [], visited: true } };

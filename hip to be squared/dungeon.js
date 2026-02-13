@@ -1,4 +1,4 @@
-let dungeon = { "0,0": { blocks: [], items: [], connections: [], visited: true, boss: true } };
+let dungeon = { "0,0": { blocks: [], items: [], connections: [], visited: true, boss: true, regionTransfer: true } };
 
 const dungeonPresets = [
     `[[-425,-125,50,250],[375,-125,50,250]]`,

@@ -56,7 +56,7 @@ function drawEnvironment() {
 
     floor.forEach((item) => { draw(item.x,item.y,item.reference,item.size,item.rotation,0.25) })
 
-    if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].boss && game.notLocked) {
+    if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].regionTransfer && game.notLocked) {
         draw(0,0,game.nextRegion.entrancePath,75 * game.notLocked );
         if (!game.regionTransfer && game.notLocked == 1 && Math.abs(player.x) < 150 && Math.abs(player.y) < 150) {
             ctx.beginPath();
