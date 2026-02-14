@@ -624,13 +624,13 @@ const relics = [
         ), playerTick(rarity) {
             if (player.iFrames) bulletBuffer.push(new Bullet({x:player.x,y:player.y,speed:0,size:75+rarity*15,damage:0.15+0.1*rarity,drawPath:relics[36].cloudPath,drawAlpha:0.1,lifetime:0.5,wallPierce:true}))
         }
-/*SS*/},{
+/*NH*/},{
         name: "Beating Heart",
         desc: "Deal damage to nearby enemies while you are invincible (dashing)",
         drawPath: JSON.parse(
             `[{"type":"point","x":0,"y":225},{"type":"point","x":-225,"y":0},{"type":"point","x":-225,"y":-100},{"type":"point","x":-175,"y":-150},{"type":"point","x":-75,"y":-150},{"type":"point","x":0,"y":-75},{"type":"point","x":75,"y":-150},{"type":"point","x":175,"y":-150},{"type":"point","x":225,"y":-100},{"type":"point","x":225,"y":0},{"type":"close"},{"type":"fill","r":200,"g":50,"b":50},{"type":"point","x":-225,"y":25,"move":true},{"type":"point","x":-25,"y":225,"move":false},{"type":"point","x":25,"y":225,"move":true},{"type":"point","x":175,"y":75,"move":false},{"type":"point","x":225,"y":25,"move":true},{"type":"point","x":237.5,"y":12.5,"move":false},{"type":"point","x":237.5,"y":-112.5,"move":false},{"type":"point","x":187.5,"y":-162.5,"move":false},{"type":"point","x":62.5,"y":-162.5,"move":false},{"type":"point","x":0,"y":-100,"move":false},{"type":"point","x":-62.5,"y":-162.5,"move":false},{"type":"point","x":-100,"y":-162.5,"move":true},{"type":"point","x":-187.5,"y":-162.5,"move":false},{"type":"point","x":-237.5,"y":-112.5,"move":false},{"type":"point","x":-237.5,"y":0,"move":false},{"type":"point","x":-225,"y":-150,"move":true},{"type":"point","x":-200,"y":-175,"move":false},{"type":"point","x":-50,"y":-175,"move":false},{"type":"point","x":-12.5,"y":-137.5,"move":false},{"type":"point","x":37.5,"y":-162.5,"move":true},{"type":"point","x":50,"y":-175,"move":false},{"type":"point","x":200,"y":-175,"move":false},{"type":"point","x":237.5,"y":-137.5,"move":false},{"type":"point","x":237.5,"y":37.5,"move":true},{"type":"point","x":75,"y":200,"move":false},{"type":"point","x":-62.5,"y":212.5,"move":true},{"type":"point","x":-162.5,"y":112.5,"move":false},{"type":"stroke","r":100,"g":50,"b":50}]`
         ), damageBoost(rarity) {
-            if (player.iFrames) bulletBuffer.push(new Bullet({x:player.x,y:player.y,speed:0,size:75+rarity*15,damage:0.15+0.1*rarity,drawPath:relics[36].cloudPath,drawAlpha:0.1,lifetime:0.5,wallPierce:true}))
+            return 1 + bullet.tick * (0.05 + 0.05 * rarity);
         }
     }
 ]
