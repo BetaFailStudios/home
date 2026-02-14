@@ -72,16 +72,25 @@ function tickloop() {
         if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].boss && game.regionNum >= 0) {
             if (game.musicStarted) restartMusic(0);
 
-            items.push(new Item(player.x-200,player.y,false,false,"artifact"), new Item(player.x+200,player.y,false,false,"artifact"));
+            items.push(
+                new Item(player.x-200,player.y+75,false,false,"artifact"), 
+                new Item(player.x+200,player.y+75,false,false,"artifact"), 
+                new Item(player.x,player.y-75,false,false,"artifact")
+            );
 
-            while (items[items.length-1].reference == items[items.length-2].reference) {
+            while (items[items.length-2].reference == items[items.length-3].reference) {
+                items.splice(items.length-2,1);
+                items.push(new Item(player.x+200,player.y+75,false,false,"artifact"))
+            }
+
+            while (items[items.length-1].reference == items[items.length-2].reference || items[items.length-1].reference == items[items.length-3].reference) {
                 items.splice(items.length-1);
-                items.push(new Item(player.x+200,player.y,false,false,"artifact"))
+                items.push(new Item(player.x,player.y-75,false,false,"artifact"))
             }
 
             game.relicTick = 0;
             dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems = true;
-            dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos = items.length-2;
+            dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos = items.length-3;
         } else if (game.relicTick >= 1) {
             if (game.firstWeapon) items.push(new Item(player.x-200,player.y,false,false,"weapon"), new Item(player.x+200,player.y,false,false,"weapon"));
             else items.push(new Item(player.x-200,player.y), new Item(player.x+200,player.y));

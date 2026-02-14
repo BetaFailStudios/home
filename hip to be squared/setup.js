@@ -150,6 +150,7 @@ window.addEventListener('keydown', async function (e) {
         game.menu = false;
         game.replaceItem = false;
     }
+    if (e.key.toLowerCase() == "r") enemies = [];
 }, false);
 window.addEventListener('keyup', function (e) {
     keys[e.key.toLowerCase()] = false;

@@ -118,13 +118,15 @@ let dmgNumbers = [];
 
 function drawDamageNumbers() {
     ctx.beginPath();
-    ctx.fillStyle = "#999";
-    ctx.strokeStyle = "#222";
+    ctx.fillStyle = "#ccc";
+    ctx.strokeStyle = "#000";
     ctx.lineWidth = 7;
     dmgNumbers = dmgNumbers.filter((item) => {
+        ctx.globalAlpha = 0.5;
         ctx.font = animationRatio(item.timeLeft,item.timeLeftMax,10)*item.fontSize+"px share tech";
         ctx.strokeText(item.damage,item.x,item.y);
         ctx.fillText(item.damage,item.x,item.y);
+        ctx.globalAlpha = 1;
 
         item.timeLeft++;
         return item.timeLeft < item.timeLeftMax;
@@ -145,4 +147,19 @@ class DamageNumber {
         this.timeLeft = 0;
         this.timeLeftMax = 30;
     }
+}
+
+function random(extraLuck) {
+    let random = Math.random();
+    let luck = stats.luck;
+    if (extraLuck) luck += extraLuck;
+    for (var i = 0; i > luck; i--) {
+        const random2 = Math.random();
+        if (random2 < random) random = random2;
+    }
+    for (var i = 0; i < luck; i++) {
+        const random2 = Math.random();
+        if (random2 > random) random = random2;
+    }
+    return random;
 }
