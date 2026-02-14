@@ -44,12 +44,7 @@ function drawEnemyAttacks() {
 
 let floor = [];
 
-for (var i = 0; i < 6; i++) 
-    floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
-
 let brickId = [];//[[2,1,15],[1,-2,5]]
-
-game.region.generateBrickId();
 
 function drawEnvironment() {
     game.region.drawFloor()
@@ -149,17 +144,17 @@ class DamageNumber {
     }
 }
 
-function random(extraLuck) {
+function random(extraLuck,highBetter) {
     let random = Math.random();
     let luck = stats.luck;
     if (extraLuck) luck += extraLuck;
     for (var i = 0; i > luck; i--) {
         const random2 = Math.random();
-        if (random2 < random) random = random2;
+        if ((random2-random)*highBetter > 0) random = random2;
     }
     for (var i = 0; i < luck; i++) {
         const random2 = Math.random();
-        if (random2 > random) random = random2;
+        if ((random2-random)*highBetter < 0) random = random2;
     }
     return random;
 }

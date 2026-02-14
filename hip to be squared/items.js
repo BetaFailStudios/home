@@ -351,7 +351,7 @@ const relics = [
         drawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":0},{"type":"point","x":-150,"y":25},{"type":"point","x":-100,"y":50},{"type":"point","x":-50,"y":100},{"type":"point","x":-25,"y":150},{"type":"point","x":0,"y":250},{"type":"point","x":125,"y":125},{"type":"point","x":200,"y":0},{"type":"point","x":225,"y":-150},{"type":"point","x":225,"y":-225},{"type":"point","x":150,"y":-225},{"type":"point","x":0,"y":-200},{"type":"point","x":-125,"y":-125},{"type":"close"},{"type":"fill","r":40,"g":115,"b":170},{"type":"stroke","r":50,"g":75,"b":75},{"type":"point","x":-200,"y":-12.5},{"type":"point","x":-125,"y":0},{"type":"point","x":-50,"y":50},{"type":"point","x":0,"y":125},{"type":"point","x":0,"y":200},{"type":"point","x":150,"y":25},{"type":"point","x":200,"y":-125},{"type":"point","x":200,"y":-200},{"type":"point","x":125,"y":-200},{"type":"point","x":-25,"y":-150},{"type":"close"},{"type":"fill","r":45,"g":140,"b":175}]`
         ), onPlayerHit(rarity, enemy) {
-            if (random() < (0.3 + rarity*0.1) && stats.extraHealth == 0) stats.extraHealth++;
+            if (random() < (0.7 - rarity*0.1) && stats.extraHealth == 0) stats.extraHealth++;
         }
 /*SW*/},{
         name: "Stopwatch",
@@ -511,7 +511,7 @@ const relics = [
         ), statChange(rarity) {
             stats.damage *= 1.8 + 0.2*rarity;
         }, onPlayerHit(rarity, enemy) {
-            if (random() > 0.9 +0.01*rarity) {
+            if (random() < 0.1 - 0.01*rarity) {
                 let index = -1;
                 game.relicsEquipped.forEach((item,i) => { if (item.reference) if (item.reference.name == "Broken Glass") index = i });
                 if (index != -1) {
@@ -550,7 +550,7 @@ const relics = [
         ),electricityPath: JSON.parse(
             `[{"type":"point","x":100,"y":-237.5,"move":false},{"type":"point","x":12.5,"y":-150,"move":false},{"type":"point","x":37.5,"y":-75,"move":false},{"type":"point","x":0,"y":0,"move":false},{"type":"point","x":-37.5,"y":125,"move":false},{"type":"point","x":-125,"y":237.5,"move":false},{"type":"point","x":212.5,"y":75,"move":true},{"type":"point","x":100,"y":112.5,"move":false},{"type":"point","x":50,"y":0,"move":false},{"type":"point","x":-137.5,"y":0,"move":false},{"type":"point","x":-187.5,"y":-87.5,"move":false},{"type":"point","x":-250,"y":-87.5,"move":false},{"type":"point","x":-125,"y":-200,"move":true},{"type":"point","x":-112.5,"y":-125,"move":false},{"type":"point","x":-37.5,"y":-50,"move":false},{"type":"point","x":37.5,"y":50,"move":false},{"type":"point","x":50,"y":200,"move":false},{"type":"point","x":175,"y":225,"move":false},{"type":"point","x":-225,"y":100,"move":true},{"type":"point","x":-150,"y":137.5,"move":false},{"type":"point","x":-100,"y":37.5,"move":false},{"type":"point","x":75,"y":-37.5,"move":false},{"type":"point","x":162.5,"y":12.5,"move":false},{"type":"point","x":175,"y":-137.5,"move":false},{"type":"point","x":-37.5,"y":125,"move":true},{"type":"point","x":0,"y":187.5,"move":false},{"type":"point","x":-150,"y":137.5,"move":true},{"type":"point","x":-200,"y":200,"move":false},{"type":"point","x":-137.5,"y":0,"move":true},{"type":"point","x":-187.5,"y":37.5,"move":false},{"type":"point","x":-200,"y":-87.5,"move":true},{"type":"point","x":-225,"y":-175,"move":false},{"type":"point","x":-125,"y":-162.5,"move":true},{"type":"point","x":-162.5,"y":-162.5,"move":false},{"type":"point","x":50,"y":-187.5,"move":true},{"type":"point","x":0,"y":-225,"move":false},{"type":"point","x":25,"y":-112.5,"move":true},{"type":"point","x":100,"y":-137.5,"move":false},{"type":"point","x":162.5,"y":-75,"move":true},{"type":"point","x":212.5,"y":-12.5,"move":false},{"type":"point","x":162.5,"y":87.5,"move":true},{"type":"point","x":187.5,"y":175,"move":false},{"type":"point","x":87.5,"y":200,"move":true},{"type":"point","x":25,"y":237.5,"move":false},{"type":"stroke","r":75,"g":175,"b":255},{"type":"point","x":-62.5,"y":225,"move":false},{"type":"point","x":12.5,"y":75,"move":false},{"type":"point","x":-25,"y":-162.5,"move":false},{"type":"point","x":-150,"y":-237.5,"move":false},{"type":"point","x":-175,"y":-162.5,"move":true},{"type":"point","x":-100,"y":-25,"move":false},{"type":"point","x":87.5,"y":0,"move":false},{"type":"point","x":212.5,"y":75,"move":false},{"type":"point","x":212.5,"y":-175,"move":true},{"type":"point","x":75,"y":-100,"move":false},{"type":"point","x":-62.5,"y":87.5,"move":false},{"type":"point","x":-187.5,"y":150,"move":false},{"type":"point","x":-125,"y":187.5,"move":true},{"type":"point","x":0,"y":-12.5,"move":false},{"type":"point","x":112.5,"y":62.5,"move":false},{"type":"point","x":75,"y":225,"move":false},{"type":"point","x":-100,"y":150,"move":true},{"type":"point","x":-100,"y":237.5,"move":false},{"type":"point","x":-237.5,"y":12.5,"move":true},{"type":"point","x":-87.5,"y":50,"move":false},{"type":"point","x":-37.5,"y":-25,"move":false},{"type":"point","x":-150,"y":-112.5,"move":true},{"type":"point","x":-212.5,"y":-100,"move":false},{"type":"point","x":0,"y":-12.5,"move":true},{"type":"point","x":75,"y":-175,"move":false},{"type":"point","x":12.5,"y":-237.5,"move":false},{"type":"point","x":-50,"y":-175,"move":true},{"type":"point","x":-25,"y":-250,"move":false},{"type":"point","x":-12.5,"y":-62.5,"move":true},{"type":"point","x":-125,"y":-112.5,"move":false},{"type":"stroke","r":75,"g":255,"b":255}]`
         ), bulletTick(rarity, bullet) {
-            if (Math.random() < 0.2) bulletBuffer.push(new Bullet({x: bullet.x, y: bullet.y, vx: bullet.vx, vy: bullet.vy, size: Math.max(bullet.targetSize,bullet.size)*1.7 + 75+50*rarity, damage: bullet.damage*(0.8+0.04*rarity), drawPath: relics[29].electricityPath, lifetime: 0.05, wallPierce: true, pierce: 10,direction:Math.random()*Math.PI,drawAlpha:0.2}))
+            if (Math.random() < 0.2+0.04*rarity) bulletBuffer.push(new Bullet({x: bullet.x, y: bullet.y, vx: bullet.vx, vy: bullet.vy, size: Math.max(bullet.targetSize,bullet.size)*1.7 + 75+50*rarity, damage: bullet.damage*(0.08+0.06*rarity), drawPath: relics[29].electricityPath, lifetime: 0.05, wallPierce: true, pierce: 10,direction:Math.random()*Math.PI,drawAlpha:0.2}))
         }
 /*4L*/},{
         name: "4 Leaf Clover",
@@ -575,13 +575,11 @@ const relics = [
         }
 /*CT*/},{
         name: "Crown of Thorns",
-        desc: "Shoot out a wave of thorns when you get hit",
+        desc: "Shoot out a wave of projectiles when you get hit",
         drawPath: JSON.parse(
             `[{"type":"point","x":0,"y":-100},{"type":"point","x":-150,"y":-75},{"type":"point","x":-200,"y":-50},{"type":"point","x":-225,"y":0},{"type":"point","x":-200,"y":50},{"type":"point","x":-150,"y":75},{"type":"point","x":0,"y":100},{"type":"point","x":150,"y":75},{"type":"point","x":200,"y":50},{"type":"point","x":225,"y":0},{"type":"point","x":200,"y":-50},{"type":"point","x":150,"y":-75},{"type":"close"},{"type":"point","x":50,"y":-125,"move":true},{"type":"point","x":175,"y":-100,"move":false},{"type":"point","x":225,"y":-75,"move":false},{"type":"point","x":250,"y":-25,"move":false},{"type":"point","x":250,"y":25,"move":false},{"type":"point","x":225,"y":75,"move":false},{"type":"point","x":175,"y":100,"move":false},{"type":"point","x":50,"y":125,"move":false},{"type":"point","x":-50,"y":125,"move":false},{"type":"point","x":-175,"y":100,"move":false},{"type":"point","x":-225,"y":75,"move":false},{"type":"point","x":-250,"y":25,"move":false},{"type":"point","x":-250,"y":-25,"move":false},{"type":"point","x":-225,"y":-75,"move":false},{"type":"point","x":-175,"y":-100,"move":false},{"type":"point","x":-50,"y":-125,"move":false},{"type":"close"},{"type":"point","x":-150,"y":-100,"move":true},{"type":"point","x":-150,"y":-150,"move":false},{"type":"point","x":-125,"y":-112.5,"move":false},{"type":"point","x":-200,"y":87.5,"move":true},{"type":"point","x":-212.5,"y":137.5,"move":false},{"type":"point","x":-175,"y":100,"move":false},{"type":"point","x":50,"y":125,"move":true},{"type":"point","x":50,"y":175,"move":false},{"type":"point","x":25,"y":125,"move":false},{"type":"point","x":225,"y":75,"move":true},{"type":"point","x":250,"y":112.5,"move":false},{"type":"point","x":200,"y":87.5,"move":false},{"type":"point","x":175,"y":-100,"move":true},{"type":"point","x":187.5,"y":-150,"move":false},{"type":"point","x":150,"y":-100,"move":false},{"type":"point","x":-25,"y":-100,"move":true},{"type":"point","x":-12.5,"y":-50,"move":false},{"type":"point","x":0,"y":-100,"move":false},{"type":"point","x":200,"y":-50,"move":true},{"type":"point","x":175,"y":-12.5,"move":false},{"type":"point","x":212.5,"y":-25,"move":false},{"type":"point","x":175,"y":62.5,"move":true},{"type":"point","x":150,"y":37.5,"move":false},{"type":"point","x":150,"y":75,"move":false},{"type":"point","x":-125,"y":87.5,"move":true},{"type":"point","x":-100,"y":37.5,"move":false},{"type":"point","x":-100,"y":100,"move":false},{"type":"point","x":-225,"y":-25,"move":true},{"type":"point","x":-175,"y":0,"move":false},{"type":"point","x":-225,"y":0,"move":false},{"type":"fill","r":150,"g":110,"b":80},{"type":"stroke","r":90,"g":75,"b":50}]`
-        ),thornPath: JSON.parse(
-            `[{"type":"point","x":-250,"y":-100},{"type":"point","x":-100,"y":-50},{"type":"point","x":250,"y":0},{"type":"point","x":-100,"y":50},{"type":"point","x":-250,"y":100},{"type":"close"},{"type":"fill","r":100,"g":75,"b":25},{"type":"stroke","r":75,"g":50,"b":25}]`
         ), onPlayerHit(rarity, enemy) {
-            const bullet = {x:player.x,y:player.y,drawPath:relics[32].thornPath,size:35,speed:15,damage:3+1.5*rarity,direction:Math.random()*Math.PI,triggerExpire:true,pierce:0};
+            const bullet = {x:player.x,y:player.y,size:35,speed:15,damage:3+1.5*rarity,direction:Math.random()*Math.PI,triggerExpire:true,pierce:0,offsetTick: 3};
             for (var i = 0; i < 12; i++) {
                 bulletBuffer.push(new Bullet(bullet));
                 bullet.direction += Math.PI/6;
@@ -614,7 +612,7 @@ const relics = [
         ), playerTick(rarity) {
             if (!(game.tick%10)) bulletBuffer.push(new Bullet({x:player.x,y:player.y,speed:0,size:125+rarity*25,damage:0.4+0.2*rarity,drawPath:relics[35].cloudPath,drawAlpha:0.1,lifetime:0.5,wallPierce:true}))
         }
-/*SS*/},{
+/*SB*/},{
         name: "Smoke Bomb",
         desc: "Deal damage to nearby enemies while you are invincible (dashing)",
         drawPath: JSON.parse(
@@ -624,13 +622,13 @@ const relics = [
         ), playerTick(rarity) {
             if (player.iFrames) bulletBuffer.push(new Bullet({x:player.x,y:player.y,speed:0,size:75+rarity*15,damage:0.15+0.1*rarity,drawPath:relics[36].cloudPath,drawAlpha:0.1,lifetime:0.5,wallPierce:true}))
         }
-/*NH*/},{
+/*BH*/},{
         name: "Beating Heart",
         desc: "Bullets deal more damage the longer they exist",
         drawPath: JSON.parse(
-            `[{"type":"point","x":0,"y":225},{"type":"point","x":-225,"y":0},{"type":"point","x":-225,"y":-100},{"type":"point","x":-175,"y":-150},{"type":"point","x":-75,"y":-150},{"type":"point","x":0,"y":-75},{"type":"point","x":75,"y":-150},{"type":"point","x":175,"y":-150},{"type":"point","x":225,"y":-100},{"type":"point","x":225,"y":0},{"type":"close"},{"type":"fill","r":200,"g":50,"b":50},{"type":"point","x":-225,"y":25,"move":true},{"type":"point","x":-25,"y":225,"move":false},{"type":"point","x":25,"y":225,"move":true},{"type":"point","x":175,"y":75,"move":false},{"type":"point","x":225,"y":25,"move":true},{"type":"point","x":237.5,"y":12.5,"move":false},{"type":"point","x":237.5,"y":-112.5,"move":false},{"type":"point","x":187.5,"y":-162.5,"move":false},{"type":"point","x":62.5,"y":-162.5,"move":false},{"type":"point","x":0,"y":-100,"move":false},{"type":"point","x":-62.5,"y":-162.5,"move":false},{"type":"point","x":-100,"y":-162.5,"move":true},{"type":"point","x":-187.5,"y":-162.5,"move":false},{"type":"point","x":-237.5,"y":-112.5,"move":false},{"type":"point","x":-237.5,"y":0,"move":false},{"type":"point","x":-225,"y":-150,"move":true},{"type":"point","x":-200,"y":-175,"move":false},{"type":"point","x":-50,"y":-175,"move":false},{"type":"point","x":-12.5,"y":-137.5,"move":false},{"type":"point","x":37.5,"y":-162.5,"move":true},{"type":"point","x":50,"y":-175,"move":false},{"type":"point","x":200,"y":-175,"move":false},{"type":"point","x":237.5,"y":-137.5,"move":false},{"type":"point","x":237.5,"y":37.5,"move":true},{"type":"point","x":75,"y":200,"move":false},{"type":"point","x":-62.5,"y":212.5,"move":true},{"type":"point","x":-162.5,"y":112.5,"move":false},{"type":"stroke","r":100,"g":50,"b":50}]`
+            `[{"type":"point","x":-25,"y":125},{"type":"point","x":25,"y":50},{"type":"point","x":50,"y":-50},{"type":"point","x":75,"y":-75},{"type":"point","x":125,"y":-75},{"type":"point","x":125,"y":-50},{"type":"point","x":100,"y":-50},{"type":"point","x":125,"y":-25},{"type":"point","x":150,"y":50},{"type":"point","x":150,"y":125},{"type":"point","x":125,"y":175},{"type":"point","x":75,"y":175},{"type":"point","x":0,"y":150},{"type":"close"},{"type":"fill","r":150,"g":100,"b":125},{"type":"stroke","r":100,"g":50,"b":75},{"type":"point","x":25,"y":50},{"type":"point","x":0,"y":25},{"type":"point","x":-50,"y":25},{"type":"point","x":-62.5,"y":75},{"type":"point","x":-25,"y":125},{"type":"close"},{"type":"fill","r":150,"g":100,"b":150},{"type":"stroke","r":100,"g":50,"b":100},{"type":"point","x":-12.5,"y":25},{"type":"point","x":0,"y":25},{"type":"point","x":25,"y":50},{"type":"point","x":50,"y":-50},{"type":"point","x":75,"y":-75},{"type":"point","x":112.5,"y":-75},{"type":"point","x":100,"y":-100},{"type":"point","x":62.5,"y":-100},{"type":"point","x":62.5,"y":-150},{"type":"point","x":50,"y":-150},{"type":"point","x":50,"y":-100},{"type":"point","x":12.5,"y":-75},{"type":"point","x":0,"y":-125},{"type":"point","x":-12.5,"y":-125},{"type":"point","x":0,"y":-62.5},{"type":"close"},{"type":"fill","r":175,"g":50,"b":50},{"type":"stroke","r":100,"g":50,"b":50},{"type":"point","x":-12.5,"y":25},{"type":"point","x":0,"y":-75},{"type":"point","x":37.5,"y":-112.5},{"type":"point","x":100,"y":-112.5},{"type":"point","x":100,"y":-125},{"type":"point","x":37.5,"y":-125},{"type":"point","x":-12.5,"y":-87.5},{"type":"point","x":-12.5,"y":-162.5},{"type":"point","x":-25,"y":-162.5},{"type":"point","x":-25,"y":-100},{"type":"point","x":-62.5,"y":-137.5},{"type":"point","x":-112.5,"y":-137.5},{"type":"point","x":-112.5,"y":-125},{"type":"point","x":-75,"y":-125},{"type":"point","x":-37.5,"y":-75},{"type":"point","x":-50,"y":25},{"type":"close"},{"type":"point","x":-62.5,"y":75,"move":true},{"type":"point","x":-25,"y":125,"move":false},{"type":"point","x":-62.5,"y":125,"move":false},{"type":"point","x":-75,"y":112.5,"move":false},{"type":"close"},{"type":"fill","r":75,"g":90,"b":150},{"type":"stroke","r":50,"g":50,"b":100}]`
         ), damageBoost(rarity,bullet) {
-            return 1 + bullet.tick * (0.05 + 0.05 * rarity);
+            return 1 + bullet.tick * (0.005 + 0.002 * rarity);
         }
     }
 ]
@@ -712,7 +710,7 @@ const artifacts = [
             `[{"type":"point","x":0,"y":250},{"type":"point","x":-75,"y":225},{"type":"point","x":-125,"y":150},{"type":"point","x":-150,"y":50},{"type":"point","x":-150,"y":-50},{"type":"point","x":-125,"y":-150},{"type":"point","x":-75,"y":-225},{"type":"point","x":0,"y":-250},{"type":"point","x":75,"y":-225},{"type":"point","x":125,"y":-150},{"type":"point","x":150,"y":-50},{"type":"point","x":150,"y":50},{"type":"point","x":125,"y":150},{"type":"point","x":75,"y":225},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":0,"y":212.5},{"type":"point","x":62.5,"y":187.5},{"type":"point","x":100,"y":125},{"type":"point","x":125,"y":50},{"type":"point","x":125,"y":-50},{"type":"point","x":100,"y":-125},{"type":"point","x":62.5,"y":-187.5},{"type":"point","x":0,"y":-212.5},{"type":"point","x":-62.5,"y":-187.5},{"type":"point","x":-100,"y":-125},{"type":"point","x":-125,"y":-50},{"type":"point","x":-125,"y":50},{"type":"point","x":-100,"y":125},{"type":"point","x":-62.5,"y":187.5},{"type":"close"},{"type":"fill","r":55,"g":125,"b":150},{"type":"point","x":37.5,"y":125},{"type":"point","x":-12.5,"y":25},{"type":"point","x":12.5,"y":75,"move":true},{"type":"point","x":62.5,"y":37.5,"move":false},{"type":"point","x":-62.5,"y":-187.5,"move":true},{"type":"point","x":-37.5,"y":-125,"move":false},{"type":"point","x":-62.5,"y":0,"move":false},{"type":"point","x":-50,"y":-50,"move":true},{"type":"point","x":0,"y":-12.5,"move":false},{"type":"point","x":-100,"y":125,"move":true},{"type":"point","x":-62.5,"y":37.5,"move":false},{"type":"point","x":-87.5,"y":87.5,"move":true},{"type":"point","x":-50,"y":112.5,"move":false},{"type":"point","x":12.5,"y":175,"move":true},{"type":"point","x":-12.5,"y":112.5,"move":false},{"type":"point","x":125,"y":50,"move":true},{"type":"point","x":37.5,"y":-50,"move":false},{"type":"point","x":25,"y":-137.5,"move":false},{"type":"point","x":62.5,"y":-12.5,"move":true},{"type":"point","x":25,"y":12.5,"move":false},{"type":"point","x":62.5,"y":-187.5,"move":true},{"type":"point","x":0,"y":-150,"move":false},{"type":"point","x":25,"y":-100,"move":true},{"type":"point","x":75,"y":-100,"move":false},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(_) {
             stats.luck -= 2;
-            stats.damage *= 3;
+            stats.damage *= 2.2;
         }
     }
 ]
@@ -725,11 +723,11 @@ class Item {
         this.y = y || 0;
         this.rarity = rarity || 0;
         if (!rarity && rarity !== 0) {
-            let random = Math.random(game.regionNum*2);
-            if (random < 0.65) this.rarity = 0;
-            else if (random < 0.90) this.rarity = 1;
-            else if (random < 0.98) this.rarity = 2;
-            else if (random < 0.9975) this.rarity = 3;
+            let randomNum = random(game.regionNum*2,true);
+            if (randomNum < 0.65) this.rarity = 0;
+            else if (randomNum < 0.90) this.rarity = 1;
+            else if (randomNum < 0.98) this.rarity = 2;
+            else if (randomNum < 0.9975) this.rarity = 3;
             else this.rarity = 4;
         }
         if (reference) this.reference = reference;
@@ -1057,7 +1055,7 @@ function pickUpItem() {
             updateStats();
 
             const itemPos = dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos
-            if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems && ( closestIndex == itemPos || closestIndex == itemPos+1 ) ) {
+            if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems && ( closestIndex == itemPos || closestIndex == itemPos+1 || closestIndex == itemPos+2 ) ) {
                 items.splice(itemPos,2);
                 dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems = false;
 

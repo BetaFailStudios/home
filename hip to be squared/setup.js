@@ -111,6 +111,7 @@ window.addEventListener('keydown', async function (e) {
                 game.regionNum++;
                 if (game.regionNum+1 < regions.length) game.nextRegion = regions[game.regionNum+1][Math.floor(regions[game.regionNum+1].length*Math.random())];
                 startMusic();
+                items = [];
 
                 roomEffects = [];
                 for (var i = 0; i < 6; i++) roomEffects.push({

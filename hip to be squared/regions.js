@@ -228,6 +228,11 @@ game.region = {
     }
 }
 
+game.region.generateBrickId();
+for (var i = 0; i < 6; i++) 
+    floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
+
+
 game.nextRegion = regions[0][0];
 game.regionNum = -1 ;
 game.regionTransfer = 1;

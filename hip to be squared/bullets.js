@@ -29,6 +29,11 @@ class Bullet {
         if (inputStats.vx) this.vx = inputStats.vx;
         if (inputStats.vy) this.vy = inputStats.vy;
 
+        if (inputStats.offsetTick) {
+            this.x += thix.vx * inputStats.offsetTick;
+            this.y += thix.vy * inputStats.offsetTick;
+        }
+
         this.alive = true;
 
         if (stats.lifetime || inputStats.lifetime) this.lifetime = inputStats.lifetime || stats.lifetime;
@@ -150,13 +155,7 @@ function bulletTick() {
                 const diffy1 = -bullet.y + collisionSize/2.5 + block[1]+block[3];
 
                 if (diffx > 0 && diffx1 > 0 && diffy > 0 && diffy1 > 0) {
-                    if (bullet.wallPierce) {
-                        if (bullet.triggerExpire) {
-                            bullet.size *= 1.05;
-                            bullet.damage *= 1.05;
-                        }
-                        return;
-                    } 
+                    if (bullet.wallPierce) return;
                     if (bullet.bulletBounce) {
                         bullet.bulletBounce--;
                         bullet.damage *= 1.15;
