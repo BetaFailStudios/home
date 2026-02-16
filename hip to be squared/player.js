@@ -132,5 +132,5 @@ function playerTick() {
     stats.playerSize /= 1.25;
 
     if (player.dashCooldown <= 0) player.dashCooldown = 0;
-    else player.dashCooldown -= 1/30;
+    else player.dashCooldown -= 1/45;
 }
