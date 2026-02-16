@@ -30,8 +30,8 @@ class Bullet {
         if (inputStats.vy) this.vy = inputStats.vy;
 
         if (inputStats.offsetTick) {
-            this.x += thix.vx * inputStats.offsetTick;
-            this.y += thix.vy * inputStats.offsetTick;
+            this.x += this.vx * inputStats.offsetTick;
+            this.y += this.vy * inputStats.offsetTick;
         }
 
         this.alive = true;

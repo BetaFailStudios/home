@@ -715,8 +715,8 @@ const artifacts = [
             `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-200,"y":-250},{"type":"point","x":-25,"y":-75},{"type":"point","x":-75,"y":-25},{"type":"close"},{"type":"point","x":200,"y":-250,"move":true},{"type":"point","x":25,"y":-75,"move":false},{"type":"point","x":75,"y":-25,"move":false},{"type":"point","x":250,"y":-200,"move":false},{"type":"close"},{"type":"point","x":250,"y":200,"move":true},{"type":"point","x":200,"y":250,"move":false},{"type":"point","x":25,"y":75,"move":false},{"type":"point","x":75,"y":25,"move":false},{"type":"close"},{"type":"point","x":-200,"y":250,"move":true},{"type":"point","x":-25,"y":75,"move":false},{"type":"point","x":-75,"y":25,"move":false},{"type":"point","x":-250,"y":200,"move":false},{"type":"close"},{"type":"fill","r":75,"g":25,"b":25},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), damageBoost(_,bullet,enemy) {
             if (enemy.hitMarkers) {
-                if (enemy.hitMarkers < 100) enemy.hitMarkers++;
-                return 1 + 0.005*(enemy.hitMarkers-1);
+                if (enemy.hitMarkers <= 50) enemy.hitMarkers++;
+                return 1 + 0.03*(enemy.hitMarkers-1);
             } else {
                 enemy.hitMarkers = 1;
                 return 1;
@@ -738,7 +738,7 @@ class Item {
         this.y = y || 0;
         this.rarity = rarity || 0;
         if (!rarity && rarity !== 0) {
-            let randomNum = random(game.regionNum,true);
+            let randomNum = random(game.regionNum*2,true);
             if (randomNum < 0.65) this.rarity = 0;
             else if (randomNum < 0.90) this.rarity = 1;
             else if (randomNum < 0.98) this.rarity = 2;

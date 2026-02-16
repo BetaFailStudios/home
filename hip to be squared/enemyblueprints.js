@@ -763,5 +763,4 @@ const enemyBlueprints = [
             `[{"type":"point","x":0,"y":-75},{"type":"point","x":-250,"y":0},{"type":"point","x":0,"y":75},{"type":"point","x":250,"y":0},{"type":"close"},{"type":"fill","r":255,"g":255,"b":0},{"type":"stroke","r":50,"g":50,"b":0}]`
         )
     }
-
 ]
