@@ -158,7 +158,7 @@ function bulletTick() {
                     if (bullet.wallPierce) return;
                     if (bullet.bulletBounce) {
                         bullet.bulletBounce--;
-                        bullet.damage *= 1.15;
+                        bullet.damage *= 1.2;
                         bullet.direction = Math.PI*2*Math.random();
 
                         if (Math.min(diffx, diffx1) < Math.min(diffy,diffy1)) {
@@ -193,7 +193,7 @@ function bulletTick() {
         if (!bullet.wallPierce || bullet.bulletBounce) if (Math.abs(bullet.x) > 850-collisionSize || Math.abs(bullet.y) > 450-collisionSize) {
             if (bullet.bulletBounce) {
                 bullet.bulletBounce--;
-                bullet.damage *= 1.15;
+                bullet.damage *= 1.2;
                 bullet.direction = Math.PI*2*Math.random();
 
                 if (Math.abs(bullet.x) > 850-collisionSize) {
@@ -211,7 +211,7 @@ function bulletTick() {
         if (Math.abs(bullet.x)-bullet.size > 1000 || Math.abs(bullet.y)-bullet.size > 600) bullet.alive = false;;
 
         if (!bullet.alive) {
-            ease(bullet,"size",0,0.05 + 0.15*(!!stats.noDrawBullets));
+            ease(bullet,"size",0,0.2);
             bullet.x -= bullet.vx*2;
             bullet.y -= bullet.vy*2;
             if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));

@@ -139,7 +139,7 @@ window.addEventListener('keydown', async function (e) {
             }, 2400);
         }
     }
-    if (e.key.toLowerCase() == 'q' && !enemies.length) if (!game.menu) {
+    if (e.key.toLowerCase() == 'tab' && game.noEnemies) if (!game.menu) {
         game.menu = "inventory";
     } else if (game.menu == "inventory") {
         game.menu = false;
@@ -147,8 +147,13 @@ window.addEventListener('keydown', async function (e) {
     }
     if (e.key.toLowerCase() == 'escape') if (!game.menu) {
         game.menu = "pause";
+        game.region.music[game.musicPos].file.pause();
     } else if (game.menu == "pause") {
-        game.menu = false;
+        if (game.optionsMenu) game.optionsMenu = false;
+        else {
+            game.region.music[game.musicPos].file.play();
+            game.menu = false;
+        }
         game.replaceItem = false;
     }
     //if (e.key.toLowerCase() == "r") enemies = [];
@@ -278,6 +283,8 @@ let blocks = JSON.parse(
 const game = {
     cursorPath: JSON.parse(
         `[{"type":"point","x":0,"y":-125,"move":false},{"type":"point","x":50,"y":-250,"move":false},{"type":"point","x":-50,"y":-250,"move":false},{"type":"point","x":0,"y":-125,"move":false},{"type":"point","x":125,"y":0,"move":true},{"type":"point","x":250,"y":-50,"move":false},{"type":"point","x":250,"y":50,"move":false},{"type":"point","x":125,"y":0,"move":false},{"type":"point","x":0,"y":125,"move":true},{"type":"point","x":50,"y":250,"move":false},{"type":"point","x":-50,"y":250,"move":false},{"type":"point","x":0,"y":125,"move":false},{"type":"point","x":-125,"y":0,"move":true},{"type":"point","x":-250,"y":-50,"move":false},{"type":"point","x":-250,"y":50,"move":false},{"type":"point","x":-125,"y":0,"move":false},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
+    ),dungeonItemPath: JSON.parse(
+        `[{"type":"point","x":0,"y":-250},{"type":"point","x":-75,"y":-75},{"type":"point","x":-250,"y":0},{"type":"point","x":-75,"y":75},{"type":"point","x":0,"y":250},{"type":"point","x":75,"y":75},{"type":"point","x":250,"y":0},{"type":"point","x":75,"y":-75},{"type":"close"},{"type":"fill","r":150,"g":150,"b":0},{"type":"stroke","r":50,"g":50,"b":0}]`
     ), hitScreenPath: JSON.parse(
         `[{"type":"point","x":275,"y":-175},{"type":"point","x":-275,"y":-175},{"type":"point","x":-275,"y":175},{"type":"point","x":275,"y":175},{"type":"close"},{"type":"point","x":225,"y":-125,"move":true},{"type":"point","x":225,"y":-75,"move":false},{"type":"point","x":212.5,"y":-50,"move":false},{"type":"point","x":225,"y":-25,"move":false},{"type":"point","x":225,"y":25,"move":false},{"type":"point","x":212.5,"y":50,"move":false},{"type":"point","x":225,"y":75,"move":false},{"type":"point","x":225,"y":125,"move":false},{"type":"point","x":175,"y":125,"move":false},{"type":"point","x":150,"y":112.5,"move":false},{"type":"point","x":125,"y":125,"move":false},{"type":"point","x":75,"y":125,"move":false},{"type":"point","x":50,"y":112.5,"move":false},{"type":"point","x":25,"y":125,"move":false},{"type":"point","x":-25,"y":125,"move":false},{"type":"point","x":-50,"y":112.5,"move":false},{"type":"point","x":-75,"y":125,"move":false},{"type":"point","x":-125,"y":125,"move":false},{"type":"point","x":-150,"y":112.5,"move":false},{"type":"point","x":-175,"y":125,"move":false},{"type":"point","x":-225,"y":125,"move":false},{"type":"point","x":-225,"y":75,"move":false},{"type":"point","x":-212.5,"y":50,"move":false},{"type":"point","x":-225,"y":25,"move":false},{"type":"point","x":-225,"y":-25,"move":false},{"type":"point","x":-212.5,"y":-50,"move":false},{"type":"point","x":-225,"y":-75,"move":false},{"type":"point","x":-225,"y":-125,"move":false},{"type":"point","x":-175,"y":-125,"move":false},{"type":"point","x":-150,"y":-112.5,"move":false},{"type":"point","x":-125,"y":-125,"move":false},{"type":"point","x":-75,"y":-125,"move":false},{"type":"point","x":-50,"y":-112.5,"move":false},{"type":"point","x":-25,"y":-125,"move":false},{"type":"point","x":25,"y":-125,"move":false},{"type":"point","x":50,"y":-112.5,"move":false},{"type":"point","x":75,"y":-125,"move":false},{"type":"point","x":125,"y":-125,"move":false},{"type":"point","x":150,"y":-112.5,"move":false},{"type":"point","x":175,"y":-125,"move":false},{"type":"close"},{"type":"fill","r":250,"g":80,"b":80},{"type":"stroke","r":80,"g":40,"b":40}]`
     ), gameIcon: JSON.parse(
@@ -297,6 +304,8 @@ const game = {
     ), longrectAttackWarnPath: JSON.parse(
         `[{"type":"point","x":-250,"y":-25},{"type":"point","x":-250,"y":25},{"type":"point","x":250,"y":25},{"type":"point","x":250,"y":-25},{"type":"close"}]`
     ),
+    noEnemies: true,
+    musicSyncList: [],
     enemyAttack:[],
     enemyAttackWarning:[],
     dungeonPosition: [0,0],

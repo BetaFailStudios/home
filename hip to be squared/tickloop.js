@@ -6,6 +6,7 @@ function tickloop() {
     ctx.fillStyle = "#000";
     ctx.fillRect(-1800,-1000,3600,2000);
 
+    musicTick();
     drawEnvironment();
     bulletTick();
     handleEffects();
@@ -18,6 +19,7 @@ function tickloop() {
     if (game.musicPopup != 1) drawMusicPopup();
     if (game.regionTransfer && game.regionTransfer < 1) drawRegionName();
     drawRoommEffects();
+    if (game.notLocked && game.regionNum >= 0) drawMap();
     drawHealthBars();
     
     ctx.lineWidth = 15;
@@ -51,7 +53,7 @@ function tickloop() {
 
     if (stats.health <= 0) game.menu = "death";
 
-    if (keys.q && enemies.length) {
+    if (keys.tab && !game.noEnemies) {
         ctx.strokeStyle = "#222";
         ctx.fillStyle = "#00000077";
         ctx.rect(-400,-50,800,100);
@@ -64,9 +66,8 @@ function tickloop() {
 
     if (game.menu == "inventory") drawInventory();
     else if (game.menu) drawMenu();
-    else if (keys.tab) drawMap();
 
-    if (!enemies.length && !game.notLocked) {
+    if (game.noEnemies && !game.notLocked) {
         ease(game,"notLocked", 1,0.2);
 
         if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].boss && game.regionNum >= 0) {
@@ -118,7 +119,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.1.3",700,470);
+    ctx.fillText("Version: b.1.2.0",700,470);
 }
 
 setInterval( tickloop, 1000/60 );

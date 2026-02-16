@@ -60,46 +60,64 @@ function generateDungeon() {
 }
 
 function drawMap() {
-    ctx.fillStyle = "#55555599";
-    ctx.fillRect(-900,-500,1800,1000);
+    ctx.save();
+    ctx.globalAlpha = game.notLocked;
+    ctx.translate(675,-325);
     ctx.lineWidth = 10;
+    ctx.rect(-160,-110,320,220);
+    ctx.fillStyle = "#00000022";
+    ctx.strokeStyle = "#555";
+    ctx.fill();
+    ctx.stroke();
+    ctx.rect(-155,-105,310,210);
+    ctx.clip();
     Object.keys(dungeon).forEach((item) => {
         if (!dungeon[item].visited) return;
 
-        const pos = [Number(item.split(",")[0])*150-150*game.dungeonPosition[0],Number(item.split(",")[1])*100-100*game.dungeonPosition[1]];
+        const pos = [Number(item.split(",")[0])*60-60*game.dungeonPosition[0],Number(item.split(",")[1])*40-40*game.dungeonPosition[1]];
         ctx.beginPath();
         dungeon[item].connections.forEach((connection) => {
-            if (connection[0] == 0) ctx.rect(pos[0]+62.5-150*(connection[1] == -1),pos[1]-25,25,50);
-            else ctx.rect(pos[0]-25,pos[1]+37.5-100*(connection[1] == -1),50,25);
+            if (connection[0] == 0) ctx.rect(pos[0]-7.5+30-60*(connection[1] == -1),pos[1]-10,15,20);
+            else ctx.rect(pos[0]-10,pos[1]-7.5+20-40*(connection[1] == -1),20,15);
         })
         ctx.strokeStyle = "#555";
         ctx.stroke();
         ctx.beginPath();
-        ctx.rect(pos[0]-62.5,pos[1]-37.5,125,75);
-        if (pos[0] + pos[1] == 0) ctx.strokeStyle = "#555";
-        else if (dungeon[item].boss) ctx.strokeStyle = "#755";
-        else ctx.strokeStyle = "#555";
+        ctx.rect(pos[0]-27.5,pos[1]-17.5,55,35);
+        ctx.strokeStyle = "#555";
         ctx.stroke();
     })
     Object.keys(dungeon).forEach((item) => {
         if (!dungeon[item].visited) return;
 
-        const pos = [Number(item.split(",")[0])*150-150*game.dungeonPosition[0],Number(item.split(",")[1])*100-100*game.dungeonPosition[1]];
-        ctx.beginPath();
+        const pos = [Number(item.split(",")[0])*60-60*game.dungeonPosition[0],Number(item.split(",")[1])*40-40*game.dungeonPosition[1]];
         dungeon[item].connections.forEach((connection) => {
-            if (connection[0] == 0) ctx.rect(pos[0]+61.5-150*(connection[1] == -1),pos[1]-25,27,50);
-            else ctx.rect(pos[0]-25,pos[1]+36.5-100*(connection[1] == -1),50,27);
+            ctx.beginPath();    
+            const targetPos = [Number(item.split(",")[0]),Number(item.split(",")[1])];
+            targetPos[connection[0]] += connection[1];
+            if (connection[0] == 0) ctx.rect(pos[0]-7.5+30-60*(connection[1] == -1),pos[1]-10,15,20);
+            else ctx.rect(pos[0]-10,pos[1]-7.5+20-40*(connection[1] == -1),20,15);
+            if (dungeon[targetPos[0] + "," + targetPos[1]].boss || dungeon[item].boss) ctx.fillStyle = "#933";
+            else ctx.fillStyle = "#333";
+            ctx.fill();
         })
-        ctx.fillStyle = "#333";
-        ctx.fill();
+    })
+    ctx.lineWidth = 3;
+    Object.keys(dungeon).forEach((item) => {
+        if (!dungeon[item].visited) return;
+
+        const pos = [Number(item.split(",")[0])*60-60*game.dungeonPosition[0],Number(item.split(",")[1])*40-40*game.dungeonPosition[1]];
+
         ctx.beginPath();
-        ctx.rect(pos[0]-62.5,pos[1]-37.5,125,75);
+        ctx.rect(pos[0]-27.5,pos[1]-17.5,55,35);
         if (pos[0] == 0 && pos[1] == 0) ctx.fillStyle = "#999";
         else if (dungeon[item].boss) ctx.fillStyle = "#933";
         else ctx.fillStyle = "#333";
         ctx.fill();
+
+        if (dungeon[item].items.length) draw(...pos,game.dungeonItemPath,15,player.rotationTick);
     })
-    ctx.lineWidth = 3;
+    ctx.restore();
 }
 
 function dungeonMove(change) {

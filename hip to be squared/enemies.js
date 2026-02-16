@@ -31,6 +31,7 @@ class Enemy {
 let enemiesBuffer = [];
 
 function enemyTick() {
+    game.noEnemies = true;
     game.bossName = false;
     game.bossHealth = 0;
     game.bossHealthMax = 0;
@@ -40,6 +41,7 @@ function enemyTick() {
             game.bossHealth += enemy.health;
             game.bossHealthMax += enemy.healthMax;
         }
+        if (!enemy.projectile) game.noEnemies = false;
 
         if (enemy.spawning && enemy.rotateToTarget) enemy.dirToTarget = (Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x));
         if (enemy.ephemeral) ctx.globalAlpha = 0.6;

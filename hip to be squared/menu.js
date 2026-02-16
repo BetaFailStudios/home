@@ -12,6 +12,7 @@ const menuButtons = {
     "pause": [[ "resume", "options", "main menu" ],[
         () => {
             game.menu = false;
+            game.region.music[game.musicPos].file.play();
         },() => {
             game.optionsMenu = true;
         },() => {

@@ -150,11 +150,11 @@ function random(extraLuck,highBetter) {
     if (extraLuck) luck += extraLuck;
     for (var i = 0; i > luck; i--) {
         const random2 = Math.random();
-        if ((random2-random)*highBetter > 0) random = random2;
+        if ((random2-random)*(1-2*!!highBetter) > 0) random = random2;
     }
     for (var i = 0; i < luck; i++) {
         const random2 = Math.random();
-        if ((random2-random)*highBetter < 0) random = random2;
+        if ((random2-random)*(1-2*!!highBetter) < 0) random = random2;
     }
     return random;
 }
