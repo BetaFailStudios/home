@@ -123,6 +123,7 @@ function drawMap() {
 function dungeonMove(change) {
     game.firstBullet = true;
     bullets.splice(0);
+    enemies.splice(0);
     dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].items = items;
     game.openings = [];
     game.dungeonPosition[change[0]] += change[1];

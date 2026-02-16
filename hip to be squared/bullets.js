@@ -177,6 +177,8 @@ function bulletTick() {
                     }
                 }
             })
+
+            if (game.menu) return true;
             
             bullet.x += bullet.vx/numOfMoves;
             bullet.y += bullet.vy/numOfMoves;
