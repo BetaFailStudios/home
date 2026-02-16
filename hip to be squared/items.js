@@ -483,7 +483,7 @@ const relics = [
         drawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":200},{"type":"point","x":0,"y":50},{"type":"point","x":175,"y":-87.5},{"type":"point","x":250,"y":-250},{"type":"point","x":-75,"y":-75,"move":true},{"type":"point","x":-62.5,"y":12.5,"move":false},{"type":"point","x":150,"y":25,"move":false},{"type":"point","x":175,"y":137.5,"move":false},{"type":"point","x":25,"y":137.5,"move":true},{"type":"point","x":137.5,"y":25,"move":false},{"type":"point","x":75,"y":-112.5,"move":false},{"type":"point","x":112.5,"y":-150,"move":false},{"type":"point","x":-37.5,"y":-50,"move":true},{"type":"point","x":87.5,"y":-12.5,"move":false},{"type":"point","x":12.5,"y":100,"move":false},{"type":"point","x":100,"y":175,"move":false},{"type":"point","x":-25,"y":187.5,"move":true},{"type":"point","x":-25,"y":62.5,"move":false},{"type":"point","x":-125,"y":-12.5,"move":false},{"type":"point","x":-87.5,"y":75,"move":true},{"type":"point","x":-75,"y":175,"move":false},{"type":"point","x":12.5,"y":0,"move":false},{"type":"point","x":87.5,"y":-50,"move":false},{"type":"point","x":112.5,"y":-125,"move":false},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
-            stats.extraReceivedDamage = stats.extraReceivedDamage || 0 + 1;
+            stats.extraReceivedDamage = (stats.extraReceivedDamage || 0) + 1;
             stats.damage *= 1.6 + 0.15*rarity;
         }
 /*BG*/},{
@@ -1148,4 +1148,5 @@ MS},{
             else if (Math.hypot(enemy.vx,enemy.vy) > 20) enemy.health -= bullet.damage*6;
         }
         
+
         */
