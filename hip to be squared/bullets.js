@@ -99,7 +99,7 @@ function bulletTick() {
                 bullet.y -= bullet.vx * sineRatio;
             }
 
-            if (bullet.triggerExpire) stats.bulletTicks.forEach( (item) => item[1](item[0],bullet));
+            if (bullet.triggerExpire && !game.menu) stats.bulletTicks.forEach( (item) => item[1](item[0],bullet));
 
             if (!i && (!stats.noDrawBullets || !bullet.triggerExpire)) draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
             //effects.push(new Effect(bullet.x,bullet.y,"glasses",10,0))
@@ -217,8 +217,6 @@ function bulletTick() {
             bullet.x -= bullet.vx*2;
             bullet.y -= bullet.vy*2;
             if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
-            bullet.x += bullet.vx*2;
-            bullet.y += bullet.vy*2;
         }
 
         return true;

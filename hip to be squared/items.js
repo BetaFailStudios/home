@@ -698,7 +698,7 @@ const artifacts = [
         ),electricityPath: JSON.parse(
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":-187.5,"y":-187.5},{"type":"point","x":-250,"y":0},{"type":"point","x":-187.5,"y":187.5},{"type":"point","x":0,"y":250},{"type":"point","x":187.5,"y":187.5},{"type":"point","x":250,"y":0},{"type":"point","x":187.5,"y":-187.5},{"type":"close"},{"type":"fill","r":25,"g":150,"b":150},{"type":"stroke","r":0,"g":50,"b":50}]`
         ), bulletTick(_, bullet) {
-            if (Math.random() < 0.3) bulletBuffer.push(new Bullet({x: bullet.x, y: bullet.y, vx: bullet.vx, vy: bullet.vy, size: Math.max(bullet.targetSize,bullet.size)*1.7 + 150, damage: bullet.damage*0.1, drawPath: this.electricityPath, lifetime: 0.05, wallPierce: true, pierce: 10,direction:Math.random()*Math.PI,drawAlpha:0.2}))
+            if (Math.random() < 0.3) bulletBuffer.push(new Bullet({x: bullet.x, y: bullet.y, vx: bullet.vx, vy: bullet.vy, size: Math.max(bullet.targetSize,bullet.size)*1.7 + 150, damage: bullet.damage*0.35, drawPath: this.electricityPath, lifetime: 0.05, wallPierce: true, pierce: 10,direction:Math.random()*Math.PI,drawAlpha:0.1}))
         }
 /*BB*/},{
         name: "Bouncy Ball",
@@ -1148,5 +1148,4 @@ MS},{
             else if (Math.hypot(enemy.vx,enemy.vy) > 20) enemy.health -= bullet.damage*6;
         }
         
-
         */

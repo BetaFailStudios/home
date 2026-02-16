@@ -272,10 +272,10 @@ function drawHealthBars() {
         ctx.lineWidth = 7;
         ctx.beginPath();
         const maxBounds = 1600;
-        ctx.moveTo(-900, -500+5);
-        ctx.lineTo(maxBounds+55-900, -500+5);
-        ctx.lineTo(maxBounds+20-900, -500+40);
-        ctx.lineTo(-900, -500+40);
+        ctx.moveTo(-870, -500+5);
+        ctx.lineTo(maxBounds+55-870, -500+5);
+        ctx.lineTo(maxBounds+20-870, -500+40);
+        ctx.lineTo(-870, -500+40);
         ctx.closePath();
         ctx.fillStyle = "#333"
         ctx.strokeStyle = "#222";
@@ -284,10 +284,10 @@ function drawHealthBars() {
 
         const healthBounds = 1600*game.bossHealth/game.bossHealthMax;
         ctx.beginPath();
-        ctx.moveTo(-900, -500+5);
-        ctx.lineTo(healthBounds+55-900, -500+5);
-        ctx.lineTo(healthBounds+20-900, -500+40);
-        ctx.lineTo(-900, -500+40);
+        ctx.moveTo(-870, -500+5);
+        ctx.lineTo(healthBounds+55-870, -500+5);
+        ctx.lineTo(healthBounds+20-870, -500+40);
+        ctx.lineTo(-870, -500+40);
         ctx.closePath();
         ctx.fillStyle = "#900";
         ctx.fill();
@@ -297,10 +297,10 @@ function drawHealthBars() {
     ctx.lineWidth = 7;
     ctx.beginPath();
     const maxBounds = 500;
-    ctx.moveTo(-900, 500-5);
-    ctx.lineTo(maxBounds+40-900, 500-5);
-    ctx.lineTo(maxBounds+20-900, 500-25);
-    ctx.lineTo(-900, 500-25);
+    ctx.moveTo(-870, 500-5);
+    ctx.lineTo(maxBounds+40-870, 500-5);
+    ctx.lineTo(maxBounds+20-870, 500-25);
+    ctx.lineTo(-870, 500-25);
     ctx.closePath();
     ctx.fillStyle = "#333"
     ctx.strokeStyle = "#222";
@@ -310,10 +310,10 @@ function drawHealthBars() {
     if (stats.health > 0) {
         const healthBounds = 500*stats.health/stats.healthMax;
         ctx.beginPath();
-        ctx.moveTo(-900, 500-5);
-        ctx.lineTo(healthBounds+40-900, 500-5);
-        ctx.lineTo(healthBounds+20-900, 500-25);
-        ctx.lineTo(-900, 500-25);
+        ctx.moveTo(-870, 500-5);
+        ctx.lineTo(healthBounds+40-870, 500-5);
+        ctx.lineTo(healthBounds+20-870, 500-25);
+        ctx.lineTo(-870, 500-25);
         ctx.closePath();
         ctx.fillStyle = "#900";
         ctx.fill();
@@ -323,10 +323,10 @@ function drawHealthBars() {
     ctx.lineWidth = 7;
     ctx.beginPath();
     const maxExtraBounds = 250;
-    ctx.moveTo(maxBounds+40-900, 500-5);
-    ctx.lineTo(maxBounds+maxExtraBounds+40-900, 500-5);
-    ctx.lineTo(maxBounds+maxExtraBounds+20-900, 500-25);
-    ctx.lineTo(maxBounds+20-900, 500-25);
+    ctx.moveTo(maxBounds+40-870, 500-5);
+    ctx.lineTo(maxBounds+maxExtraBounds+40-870, 500-5);
+    ctx.lineTo(maxBounds+maxExtraBounds+20-870, 500-25);
+    ctx.lineTo(maxBounds+20-870, 500-25);
     ctx.closePath();
     ctx.fillStyle = "#333"
     ctx.strokeStyle = "#222";
@@ -336,10 +336,10 @@ function drawHealthBars() {
     if (stats.extraHealth > 0 ) {
         const extraBounds = 250*(stats.extraHealth/stats.extraHealthMax);
         ctx.beginPath();
-        ctx.moveTo(maxBounds+40-900, 500-5);
-        ctx.lineTo(maxBounds+extraBounds+40-900, 500-5);
-        ctx.lineTo(maxBounds+extraBounds+20-900, 500-25);
-        ctx.lineTo(maxBounds+20-900, 500-25);
+        ctx.moveTo(maxBounds+40-870, 500-5);
+        ctx.lineTo(maxBounds+extraBounds+40-870, 500-5);
+        ctx.lineTo(maxBounds+extraBounds+20-870, 500-25);
+        ctx.lineTo(maxBounds+20-870, 500-25);
         ctx.closePath();
         ctx.fillStyle = "#29c";
         ctx.fill();
@@ -348,12 +348,12 @@ function drawHealthBars() {
 
     ctx.beginPath();
     for(var i = 1; i < stats.healthMax; i++) {
-        ctx.moveTo(maxBounds*i/stats.healthMax+40-900, 500-5);
-        ctx.lineTo(maxBounds*i/stats.healthMax+20-900, 500-25);
+        ctx.moveTo(maxBounds*i/stats.healthMax+40-870, 500-5);
+        ctx.lineTo(maxBounds*i/stats.healthMax+20-870, 500-25);
     }
     for(var i = 1; i < stats.extraHealthMax; i++) {
-        ctx.moveTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+40-900, 500-5);
-        ctx.lineTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+20-900, 500-25);
+        ctx.moveTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+40-870, 500-5);
+        ctx.lineTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+20-870, 500-25);
     }
     ctx.strokeStyle = "#22222244";
     ctx.stroke();
