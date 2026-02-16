@@ -662,9 +662,9 @@ const enemyBlueprints = [
                 enemy.attackLista2.push(thing);
                 attackWarnings.push(["line",warn*4,warn*4,player.x, player.y,player.x-thing.x, player.y-thing.y]);
             } else {
-                enemy.attackLista2[0].speed = 4;
-                enemy.attackLista2[0].vx *= -10;
-                enemy.attackLista2[0].vy *= -10;
+                enemy.attackLista2[0].speed = 3;
+                enemy.attackLista2[0].vx *= -5;
+                enemy.attackLista2[0].vy *= -5;
                 enemy.attackLista2.splice(0,1);
             }
         }, a3(enemy, warn) { // outside knives
@@ -692,9 +692,9 @@ const enemyBlueprints = [
                 enemy.attackLista3.push(things);
             } else {
                 enemy.attackLista3[0].forEach((item) => {
-                    item.speed = 4;
-                    item.vx *= -10;
-                    item.vy *= -10;
+                    item.speed = 3;
+                    item.vx *= -5;
+                    item.vy *= -5;
                 });
                 enemy.attackLista3.splice(0,1);
             }
@@ -763,4 +763,5 @@ const enemyBlueprints = [
             `[{"type":"point","x":0,"y":-75},{"type":"point","x":-250,"y":0},{"type":"point","x":0,"y":75},{"type":"point","x":250,"y":0},{"type":"close"},{"type":"fill","r":255,"g":255,"b":0},{"type":"stroke","r":50,"g":50,"b":0}]`
         )
     }
+
 ]
