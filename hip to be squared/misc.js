@@ -138,7 +138,7 @@ class DamageNumber {
         while (damage < 10**(1-decimalPoint)) decimalPoint++;
         this.damage = damage.toFixed(decimalPoint);
 
-        this.fontSize = 70*Math.min(10,Math.max(0.3,Number(damage)/(1+0.05*game.discoveredRooms)))
+        this.fontSize = 70*Math.min(8,Math.max(0.3,Number(damage)/(1+0.1*game.discoveredRooms+game.regionNum*2)))
         this.timeLeft = 0;
         this.timeLeftMax = 30;
     }

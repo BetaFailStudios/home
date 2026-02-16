@@ -90,7 +90,7 @@ function bulletTick() {
         }
         let sineRatio = 0;
 
-        const collisionSize = Math.min(150,bullet.size/2.2);
+        const collisionSize = Math.min(75,bullet.size);
 
         for (var i = 0; i < numOfMoves && bullet.alive; i++) {
             if (stats.sineWaveMovement && bullet.triggerExpire) {
@@ -149,10 +149,10 @@ function bulletTick() {
             }
 
             blocks.forEach((block) => {
-                const diffx = bullet.x + collisionSize/2.5 - block[0];
-                const diffy = bullet.y + collisionSize/2.5 - block[1];
-                const diffx1 = -bullet.x + collisionSize/2.5 + block[0]+block[2];
-                const diffy1 = -bullet.y + collisionSize/2.5 + block[1]+block[3];
+                const diffx = bullet.x + collisionSize - block[0];
+                const diffy = bullet.y + collisionSize - block[1];
+                const diffx1 = -bullet.x + collisionSize + block[0]+block[2];
+                const diffy1 = -bullet.y + collisionSize + block[1]+block[3];
 
                 if (diffx > 0 && diffx1 > 0 && diffy > 0 && diffy1 > 0) {
                     if (bullet.wallPierce) return;
@@ -178,8 +178,27 @@ function bulletTick() {
                 }
             })
 
+            if (!bullet.wallPierce || bullet.bulletBounce) if (Math.abs(bullet.x) > 850-collisionSize || Math.abs(bullet.y) > 450-collisionSize) {
+                if (bullet.bulletBounce) {
+                    bullet.bulletBounce--;
+                    bullet.damage *= 1.2;
+                    bullet.direction = Math.PI*2*Math.random();
+
+                    if (Math.abs(bullet.x) > 850-collisionSize) {
+                        bullet.x = Math.sign(bullet.x)*(850-collisionSize);
+                        bullet.vx *= -1;            
+                    }
+                    if (Math.abs(bullet.y) > 450-collisionSize) {
+                        bullet.y = Math.sign(bullet.y)*(450-collisionSize);
+                        bullet.vy *= -1;         
+                    }
+                } else {
+                    bullet.alive = false;
+                }
+            } 
+
             if (game.menu) return true;
-            
+
             bullet.x += bullet.vx/numOfMoves;
             bullet.y += bullet.vy/numOfMoves;
 
@@ -192,24 +211,6 @@ function bulletTick() {
             } else if (bullet.lifetime) bullet.lifetime -= (1/30 - Math.random()/45);
         }
 
-        if (!bullet.wallPierce || bullet.bulletBounce) if (Math.abs(bullet.x) > 850-collisionSize || Math.abs(bullet.y) > 450-collisionSize) {
-            if (bullet.bulletBounce) {
-                bullet.bulletBounce--;
-                bullet.damage *= 1.2;
-                bullet.direction = Math.PI*2*Math.random();
-
-                if (Math.abs(bullet.x) > 850-collisionSize) {
-                    bullet.x = Math.sign(bullet.x)*(850-collisionSize);
-                    bullet.vx *= -1;            
-                }
-                if (Math.abs(bullet.y) > 450-collisionSize) {
-                    bullet.y = Math.sign(bullet.y)*(450-collisionSize);
-                    bullet.vy *= -1;         
-                }
-            } else {
-                bullet.alive = false;
-            }
-        } 
         if (Math.abs(bullet.x)-bullet.size > 1000 || Math.abs(bullet.y)-bullet.size > 600) bullet.alive = false;;
 
         if (!bullet.alive) {
@@ -217,6 +218,8 @@ function bulletTick() {
             bullet.x -= bullet.vx*2;
             bullet.y -= bullet.vy*2;
             if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
+            bullet.x += bullet.vx;
+            bullet.y += bullet.vy;
         }
 
         return true;
