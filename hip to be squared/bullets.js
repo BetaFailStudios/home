@@ -215,11 +215,9 @@ function bulletTick() {
 
         if (!bullet.alive) {
             ease(bullet,"size",0,0.2);
-            bullet.x -= bullet.vx*2;
-            bullet.y -= bullet.vy*2;
             if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
-            bullet.x += bullet.vx;
-            bullet.y += bullet.vy;
+            bullet.x -= bullet.vx;
+            bullet.y -= bullet.vy;
         }
 
         return true;

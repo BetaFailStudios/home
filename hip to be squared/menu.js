@@ -322,7 +322,7 @@ function drawHealthBars() {
 
     ctx.lineWidth = 7;
     ctx.beginPath();
-    const maxExtraBounds = 250;
+    const maxExtraBounds = 150;
     ctx.moveTo(maxBounds+40-870, 500-5);
     ctx.lineTo(maxBounds+maxExtraBounds+40-870, 500-5);
     ctx.lineTo(maxBounds+maxExtraBounds+20-870, 500-25);
@@ -334,7 +334,7 @@ function drawHealthBars() {
     ctx.stroke();
         
     if (stats.extraHealth > 0 ) {
-        const extraBounds = 250*(stats.extraHealth/stats.extraHealthMax);
+        const extraBounds = 150*(stats.extraHealth/stats.extraHealthMax);
         ctx.beginPath();
         ctx.moveTo(maxBounds+40-870, 500-5);
         ctx.lineTo(maxBounds+extraBounds+40-870, 500-5);

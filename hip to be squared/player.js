@@ -4,9 +4,9 @@ const player = {
     rotationTick: 0,
     drawPath: JSON.parse(
         `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-50,"y":0},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"point","x":-200,"y":250,"move":true},{"type":"point","x":200,"y":250,"move":false},{"type":"point","x":0,"y":50,"move":false},{"type":"close"},{"type":"point","x":250,"y":200,"move":true},{"type":"point","x":250,"y":-200,"move":false},{"type":"point","x":50,"y":0,"move":false},{"type":"close"},{"type":"point","x":0,"y":-50,"move":true},{"type":"point","x":200,"y":-250,"move":false},{"type":"point","x":-200,"y":-250,"move":false},{"type":"close"},{"type":"fill","r":150,"g":200,"b":200},{"type":"stroke","r":75,"g":115,"b":125}]`
-    ),/*eyesPath: JSON.parse(
-        `[{"type":"point","x":-225,"y":-175,"move":false},{"type":"point","x":-200,"y":-200,"move":false},{"type":"point","x":-25,"y":-200,"move":false},{"type":"point","x":0,"y":-175,"move":false},{"type":"point","x":0,"y":-75,"move":false},{"type":"point","x":-25,"y":-50,"move":false},{"type":"point","x":-200,"y":-50,"move":false},{"type":"point","x":-225,"y":-75,"move":false},{"type":"close"},{"type":"point","x":-200,"y":-75,"move":true},{"type":"point","x":-175,"y":-125,"move":false},{"type":"point","x":-25,"y":-150,"move":false},{"type":"point","x":25,"y":-175,"move":true},{"type":"point","x":25,"y":-75,"move":false},{"type":"point","x":50,"y":-50,"move":false},{"type":"point","x":200,"y":-50,"move":false},{"type":"point","x":225,"y":-75,"move":false},{"type":"point","x":225,"y":-175,"move":false},{"type":"point","x":200,"y":-200,"move":false},{"type":"point","x":50,"y":-200,"move":false},{"type":"close"},{"type":"point","x":200,"y":-75,"move":true},{"type":"point","x":175,"y":-125,"move":false},{"type":"point","x":50,"y":-150,"move":false},{"type":"fill","r":150,"g":200,"b":200},{"type":"stroke","r":75,"g":115,"b":125}]`
-    ),*/
+    ),dashCooldownPath: JSON.parse(
+        `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-200,"y":-250},{"type":"point","x":200,"y":-250},{"type":"point","x":250,"y":-200},{"type":"point","x":250,"y":200},{"type":"point","x":200,"y":250},{"type":"point","x":-200,"y":250},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"fill","r":150,"g":150,"b":150},{"type":"stroke","r":100,"g":100,"b":100}]`
+    ),
     firerateTick: 0,
     iFrames: 0,
     dashCooldown: 0,
@@ -16,7 +16,12 @@ function playerTick() {
     if (player.iFrames > 0) ctx.globalAlpha = 0.4;
     if (game.regionTransfer > 1) draw(player.x,player.y,player.drawPath,stats.playerSize*(-1+game.regionTransfer),player.rotationTick);
     else if (game.regionTransfer > 0) draw(player.x,player.y,player.drawPath,stats.playerSize*(1+10*game.regionTransfer**4),player.rotationTick,1-game.regionTransfer);
-    else draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
+    else {
+        if (player.dashCooldown) {
+            draw(player.x,player.y,player.dashCooldownPath,(stats.playerSize+50)*player.dashCooldown,-player.rotationTick, 0.2);
+        }
+        draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
+    }
     //draw(player.x,player.y,player.eyesPath,stats.playerSize);
     if (player.iFrames > 0) ctx.globalAlpha = 1;
 

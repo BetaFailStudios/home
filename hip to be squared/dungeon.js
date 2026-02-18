@@ -66,7 +66,7 @@ function drawMap() {
     ctx.lineWidth = 10;
     ctx.rect(-160,-110,320,220);
     ctx.fillStyle = "#00000022";
-    ctx.strokeStyle = "#555";
+    ctx.strokeStyle = game.region.wallColor;
     ctx.fill();
     ctx.stroke();
     ctx.rect(-155,-105,310,210);
@@ -80,11 +80,9 @@ function drawMap() {
             if (connection[0] == 0) ctx.rect(pos[0]-7.5+30-60*(connection[1] == -1),pos[1]-10,15,20);
             else ctx.rect(pos[0]-10,pos[1]-7.5+20-40*(connection[1] == -1),20,15);
         })
-        ctx.strokeStyle = "#555";
         ctx.stroke();
         ctx.beginPath();
         ctx.rect(pos[0]-27.5,pos[1]-17.5,55,35);
-        ctx.strokeStyle = "#555";
         ctx.stroke();
     })
     Object.keys(dungeon).forEach((item) => {
