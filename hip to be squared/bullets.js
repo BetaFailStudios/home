@@ -90,7 +90,7 @@ function bulletTick() {
         }
         let sineRatio = 0;
 
-        const collisionSize = Math.min(75,bullet.size);
+        const collisionSize = Math.min(30,bullet.size);
 
         for (var i = 0; i < numOfMoves && bullet.alive; i++) {
             if (stats.sineWaveMovement && bullet.triggerExpire) {
@@ -225,4 +225,5 @@ function bulletTick() {
 
     bullets.push(...bulletBuffer);
     bulletBuffer = [];
+
 }
