@@ -238,7 +238,7 @@ const weapons = [
         bulletDrawPath: JSON.parse(
             `[{"type":"point","x":125,"y":-50},{"type":"point","x":125,"y":50},{"type":"point","x":100,"y":125},{"type":"point","x":50,"y":200},{"type":"point","x":0,"y":175},{"type":"point","x":50,"y":100},{"type":"point","x":75,"y":0},{"type":"point","x":50,"y":-100},{"type":"point","x":0,"y":-175},{"type":"point","x":50,"y":-200},{"type":"point","x":100,"y":-125},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":80,"g":80,"b":80}]`
         ), statChange(rarity) {
-            stats.firerate *= 3 - 0.1*rarity;
+            stats.firerate *= 1.7 - 0.1*rarity;
             stats.damage *= 3 + 0.35*rarity;
             stats.bulletSize *= 5 + rarity;
             stats.bulletSpeed *= 0.35;
@@ -1149,4 +1149,5 @@ MS},{
             else if (Math.hypot(enemy.vx,enemy.vy) > 20) enemy.health -= bullet.damage*6;
         }
         
+
         */
