@@ -594,7 +594,7 @@ const relics = [
         ),cloudPath: JSON.parse(
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":-187.5,"y":-187.5},{"type":"point","x":-250,"y":0},{"type":"point","x":-187.5,"y":187.5},{"type":"point","x":0,"y":250},{"type":"point","x":187.5,"y":187.5},{"type":"point","x":250,"y":0},{"type":"point","x":187.5,"y":-187.5},{"type":"close"},{"type":"fill","r":75,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), playerTick(rarity) {
-            if (player.iFrames) bulletBuffer.push(new Bullet({x:player.x,y:player.y,speed:0,size:75+rarity*15,damage:0.15+0.1*rarity,drawPath:this.cloudPath,drawAlpha:0.1,lifetime:0.5,wallPierce:true}))
+            if (player.iFrames) bulletBuffer.push(new Bullet({x:player.x,y:player.y,speed:0,size:100+rarity*25,damage:0.4+0.25*rarity,drawPath:this.cloudPath,drawAlpha:0.1,lifetime:0.5,wallPierce:true}))
         }
 /*BH*/},{
         name: "Beating Heart",
@@ -1151,3 +1151,4 @@ MS},{
         
 
         */
+
