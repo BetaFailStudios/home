@@ -717,7 +717,7 @@ const artifacts = [
         ), damageBoost(_,bullet,enemy) {
             if (enemy.hitMarkers) {
                 enemy.hitMarkers++;
-                return Math.log2(enemy.hitMarkers/10+2);
+                return Math.log2(enemy.hitMarkers/3+2);
             } else {
                 enemy.hitMarkers = 1;
                 return 1;
@@ -1151,6 +1151,7 @@ MS},{
         
 
         */
+
 
 
 
