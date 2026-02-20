@@ -33,6 +33,10 @@ class Bullet {
             this.x += this.vx * inputStats.offsetTick;
             this.y += this.vy * inputStats.offsetTick;
         }
+        if (inputStats.offset) {
+            this.x += Math.cos(this.direction) * inputStats.offset; 
+            this.y += Math.sin(this.direction) * inputStats.offset;
+        }
 
         this.alive = true;
 
@@ -47,8 +51,10 @@ class Bullet {
         this.x += size * Math.random() - size/2;
         this.y += size * Math.random() - size/2;
 
-        if (stats.trailColor) {
+        if (inputStats.trailColor) {
             this.trailPoints = [];
+            this.trailColor = inputStats.trailColor;
+            this.trailLength = inputStats.trailLength;
         }
 
         if (game.firstBullet) {
@@ -71,13 +77,24 @@ function bulletTick() {
 
         // handle afterdeath
         if (!bullet.alive) {
-            if (!stats.noDrawBullets || !bullet.triggerExpire) draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
+            if (!stats.noDrawBullets || !bullet.triggerExpire) if (bullet.size > 5) {
+                draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
+            } else {
+                ctx.beginPath();
+                let color = bullet.drawPath[bullet.drawPath.length-1]
+                ctx.strokeStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+                color = bullet.drawPath[bullet.drawPath.length-2]
+                ctx.fllStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+                ctx.rect(bullet.x-bullet.size,bullet.y-bullet.size,bullet.size*2,bullet.size*2);
+                ctx.fill();
+                ctx.stroke();
+            }
 
-            if (bullet.triggerExpire && stats.trailColor && bullet.trailPoints) {
+            if (bullet.trailColor && bullet.trailPoints) {
                 bullet.trailPoints.splice(0,1);
                 ctx.beginPath();
                 bullet.trailPoints.forEach((points) => ctx.lineTo(...points));
-                ctx.strokeStyle = stats.trailColor;
+                ctx.strokeStyle = bullet.trailColor;
                 ctx.globalAlpha = 0.25;
                 ctx.lineWidth = Math.max(bullet.targetSize,bullet.size)*1.3 + 2;
                 ctx.lineCap = "round";
@@ -101,16 +118,27 @@ function bulletTick() {
 
             if (bullet.triggerExpire && !game.menu) stats.bulletTicks.forEach( (item) => item[1](item[0],bullet));
 
-            if (!i && (!stats.noDrawBullets || !bullet.triggerExpire)) draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
+            if (!i && (!stats.noDrawBullets || !bullet.triggerExpire)) if (bullet.size > 5) {
+                draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
+            } else {
+                ctx.beginPath();
+                let color = bullet.drawPath[bullet.drawPath.length-1]
+                ctx.strokeStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+                color = bullet.drawPath[bullet.drawPath.length-2]
+                ctx.fllStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+                ctx.rect(bullet.x-bullet.size,bullet.y-bullet.size,bullet.size*2,bullet.size*2);
+                ctx.fill();
+                ctx.stroke();
+            }
             //effects.push(new Effect(bullet.x,bullet.y,"glasses",10,0))
 
-            if (bullet.triggerExpire && stats.trailColor && bullet.trailPoints) {
+            if (bullet.trailColor && bullet.trailPoints) {
                 bullet.trailPoints.push([bullet.x,bullet.y]);
-                if (bullet.trailPoints.length > (stats.trailLength || 8)*numOfMoves) bullet.trailPoints.splice(0,1);
+                if (bullet.trailPoints.length > (bullet.trailLength || 8)*numOfMoves) bullet.trailPoints.splice(0,1);
                 if (!i) {
                     ctx.beginPath();
                     bullet.trailPoints.forEach((points) => ctx.lineTo(...points));
-                    ctx.strokeStyle = stats.trailColor;
+                    ctx.strokeStyle = bullet.trailColor;
                     ctx.globalAlpha = 0.25;
                     ctx.lineWidth = Math.max(bullet.targetSize,bullet.size)*1.3 + 2;
                     ctx.lineCap = "round";
@@ -119,6 +147,8 @@ function bulletTick() {
                     ctx.globalAlpha = 1;
                 }
             }
+
+            if (game.menu) return true;
 
             enemies.forEach((enemy) => {
                 if (enemy.projectile && !(stats.projHit && bullet.triggerExpire) || enemy.spawning) return;
@@ -174,6 +204,8 @@ function bulletTick() {
                         }
                     } else  {
                         bullet.alive = false;
+                        bullet.x -= bullet.vx/numOfMoves;
+                        bullet.y -= bullet.vy/numOfMoves;
                     }
                 }
             })
@@ -194,10 +226,10 @@ function bulletTick() {
                     }
                 } else {
                     bullet.alive = false;
+                    bullet.x -= bullet.vx/numOfMoves;
+                    bullet.y -= bullet.vy/numOfMoves;
                 }
             } 
-
-            if (game.menu) return true;
 
             bullet.x += bullet.vx/numOfMoves;
             bullet.y += bullet.vy/numOfMoves;
@@ -216,8 +248,6 @@ function bulletTick() {
         if (!bullet.alive) {
             ease(bullet,"size",0,0.2);
             if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
-            bullet.x -= bullet.vx;
-            bullet.y -= bullet.vy;
         }
 
         return true;
@@ -225,5 +255,4 @@ function bulletTick() {
 
     bullets.push(...bulletBuffer);
     bulletBuffer = [];
-
 }

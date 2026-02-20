@@ -76,12 +76,17 @@ function playerTick() {
     //
     // fire
     //
-    if ((mouse.down || player.burstsLeft) && player.firerateTick <= 0) {
+    while ((mouse.down || player.burstsLeft) && player.firerateTick <= 0) {
         let lookDirection = (Math.atan((mouse.y-player.y)/(mouse.x-player.x)) + Math.PI*(mouse.x < player.x)) || (Math.PI*(mouse.x < player.x));
+        const tempBullet = {x: 0, y: 0, direction: lookDirection, triggerExpire: true, trailColor: stats.trailColor, trailLength: stats.trailLength || 8};
         
         if (stats.projectiles > 1) lookDirection -= stats.spread/2;
+        
         for (var i = 0; i < stats.projectiles; i++) {
-            bullets.push(new Bullet({x: player.x + Math.cos(lookDirection)*50, y: player.y + Math.sin(lookDirection)*50, direction: lookDirection, triggerExpire: true}));
+            tempBullet.direction = lookDirection;
+            tempBullet.x = player.x + Math.cos(lookDirection)*50;
+            tempBullet.y = player.y + Math.sin(lookDirection)*50;
+            bullets.push(new Bullet(tempBullet));
             lookDirection += stats.spread/(stats.projectiles-1);
         }
         game.firstBullet = false;
@@ -90,7 +95,8 @@ function playerTick() {
         else player.burstsLeft--;
         if (player.burstsLeft) player.firerateTick += Math.min(3,stats.firerate/10);
         else player.firerateTick += stats.firerate;
-    } else if (player.firerateTick > 0) player.firerateTick--;
+    }
+    if (player.firerateTick > 0) player.firerateTick--;
 
     if (player.iFrames > 0) player.iFrames--;
     else {
