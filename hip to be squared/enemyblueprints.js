@@ -608,7 +608,7 @@ const enemyBlueprints = [
                 enemy.target = "direction";
                 enemy.vx *= -1; enemy.vy *= -1;
                 enemy.speed = 4;
-                enemy.reset = [ () => { enemy.immovable = false; enemy.speed = 0.15; enemy.target = "-".repeat(Math.random()< 0.5) + "player"; enemy.vx *= 0.25; enemy.vy *= 0.25; }, 10 + (Math.hypot(enemy.x-player.x,enemy.y-player.y))/70 ];
+                enemy.reset = [ () => { enemy.immovable = false; enemy.speed = 0.15; enemy.target = "-".repeat(Math.random()< 0.5) + "player"; enemy.vx *= 0.25; enemy.vy *= 0.25; }, 15 + (Math.hypot(enemy.x-player.x,enemy.y-player.y))/50 ];
             }
         }
     },{ // 25 SSD
@@ -762,5 +762,41 @@ const enemyBlueprints = [
         size: 45, health: 1, projectile: true, rotateToTarget: true, immovable: true, speed: -0.1, target: "direction", drawPath: JSON.parse(
             `[{"type":"point","x":0,"y":-75},{"type":"point","x":-250,"y":0},{"type":"point","x":0,"y":75},{"type":"point","x":250,"y":0},{"type":"close"},{"type":"fill","r":255,"g":255,"b":0},{"type":"stroke","r":50,"g":50,"b":0}]`
         )
+    },{ // 28 tiny knives
+        size: 35, health: 3, num: 3, rotateToTarget: true, speed: 0.1, drawPath: JSON.parse(
+            `[{"type":"point","x":-25,"y":-50},{"type":"point","x":200,"y":-25},{"type":"point","x":250,"y":0},{"type":"point","x":200,"y":25},{"type":"point","x":-25,"y":50},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-75,"y":-25},{"type":"point","x":-225,"y":-25},{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":25},{"type":"point","x":-75,"y":25},{"type":"fill","r":75,"g":50,"b":0},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-25,"y":-100},{"type":"point","x":-75,"y":-75},{"type":"point","x":-75,"y":75},{"type":"point","x":-25,"y":100},{"type":"close"},{"type":"fill","r":75,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ), a2(enemy, warn) {
+            if (warn) {
+                enemy.dirToTarget = (Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x));
+                enemy.immovable = true;
+                enemy.reset = false;
+                enemy.target = "direction";
+                enemy.speed = -0.2; enemy.vx = 0; enemy.vy = 0;
+                attackWarnings.push(["line",warn*4,warn*4,(enemy.x+player.x*2)/3,(enemy.y+player.y*2)/3,(player.x-enemy.x)/2,(player.y-enemy.y)/2]);
+            } else {
+                enemy.target = "direction";
+                enemy.vx *= -1; enemy.vy *= -1;
+                enemy.speed = 3;
+                enemy.reset = [ () => { enemy.immovable = false; enemy.speed = 0.15; enemy.target = "-".repeat(Math.random()< 0.5) + "player"; enemy.vx *= 0.25; enemy.vy *= 0.25; }, 10 + (Math.hypot(enemy.x-player.x,enemy.y-player.y))/70 ];
+            }
+        }
+    },{ // 29 tiny gold shard
+        size: 35, health: 25, num: 3, rotateToTarget: true, speed: 0.1, drawPath: JSON.parse(
+            `[{"type":"point","x":0,"y":-75},{"type":"point","x":-250,"y":0},{"type":"point","x":0,"y":75},{"type":"point","x":250,"y":0},{"type":"close"},{"type":"fill","r":255,"g":255,"b":0},{"type":"stroke","r":50,"g":50,"b":0}]`
+        ), a2(enemy, warn) {
+            if (warn) {
+                enemy.dirToTarget = (Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x));
+                enemy.immovable = true;
+                enemy.reset = false;
+                enemy.target = "direction";
+                enemy.speed = -0.2; enemy.vx = 0; enemy.vy = 0;
+                attackWarnings.push(["line",warn*4,warn*4,(enemy.x+player.x*2)/3,(enemy.y+player.y*2)/3,(player.x-enemy.x)/2,(player.y-enemy.y)/2]);
+            } else {
+                enemy.target = "direction";
+                enemy.vx *= -1; enemy.vy *= -1;
+                enemy.speed = 3;
+                enemy.reset = [ () => { enemy.immovable = false; enemy.speed = 0.15; enemy.target = "-".repeat(Math.random()< 0.5) + "player"; enemy.vx *= 0.25; enemy.vy *= 0.25; }, 10 + (Math.hypot(enemy.x-player.x,enemy.y-player.y))/70 ];
+            }
+        }
     }
 ]

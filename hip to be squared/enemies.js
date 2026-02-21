@@ -50,6 +50,28 @@ function enemyTick() {
         if (enemy.ephemeral) ctx.globalAlpha = 1;
         if (enemy.spawning) {
             draw(enemy.x, enemy.y, game.enemySpawnPath, enemy.spawnSize, 0, enemy.spawning);
+            if (Math.abs(enemy.x) > 850-enemy.size) {
+                enemy.x = Math.sign(enemy.x)*(850-enemy.size);      
+            }
+            if (Math.abs(enemy.y) > 450-enemy.size) {
+                enemy.y = Math.sign(enemy.y)*(450-enemy.size);    
+            }
+            blocks.forEach((block) => {
+                const diffx = enemy.x + enemy.size - block[0];
+                const diffy = enemy.y + enemy.size - block[1];
+                const diffx1 = -enemy.x + enemy.size + block[0]+block[2];
+                const diffy1 = -enemy.y + enemy.size + block[1]+block[3];
+                if (diffx > 0 && diffx1 > 0 && diffy > 0 && diffy1 > 0) {
+                    if (Math.min(diffx, diffx1) < Math.min(diffy,diffy1)) {
+                        if (diffx < diffx1) enemy.x = block[0]-enemy.size;
+                        else enemy.x = block[0]+block[2]+enemy.size;
+                    } else {
+                        if (diffy < diffy1) enemy.y = block[1]-enemy.size;
+                        else enemy.y = block[1]+block[3]+enemy.size;
+                    }
+                }
+            })
+
             return true;
         } else if (!enemy.boss && enemy.health > 0 && enemy.health < enemy.healthMax && enemy.size) {
             ctx.lineCap = "round";
@@ -204,11 +226,15 @@ function spawnEnemies(num) {
     const enemyIndexes = game.region.enemies;
     for(var i = 0; i < (num || 1); i++) {
         const id = enemyIndexes[Math.floor(Math.random()*enemyIndexes.length)]
-        const enemy = new Enemy(enemyBlueprints[id]);
-        enemy.x = Math.random()*1600-800;
-        enemy.y = Math.random()*800-400;
-        enemies.push(enemy);
-    }
+        const x = Math.random()*1600-800;
+        const y = Math.random()*800-400;
+        for (var b = 0; b < (enemyBlueprints[id].num || 1); b++) {
+            const enemy = new Enemy(enemyBlueprints[id]);
+                enemy.x = x - enemy.size*3+ Math.random()*enemy.size*6;
+                enemy.y = y - enemy.size*3 + Math.random()*enemy.size*6;
+                enemies.push(enemy);
+            }
+        }
 }
 
 function drawBossName() {

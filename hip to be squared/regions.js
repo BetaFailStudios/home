@@ -2,7 +2,7 @@ const regions = [
     [
         {
             name: ["Haunted Armory", "#999"], wallColor: "#444",
-            enemies: [0,1,3,4,6,13],
+            enemies: [0,1,3,4,6,13,28],
             bosses: [8,15],
             music: [
                 {
@@ -114,7 +114,7 @@ const regions = [
     [
         {
             name: ["Super Computer", "#060"], wallColor: "#070",
-            enemies: [19,21,22,23,24,25],
+            enemies: [19,21,22,23,24,25,29],
             bosses: [26],
             music: [
                 {
