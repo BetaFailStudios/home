@@ -9,6 +9,7 @@ function tickloop() {
     musicTick();
     drawEnvironment();
     bulletTick();
+    drawBlocks();
     handleEffects();
     drawEnemyAttacks();
     enemyTick();
@@ -125,5 +126,4 @@ function tickloop() {
 setInterval( tickloop, 1000/60 );
 
 //enemies.push(new Enemy(enemyBlueprints[4],{x:600}));
-
 //game.musicPos = 1;

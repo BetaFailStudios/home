@@ -102,7 +102,9 @@ function drawEnvironment() {
     ctx.fill();
     ctx.strokeStyle = "#222";
     ctx.stroke();
+}
 
+function drawBlocks() {
     blocks.forEach((block) => {
         game.region.drawBlock(block);
         //ctx.rect(...block);

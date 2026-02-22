@@ -396,11 +396,11 @@ const relics = [
         }
 /*BH*/},{
         name: "Bull's Horn",
-        desc: "Increased damage at or below 4 health",
+        desc: "Increased damage at or below half health",
         drawPath: JSON.parse(
             `[{"type":"point","x":-175,"y":100},{"type":"point","x":-125,"y":100},{"type":"point","x":-100,"y":125},{"type":"point","x":-100,"y":175},{"type":"point","x":-150,"y":175},{"type":"point","x":-175,"y":150},{"type":"point","x":-175,"y":100},{"type":"point","x":-75,"y":0},{"type":"point","x":-25,"y":-75},{"type":"point","x":-12.5,"y":-150},{"type":"point","x":-25,"y":-200},{"type":"point","x":-50,"y":-225},{"type":"point","x":0,"y":-212.5},{"type":"point","x":25,"y":-175},{"type":"point","x":50,"y":-75},{"type":"point","x":37.5,"y":-25},{"type":"point","x":0,"y":50},{"type":"point","x":-100,"y":175},{"type":"fill","r":135,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-150,"y":175},{"type":"point","x":-100,"y":175},{"type":"point","x":-100,"y":125},{"type":"point","x":-125,"y":100},{"type":"point","x":-175,"y":100},{"type":"point","x":-175,"y":150},{"type":"close"},{"type":"fill","r":25,"g":25,"b":25},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), damageBoost(rarity,bullet,enemy) {
-            if (stats.health <= 4) return 2 + 0.5*rarity;
+            if (stats.health <= stats.healthMax/2) return 2 + 0.5*rarity;
             else return 1;
         }
 /*SG*/},{
@@ -412,7 +412,7 @@ const relics = [
             //const velChange = Math.max(0,1-(0.3-0.05*rarity)*bullet.damage/enemy.health*50);
             //enemy.vx *= velChange;
             //enemy.vy *= velChange;
-            enemy.health -= 0.1 + 0.05*rarity;
+            enemy.health -= 0.15 + 0.05*rarity;
             if (game.showDamageNumbers) dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,0.1 + 0.05*rarity));
         }
 /*SB*/},{
@@ -573,8 +573,8 @@ const relics = [
         drawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":-25},{"type":"point","x":-237.5,"y":-75},{"type":"point","x":-187.5,"y":-87.5},{"type":"point","x":187.5,"y":-87.5},{"type":"point","x":237.5,"y":-75},{"type":"point","x":250,"y":-25},{"type":"point","x":237.5,"y":25},{"type":"point","x":187.5,"y":37.5},{"type":"point","x":-187.5,"y":37.5},{"type":"point","x":-237.5,"y":25},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":237.5,"y":-25},{"type":"point","x":237.5,"y":100},{"type":"point","x":225,"y":137.5},{"type":"point","x":187.5,"y":150},{"type":"point","x":150,"y":137.5},{"type":"point","x":137.5,"y":100},{"type":"point","x":137.5,"y":-25},{"type":"point","x":150,"y":-62.5},{"type":"point","x":187.5,"y":-75},{"type":"point","x":225,"y":-62.5},{"type":"close"},{"type":"fill","r":30,"g":30,"b":30},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
-            stats.fireRate *= 1.75;
-            stats.damage *= 2 + 0.5*rarity;
+            stats.firerate *= 1.65;
+            stats.damage *= 1.8 + 0.3*rarity;
         }
 /*TM*/},{
         name: "Toxic Mushrooms",
@@ -584,7 +584,7 @@ const relics = [
         ),cloudPath: JSON.parse(
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":-187.5,"y":-187.5},{"type":"point","x":-250,"y":0},{"type":"point","x":-187.5,"y":187.5},{"type":"point","x":0,"y":250},{"type":"point","x":187.5,"y":187.5},{"type":"point","x":250,"y":0},{"type":"point","x":187.5,"y":-187.5},{"type":"close"},{"type":"fill","r":0,"g":255,"b":0},{"type":"stroke","r":0,"g":50,"b":0}]`
         ), playerTick(rarity) {
-            if (!(game.tick%10)) bulletBuffer.push(new Bullet({x:player.x,y:player.y,speed:0,size:175+rarity*25,damage:0.4+0.25*rarity,drawPath:this.cloudPath,drawAlpha:0.1,lifetime:0.5,wallPierce:true}))
+            if (!(game.tick%10)) bulletBuffer.push(new Bullet({x:player.x,y:player.y,speed:0,size:175+rarity*25,damage:1.5+1*rarity,drawPath:this.cloudPath,drawAlpha:0.1,lifetime:0.5,wallPierce:true}))
         }
 /*SB*/},{
         name: "Smoke Bomb",
@@ -655,12 +655,18 @@ const artifacts = [
         drawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":150},{"type":"point","x":-225,"y":225},{"type":"point","x":-150,"y":250},{"type":"point","x":-75,"y":250},{"type":"point","x":250,"y":-75},{"type":"point","x":250,"y":-150},{"type":"point","x":225,"y":-225},{"type":"point","x":150,"y":-250},{"type":"point","x":75,"y":-250},{"type":"point","x":-250,"y":75},{"type":"close"},{"type":"fill","r":75,"g":75,"b":75},{"type":"point","x":75,"y":-250,"move":true},{"type":"point","x":75,"y":-175,"move":false},{"type":"point","x":100,"y":-100,"move":false},{"type":"point","x":175,"y":-75,"move":false},{"type":"point","x":250,"y":-75,"move":false},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-200,"y":125,"move":false},{"type":"point","x":-200,"y":175,"move":false},{"type":"point","x":-175,"y":200,"move":false},{"type":"point","x":-125,"y":200,"move":false},{"type":"point","x":125,"y":-50,"move":false},{"type":"point","x":75,"y":-50,"move":false},{"type":"point","x":50,"y":-75,"move":false},{"type":"point","x":50,"y":-125,"move":false},{"type":"close"},{"type":"point","x":175,"y":-200,"move":true},{"type":"point","x":125,"y":-200,"move":false},{"type":"point","x":125,"y":-150,"move":false},{"type":"point","x":150,"y":-125,"move":false},{"type":"point","x":200,"y":-125,"move":false},{"type":"point","x":200,"y":-175,"move":false},{"type":"close"},{"type":"fill","r":0,"g":125,"b":100},{"type":"stroke","r":0,"g":50,"b":50}]`
         ), statChange(_) {
+            stats.projectileHit = true;
             stats.wallPierce = true;
             if (stats.pierce) stats.pierce += 20;
             else stats.pierce = 20;
         }, onHit(_,bullet,enemy) {
-            bullet.damage *= 1.75;
-            bullet.size *= 1.75;
+            if (enemy.projectiles) {
+                bullet.damage *= 1 + enemy.size/100;
+                bullet.size *= 1 + enemy.size/100;
+                return;
+            }
+            bullet.damage *= 1.4;
+            bullet.size *= 1.4;
         }
 /*BV*/},{
         name: "Broken Vase",
@@ -707,7 +713,7 @@ const artifacts = [
         drawPath: JSON.parse(
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":125,"y":-225},{"type":"point","x":225,"y":-125},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":125},{"type":"point","x":125,"y":225},{"type":"point","x":0,"y":250},{"type":"point","x":-125,"y":225},{"type":"point","x":-225,"y":125},{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":-125},{"type":"point","x":-125,"y":-225},{"type":"close"},{"type":"fill","r":125,"g":60,"b":105},{"type":"stroke","r":55,"g":15,"b":35},{"type":"point","x":150,"y":-150},{"type":"point","x":200,"y":-50},{"type":"point","x":150,"y":50},{"type":"point","x":50,"y":100},{"type":"point","x":-50,"y":50},{"type":"point","x":-100,"y":-50},{"type":"point","x":-50,"y":-150},{"type":"point","x":50,"y":-200},{"type":"close"},{"type":"fill","r":155,"g":75,"b":115},{"type":"stroke","r":140,"g":60,"b":110},{"type":"point","x":125,"y":-125,"move":false},{"type":"point","x":150,"y":-75,"move":false},{"type":"point","x":125,"y":-25,"move":false},{"type":"point","x":75,"y":0,"move":false},{"type":"point","x":25,"y":-25,"move":false},{"type":"point","x":0,"y":-75,"move":false},{"type":"point","x":25,"y":-125,"move":false},{"type":"point","x":75,"y":-150,"move":false},{"type":"close"},{"type":"fill","r":250,"g":135,"b":200},{"type":"stroke","r":230,"g":120,"b":180}]`
         ), statChange(_) {
-            stats.bulletBounce = 4;
+            stats.bulletBounce = 2;
         }
 /*HM*/},{
         name: "Hit Marker",
@@ -717,7 +723,7 @@ const artifacts = [
         ), damageBoost(_,bullet,enemy) {
             if (enemy.hitMarkers) {
                 enemy.hitMarkers++;
-                return Math.log2(enemy.hitMarkers/5+2);
+                return Math.log2(enemy.hitMarkers/15+2);
             } else {
                 enemy.hitMarkers = 1;
                 return 1;

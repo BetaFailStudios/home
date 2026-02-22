@@ -78,7 +78,7 @@ function playerTick() {
     //
     while ((mouse.down || player.burstsLeft) && player.firerateTick <= 0) {
         let lookDirection = (Math.atan((mouse.y-player.y)/(mouse.x-player.x)) + Math.PI*(mouse.x < player.x)) || (Math.PI*(mouse.x < player.x));
-        const tempBullet = {x: 0, y: 0, direction: lookDirection, triggerExpire: true, trailColor: stats.trailColor, trailLength: stats.trailLength || 8};
+        const tempBullet = {x: 0, y: 0, direction: lookDirection, triggerExpire: true, trailColor: stats.trailColor, trailLength: stats.trailLength || 8, projHit: stats.projHit};
         
         if (stats.projectiles > 1) lookDirection -= stats.spread/2;
         

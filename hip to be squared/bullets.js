@@ -151,7 +151,7 @@ function bulletTick() {
             if (game.menu) return true;
 
             enemies.forEach((enemy) => {
-                if (enemy.projectile && !(stats.projHit && bullet.triggerExpire) || enemy.spawning) return;
+                if (enemy.projectile && !bullet.projHit && bullet.triggerExpire || enemy.spawning) return;
                 const hypot = Math.hypot(enemy.x-bullet.x,enemy.y-bullet.y);
 
                 if (hypot < bullet.size+enemy.size*0.8) {
@@ -161,7 +161,7 @@ function bulletTick() {
                         let damage = bullet.damage;
                         stats.damageBoosts.forEach( (item) => damage *= item[1](item[0],bullet,enemy));
                         if (bullet.jackpot) effects.push(new Effect(bullet.x,bullet.y,"jackpot",40,40));
-                        enemy.health -= damage;
+                        if (!enemy.projectile) enemy.health -= damage;
                         if (game.showDamageNumbers) dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,damage));
                         if (bullet.pierce) bullet.pierce--;
                         else if (!enemy.projectiles || enemy.health > 0) {
