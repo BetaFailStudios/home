@@ -151,7 +151,7 @@ function bulletTick() {
             if (game.menu) return true;
 
             enemies.forEach((enemy) => {
-                if (enemy.projectile && !bullet.projHit && bullet.triggerExpire || enemy.spawning) return;
+                if (enemy.projectile && !bullet.projHit || enemy.spawning) return;
                 const hypot = Math.hypot(enemy.x-bullet.x,enemy.y-bullet.y);
 
                 if (hypot < bullet.size+enemy.size*0.8) {

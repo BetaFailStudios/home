@@ -239,8 +239,8 @@ const weapons = [
             `[{"type":"point","x":125,"y":-50},{"type":"point","x":125,"y":50},{"type":"point","x":100,"y":125},{"type":"point","x":50,"y":200},{"type":"point","x":0,"y":175},{"type":"point","x":50,"y":100},{"type":"point","x":75,"y":0},{"type":"point","x":50,"y":-100},{"type":"point","x":0,"y":-175},{"type":"point","x":50,"y":-200},{"type":"point","x":100,"y":-125},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":80,"g":80,"b":80}]`
         ), statChange(rarity) {
             stats.firerate *= 1.7;
-            stats.damage *= 3 + 0.35*rarity;
-            stats.bulletSize *= 5 + rarity;
+            stats.damage *= 2.5 + 0.2*rarity;
+            stats.bulletSize *= 5;
             stats.bulletSpeed *= 0.35;
             stats.pierce = 2;
         }
@@ -713,7 +713,7 @@ const artifacts = [
         drawPath: JSON.parse(
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":125,"y":-225},{"type":"point","x":225,"y":-125},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":125},{"type":"point","x":125,"y":225},{"type":"point","x":0,"y":250},{"type":"point","x":-125,"y":225},{"type":"point","x":-225,"y":125},{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":-125},{"type":"point","x":-125,"y":-225},{"type":"close"},{"type":"fill","r":125,"g":60,"b":105},{"type":"stroke","r":55,"g":15,"b":35},{"type":"point","x":150,"y":-150},{"type":"point","x":200,"y":-50},{"type":"point","x":150,"y":50},{"type":"point","x":50,"y":100},{"type":"point","x":-50,"y":50},{"type":"point","x":-100,"y":-50},{"type":"point","x":-50,"y":-150},{"type":"point","x":50,"y":-200},{"type":"close"},{"type":"fill","r":155,"g":75,"b":115},{"type":"stroke","r":140,"g":60,"b":110},{"type":"point","x":125,"y":-125,"move":false},{"type":"point","x":150,"y":-75,"move":false},{"type":"point","x":125,"y":-25,"move":false},{"type":"point","x":75,"y":0,"move":false},{"type":"point","x":25,"y":-25,"move":false},{"type":"point","x":0,"y":-75,"move":false},{"type":"point","x":25,"y":-125,"move":false},{"type":"point","x":75,"y":-150,"move":false},{"type":"close"},{"type":"fill","r":250,"g":135,"b":200},{"type":"stroke","r":230,"g":120,"b":180}]`
         ), statChange(_) {
-            stats.bulletBounce = 2;
+            stats.bulletBounce = 3;
         }
 /*HM*/},{
         name: "Hit Marker",
