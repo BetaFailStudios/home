@@ -255,7 +255,7 @@ const weapons = [
         ), statChange(rarity) {
             stats.firerate *= 7;
             stats.bursts = 6;
-            stats.damage *= 2 + 0.2*rarity;
+            stats.damage *= 3 + 0.3*rarity;
             stats.bulletSpeed *= 0.85;
         }
 /*WC*/},{
@@ -1228,4 +1228,5 @@ MS},{
             else if (Math.hypot(enemy.vx,enemy.vy) > 20) enemy.health -= bullet.damage*6;
         }
         
+
         */
