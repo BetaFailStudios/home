@@ -106,7 +106,6 @@ function playerTick() {
             const y = (player.y-enemy.y);
             const hypot = Math.hypot(x,y);
             if (hypot && hypot < stats.playerSize+enemy.size/2.5) {
-                stats.onPlayerHits.forEach( (item) => item[1](item[0],enemy));
                 
                 player.vx += 150*Math.sign(x)/hypot + enemy.vx/2;
                 player.vy += 150*Math.sign(y)/hypot + enemy.vy/2;
@@ -114,10 +113,19 @@ function playerTick() {
                     enemy.vx -= 25*Math.sign(x)/hypot;
                     enemy.vy -= 25*Math.sign(y)/hypot;
                 }
+                let red = 0;
+                let blue = 0;
                 player.iFrames = 30 + (stats.extraIframes || 0);
-                for (var i = 0; i < 1 + (stats.extraReceivedDamage || 0); i++) if (stats.extraHealth) stats.extraHealth--;
-                else stats.health--;
-                game.showHit += 0.75;
+                for (var i = 0; i < 1 + (stats.extraReceivedDamage || 0); i++) if (stats.extraHealth) {
+                    blue++;
+                    stats.extraHealth--;
+                } else {
+                    red++;
+                    stats.health--;
+                }
+                game.showHit += 0.85;
+
+                stats.onPlayerHits.forEach( (item) => item[1](item[0],enemy,blue,red));
             }
         })
     }

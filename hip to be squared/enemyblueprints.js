@@ -582,11 +582,11 @@ const enemyBlueprints = [
                 enemy.wallBounce = true;
                 enemy.reset = false;
                 enemy.target = "direction";
-                enemy.speed = -0.5; enemy.vx = 0; enemy.vy = 0;
+                enemy.speed = -0.1; enemy.vx = 0; enemy.vy = 0;
                 attackWarnings.push(["slice",warn*4,warn*4,enemy.x + Math.cos(enemy.dirToTarget)*300,enemy.y + Math.sin(enemy.dirToTarget)*300,250,enemy.dirToTarget]);
             } else {
                 enemy.randomRotation = true;
-                enemy.vx *= -5; enemy.vy *= -5;
+                enemy.vx *= -15; enemy.vy *= -15;
                 enemy.speed = 0;
                 enemy.reset = [ () => { enemy.randomRotation = false; enemy.wallBounce = false; enemy.speed = 0.2; enemy.target = "-".repeat(Math.random()< 0.5) + "player"; enemy.vx *= 0.25; enemy.vy *= 0.25; }, 60 ];
             }

@@ -176,7 +176,7 @@ const regions = [
             }, drawBlock(block) {
                 ctx.beginPath()
                 ctx.rect(...block);
-                for (var i = 0; i < block[2]+block[3]; i += 20) {
+                for (var i = 0; i < block[2]+block[3]; i += 30) {
                     if (i > block[2]) ctx.moveTo(block[0],block[1]+i-block[2]);
                     else ctx.moveTo(block[0]+block[2]-i,block[1]);
                     if (i > block[3]) ctx.lineTo(block[0]+block[2]-i+block[3],block[1]+block[3]);
