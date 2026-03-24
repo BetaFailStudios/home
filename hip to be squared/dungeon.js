@@ -60,6 +60,7 @@ function generateDungeon() {
 }
 
 function drawMap() {
+    game.teleportPosition = false;
     ctx.save();
     ctx.globalAlpha = game.notLocked;
     ctx.translate(675,-325);
@@ -105,11 +106,14 @@ function drawMap() {
         if (!dungeon[item].visited) return;
 
         const pos = [Number(item.split(",")[0])*60-60*game.dungeonPosition[0],Number(item.split(",")[1])*40-40*game.dungeonPosition[1]];
-
+        
         ctx.beginPath();
         ctx.rect(pos[0]-27.5,pos[1]-17.5,55,35);
         if (pos[0] == 0 && pos[1] == 0) ctx.fillStyle = "#999";
-        else if (dungeon[item].boss) ctx.fillStyle = "#933";
+        else if (Math.abs(mouse.x-675-pos[0]) < 25 && Math.abs(mouse.y+325-pos[1]) < 15) {
+            game.teleportPosition = [Number(item.split(",")[0]),Number(item.split(",")[1])]
+            ctx.fillStyle = "#777"
+        } else if (dungeon[item].boss) ctx.fillStyle = "#933";
         else ctx.fillStyle = "#333";
         ctx.fill();
 
@@ -118,25 +122,29 @@ function drawMap() {
     ctx.restore();
 }
 
-function dungeonMove(change) {
+function dungeonMove(change, teleport) {
     game.firstBullet = true;
     bullets.splice(0);
     enemies.splice(0);
     dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].items = items;
     game.openings = [];
-    game.dungeonPosition[change[0]] += change[1];
+    if (teleport) game.dungeonPosition = [...change];
+    else game.dungeonPosition[change[0]] += change[1];
     const room = dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]];
     blocks = room.blocks;
 
-    if (change[0] == 0) player.x -= 1800*change[1];
-    else player.y -= 1000*change[1];
+    if (!teleport) {
+        if (change[0] == 0) player.x -= 1800*change[1];
+        else player.y -= 1000*change[1];
+    } else change[0] = -1;
+
 
     floor = [];
 
     for (var i = 0; i < 6; i++) 
         floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
 
-    roomEffects.forEach((item) => {
+    if (!teleport) roomEffects.forEach((item) => {
         if (change[0] == 0) item.x -= 1800*change[1]*Math.random();
         else item.y -= 1000*change[1]*Math.random();    
     })
@@ -158,12 +166,17 @@ function dungeonMove(change) {
         game.discoveredRooms++;
 
         if (room.boss) {
-            enemies.push( new Enemy(enemyBlueprints[game.region.bosses[Math.floor(game.region.bosses.length*Math.random())]]) );
+            enemies.push( new Enemy(enemyBlueprints[game.region.bosses[Math.floor(game.region.bosses.length*Math.random())]]));
+            const boss = enemies[0];
+            if (boss.spawnPosition) {
+                boss.x = boss.spawnPosition[0];
+                boss.y = boss.spawnPosition[1];
+            }
             restartMusic(enemies[0].boss[2]);
             game.bossEase = 1;
             ease(game,"bossEase",0,5);
         }
-        else spawnEnemies(Math.floor(1 + Math.random()*0.6+0.2*game.discoveredRooms+1.2*game.regionNum));
+        else spawnEnemies(Math.floor(1 + Math.random()*0.6+0.35*game.discoveredRooms+0.15*game.regionNum));
         
         ease(game,"notLocked",0,0.2);
         

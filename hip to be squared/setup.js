@@ -159,6 +159,7 @@ window.addEventListener('keydown', async function (e) {
         game.replaceItem = false;
     }
     //if (e.key.toLowerCase() == "r") enemies = [];
+    if (e.key.toLowerCase() == "r") createLineWarning(0,0,player.x,player.y);
 }, false);
 window.addEventListener('keyup', function (e) {
     keys[e.key.toLowerCase()] = false;
@@ -169,6 +170,16 @@ window.addEventListener('mousedown', function () {
     if (!game.musicStarted) {
         game.musicStarted = true;
         startMusic();
+    }
+    if (game.notLocked && game.teleportPosition) {
+        const teleportPosition = game.teleportPosition;
+        game.regionTransfer = 2;
+        ease(game,"regionTransfer", 0, 2);
+        setTimeout(() => {
+            dungeonMove(teleportPosition,true);
+            player.x = 0;
+            player.y = 0;
+        }, 1000);
     }
     if (game.menu == "inventory") {
         let relicPos = 0;
@@ -241,7 +252,7 @@ function changeEaseable(item, i) {
 }
 
 function draw(x,y,path, size, rotate, alpha, noClear) {
-    const ratio = size/250;
+    const ratio = (size+game.musicWobble)/250;
 
     ctx.save();
     ctx.translate(x,y);
@@ -325,13 +336,19 @@ const game = {
     showDamageNumbers: true,
     discoveredRooms: 0,
     musicPopup: 1,
-    tick: 0
+    tick: 0,
+    musicWobble: 0,
+    warnDelay: 120,
+    difficulty: 0.5,
 };
 
 if (localStorage.getItem("htbs-audioVolume")) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));
 else localStorage.setItem("htbs-audioVolume",game.audioVolume);
-if (localStorage.getItem("htbs-dmgNumbersOption")) game.showDamageNumbers = eval(localStorage.getItem("htbs-dmgNumbersOption"));
-else localStorage.setItem("htbs-dmgNumbersOption",game.showDamageNumbers);
+if (localStorage.getItem("htbs-difficulty")) game.difficulty = Number(localStorage.getItem("htbs-difficulty"));
+else localStorage.setItem("htbs-difficulty",game.difficulty);
+game.warnDelay = 160-90*game.difficulty;
+if (localStorage.getItem("htbs-dmgNumbersOption")) game.showDamageNumbers = Boolean(localStorage.getItem("htbs-dmgNumbersOption"));
+if (localStorage.getItem("htbs-showMusicWobble")) game.showMusicWobble = Boolean(localStorage.getItem("htbs-showMusicWobble"));
 let bullets = [];
 let enemies = [];
 let attackWarnings = [];

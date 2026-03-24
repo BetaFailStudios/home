@@ -115,7 +115,7 @@ function playerTick() {
                 }
                 let red = 0;
                 let blue = 0;
-                player.iFrames = 30 + (stats.extraIframes || 0);
+                player.iFrames = 75 + (stats.extraIframes || 0);
                 for (var i = 0; i < 1 + (stats.extraReceivedDamage || 0); i++) if (stats.extraHealth) {
                     blue++;
                     stats.extraHealth--;
@@ -151,5 +151,5 @@ function playerTick() {
     stats.playerSize /= 1.25;
 
     if (player.dashCooldown <= 0) player.dashCooldown = 0;
-    else player.dashCooldown -= 1/45;
+    else player.dashCooldown -= 1/35;
 }

@@ -16,6 +16,8 @@ class Enemy {
         if (inputStats) Object.keys(inputStats).forEach((key) => this[key] = inputStats[key]);
         if (override) Object.keys(override).forEach((key) => this[key] = override[key]);
 
+        this.health *= 1+(game.difficulty-0.5)/2;
+
         if (!this.projectile) {
             this.spawning = 1;
             setTimeout(ease,1500,this,"spawning",0,1);
@@ -97,7 +99,7 @@ function enemyTick() {
             if (!enemy["attackList" + item]) enemy["attackList" + item] = [];
             if (triggerWarn) {
                 //if (enemy.reset) enemy.reset[0]();
-                enemy[item](enemy,30);
+                enemy[item](enemy,game.warnDelay);
                 if (!enemy[item+"WarnCount"]) enemy[item+"WarnCount"] = 0;
                 enemy[item+"WarnCount"]++;
                 //triggerWarn = false;

@@ -2,8 +2,8 @@ function drawEnemyAttacks() {
     ctx.beginPath();
     ctx.lineCap = "round";
     attackWarnings = attackWarnings.filter((item) => {
-        const ratio = animationRatio(item[1],item[2],6);
         if (item[0] == "line") {
+            const ratio = animationRatio(item[1],item[2],6);
             ctx.moveTo(item[3]+item[5]*ratio,item[4]+item[6]*ratio);
             ctx.lineTo(item[3]-item[5]*ratio,item[4]-item[6]*ratio);
         }
@@ -40,6 +40,22 @@ function drawEnemyAttacks() {
     });
 
     ctx.lineWidth = 3;
+}
+
+function createLineWarning(x1,y1,x2,y2) {
+    const dist = {x: 850*Math.sign(x2-x1)-x2, y: 450*Math.sign(y2-y1)-y2};
+    //let ratio = 1;
+    if (dist.x/(x2-x1) < dist.y/(y2-y1)) {
+        y2 += dist.x*(y2-y1)/(x2-x1);
+        x2 += dist.x;
+    } else {
+        x2 += dist.y*(x2-x1)/(y2-y1);
+        y2 += dist.y;
+    }
+    //x2
+    dist.x = (x2-x1)/2;
+    dist.y = (y2-y1)/2;
+    attackWarnings.push(["line",game.warnDelay,game.warnDelay,x1+dist.x,y1+dist.y,dist.x,dist.y]);
 }
 
 let floor = [];
