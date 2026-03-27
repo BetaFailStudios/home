@@ -262,7 +262,6 @@ const enemyBlueprints = [
             } else {
                 enemy.x = 0;
                 enemy.y = -1000;
-                enemy.immovable = true;
                 enemy.speed = 0;
                 enemy.offscreen = true;
             }
@@ -541,6 +540,7 @@ function enemyAttackTeleport(enemy,warn,attackList,size,x,y) {
         enemy.x = attackList[0][0];
         enemy.y = attackList[0][1];
         attackList.splice(0,1);
+        enemy.offscreen = false;
     }
 }
 
@@ -563,9 +563,9 @@ function enemyAttackSlice(enemy,warn,attackList,advanced,type,size,direction,ref
 
 function enemyAttackDash(enemy,warn,direction,speed,baseSpeed,advanced,length,type,size) {
     if (warn) {
-        enemy.immovable = true;
         if (enemy.reset) enemy.reset[0]();
         enemy.reset = false;
+        enemy.immovable = true;
         enemy.target = "direction";
         enemy.speed = -speed/10; enemy.vx = 0; enemy.vy = 0;
         createLineWarning(enemy.x,enemy.y,enemy.x+Math.cos(direction),enemy.y+Math.sin(direction),type,direction,size*0.8);
@@ -573,6 +573,6 @@ function enemyAttackDash(enemy,warn,direction,speed,baseSpeed,advanced,length,ty
         enemy.target = "direction";
         enemy.vx *= -1; enemy.vy *= -1;
         enemy.speed = speed;
-        enemy.reset = [ () => { enemy.immovable = false; enemy.speed = baseSpeed; if (advanced) enemy.target = "playerAdvanced"; else enemy.target = "-".repeat(Math.random()< 0.5) + "player"; enemy.vx *= 0.25; enemy.vy *= 0.25; }, length ];
+        enemy.reset = [ () => { enemy.immovable = false; console.log(enemy.immovable);  enemy.speed = baseSpeed; if (advanced) enemy.target = "playerAdvanced"; else enemy.target = "-".repeat(Math.random()< 0.5) + "player"; enemy.vx *= 0.25; enemy.vy *= 0.25; }, length ];
     }
 }

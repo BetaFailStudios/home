@@ -110,13 +110,13 @@ function tickloop() {
                 else items.push(new Item(player.x+200,player.y,false,false,"relic"))
             }
 
-            if (game.firstWeapon) game.firstWeapon = false;
-
             game.relicTick = 0;
             dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems = true;
             dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos = items.length-2;
 
-            if (!game.firstWeapon && Math.random() < 0.07) items.push(new Item(player.x,player.y-200,false,false,"weapon"));
+
+            if (game.firstWeapon) game.firstWeapon = false;
+            else if (Math.random() < 0.07) items.push(new Item(player.x,player.y-200,false,false,"weapon"));
         } else game.relicTick++;
     }
 

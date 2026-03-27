@@ -773,8 +773,8 @@ const relics = [
                         stats.shields[stats.shieldCountCurrent-1] = 180;
                         enemy.vx *= -1;
                         enemy.vy *= -1;
-                        enemy.health -= 10+3.5*rarity;
-                        dmgNumbers.push(new DamageNumber(enemy.x,enemy.y,10+3.5*rarity));
+                        enemy.health -= 4+1*rarity;
+                        dmgNumbers.push(new DamageNumber(enemy.x,enemy.y,4+1*rarity));
                     }
                 }
             })
