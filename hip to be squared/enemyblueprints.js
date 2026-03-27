@@ -343,7 +343,7 @@ const enemyBlueprints = [
                 enemy.reset = false;
                 enemy.target = "direction";
                 enemy.speed = 0; enemy.vx *= 0.1; enemy.vy *= 0.1;
-                createLineWarning(enemy.x,enemy.y,player.x,player.y,"slice",enemy.dirToTarget,250);
+                createLineWarning(enemy.x,enemy.y,player.x,player.y,"slice",enemy.dirToTarget,75);
             } else {
                 enemy.randomRotation = true;
                 //enemy.vx *= -15; enemy.vy *= -15;
@@ -530,7 +530,7 @@ const enemyBlueprints = [
 function enemyAttackTeleport(enemy,warn,attackList,size,x,y) {
     if (warn) {
         attackList.push([x || -800+Math.random()*1600,y || -400+Math.random()*800]);
-        attackWarnings.push(["circle",game.warnDelay,game.warnDelay,...attackList[attackList.length-1],100]);
+        attackWarnings.push(["circle",game.warnDelay,game.warnDelay,...attackList[attackList.length-1],size+20]);
         ease(enemy,"size",0,0.1);
     } else {
         ease(enemy,"size",size,0.1);
