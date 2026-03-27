@@ -27,6 +27,20 @@ class Enemy {
 
         this.healthMax = this.health;
         this.spawnSize = this.size*1.4;
+
+        this.effects = [];
+    }
+
+    addEffect(count,interval,damage,path,combine) {
+        let combineFound = false;
+        if (combine) this.effects.forEach(effect => {
+            if (effect[4] == path) {
+                combineFound = true;
+                effect[0] = count;
+                effect[3] = effect[3]*effect[0]/count + damage;
+            }
+        })
+        if (!combineFound) this.effects.push([count,interval,interval,damage,path]);
     }
 }
 
@@ -137,6 +151,8 @@ function enemyTick() {
         } else if (!enemy.offscreen) {        
             if (Math.abs(enemy.x) > 850-enemy.size) {
                 enemy.x = Math.sign(enemy.x)*(850-enemy.size);
+                enemy.vx *= 0.8;
+                enemy.vy *= 0.8;
                 
                 if (enemy.immovable) {
                     enemy.vx = 0;
@@ -145,6 +161,8 @@ function enemyTick() {
             }
             if (Math.abs(enemy.y) > 450-enemy.size) {
                 enemy.y = Math.sign(enemy.y)*(450-enemy.size);
+                enemy.vx *= 0.8;
+                enemy.vy *= 0.8;
 
                 if (enemy.immovable) {
                     enemy.vy = 0;
@@ -160,6 +178,8 @@ function enemyTick() {
                 const diffx1 = -enemy.x + enemy.size + block[0]+block[2];
                 const diffy1 = -enemy.y + enemy.size + block[1]+block[3];
                 if (diffx > 0 && diffx1 > 0 && diffy > 0 && diffy1 > 0) {
+                    enemy.vx *= 0.8;
+                    enemy.vy *= 0.8;
                     if (enemy.target == "player") enemy.target = "-player";
                     else if (enemy.target == "-player") enemy.target = "player";
                     if (Math.min(diffx, diffx1) < Math.min(diffy,diffy1)) {
@@ -180,6 +200,18 @@ function enemyTick() {
         }
 
         if (!enemy.alive) return enemy.size;
+
+        enemy.effects.filter( (item) => {
+            if (item[2] <= 0) {
+                enemy.health -= item[3];
+                item[2] += item[1];
+                item[0]--;
+                dmgNumbers.push(new DamageNumber(enemy.x,enemy.y,item[3]));
+                effects.push( new Effect(enemy.x,enemy.y,item[4],20,15) )
+            } else item[2]--;
+
+            return item[0] > 0;
+        })
 
         if (enemy.target.includes("player") && !enemy.spawning) {
             enemy.dirToTarget = (Math.atan((player.y+player.vy*30*enemy.target.includes("Advanced")-enemy.y)/(player.x+player.vx*30*enemy.target.includes("Advanced")-enemy.x)) + Math.PI*(player.x+player.vx*30*enemy.target.includes("Advanced") < enemy.x)) || (Math.PI*(player.x+player.vx*30*enemy.target.includes("Advanced") < enemy.x));

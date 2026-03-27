@@ -48,7 +48,6 @@ const menuButtons = {
             game.difficulty += lr*0.1;
             game.difficulty = Math.min(1,Math.max(0,game.difficulty));
             localStorage.setItem("htbs-difficulty",game.difficulty);
-            game.warnDelay = 160-90*game.difficulty;
         },() => {
             game.showDamageNumbers = !game.showDamageNumbers;
             localStorage.setItem("htbs-dmgNumbersOption",game.showDamageNumbers);

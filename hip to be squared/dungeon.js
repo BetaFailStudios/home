@@ -60,7 +60,7 @@ function generateDungeon() {
 }
 
 function drawMap() {
-    game.teleportPosition = false;
+    if (!game.regionTransfer) game.teleportPosition = false;
     ctx.save();
     ctx.globalAlpha = game.notLocked;
     ctx.translate(675,-325);

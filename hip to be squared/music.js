@@ -8,7 +8,7 @@ function startMusic() {
     song.attacklist.forEach((item) => { 
         for (var i = 0; i < (item[2] || 1); i++) {
             game.musicSyncList.push(
-                [(0.05+(item[0] + (item[3] || 0)*i)*song.bpb*60/song.bpm-game.warnDelay/300)%song.file.duration, item[1], true ],
+                [(0.05+(item[0] + (item[3] || 0)*i)*song.bpb*60/song.bpm - game.warnDelay/320)%song.file.duration, item[1], true ],
                 [0.05+(item[0] + (item[3] || 0)*i)*song.bpb*60/song.bpm, item[1] ]
             )
         }
@@ -23,12 +23,20 @@ function startMusic() {
 }
 
 function musicTick() {
+
     //game.musicWobble = 1 + (game.musicWobble-1)*0.95;
     game.musicWobble *= 0.95;
 
     if (game.region.music[game.musicPos].file.currentTime == game.region.music[game.musicPos].file.duration) startMusic();
     if (!game.musicSyncList.length) return;
     const item = game.musicSyncList[0];
+
+    if (!game.menu && game.region.music[game.musicPos].file.paused) {
+        if (game.pauseCounter > 100) {
+            game.menu = "pause";
+            return;
+        } else game.pauseCounter++;
+    } else game.pauseCounter = 0;
 
     if (item[0] <= game.region.music[game.musicPos].file.currentTime) {
         if (item[2]) {

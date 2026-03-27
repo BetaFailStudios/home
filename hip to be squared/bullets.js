@@ -160,7 +160,6 @@ function bulletTick() {
                         bullet.enemiesTouched.push(enemy);
                         let damage = bullet.damage;
                         stats.damageBoosts.forEach( (item) => damage *= item[1](item[0],bullet,enemy));
-                        if (bullet.jackpot) effects.push(new Effect(bullet.x,bullet.y,"jackpot",40,40));
                         if (!enemy.projectile) enemy.health -= damage;
                         if (game.showDamageNumbers) dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,damage));
                         if (bullet.pierce) bullet.pierce--;

@@ -18,7 +18,7 @@ function tickloop() {
     drawDamageNumbers();
     if (game.bossName) drawBossName();
     if (game.musicPopup != 1) drawMusicPopup();
-    if (game.regionTransfer && game.regionTransfer < 1) drawRegionName();
+    if (game.regionTransfer && game.regionTransfer < 1 && !game.teleportPosition) drawRegionName();
     drawRoommEffects();
     if (game.notLocked && game.regionNum >= 0) drawMap();
     drawHealthBars();
@@ -94,16 +94,24 @@ function tickloop() {
             dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems = true;
             dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos = items.length-3;
         } else if (game.relicTick >= 1) {
-            if (game.firstWeapon) items.push(new Item(player.x-200,player.y,false,false,"weapon"), new Item(player.x+200,player.y,false,false,"weapon"));
-            else items.push(new Item(player.x-200,player.y), new Item(player.x+200,player.y));
+            if (game.firstWeapon) {
+                items.push(new Item(player.x-200,player.y,false,false,"weapon"));
+                while (items[items.length-1].reference.name == "Basic Gun") {
+                    items.splice(items.length-1);
+                    items.push(new Item(player.x-200,player.y,false,false,"weapon"));
+                }
+                items.push(new Item(player.x+200,player.y,false,false,"weapon"));
+            }
+            else items.push(new Item(player.x-200,player.y,false,false,"relic"), new Item(player.x+200,player.y,false,false,"relic"));
 
-            while (items[items.length-1].reference == items[items.length-2].reference) {
+            while (items[items.length-1].reference == items[items.length-2].reference || items[items.length-1].reference.name == "Basic Gun") {
                 items.splice(items.length-1);
                 if (game.firstWeapon) items.push(new Item(player.x+200,player.y,false,false,"weapon"))
-                else items.push(new Item(player.x+200,player.y))
+                else items.push(new Item(player.x+200,player.y,false,false,"relic"))
             }
 
             if (game.firstWeapon) game.firstWeapon = false;
+            else if (Math.random() < 0.07) items.push(new Item(player.x,player.y-200,false,false,"weapon"));
 
             game.relicTick = 0;
             dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems = true;
@@ -120,7 +128,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.4.1",700,470);
+    ctx.fillText("Version: b.1.5.0",700,470);
 }
 
 setInterval( tickloop, 1000/60 );

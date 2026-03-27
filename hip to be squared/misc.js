@@ -24,8 +24,11 @@ function drawEnemyAttacks() {
     attackWarnings = attackWarnings.filter((item) => {  
         ctx.beginPath();  
         const ratio = animationRatio(item[1],item[2],6);
-        if (game[item[0] + "AttackWarnPath"]) {
-            draw(item[3],item[4],game[item[0] + "AttackWarnPath"],item[5]*ratio,item[6] || false,false,true);
+        if (item[0] == "circle") {
+            draw(item[3],item[4],game[item[0] + "AttackWarnPath"],item[5]*ratio,item[6]);
+        } else if (game[item[0] + "AttackWarnPath"]) {
+            draw(item[3],item[4],game[item[0] + "AttackWarnPath"],item[8]*ratio,item[7]);
+            draw(item[5],item[6],game[item[0] + "AttackWarnPath"],item[8]*ratio,item[7],false,true,true);
         }
     
         ctx.lineWidth = 3;
@@ -42,20 +45,32 @@ function drawEnemyAttacks() {
     ctx.lineWidth = 3;
 }
 
-function createLineWarning(x1,y1,x2,y2) {
-    const dist = {x: 850*Math.sign(x2-x1)-x2, y: 450*Math.sign(y2-y1)-y2};
+function createLineWarning(x1,y1,x2,y2,type,dir,size) {
+    let dist = {x: 850*Math.sign(x2-x1)-x2, y: 450*Math.sign(y2-y1)-y2};
     //let ratio = 1;
-    if (dist.x/(x2-x1) < dist.y/(y2-y1)) {
+    if ((dist.x/(x2-x1) < dist.y/(y2-y1) || y2==y1) && x1 != x2) {
         y2 += dist.x*(y2-y1)/(x2-x1);
         x2 += dist.x;
-    } else {
+    } else if (y2 != y1) {
         x2 += dist.y*(x2-x1)/(y2-y1);
         y2 += dist.y;
+    }
+
+    if (type === true) {
+        dist = {x: 850*Math.sign(x1-x2)-x1, y: 450*Math.sign(y1-y2)-y1};
+        if ((dist.x/(x1-x2) < dist.y/(y1-y2) || y2==y1) && x1 != x2) {
+            y1 += dist.x*(y1-y2)/(x1-x2);
+            x1 += dist.x;
+        } else {
+            x1 += dist.y*(x1-x2)/(y1-y2);
+            y1 += dist.y;
+        }
     }
     //x2
     dist.x = (x2-x1)/2;
     dist.y = (y2-y1)/2;
-    attackWarnings.push(["line",game.warnDelay,game.warnDelay,x1+dist.x,y1+dist.y,dist.x,dist.y]);
+    if (type && type !== true) attackWarnings.push([type,game.warnDelay,game.warnDelay,x1,y1,x2,y2,dir,size]);
+    else attackWarnings.push(["line",game.warnDelay,game.warnDelay,x1+dist.x,y1+dist.y,dist.x,dist.y]);
 }
 
 let floor = [];
@@ -118,6 +133,21 @@ function drawEnvironment() {
     ctx.fill();
     ctx.strokeStyle = "#222";
     ctx.stroke();
+
+    if (game.regionNum == -1) {
+        ctx.strokeStyle = "#00000077";
+        ctx.strokeRect(-300,-20,40,40);
+        ctx.strokeRect(-350,-20,40,40);
+        ctx.strokeRect(-250,-20,40,40);
+        ctx.strokeRect(-300,-70,40,40);
+        ctx.strokeRect(-350,30,140,40);
+
+        ctx.beginPath();
+        draw(280,0,game.mouseTutorial,100,false,false);
+        ctx.stroke();
+
+        ctx.beginPath();
+    }
 }
 
 function drawBlocks() {

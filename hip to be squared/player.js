@@ -25,12 +25,12 @@ function playerTick() {
     //draw(player.x,player.y,player.eyesPath,stats.playerSize);
     if (player.iFrames > 0) ctx.globalAlpha = 1;
 
+    if (game.menu) return;
+
     stats.playerTicks.forEach( (item) => item[1](item[0]));
 
     player.rotationTick += Math.PI/600;
     if (player.rotationTick > Math.PI*2) player.rotationTick -= Math.PI*2;
-
-    if (game.menu) return;
     ctx.save();
     ctx.translate(player.x, player.y);
     if (mouse.x < player.x) ctx.scale(-1,1);
