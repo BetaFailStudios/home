@@ -116,7 +116,7 @@ const enemyBlueprints = [
                 enemy.attackLista4.splice(0,1);
             }
         }, 
-        a5(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista5,true,"slash",200,enemy.dirToTarget,enemyBlueprints[10]) }, // slash
+        a5(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista5,true,"slice",200,enemy.dirToTarget,enemyBlueprints[10]) }, // slash
         a6(enemy, warn) { enemyAttackDash(enemy,warn,enemy.dirToTarget,4,0.1,false,25) }, // dash
         a7(enemy, warn) { // disappear
             if (warn) {

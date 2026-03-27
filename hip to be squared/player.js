@@ -153,7 +153,7 @@ function playerTick() {
     stats.playerSize /= 1.25;
 
     if (player.dashCooldown <= 0) player.dashCooldown = 0;
-    else player.dashCooldown -= 1/15;
+    else player.dashCooldown -= 1/7;
     
     if (player.dashes >= 3) player.dashes = 3;
     else player.dashes += 1/60;

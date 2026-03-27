@@ -74,7 +74,7 @@ window.addEventListener('keydown', async function (e) {
 
     keys[e.key.toLowerCase()] = true;
 
-    if (e.key.toLowerCase() == " " && player.dashes > 0 && player.dashCooldown <= 0) {
+    if (e.key.toLowerCase() == " " && player.dashes >= 1 && player.dashCooldown <= 0) {
         switch(0) {
             case 0: {
                 const hypot = Math.hypot(player.vx, player.vy) || 1;

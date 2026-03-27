@@ -307,11 +307,11 @@ const weapons = [
         ), statChange(rarity) {
             stats.bulletSpeed *= 0.02;
             stats.firerate *= 2;
-            stats.damage *= 2.5 + 0.125*rarity;
+            stats.damage *= 3 + 0.15*rarity;
             stats.bulletSize *= 4;
             stats.lifetime = 3.5;
         }, bulletTick(rarity,bullet) {
-            if (bullet.tick%25 < 1 && bullet.tick > 30) {
+            if (bullet.tick%25 < 1 && bullet.tick > 20) {
                 bulletBuffer.push(new Bullet({lifetime: bullet.lifetime*2, drawPath: this.turretBulletDrawPath, x: bullet.x, y: bullet.y, size: bullet.size / 2, damage: bullet.damage / 2.5, speed: bullet.speed * 30, direction: bullet.direction, trailColor: bullet.trailColor, trailLength: bullet.trailLength || 8, projHit: bullet.projHit}))
             }
         }
@@ -329,7 +329,7 @@ const weapons = [
             stats.pierce = 2;
             stats.bulletSpeed *= 1;
             stats.firerate *= 2;
-            stats.damage *= 4 + 0.2*rarity;
+            stats.damage *= 5 + 0.25*rarity;
             stats.bulletSize *= 2.5;
             stats.lifetime = 0.45;
         }, expiration(_, bullet) {
@@ -732,7 +732,7 @@ const relics = [
         ), blood: JSON.parse(
             `[{"type":"point","x":-175,"y":0,"move":false},{"type":"point","x":-125,"y":125,"move":false},{"type":"point","x":0,"y":175,"move":false},{"type":"point","x":125,"y":125,"move":false},{"type":"point","x":175,"y":0,"move":false},{"type":"point","x":125,"y":-125,"move":false},{"type":"point","x":50,"y":-200,"move":false},{"type":"point","x":0,"y":-300,"move":false},{"type":"point","x":-50,"y":-200,"move":false},{"type":"point","x":-125,"y":-125,"move":false},{"type":"close"},{"type":"fill","r":150,"g":0,"b":0},{"type":"stroke","r":50,"g":0,"b":0}]`
         ), onHit(rarity,bullet,enemy) {
-            enemy.addEffect(5,30,stats.damage*0.025 + 0.005 + 0.0015*rarity,this.blood,true);
+            enemy.addEffect(5,30,bullet.damage*0.025 + 0.005 + 0.0015*rarity,this.blood,true);
         }
 /*OS*/},{
         name: "Orbiting Shield",
