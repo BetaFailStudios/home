@@ -367,18 +367,6 @@ function drawHealthBars() {
         ctx.stroke();
     }
 
-    ctx.beginPath();
-    for(var i = 1; i < stats.healthMax; i++) {
-        ctx.moveTo(maxBounds*i/stats.healthMax+40-870, 500-5);
-        ctx.lineTo(maxBounds*i/stats.healthMax+20-870, 500-25);
-    }
-    for(var i = 1; i < stats.extraHealthMax; i++) {
-        ctx.moveTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+40-870, 500-5);
-        ctx.lineTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+20-870, 500-25);
-    }
-    ctx.strokeStyle = "#22222244";
-    ctx.stroke();
-
     ctx.lineWidth = 7;
     ctx.beginPath();
     const maxBoundsDash = 400;
@@ -392,8 +380,8 @@ function drawHealthBars() {
     ctx.fill();
     ctx.stroke();
         
-    if (player.dashCooldown <= 1 ) {
-        const dashBounds = 400*Math.min(1,1-player.dashCooldown);
+    if (player.dashes > 0 ) {
+        const dashBounds = 400*Math.min(1,player.dashes/3);
         ctx.beginPath();
         ctx.moveTo(-900+20, 500-25);
         ctx.lineTo(dashBounds+35-900, 500-25);
@@ -404,6 +392,22 @@ function drawHealthBars() {
         ctx.fill();
         ctx.stroke();
     }
+
+    ctx.beginPath();
+    for(var i = 1; i < stats.healthMax; i++) {
+        ctx.moveTo(maxBounds*i/stats.healthMax+40-870, 500-5);
+        ctx.lineTo(maxBounds*i/stats.healthMax+20-870, 500-25);
+    }
+    for(var i = 1; i < stats.extraHealthMax; i++) {
+        ctx.moveTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+40-870, 500-5);
+        ctx.lineTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+20-870, 500-25);
+    }
+    for(var i = 1; i < 3; i++) {
+        ctx.moveTo(maxBoundsDash*i/3+35-900, 500-25);
+        ctx.lineTo(maxBoundsDash*i/3+20-900, 500-40);
+    }
+    ctx.strokeStyle = "#22222260";
+    ctx.stroke();
 
     if (game.showHit > 0) {
         game.showHit -= 1/75;

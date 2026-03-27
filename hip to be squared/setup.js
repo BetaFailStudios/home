@@ -74,13 +74,13 @@ window.addEventListener('keydown', async function (e) {
 
     keys[e.key.toLowerCase()] = true;
 
-    if (e.key.toLowerCase() == " " && !player.dashCooldown) {
+    if (e.key.toLowerCase() == " " && player.dashes > 0 && player.dashCooldown <= 0) {
         switch(0) {
             case 0: {
                 const hypot = Math.hypot(player.vx, player.vy) || 1;
                 player.vx *= 60/hypot;
                 player.vy *= 60/hypot;
-                player.iFrames = 15;
+                player.iFrames += 15;
                 break;
             }
             case 1: {
@@ -100,6 +100,7 @@ window.addEventListener('keydown', async function (e) {
             }
         }
         player.dashCooldown = 1;
+        player.dashes--;
     }
     if (e.key.toLowerCase() == 'e') {
         if (pickUpItem()) if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].regionTransfer && Math.abs(player.x) < 150 && Math.abs(player.y) < 150) {
@@ -159,7 +160,7 @@ window.addEventListener('keydown', async function (e) {
         }
         game.replaceItem = false;
     }
-    if (e.key.toLowerCase() == "r") enemies = [];
+    //if (e.key.toLowerCase() == "r") enemies = [];
 }, false);
 window.addEventListener('keyup', function (e) {
     keys[e.key.toLowerCase()] = false;
@@ -290,7 +291,7 @@ function draw(x,y,path, size, rotate, alpha, noClear,flipVert) {
     if (rotate) ctx.rotate(-rotate);
     ctx.translate(-x,-y);
 
-    ctx.globalAlpha = 1;
+    if (alpha !== undefined) ctx.globalAlpha = 1;
 
     //ctx.restore();
 }

@@ -10,20 +10,22 @@ const player = {
     firerateTick: 0,
     iFrames: 0,
     dashCooldown: 0,
+    dashes: 3,
 }
 
 function playerTick() {
-    if (player.iFrames > 0) ctx.globalAlpha = 0.4;
     if (game.regionTransfer > 1) draw(player.x,player.y,player.drawPath,stats.playerSize*(-1+game.regionTransfer),player.rotationTick);
     else if (game.regionTransfer > 0) draw(player.x,player.y,player.drawPath,stats.playerSize*(1+10*game.regionTransfer**4),player.rotationTick,1-game.regionTransfer);
     else {
         if (player.dashCooldown) {
             draw(player.x,player.y,player.dashCooldownPath,(stats.playerSize+50)*player.dashCooldown,-player.rotationTick, 0.2);
         }
+        
+        if (player.iFrames > 0) ctx.globalAlpha = 0.4;
         draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
+        ctx.globalAlpha = 1;
     }
     //draw(player.x,player.y,player.eyesPath,stats.playerSize);
-    if (player.iFrames > 0) ctx.globalAlpha = 1;
 
     if (game.menu) return;
 
@@ -151,5 +153,8 @@ function playerTick() {
     stats.playerSize /= 1.25;
 
     if (player.dashCooldown <= 0) player.dashCooldown = 0;
-    else player.dashCooldown -= 1/35;
+    else player.dashCooldown -= 1/15;
+    
+    if (player.dashes >= 3) player.dashes = 3;
+    else player.dashes += 1/60;
 }
