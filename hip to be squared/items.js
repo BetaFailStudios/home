@@ -333,7 +333,7 @@ const weapons = [
             stats.bulletSize *= 2.5;
             stats.lifetime = 0.45;
         }, expiration(_, bullet) {
-            bulletBuffer.push(new Bullet({x: bullet.x, y: bullet.y, speed: 0, size: bullet.size*6 + 65, damage: bullet.damage**1.1*0.7 + 0.15, drawPath: artifacts[0].bombPath, lifetime: 0.3, wallPierce: true, pierce: 10,direction:Math.random()*Math.PI,drawAlpha:0.4}))
+            bulletBuffer.push(new Bullet({x: bullet.x, y: bullet.y, speed: 0, size: bullet.size*6 + 65, damage: bullet.damage**1.1*0.7 + 0.15, drawPath: this.bombPath, lifetime: 0.3, wallPierce: true, pierce: 10,direction:Math.random()*Math.PI,drawAlpha:0.4}))
         }, damageBoost(_,bullet) {
             return 1-0.9*!!bullet.triggerExpire
         }
