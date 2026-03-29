@@ -442,7 +442,7 @@ const enemyBlueprints = [
                 enemy.attackLista4.splice(0,1);
             }
         },
-        a5(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista4,true,"rect",150,enemy.dirToTarget,enemyBlueprints[9]), 0, 0.1 },
+        a5(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista4,true,"rect",150,enemy.dirToTarget,enemyBlueprints[9], 0, 0.1) },
         a6(enemy, warn) { // enemy spawn
             if (warn) {
             } else {

@@ -20,7 +20,21 @@ function playerTick() {
         if (player.dashCooldown) {
             draw(player.x,player.y,player.dashCooldownPath,(stats.playerSize+50)*player.dashCooldown,-player.rotationTick, 0.2);
         }
-        
+
+        ctx.strokeStyle = "#cccccc55";
+        ctx.beginPath();
+        let count = 0;
+        for (var i = -player.rotationTick; i < Math.PI*2-player.rotationTick && count+1 <= player.dashes; i += Math.PI*2/3) {
+            ctx.moveTo(player.x + (stats.playerSize+15) * Math.cos(i+Math.PI/10),player.y + (stats.playerSize+15) * Math.sin(i+Math.PI/10))
+            ctx.arc(player.x,player.y,stats.playerSize+15,i+Math.PI/10, i - Math.PI/10 + Math.PI*2/3 );
+            count++;
+        }
+        ctx.lineCap = "round";
+        ctx.lineWidth = 7;
+        ctx.stroke();
+        ctx.lineWidth = 3;
+        ctx.lineCap = "butt";
+
         if (player.iFrames > 0) ctx.globalAlpha = 0.4;
         draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
         ctx.globalAlpha = 1;
