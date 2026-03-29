@@ -5,13 +5,13 @@ const enemyBlueprints = [
         ), a1(enemy, warn) {
             if (!warn) enemiesBuffer.push(new Enemy(enemyBlueprints[5], {x: enemy.x + Math.cos(enemy.dirToTarget)*25, y: enemy.y + Math.sin(enemy.dirToTarget)*25, dirToTarget: enemy.dirToTarget, size: 15, speed: 0.3}));
         }, 
-        a2(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista2,true,"stab",35,enemy.dirToTarget,enemyBlueprints[5]) }
+        a2(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista2,true,"stab",35,enemy.dirToTarget,enemyBlueprints[5],0.15) }
     },{ // 1 greatsword
         size: 55, health: 11, rotateToTarget: true, speed: 0.1, drawPath: JSON.parse(
             `[{"type":"point","x":-75,"y":-50},{"type":"point","x":200,"y":-50},{"type":"point","x":250,"y":0},{"type":"point","x":200,"y":50},{"type":"point","x":-75,"y":50},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-125,"y":-25},{"type":"point","x":-225,"y":-25},{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":25},{"type":"point","x":-125,"y":25},{"type":"fill","r":75,"g":50,"b":0},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-75,"y":100},{"type":"point","x":-100,"y":100},{"type":"point","x":-125,"y":75},{"type":"point","x":-125,"y":-75},{"type":"point","x":-100,"y":-100},{"type":"point","x":-75,"y":-100},{"type":"close"},{"type":"fill","r":75,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50}]`
         ),
         a2(enemy, warn) { enemyAttackDash(enemy,warn,enemy.dirToTarget,4,0.1,false,25) },
-        a3(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista3,false,"slice",125,enemy.dirToTarget,enemyBlueprints[2]) }
+        a3(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista3,false,"slice",125,enemy.dirToTarget,enemyBlueprints[2],0.1) }
     },{ // 2 greata2 slash
         size: 125, health: 0.1, projectile: true, rotateToTarget: true, immovable: true, speed: 4, target: "direction", drawPath: JSON.parse(
             `[{"type":"point","x":125,"y":-50},{"type":"point","x":125,"y":50},{"type":"point","x":100,"y":125},{"type":"point","x":50,"y":200},{"type":"point","x":0,"y":175},{"type":"point","x":50,"y":100},{"type":"point","x":75,"y":0},{"type":"point","x":50,"y":-100},{"type":"point","x":0,"y":-175},{"type":"point","x":50,"y":-200},{"type":"point","x":100,"y":-125},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40}]`
@@ -31,7 +31,7 @@ const enemyBlueprints = [
             `[{"type":"point","x":0,"y":-25},{"type":"point","x":300,"y":0},{"type":"point","x":0,"y":25},{"type":"fill","r":130,"g":130,"b":130},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-100,"y":-25},{"type":"point","x":-225,"y":-25},{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":25},{"type":"point","x":-100,"y":25},{"type":"fill","r":75,"g":50,"b":0},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-100,"y":75},{"type":"point","x":-100,"y":-75},{"type":"point","x":-50,"y":-75},{"type":"point","x":0,"y":-50},{"type":"point","x":0,"y":50},{"type":"point","x":-50,"y":75},{"type":"close"},{"type":"fill","r":180,"g":180,"b":180},{"type":"stroke","r":50,"g":50,"b":50}]`
         ),
         a2(enemy, warn) { enemyAttackDash(enemy,warn,enemy.dirToTarget,5,0.1,false,25) },
-        a3(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista3,true,"stab",25,enemy.dirToTarget,enemyBlueprints[5]) }
+        a3(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista3,true,"stab",25,enemy.dirToTarget,enemyBlueprints[5],-0.05) }
     },{ // 5 rapier stab
         size: 20, health: 0.1, projectile: true, rotateToTarget: true, immovable: true, speed: 6, target: "direction", drawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":-150},{"type":"point","x":250,"y":0},{"type":"point","x":-250,"y":150},{"type":"point","x":-50,"y":0},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40}]`
@@ -44,7 +44,7 @@ const enemyBlueprints = [
         ), drawReadyPath: JSON.parse(
            `[{"type":"point","x":25,"y":-250,"move":false},{"type":"point","x":-150,"y":0,"move":false},{"type":"point","x":25,"y":250,"move":false},{"type":"stroke","r":125,"g":125,"b":125},{"type":"point","x":25,"y":-250,"move":false},{"type":"point","x":50,"y":-150,"move":false},{"type":"point","x":100,"y":-75,"move":false},{"type":"point","x":125,"y":0,"move":false},{"type":"point","x":100,"y":75,"move":false},{"type":"point","x":50,"y":150,"move":false},{"type":"point","x":25,"y":250,"move":false},{"type":"point","x":75,"y":150,"move":false},{"type":"point","x":125,"y":100,"move":false},{"type":"point","x":150,"y":25,"move":false},{"type":"point","x":150,"y":-25,"move":false},{"type":"point","x":125,"y":-100,"move":false},{"type":"point","x":75,"y":-150,"move":false},{"type":"close"},{"type":"fill","r":125,"g":100,"b":50},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-150,"y":0,"move":false},{"type":"point","x":125,"y":-25,"move":false},{"type":"point","x":175,"y":0,"move":false},{"type":"point","x":125,"y":25,"move":false},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40},{"type":"point","x":100,"y":-75,"move":false},{"type":"point","x":175,"y":0,"move":false},{"type":"point","x":100,"y":75,"move":false},{"type":"point","x":125,"y":0,"move":false},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40}]`
         ),
-        a2(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista2,true,false,30,enemy.dirToTarget,enemyBlueprints[7]) },
+        a2(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista2,true,false,30,enemy.dirToTarget,enemyBlueprints[7],-0.05)},
         a3(enemy, warn) { enemyAttackTeleport(enemy,warn,enemy.attackLista3,55) }
     },{ // 7 bow arrow
         size: 30, health: 0.07, projectile: true, rotateToTarget: true, immovable: true, speed: 6, target: "direction", drawPath: JSON.parse(
@@ -116,8 +116,8 @@ const enemyBlueprints = [
                 enemy.attackLista4.splice(0,1);
             }
         }, 
-        a5(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista5,true,"slice",200,enemy.dirToTarget,enemyBlueprints[10]) }, // slash
-        a6(enemy, warn) { enemyAttackDash(enemy,warn,enemy.dirToTarget,4,0.1,false,25) }, // dash
+        a5(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista5,true,"slice",200,enemy.dirToTarget,enemyBlueprints[10],0.05)}, // slash
+        a6(enemy, warn) { enemyAttackDash(enemy,warn,enemy.dirToTarget,4,0.05,false,25) }, // dash
         a7(enemy, warn) { // disappear
             if (warn) {
                 ease(enemy,"size",0,warn/60);
@@ -148,8 +148,8 @@ const enemyBlueprints = [
         size: 55, health: 10, rotateToTarget: true, speed: 0.1, target: "playerAdvanced", drawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":225},{"type":"point","x":-225,"y":250},{"type":"point","x":-25,"y":50},{"type":"point","x":-50,"y":0},{"type":"point","x":-50,"y":-50},{"type":"point","x":-25,"y":-100},{"type":"point","x":25,"y":-125},{"type":"point","x":75,"y":-125},{"type":"point","x":125,"y":-100},{"type":"point","x":150,"y":-50},{"type":"point","x":150,"y":0},{"type":"point","x":125,"y":50},{"type":"point","x":175,"y":0},{"type":"point","x":175,"y":-50},{"type":"point","x":150,"y":-125},{"type":"point","x":75,"y":-162.5},{"type":"point","x":25,"y":-162.5},{"type":"point","x":-62.5,"y":-137.5},{"type":"point","x":-100,"y":-50},{"type":"point","x":-100,"y":0},{"type":"point","x":-75,"y":50},{"type":"close"},{"type":"fill","r":150,"g":150,"b":150},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-237.5,"y":187.5},{"type":"point","x":-187.5,"y":237.5},{"type":"point","x":-62.5,"y":112.5},{"type":"point","x":-112.5,"y":62.5},{"type":"close"},{"type":"fill","r":75,"g":50,"b":25},{"type":"stroke","r":50,"g":50,"b":50}]`
         ),
-        a2(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista2,true,"slice",65,enemy.dirToTarget,enemyBlueprints[14]) }, 
-        a3(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista3,true,"slice",150,enemy.dirToTarget,enemyBlueprints[14]) }
+        a2(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista2,true,"slice",65,enemy.dirToTarget,enemyBlueprints[14],0.1) }, 
+        a3(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista3,true,"slice",150,enemy.dirToTarget,enemyBlueprints[14],0.1) }
     },{ // 14 sickle attack
         size: 65, health: 0.07, projectile: true, rotateToTarget: true, immovable: true, speed: 0.35, target: "direction", drawPath: JSON.parse(
             `[{"type":"point","x":-125,"y":-125},{"type":"point","x":0,"y":-175},{"type":"point","x":125,"y":-125},{"type":"point","x":175,"y":0},{"type":"point","x":125,"y":125},{"type":"point","x":0,"y":175},{"type":"point","x":-125,"y":125},{"type":"point","x":-100,"y":175},{"type":"point","x":0,"y":225},{"type":"point","x":100,"y":225},{"type":"point","x":200,"y":175},{"type":"point","x":250,"y":75},{"type":"point","x":262.5,"y":0},{"type":"point","x":250,"y":-75},{"type":"point","x":200,"y":-175},{"type":"point","x":100,"y":-225},{"type":"point","x":0,"y":-225},{"type":"point","x":-100,"y":-175},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40}]`
@@ -292,7 +292,7 @@ const enemyBlueprints = [
         size: 35, health: 65, target: "playerAdvanced", rotateToTarget: true, speed: -0.05, drawPath: JSON.parse(
             `[{"type":"point","x":-225,"y":-125},{"type":"point","x":225,"y":-125},{"type":"point","x":250,"y":-100},{"type":"point","x":250,"y":100},{"type":"point","x":225,"y":125},{"type":"point","x":-225,"y":125},{"type":"point","x":-250,"y":100},{"type":"point","x":-250,"y":-100},{"type":"close"},{"type":"fill","r":25,"g":25,"b":25},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-200,"y":-125},{"type":"point","x":-200,"y":-175},{"type":"point","x":-250,"y":-200},{"type":"point","x":-150,"y":-125,"move":true},{"type":"point","x":-150,"y":-175,"move":false},{"type":"point","x":-200,"y":-200,"move":false},{"type":"point","x":-100,"y":-125,"move":true},{"type":"point","x":-100,"y":-175,"move":false},{"type":"point","x":-150,"y":-200,"move":false},{"type":"point","x":-50,"y":-125,"move":true},{"type":"point","x":-50,"y":-175,"move":false},{"type":"point","x":-100,"y":-200,"move":false},{"type":"point","x":0,"y":-125,"move":true},{"type":"point","x":0,"y":-175,"move":false},{"type":"point","x":-50,"y":-200,"move":false},{"type":"point","x":50,"y":-125,"move":true},{"type":"point","x":50,"y":-175,"move":false},{"type":"point","x":0,"y":-200,"move":false},{"type":"point","x":100,"y":-125,"move":true},{"type":"point","x":100,"y":-175,"move":false},{"type":"point","x":50,"y":-200,"move":false},{"type":"point","x":150,"y":-125,"move":true},{"type":"point","x":150,"y":-175,"move":false},{"type":"point","x":100,"y":-200,"move":false},{"type":"point","x":200,"y":-125,"move":true},{"type":"point","x":200,"y":-175,"move":false},{"type":"point","x":150,"y":-200,"move":false},{"type":"point","x":-200,"y":125,"move":true},{"type":"point","x":-200,"y":175,"move":false},{"type":"point","x":-250,"y":200,"move":false},{"type":"point","x":-150,"y":125,"move":true},{"type":"point","x":-150,"y":175,"move":false},{"type":"point","x":-200,"y":200,"move":false},{"type":"point","x":-100,"y":125,"move":true},{"type":"point","x":-100,"y":175,"move":false},{"type":"point","x":-150,"y":200,"move":false},{"type":"point","x":-50,"y":125,"move":true},{"type":"point","x":-50,"y":175,"move":false},{"type":"point","x":-100,"y":200,"move":false},{"type":"point","x":0,"y":125,"move":true},{"type":"point","x":0,"y":175,"move":false},{"type":"point","x":-50,"y":200,"move":false},{"type":"point","x":50,"y":125,"move":true},{"type":"point","x":50,"y":175,"move":false},{"type":"point","x":0,"y":200,"move":false},{"type":"point","x":100,"y":125,"move":true},{"type":"point","x":100,"y":175,"move":false},{"type":"point","x":50,"y":200,"move":false},{"type":"point","x":150,"y":125,"move":true},{"type":"point","x":150,"y":175,"move":false},{"type":"point","x":100,"y":200,"move":false},{"type":"point","x":200,"y":125,"move":true},{"type":"point","x":200,"y":175,"move":false},{"type":"point","x":150,"y":200,"move":false},{"type":"stroke","r":125,"g":125,"b":0}]`
         ),
-        a2(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista2,true,false,65,enemy.dirToTarget,enemyBlueprints[20]) },
+        a2(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista2,true,false,65,enemy.dirToTarget,enemyBlueprints[20],-0.05) },
         a3(enemy, warn) { enemyAttackTeleport(enemy,warn,enemy.attackLista3,35,player.x,player.y) }
     },{ // 20 chip pin
         size: 75, health: 1, projectile: true, rotateToTarget: true, immovable: true, speed: 5, target: "direction", drawPath: JSON.parse(
@@ -332,7 +332,7 @@ const enemyBlueprints = [
                 enemy.attackLista2.splice(0,1);
             }
         },
-        a3(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista3,true,"rect",250,enemy.dirToTarget,enemyBlueprints[9],0.1) }
+        a3(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista3,true,"rect",250,enemy.dirToTarget,enemyBlueprints[9],0.1,0.1) }
     },{ // 23 CD
         size: 85, health: 70, rotateToTarget: false, speed: 0.2, drawPath: JSON.parse(
             `[{"type":"point","x":0,"y":-75},{"type":"point","x":50,"y":-50},{"type":"point","x":75,"y":0},{"type":"point","x":50,"y":50},{"type":"point","x":0,"y":75},{"type":"point","x":-50,"y":50},{"type":"point","x":-75,"y":0},{"type":"point","x":-50,"y":-50},{"type":"close"},{"type":"point","x":0,"y":-225,"move":true},{"type":"point","x":-100,"y":-200,"move":false},{"type":"point","x":-162.5,"y":-162.5,"move":false},{"type":"point","x":-200,"y":-100,"move":false},{"type":"point","x":-225,"y":0,"move":false},{"type":"point","x":-200,"y":100,"move":false},{"type":"point","x":-162.5,"y":162.5,"move":false},{"type":"point","x":-100,"y":200,"move":false},{"type":"point","x":0,"y":225,"move":false},{"type":"point","x":100,"y":200,"move":false},{"type":"point","x":162.5,"y":162.5,"move":false},{"type":"point","x":200,"y":100,"move":false},{"type":"point","x":225,"y":0,"move":false},{"type":"point","x":200,"y":-100,"move":false},{"type":"point","x":162.5,"y":-162.5,"move":false},{"type":"point","x":100,"y":-200,"move":false},{"type":"close"},{"type":"fill","r":150,"g":150,"b":150},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":0,"y":-225,"move":false},{"type":"point","x":225,"y":0,"move":false},{"type":"point","x":200,"y":-100,"move":false},{"type":"point","x":100,"y":-200,"move":false},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"point","x":-212.5,"y":-50,"move":true},{"type":"point","x":50,"y":212.5,"move":false},{"type":"point","x":0,"y":225,"move":false},{"type":"point","x":-225,"y":0,"move":false},{"type":"close"},{"type":"fill","r":150,"g":175,"b":175}]`
@@ -442,7 +442,7 @@ const enemyBlueprints = [
                 enemy.attackLista4.splice(0,1);
             }
         },
-        a5(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista4,true,"rect",150,enemy.dirToTarget,enemyBlueprints[9]), 0.1 },
+        a5(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista4,true,"rect",150,enemy.dirToTarget,enemyBlueprints[9]), 0, 0.1 },
         a6(enemy, warn) { // enemy spawn
             if (warn) {
             } else {
@@ -544,7 +544,7 @@ function enemyAttackTeleport(enemy,warn,attackList,size,x,y) {
     }
 }
 
-function enemyAttackSlice(enemy,warn,attackList,advanced,type,size,direction,reference,speed) {
+function enemyAttackSlice(enemy,warn,attackList,advanced,type,size,direction,reference,speed,projSpeed) {
     if (warn) {
         enemy.target = "direction";
         attackList.push([enemy.x,enemy.y,direction]);
@@ -553,8 +553,8 @@ function enemyAttackSlice(enemy,warn,attackList,advanced,type,size,direction,ref
         createLineWarning(enemy.x,enemy.y,enemy.x+Math.cos(direction),enemy.y+Math.sin(direction),type,direction,size*0.8);
     } else {
         enemy.dirToTarget = attackList[0][2];
-        enemiesBuffer.push(new Enemy(reference, {speed: speed || 2, size:size, x: attackList[0][0] + 20*Math.cos(enemy.dirToTarget), y: attackList[0][1] + 20*Math.sin(enemy.dirToTarget), dirToTarget: enemy.dirToTarget}));
-        enemy.speed = 0.15;
+        enemiesBuffer.push(new Enemy(reference, {speed: projSpeed || 2, size:size, x: attackList[0][0] + 20*Math.cos(enemy.dirToTarget), y: attackList[0][1] + 20*Math.sin(enemy.dirToTarget), dirToTarget: enemy.dirToTarget}));
+        enemy.speed = speed;
         if (advanced) enemy.target = "playerAdvanced";
         else enemy.target = "player";
         attackList.splice(0,1);

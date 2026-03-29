@@ -8,7 +8,7 @@ function drawEnemyAttacks() {
             ctx.lineTo(item[3]-item[5]*ratio,item[4]-item[6]*ratio);
         }
 
-        item[1]--;
+        if (!game.menu) item[1]--;
         return item[1] > 0;
     });
     ctx.lineWidth = 10;  
@@ -37,7 +37,7 @@ function drawEnemyAttacks() {
         ctx.stroke();
         ctx.fill();
 
-        item[1]--;
+        if (!game.menu) item[1]--;
 
         return item[1] > 0;
     });

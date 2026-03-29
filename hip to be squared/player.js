@@ -86,8 +86,13 @@ function playerTick() {
         
         for (var i = 0; i < stats.projectiles; i++) {
             tempBullet.direction = lookDirection;
-            tempBullet.x = player.x + Math.cos(lookDirection)*50;
-            tempBullet.y = player.y + Math.sin(lookDirection)*50;
+            if (stats.qub) {
+                tempBullet.x = mouse.x;
+                tempBullet.y = mouse.y;
+            } else {
+                tempBullet.x = player.x + Math.cos(lookDirection)*50;
+                tempBullet.y = player.y + Math.sin(lookDirection)*50;
+            }
             bullets.push(new Bullet(tempBullet));
             lookDirection += stats.spread/(stats.projectiles-1);
         }

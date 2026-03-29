@@ -129,7 +129,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.5.4",700,470);
+    ctx.fillText("Version: b.1.5.5",700,470);
 }
 
 setInterval( tickloop, 1000/60 );
