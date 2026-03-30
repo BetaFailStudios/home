@@ -928,7 +928,7 @@ const relics = [
             enemies.forEach( (enemy,i) => {
                 if (enemy.projectile) return;
                 const dist = Math.hypot(enemy.x-bullet.x,enemy.y-bullet.y)-enemy.size-bullet.size;
-                if (dist > 0 && (dist < 1 + 50*rarity && (dist > 50 || bullet.aachip == -1)) && dist < closestDist) {
+                if (dist > 0 && dist < 100 + 50*rarity && dist < closestDist) {
                     closestDist = dist;
                     closest = i;
                 }
@@ -945,8 +945,6 @@ const relics = [
                 }
                 bullet.aachip = false;
             }
-        }, onHit(_,bullet) {
-            bullet.aachip = -1;
         }
 /*PR*/},{
         name: "Piercing Rounds",
