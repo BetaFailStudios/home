@@ -373,12 +373,12 @@ const game = {
     difficulty: 0.5,
 };
 
-if (localStorage.getItem("htbs-audioVolume")) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));
+if (localStorage.getItem("htbs-audioVolume") !== undefined) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));
 else localStorage.setItem("htbs-audioVolume",game.audioVolume);
-if (localStorage.getItem("htbs-difficulty")) game.difficulty = Number(localStorage.getItem("htbs-difficulty"));
+if (localStorage.getItem("htbs-difficulty") !== undefined) game.difficulty = Number(localStorage.getItem("htbs-difficulty"));
 else localStorage.setItem("htbs-difficulty",game.difficulty);
-if (localStorage.getItem("htbs-dmgNumbersOption")) game.showDamageNumbers = Boolean(localStorage.getItem("htbs-dmgNumbersOption"));
-if (localStorage.getItem("htbs-showMusicWobble")) game.showMusicWobble = Boolean(localStorage.getItem("htbs-showMusicWobble"));
+if (localStorage.getItem("htbs-dmgNumbersOption") !== undefined) game.showDamageNumbers = "true" == localStorage.getItem("htbs-dmgNumbersOption");
+if (localStorage.getItem("htbs-showMusicWobble") !== undefined) game.showMusicWobble = "true" == localStorage.getItem("htbs-showMusicWobble");
 let bullets = [];
 let enemies = [];
 let attackWarnings = [];

@@ -160,6 +160,11 @@ function drawBlocks() {
 let dmgNumbers = [];
 
 function drawDamageNumbers() {
+    if (!game.drawDamageNumbers) {
+        dmgNumbers = [];
+        return;
+    }
+    
     ctx.beginPath();
     ctx.fillStyle = "#ccc";
     ctx.strokeStyle = "#000";

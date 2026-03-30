@@ -238,11 +238,11 @@ async function bulletTick() {
             bullet.distance += bullet.speed/numOfMoves;
 
             bullet.tick += 1/numOfMoves * (bullet.speed / stats.previousBulletSpeed) || 1;
-
-            if (bullet.lifetime < 0) {
-                bullet.alive = false;
-            } else if (bullet.lifetime) bullet.lifetime -= (1/30 - Math.random()/45);
         }
+
+        if (bullet.lifetime < 0) {
+            bullet.alive = false;
+        } else if (bullet.lifetime) bullet.lifetime -= (1/30 - Math.random()/45);
 
         if (Math.abs(bullet.x)-bullet.size > 1000 || Math.abs(bullet.y)-bullet.size > 600) bullet.alive = false;;
 
@@ -299,7 +299,7 @@ function bulletDraw() {
             return bullet.size;
         }
 
-        let sineRation = 1;
+        let sineRatio = 1;
 
         if (stats.sineWaveMovement && bullet.triggerExpire) {
             sineRatio = Math.sin(bullet.tick*Math.PI/9)*2 * ((stats.previousBulletSpeed / bullet.speed) || 1);

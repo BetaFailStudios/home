@@ -332,7 +332,7 @@ const enemyBlueprints = [
                 enemy.attackLista2.splice(0,1);
             }
         },
-        a3(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista3,true,"rect",250,enemy.dirToTarget,enemyBlueprints[9],0.1,0.1) }
+        a3(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista3,true,"rect",250,enemy.dirToTarget,enemyBlueprints[9],0.1,1) }
     },{ // 23 CD
         size: 85, health: 70, rotateToTarget: false, speed: 0.2, drawPath: JSON.parse(
             `[{"type":"point","x":0,"y":-75},{"type":"point","x":50,"y":-50},{"type":"point","x":75,"y":0},{"type":"point","x":50,"y":50},{"type":"point","x":0,"y":75},{"type":"point","x":-50,"y":50},{"type":"point","x":-75,"y":0},{"type":"point","x":-50,"y":-50},{"type":"close"},{"type":"point","x":0,"y":-225,"move":true},{"type":"point","x":-100,"y":-200,"move":false},{"type":"point","x":-162.5,"y":-162.5,"move":false},{"type":"point","x":-200,"y":-100,"move":false},{"type":"point","x":-225,"y":0,"move":false},{"type":"point","x":-200,"y":100,"move":false},{"type":"point","x":-162.5,"y":162.5,"move":false},{"type":"point","x":-100,"y":200,"move":false},{"type":"point","x":0,"y":225,"move":false},{"type":"point","x":100,"y":200,"move":false},{"type":"point","x":162.5,"y":162.5,"move":false},{"type":"point","x":200,"y":100,"move":false},{"type":"point","x":225,"y":0,"move":false},{"type":"point","x":200,"y":-100,"move":false},{"type":"point","x":162.5,"y":-162.5,"move":false},{"type":"point","x":100,"y":-200,"move":false},{"type":"close"},{"type":"fill","r":150,"g":150,"b":150},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":0,"y":-225,"move":false},{"type":"point","x":225,"y":0,"move":false},{"type":"point","x":200,"y":-100,"move":false},{"type":"point","x":100,"y":-200,"move":false},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"point","x":-212.5,"y":-50,"move":true},{"type":"point","x":50,"y":212.5,"move":false},{"type":"point","x":0,"y":225,"move":false},{"type":"point","x":-225,"y":0,"move":false},{"type":"close"},{"type":"fill","r":150,"g":175,"b":175}]`
@@ -434,15 +434,15 @@ const enemyBlueprints = [
             }
         }, a4(enemy, warn) { // large explosion
             if (warn) {
-                const pos = [enemy.x + Math.random()*600-300,enemy.y + Math.random()*600-300];
+                const pos = [enemy.x,enemy.y];
                 enemy.attackLista4.push(pos);
-                attackWarnings.push(["circle",game.warnDelay,game.warnDelay,...pos,200]);
+                attackWarnings.push(["circle",game.warnDelay,game.warnDelay,...pos,300]);
             } else {
-                enemiesBuffer.push(new Enemy(enemyBlueprints[9],{ x: enemy.attackLista4[0][0], y: enemy.attackLista4[0][1], size: 300 }));
+                enemiesBuffer.push(new Enemy(enemyBlueprints[9],{ x: enemy.attackLista4[0][0], y: enemy.attackLista4[0][1], size: 400 }));
                 enemy.attackLista4.splice(0,1);
             }
         },
-        a5(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista4,true,"rect",150,enemy.dirToTarget,enemyBlueprints[9], 0, 0.1) },
+        a5(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista4,true,"rect",150,enemy.dirToTarget,enemyBlueprints[9], 0, 1) },
         a6(enemy, warn) { // enemy spawn
             if (warn) {
             } else {
@@ -553,7 +553,7 @@ function enemyAttackSlice(enemy,warn,attackList,advanced,type,size,direction,ref
         createLineWarning(enemy.x,enemy.y,enemy.x+Math.cos(direction),enemy.y+Math.sin(direction),type,direction,size*0.8);
     } else {
         enemy.dirToTarget = attackList[0][2];
-        enemiesBuffer.push(new Enemy(reference, {dirToTarget: enemy.dirToTarget, speed: projSpeed || 2, size:size, x: attackList[0][0] + 20*Math.cos(enemy.dirToTarget), y: attackList[0][1] + 20*Math.sin(enemy.dirToTarget)}));
+        enemiesBuffer.push(new Enemy(reference, {health: !!projSpeed, dirToTarget: direction, speed: projSpeed || 2, size:size, x: attackList[0][0] + 20*Math.cos(enemy.dirToTarget), y: attackList[0][1] + 20*Math.sin(enemy.dirToTarget)}));
         enemy.speed = speed;
         if (advanced) enemy.target = "playerAdvanced";
         else enemy.target = "player";
