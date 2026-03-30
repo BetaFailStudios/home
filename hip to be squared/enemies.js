@@ -46,12 +46,12 @@ class Enemy {
 
 let enemiesBuffer = [];
 
-function enemyTick() {
+async function enemyTick() {
     game.noEnemies = true;
     game.bossName = false;
     game.bossHealth = 0;
     game.bossHealthMax = 0;
-    enemies = enemies.filter((enemy,i) => {
+    enemies.forEach(async (enemy,i) => {
         if (enemy.boss) {
             game.bossName = enemy.boss;
             game.bossHealth += enemy.health;
@@ -60,12 +60,7 @@ function enemyTick() {
         if (!enemy.projectile) game.noEnemies = false;
 
         if (enemy.spawning && enemy.rotateToTarget) enemy.dirToTarget = (Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x));
-        if (enemy.ephemeral) ctx.globalAlpha = 0.6;
-        if (enemy.randomRotation) draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, Math.random()*Math.PI*2);
-        else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4);
-        if (enemy.ephemeral) ctx.globalAlpha = 1;
         if (enemy.spawning) {
-            draw(enemy.x, enemy.y, game.enemySpawnPath, enemy.spawnSize, 0, enemy.spawning);
             if (Math.abs(enemy.x) > 850-enemy.size) {
                 enemy.x = Math.sign(enemy.x)*(850-enemy.size);      
             }
@@ -88,26 +83,18 @@ function enemyTick() {
                 }
             })
 
+            enemy.toReturn = true;
             return true;
-        } else if (!enemy.boss && enemy.health > 0 && enemy.health < enemy.healthMax && enemy.size) {
-            ctx.lineCap = "round";
-            ctx.beginPath();
-            ctx.moveTo(enemy.x-enemy.size-10, enemy.y-enemy.size-10);
-            ctx.lineTo(enemy.x+enemy.size+10, enemy.y-enemy.size-10);
-            ctx.lineWidth = 10;   
-            ctx.strokeStyle = "#222";
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(enemy.x-enemy.size-10, enemy.y-enemy.size-10);
-            ctx.lineTo(enemy.x-enemy.size-10+enemy.health/enemy.healthMax*(enemy.size*2+20), enemy.y-enemy.size-10);
-            ctx.lineWidth = 5;
-            ctx.strokeStyle = "#822";
-            ctx.stroke();
-            ctx.lineWidth = 3;
         }
 
         let triggerWarn = true;
         let triggerAttack = true;
+        
+        if (game.menu) {
+            enemy.toReturn = true;
+            return true;
+        }
+
         game.enemyAttackWarning.forEach((item) => {
             if (!enemy[item]/* || (enemy.noAttack && enemy.noAttack != item)*/) return;
             if (!enemy["attackList" + item]) enemy["attackList" + item] = [];
@@ -131,8 +118,6 @@ function enemyTick() {
             }
         })
 
-        if (game.menu) return true;
-
         enemy.x += enemy.vx;
         enemy.y += enemy.vy;
         if (!enemy.frictionless) {
@@ -147,8 +132,10 @@ function enemyTick() {
             delete enemy.reset;
         }
 
-        if (enemy.projectile) { if (Math.abs(enemy.x) > 1000+enemy.size || Math.abs(enemy.y) > 600+enemy.size) return false;
-        } else if (!enemy.offscreen) {        
+        if (enemy.projectile) { if (Math.abs(enemy.x) > 1000+enemy.size || Math.abs(enemy.y) > 600+enemy.size) {
+            enemy.toReturn = false;
+            return false;
+        }} else if (!enemy.offscreen) {        
             if (Math.abs(enemy.x) > 850-enemy.size) {
                 enemy.x = Math.sign(enemy.x)*(850-enemy.size);
                 enemy.vx *= 0.8;
@@ -199,7 +186,10 @@ function enemyTick() {
             })
         }
 
-        if (!enemy.alive) return enemy.size;
+        if (!enemy.alive) {
+            enemy.toReturn = enemy.size;
+            return enemy.size;
+        }
 
         enemy.effects = enemy.effects.filter( (item) => {
             toReturnOrNotToReturn = true;
@@ -261,6 +251,61 @@ function enemyTick() {
         if (enemy.health <= 0) {
             enemy.alive = false;
             ease(enemy,"size",0,0.2);
+        }
+        enemy.toReturn = true;
+        return true;
+    })
+
+    enemies = enemies.filter(enemy => enemy.toReturn);
+    if (!game.menu) enemies.push(...enemiesBuffer);
+    enemiesBuffer = [];
+}
+
+
+function enemyDraw() {
+    enemies.forEach((enemy,i) => {
+        if (enemy.ephemeral) ctx.globalAlpha = 0.6;
+        if (enemy.randomRotation) {
+            if (enemy.showHit > 0) {
+                ctx.beginPath();
+                ctx.fillStyle = "#ccc";
+                ctx.strokeStyle = "#ccc";
+                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, Math.random()*Math.PI*2,false,true);
+                ctx.fill();
+                ctx.stroke();
+                enemy.showHit--;
+            } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, Math.random()*Math.PI*2);
+        }
+        else {
+            if (enemy.showHit > 0) {
+                ctx.beginPath();
+                ctx.fillStyle = "#ccc";
+                ctx.strokeStyle = "#ccc";
+                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4,false,true);
+                ctx.fill();
+                ctx.stroke();
+                enemy.showHit--;
+            } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4);
+        }
+        if (enemy.ephemeral) ctx.globalAlpha = 1;
+        if (enemy.spawning) {
+            draw(enemy.x, enemy.y, game.enemySpawnPath, enemy.spawnSize, 0, enemy.spawning);
+            return true;
+        } else if (!enemy.boss && enemy.health > 0 && enemy.health < enemy.healthMax && enemy.size) {
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(enemy.x-enemy.size-10, enemy.y-enemy.size-10);
+            ctx.lineTo(enemy.x+enemy.size+10, enemy.y-enemy.size-10);
+            ctx.lineWidth = 10;   
+            ctx.strokeStyle = "#222";
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(enemy.x-enemy.size-10, enemy.y-enemy.size-10);
+            ctx.lineTo(enemy.x-enemy.size-10+enemy.health/enemy.healthMax*(enemy.size*2+20), enemy.y-enemy.size-10);
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = "#822";
+            ctx.stroke();
+            ctx.lineWidth = 3;
         }
         return true;
     })

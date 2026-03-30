@@ -12,10 +12,10 @@ function drawEnemyAttacks() {
         return item[1] > 0;
     });
     ctx.lineWidth = 10;  
-    ctx.strokeStyle = "#ff000033";
+    ctx.strokeStyle = "#00000044";
     ctx.stroke();
     ctx.lineWidth = 5;
-    ctx.strokeStyle = "#ff000033";
+    ctx.strokeStyle = "#ff000077";
     ctx.stroke();
 
     ctx.lineCap = "butt";
@@ -27,13 +27,18 @@ function drawEnemyAttacks() {
         if (item[0] == "circle") {
             draw(item[3],item[4],game[item[0] + "AttackWarnPath"],item[5]*ratio,item[6]);
         } else if (game[item[0] + "AttackWarnPath"]) {
+            ctx.beginPath();
             draw(item[3],item[4],game[item[0] + "AttackWarnPath"],item[8]*ratio,item[7]);
-            draw(item[5],item[6],game[item[0] + "AttackWarnPath"],item[8]*ratio,item[7],false,true,true);
+            draw(item[5],item[6],game[item[0] + "AttackWarnPath"],item[8]*ratio,item[7],false,true,true,true);
+            ctx.closePath();
         }
     
+        ctx.lineWidth = 7;  
+        ctx.strokeStyle = "#00000044";
+        ctx.stroke();
         ctx.lineWidth = 3;
-        ctx.strokeStyle = "#ff000055";
-        ctx.fillStyle = "#ff000055";
+        ctx.strokeStyle = "#ff000077";
+        ctx.fillStyle = "#ff000077";
         ctx.stroke();
         ctx.fill();
 
@@ -136,13 +141,8 @@ function drawEnvironment() {
 
     if (game.regionNum == -1) {
         ctx.strokeStyle = "#00000077";
-        ctx.strokeRect(-300,-20,40,40);
-        ctx.strokeRect(-350,-20,40,40);
-        ctx.strokeRect(-250,-20,40,40);
-        ctx.strokeRect(-300,-70,40,40);
-        ctx.strokeRect(-350,30,140,40);
-
-        ctx.beginPath();
+        draw(-280,0,game.keyboardTutorial,100,false,false);
+        ctx.stroke();
         draw(280,0,game.mouseTutorial,100,false,false);
         ctx.stroke();
 

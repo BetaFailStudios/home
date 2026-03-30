@@ -176,13 +176,8 @@ function drawInventory() {
     ctx.fillRect(-900,-500,1800,1000);
     ctx.beginPath();
     const sizeWeapon = 250;
-    ctx.moveTo(200+sizeWeapon,0);
-    ctx.lineTo(200+sizeWeapon*0.5,0+sizeWeapon*0.866);
-    ctx.lineTo(200-sizeWeapon*0.5,0+sizeWeapon*0.866);
-    ctx.lineTo(200-sizeWeapon,0);
-    ctx.lineTo(200-sizeWeapon*0.5,0-sizeWeapon*0.866);
-    ctx.lineTo(200+sizeWeapon*0.5,0-sizeWeapon*0.866);
-    ctx.closePath();
+    
+    draw(200,0,game.weaponBackground,sizeWeapon,-player.rotationTick*3,false,true);
     ctx.fillStyle = "#ccc";
     ctx.fill();
 
@@ -222,11 +217,7 @@ function drawInventory() {
             ctx.beginPath();
 
             const size = 135;
-            ctx.moveTo(item[0]-size,item[1]);
-            ctx.lineTo(item[0],item[1]+size);
-            ctx.lineTo(item[0]+size,item[1]);
-            ctx.lineTo(item[0],item[1]-size);
-            ctx.closePath();
+            draw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
             ctx.fillStyle = "#ccc";
             ctx.fill();
 
@@ -268,9 +259,7 @@ function drawInventory() {
             ctx.beginPath();
 
             const size = 135;
-            ctx.moveTo(item[0],item[1]-size);
-            ctx.lineTo(item[0]-size*0.866,item[1]+size*0.5);
-            ctx.lineTo(item[0]+size*0.866,item[1]+size*0.5);
+            draw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
             ctx.closePath();
             ctx.fillStyle = "#ccc";
             ctx.fill();

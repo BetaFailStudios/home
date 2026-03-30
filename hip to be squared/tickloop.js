@@ -1,4 +1,10 @@
 function tickloop() {
+
+    //initialize async function
+    bulletTick();
+    enemyTick();
+    playerTick();
+
     game.tick++;
     if (game.tick > 1000000000) game.tick = 0;
 
@@ -6,14 +12,16 @@ function tickloop() {
     ctx.fillStyle = "#000";
     ctx.fillRect(-1800,-1000,3600,2000);
 
+    game.enemyAttack = [];
+    game.enemyAttackWarning = [];
     musicTick();
     drawEnvironment();
-    bulletTick();
+    bulletDraw();
     drawBlocks();
     handleEffects();
     drawEnemyAttacks();
-    enemyTick();
-    playerTick();
+    enemyDraw();
+    playerDraw();
     itemTick();
     drawDamageNumbers();
     if (game.bossName) drawBossName();
@@ -120,16 +128,24 @@ function tickloop() {
         } else game.relicTick++;
     }
 
+    if (!player.burstsLeft && player.firerateTick > 0) {
+        ctx.strokeStyle = "#cccccc50";
+        ctx.beginPath();
+        ctx.arc(mouse.x,mouse.y,50,-Math.PI/2,-Math.PI/2-Math.PI*2*player.firerateTick/stats.firerate);
+        ctx.lineCap = "round";
+        ctx.lineWidth = 7;
+        ctx.stroke();
+        ctx.lineWidth = 3;
+        ctx.lineCap = "butt";
+    }
     draw(mouse.x,mouse.y,game.cursorPath,30,player.rotationTick);
-    game.enemyAttack = [];
-    game.enemyAttackWarning = [];
 
     toEaseVariables = toEaseVariables.filter(changeEaseable);
 
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.5.6",700,470);
+    ctx.fillText("Version: b.1.6.0",700,470);
 }
 
 setInterval( tickloop, 1000/60 );

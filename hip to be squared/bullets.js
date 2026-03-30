@@ -67,8 +67,9 @@ class Bullet {
 
 let bulletBuffer = [];
 
-function bulletTick() {
-    bullets = bullets.filter((bullet,i) => {
+async function bulletTick() {
+    if (game.menu) return;
+    bullets.forEach(async (bullet,i) => {
         if (bullet.size > 1500) bullet.size = 1500;
 
         bullet.speed = Math.hypot(bullet.vx, bullet.vy);
@@ -103,6 +104,7 @@ function bulletTick() {
                 ctx.globalAlpha = 1;
             }
 
+            bullet.toReturn = bullet.size;
             return bullet.size;
         }
         let sineRatio = 0;
@@ -118,7 +120,7 @@ function bulletTick() {
 
             if (bullet.triggerExpire && !game.menu) stats.bulletTicks.forEach( (item) => item[1](item[0],bullet));
 
-            if (!i && (!stats.noDrawBullets || !bullet.triggerExpire)) if (bullet.size > 5) {
+            /*if (!i && (!stats.noDrawBullets || !bullet.triggerExpire)) if (bullet.size > 5) {
                 draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
             } else {
                 ctx.beginPath();
@@ -129,13 +131,13 @@ function bulletTick() {
                 ctx.rect(bullet.x-bullet.size,bullet.y-bullet.size,bullet.size*2,bullet.size*2);
                 ctx.fill();
                 ctx.stroke();
-            }
+            }*/
             //effects.push(new Effect(bullet.x,bullet.y,"glasses",10,0))
 
             if (bullet.trailColor && bullet.trailPoints) {
                 bullet.trailPoints.push([bullet.x,bullet.y]);
                 if (bullet.trailPoints.length > (bullet.trailLength || 8)*numOfMoves) bullet.trailPoints.splice(0,1);
-                if (!i) {
+                /*if (!i) {
                     ctx.beginPath();
                     bullet.trailPoints.forEach((points) => ctx.lineTo(...points));
                     ctx.strokeStyle = bullet.trailColor;
@@ -145,10 +147,8 @@ function bulletTick() {
                     ctx.stroke();
                     ctx.lineWidth = 3;
                     ctx.globalAlpha = 1;
-                }
+                }*/
             }
-
-            if (game.menu) return true;
 
             enemies.forEach((enemy) => {
                 if (enemy.projectile && !bullet.projHit || enemy.spawning) return;
@@ -157,6 +157,8 @@ function bulletTick() {
                 if (hypot < bullet.size+enemy.size*0.8) {
                     if (bullet.enemiesTouched.includes(enemy)) return;
                     else {
+                        enemy.showHit = 4;
+
                         bullet.enemiesTouched.push(enemy);
                         let damage = bullet.damage;
                         stats.damageBoosts.forEach( (item) => damage *= item[1](item[0],bullet,enemy));
@@ -249,9 +251,90 @@ function bulletTick() {
             if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
         }
 
+        bullet.toReturn = true;
         return true;
     })
 
+    bullets = bullets.filter(bullet => bullet.toReturn);
     bullets.push(...bulletBuffer);
     bulletBuffer = [];
+}
+
+function bulletDraw() {
+    bullets.filter((bullet,i) => {
+        if (bullet.size > 1500) bullet.size = 1500;
+
+        bullet.speed = Math.hypot(bullet.vx, bullet.vy);
+        let numOfMoves = 1;
+        if (bullet.speed-bullet.size*2 > 20) numOfMoves += Math.floor((bullet.speed-bullet.size*2)/25);
+
+        // handle afterdeath
+        if (!bullet.alive) {
+            if (!stats.noDrawBullets || !bullet.triggerExpire) if (bullet.size > 5) {
+                draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
+            } else {
+                ctx.beginPath();
+                let color = bullet.drawPath[bullet.drawPath.length-1]
+                ctx.strokeStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+                color = bullet.drawPath[bullet.drawPath.length-2]
+                ctx.fllStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+                ctx.rect(bullet.x-bullet.size,bullet.y-bullet.size,bullet.size*2,bullet.size*2);
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            if (bullet.trailColor && bullet.trailPoints) {
+                bullet.trailPoints.splice(0,1);
+                ctx.beginPath();
+                bullet.trailPoints.forEach((points) => ctx.lineTo(...points));
+                ctx.strokeStyle = bullet.trailColor;
+                ctx.globalAlpha = 0.25;
+                ctx.lineWidth = Math.max(bullet.targetSize,bullet.size)*1.3 + 2;
+                ctx.lineCap = "round";
+                ctx.stroke();
+                ctx.lineWidth = 3;
+                ctx.globalAlpha = 1;
+            }
+
+            return bullet.size;
+        }
+
+        let sineRation = 1;
+
+        if (stats.sineWaveMovement && bullet.triggerExpire) {
+            sineRatio = Math.sin(bullet.tick*Math.PI/9)*2 * ((stats.previousBulletSpeed / bullet.speed) || 1);
+            bullet.x += bullet.vy * sineRatio;
+            bullet.y -= bullet.vx * sineRatio;
+        }
+
+        if (!stats.noDrawBullets || !bullet.triggerExpire) if (bullet.size > 5) {
+            draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
+        } else {
+            ctx.beginPath();
+            let color = bullet.drawPath[bullet.drawPath.length-1]
+            ctx.strokeStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+            color = bullet.drawPath[bullet.drawPath.length-2]
+            ctx.fllStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+            ctx.rect(bullet.x-bullet.size,bullet.y-bullet.size,bullet.size*2,bullet.size*2);
+            ctx.fill();
+        }      
+
+        if (bullet.trailColor && bullet.trailPoints) {
+            ctx.beginPath();
+            bullet.trailPoints.forEach((points) => ctx.lineTo(...points));
+            ctx.strokeStyle = bullet.trailColor;
+            ctx.globalAlpha = 0.25;
+            ctx.lineWidth = Math.max(bullet.targetSize,bullet.size)*1.3 + 2;
+            ctx.lineCap = "round";
+            ctx.stroke();
+            ctx.lineWidth = 3;
+            ctx.globalAlpha = 1;
+            ctx.lineCap = "butt";
+        }
+
+        if (stats.sineWaveMovement && bullet.triggerExpire) {
+            bullet.x -= bullet.vy * sineRatio;
+            bullet.y += bullet.vx * sineRatio;
+        }
+    })
 }

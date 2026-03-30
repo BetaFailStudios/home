@@ -13,46 +13,8 @@ const player = {
     dashes: 3,
 }
 
-function playerTick() {
-    if (game.regionTransfer > 1) draw(player.x,player.y,player.drawPath,stats.playerSize*(-1+game.regionTransfer),player.rotationTick);
-    else if (game.regionTransfer > 0) draw(player.x,player.y,player.drawPath,stats.playerSize*(1+10*game.regionTransfer**4),player.rotationTick,1-game.regionTransfer);
-    else {
-        if (player.dashCooldown) {
-            draw(player.x,player.y,player.dashCooldownPath,(stats.playerSize+50)*player.dashCooldown,-player.rotationTick, 0.2);
-        }
-
-        ctx.strokeStyle = "#cccccc55";
-        ctx.beginPath();
-        let count = 0;
-        for (var i = -player.rotationTick; i < Math.PI*2-player.rotationTick && count+1 <= player.dashes; i += Math.PI*2/3) {
-            ctx.moveTo(player.x + (stats.playerSize+15) * Math.cos(i+Math.PI/10),player.y + (stats.playerSize+15) * Math.sin(i+Math.PI/10))
-            ctx.arc(player.x,player.y,stats.playerSize+15,i+Math.PI/10, i - Math.PI/10 + Math.PI*2/3 );
-            count++;
-        }
-        ctx.lineCap = "round";
-        ctx.lineWidth = 7;
-        ctx.stroke();
-        ctx.lineWidth = 3;
-        ctx.lineCap = "butt";
-
-        if (player.iFrames > 0) ctx.globalAlpha = 0.4;
-        draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
-        ctx.globalAlpha = 1;
-    }
-    //draw(player.x,player.y,player.eyesPath,stats.playerSize);
-
+async function playerTick() {
     if (game.menu) return;
-
-    stats.playerTicks.forEach( (item) => item[1](item[0]));
-
-    player.rotationTick += Math.PI/600;
-    if (player.rotationTick > Math.PI*2) player.rotationTick -= Math.PI*2;
-    ctx.save();
-    ctx.translate(player.x, player.y);
-    if (mouse.x < player.x) ctx.scale(-1,1);
-    ctx.rotate((Math.atan((mouse.y-player.y)/(mouse.x-player.x)) * (1-2*(mouse.x < player.x))) || 0);
-    draw(70,0,game.weapon.reference.drawPath,25);
-    ctx.restore();
 
     player.x += player.vx;
     player.y += player.vy;
@@ -175,5 +137,43 @@ function playerTick() {
     else player.dashCooldown -= 1/7;
     
     if (player.dashes >= 3) player.dashes = 3;
-    else player.dashes += 1/60;
+    else player.dashes += stats.dashRegenerateRate;
+}
+
+function playerDraw() {
+    if (!game.menu) stats.playerTicks.forEach( (item) => item[1](item[0]));
+    if (game.regionTransfer > 1) draw(player.x,player.y,player.drawPath,stats.playerSize*(-1+game.regionTransfer),player.rotationTick);
+    else if (game.regionTransfer > 0) draw(player.x,player.y,player.drawPath,stats.playerSize*(1+10*game.regionTransfer**4),player.rotationTick,1-game.regionTransfer);
+    else {
+        if (player.dashCooldown) {
+            draw(player.x,player.y,player.dashCooldownPath,(stats.playerSize+50)*player.dashCooldown,-player.rotationTick, 0.2);
+        }
+
+        ctx.strokeStyle = "#cccccc50";
+        ctx.beginPath();
+        let count = 0;
+        for (var i = -player.rotationTick; i < Math.PI*2-player.rotationTick && count+1 <= player.dashes; i += Math.PI*2/3) {
+            ctx.moveTo(player.x + (stats.playerSize+15) * Math.cos(i+Math.PI/10),player.y + (stats.playerSize+15) * Math.sin(i+Math.PI/10))
+            ctx.arc(player.x,player.y,stats.playerSize+15,i+Math.PI/10, i - Math.PI/10 + Math.PI*2/3 );
+            count++;
+        }
+        ctx.lineCap = "round";
+        ctx.lineWidth = 7;
+        ctx.stroke();
+        ctx.lineWidth = 3;
+        ctx.lineCap = "butt";
+
+        if (player.iFrames > 0) ctx.globalAlpha = 0.4;
+        draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
+        ctx.globalAlpha = 1;
+    }
+
+    player.rotationTick += Math.PI/600;
+    if (player.rotationTick > Math.PI*2) player.rotationTick -= Math.PI*2;
+    ctx.save();
+    ctx.translate(player.x, player.y);
+    if (mouse.x < player.x) ctx.scale(-1,1);
+    ctx.rotate((Math.atan((mouse.y-player.y)/(mouse.x-player.x)) * (1-2*(mouse.x < player.x))) || 0);
+    draw(70,0,game.weapon.reference.drawPath,25);
+    ctx.restore();
 }
