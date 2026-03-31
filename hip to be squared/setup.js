@@ -369,7 +369,7 @@ const game = {
     musicPopup: 1,
     tick: 0,
     musicWobble: 0,
-    warnDelay: 100,
+    warnDelay: 120,
     difficulty: 0.5,
 };
 

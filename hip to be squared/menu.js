@@ -259,7 +259,7 @@ function drawInventory() {
             ctx.beginPath();
 
             const size = 135;
-            draw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
+            draw(...item,game.artifactBackground,size,-player.rotationTick*3,false,true);
             ctx.closePath();
             ctx.fillStyle = "#ccc";
             ctx.fill();

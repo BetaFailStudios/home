@@ -160,8 +160,9 @@ function drawBlocks() {
 let dmgNumbers = [];
 
 function drawDamageNumbers() {
-    if (!game.drawDamageNumbers) {
+    if (!game.showDamageNumbers) {
         dmgNumbers = [];
+        console.log(1)
         return;
     }
     

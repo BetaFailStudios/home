@@ -208,6 +208,10 @@
                     ctx.save();
                     ctx.translate(0,colorCount*175)
 
+                    
+                    ctx.fillStyle = "rgb("+item.r+","+item.g+","+item.b+")";
+                    ctx.fillRect(810,-450,20,150);
+
                     ctx.beginPath();
                     ctx.fillStyle = "#555";
                     ctx.fillRect(300,-450,500,150);
@@ -242,7 +246,7 @@
                     ctx.fillText(item.r, 730, -430);
 
                     ctx.beginPath();
-                    ctx.fillStyle = "#9f9";
+                    ctx.fillStyle = "#afa";
                     ctx.font = "30px share tech"
                     ctx.fillText(item.g, 730, -375);
 

@@ -113,7 +113,7 @@ async function bulletTick() {
 
         for (var i = 0; i < numOfMoves && bullet.alive; i++) {
             if (stats.sineWaveMovement && bullet.triggerExpire) {
-                sineRatio = Math.sin(bullet.tick*Math.PI/9)*2 * ((stats.previousBulletSpeed / bullet.speed) || 1);
+                sineRatio = Math.sin(bullet.tick*Math.PI/9)*2;
                 bullet.x += bullet.vy * sineRatio;
                 bullet.y -= bullet.vx * sineRatio;
             }
@@ -237,7 +237,7 @@ async function bulletTick() {
 
             bullet.distance += bullet.speed/numOfMoves;
 
-            bullet.tick += 1/numOfMoves * (bullet.speed / stats.previousBulletSpeed) || 1;
+            bullet.tick += 1/numOfMoves;
         }
 
         if (bullet.lifetime < 0) {
@@ -302,7 +302,7 @@ function bulletDraw() {
         let sineRatio = 1;
 
         if (stats.sineWaveMovement && bullet.triggerExpire) {
-            sineRatio = Math.sin(bullet.tick*Math.PI/9)*2 * ((stats.previousBulletSpeed / bullet.speed) || 1);
+            sineRatio = Math.sin(bullet.tick*Math.PI/9)*2;
             bullet.x += bullet.vy * sineRatio;
             bullet.y -= bullet.vx * sineRatio;
         }

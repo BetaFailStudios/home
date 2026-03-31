@@ -553,7 +553,7 @@ function enemyAttackSlice(enemy,warn,attackList,advanced,type,size,direction,ref
         createLineWarning(enemy.x,enemy.y,enemy.x+Math.cos(direction),enemy.y+Math.sin(direction),type,direction,size*0.8);
     } else {
         enemy.dirToTarget = attackList[0][2];
-        enemiesBuffer.push(new Enemy(reference, {health: (projSpeed === undefined || projSpeed), dirToTarget: direction, speed: projSpeed || 2, size:size, x: attackList[0][0] + 20*Math.cos(enemy.dirToTarget), y: attackList[0][1] + 20*Math.sin(enemy.dirToTarget)}));
+        enemiesBuffer.push(new Enemy(reference, {health: (projSpeed === undefined || projSpeed), dirToTarget: enemy.dirToTarget, speed: projSpeed || 2, size:size, x: attackList[0][0] + 20*Math.cos(enemy.dirToTarget), y: attackList[0][1] + 20*Math.sin(enemy.dirToTarget)}));
         enemy.speed = speed;
         if (advanced) enemy.target = "playerAdvanced";
         else enemy.target = "player";
@@ -571,6 +571,7 @@ function enemyAttackDash(enemy,warn,direction,speed,baseSpeed,advanced,length,ty
         createLineWarning(enemy.x,enemy.y,enemy.x+Math.cos(direction),enemy.y+Math.sin(direction),type,direction,size*0.8);
     } else {
         enemy.target = "direction";
+        enemy.dirToTarget = direction;
         enemy.vx *= -1; enemy.vy *= -1;
         enemy.speed = speed;
         enemy.reset = [ () => { enemy.immovable = false; enemy.speed = baseSpeed; if (advanced) enemy.target = "playerAdvanced"; else enemy.target = "-".repeat(Math.random()< 0.5) + "player"; enemy.vx *= 0.25; enemy.vy *= 0.25; }, length ];
