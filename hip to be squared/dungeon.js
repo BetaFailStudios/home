@@ -42,7 +42,7 @@ function generateDungeon() {
         pos[change[0]] += change[1];
         change[1] *= -1;
         dungeon[pos[0] + "," + pos[1]] = { blocks: JSON.parse(dungeonPresets[Math.floor(Math.random()*dungeonPresets.length)]), items: [], connections: [change] };
-        if (true || length > 10 && Math.random() < 0.5/*Math.abs(pos[0]) + Math.abs(pos[1]) == 6*/) {
+        if (length > 10 && Math.random() < 0.5/*Math.abs(pos[0]) + Math.abs(pos[1]) == 6*/) {
             dungeon[pos[0] + "," + pos[1]].boss = true;
             connected = true;
             dungeon[pos[0] + "," + pos[1]].blocks = [];
