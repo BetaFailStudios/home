@@ -139,7 +139,7 @@ const enemyBlueprints = [
             }
         }
     },{ // 9 Zweihänder a1
-        size: 150, health: 0, projectile: true, randomRotation: true, immovable: true, speed: 0, target: "direction", drawPath: JSON.parse(
+        size: 150, ephemeral: true, health: 0, projectile: true, randomRotation: true, immovable: true, speed: 0, target: "direction", drawPath: JSON.parse(
             `[{"type":"point","x":0,"y":-250,"move":false},{"type":"point","x":-50,"y":-100,"move":false},{"type":"point","x":-150,"y":-150,"move":false},{"type":"point","x":-100,"y":-50,"move":false},{"type":"point","x":-250,"y":0,"move":false},{"type":"point","x":-100,"y":50,"move":false},{"type":"point","x":-150,"y":150,"move":false},{"type":"point","x":-50,"y":100,"move":false},{"type":"point","x":0,"y":250,"move":false},{"type":"point","x":50,"y":100,"move":false},{"type":"point","x":150,"y":150,"move":false},{"type":"point","x":100,"y":50,"move":false},{"type":"point","x":250,"y":0,"move":false},{"type":"point","x":100,"y":-50,"move":false},{"type":"point","x":150,"y":-150,"move":false},{"type":"point","x":50,"y":-100,"move":false},{"type":"close"},{"type":"fill","r":75,"g":175,"b":175},{"type":"stroke","r":25,"g":75,"b":75}]`
         )
     },{ // 10 Zweihänder slash
