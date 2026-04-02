@@ -178,24 +178,24 @@ function drawInventory() {
     const sizeWeapon = 250;
     
     draw(200,0,game.weaponBackground,sizeWeapon,-player.rotationTick*3,false,true);
-    ctx.fillStyle = "#ccc";
-    ctx.fill();
+    //ctx.fillStyle = "#ccc";
+    //ctx.fill();
 
     switch(game.weapon.rarity) {
         case 1: {
-            ctx.fillStyle = "#55cc55"
+            ctx.fillStyle = "#77cc77"
             break; 
         }
         case 2: { 
-            ctx.fillStyle = "#5577cc"
+            ctx.fillStyle = "#7799cc"
             break; 
         }
         case 3: { 
-            ctx.fillStyle = "#cccc55"
+            ctx.fillStyle = "#cccc77"
             break; 
         }
         case 4: { 
-            ctx.fillStyle = "#9955cc"
+            ctx.fillStyle = "#9977cc"
             break; 
         }
         default: { 
@@ -203,77 +203,95 @@ function drawInventory() {
             break; 
         }
     }
-    ctx.fillStyle += "77";
+    //ctx.fillStyle += "77";
     ctx.strokeStyle = "#222";
 
     ctx.fill();
     ctx.stroke();
+    ctx.beginPath();
 
     draw(200,0,game.weapon.reference.drawPath,100,Math.sin(player.rotationTick*5)/3);
     if (Math.hypot(mouse.x-200,mouse.y) < 200) drawItemDesc(game.weapon,200,0);
 
     [[-150,-300],[-550,-300],[-300,0],[-700,0],[-150,300],[-550,300]].forEach((item, i) => {
-        if (game.relicsEquipped[i]) {
-            ctx.beginPath();
-
-            const size = 135;
+        ctx.beginPath();
+        if (!game.relicsEquipped[i]) {
+            const size = 50;
             draw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
-            ctx.fillStyle = "#ccc";
-            ctx.fill();
-
-            switch(game.relicsEquipped[i].rarity) {
-                case 1: {
-                    ctx.fillStyle = "#55cc55"
-                    break; 
-                }
-                case 2: { 
-                    ctx.fillStyle = "#5577cc"
-                    break; 
-                }
-                case 3: { 
-                    ctx.fillStyle = "#cccc55"
-                    break; 
-                }
-                case 4: { 
-                    ctx.fillStyle = "#9955cc"
-                    break; 
-                }
-                default: { 
-                    ctx.fillStyle = "#999999"
-                    break; 
-                }
-            }
-            ctx.fillStyle += "77";
             ctx.strokeStyle = "#222";
-
+            ctx.fillStyle = "#555";
             ctx.fill();
             ctx.stroke();
 
-
-            draw(...item,game.relicsEquipped[i].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
-            if (Math.hypot(mouse.x-item[0],mouse.y-item[1]) < 200) drawItemDesc(game.relicsEquipped[i],...item);
+            return;
         }
+
+        const size = 135;
+        draw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
+        ctx.fillStyle = "#ccc";
+        ctx.fill();
+
+        switch(game.relicsEquipped[i].rarity) {
+            case 1: {
+                ctx.fillStyle = "#77cc77"
+                break; 
+            }
+            case 2: { 
+                ctx.fillStyle = "#7799cc"
+                break; 
+            }
+            case 3: { 
+                ctx.fillStyle = "#cccc77"
+                break; 
+            }
+            case 4: { 
+                ctx.fillStyle = "#9977cc"
+                break; 
+            }
+            default: { 
+                ctx.fillStyle = "#999999"
+                break; 
+            }
+        }
+        ctx.fillStyle += "77";
+        ctx.strokeStyle = "#222";
+
+        ctx.fill();
+        ctx.stroke();
+
+
+        draw(...item,game.relicsEquipped[i].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
+        if (Math.hypot(mouse.x-item[0],mouse.y-item[1]) < 200) drawItemDesc(game.relicsEquipped[i],...item);
     });
     [[550,-300],[700,0],[550,300]].forEach((item, i) => {
-        if (game.artifactsEquipped[i]) {
-            ctx.beginPath();
-
-            const size = 135;
+        if (!game.artifactsEquipped[i]) {
+            const size = 50;
             draw(...item,game.artifactBackground,size,-player.rotationTick*3,false,true);
-            ctx.closePath();
-            ctx.fillStyle = "#ccc";
-            ctx.fill();
-
-            ctx.fillStyle = "#cc555577";
             ctx.strokeStyle = "#222";
-
+            ctx.fillStyle = "#555";
             ctx.fill();
             ctx.stroke();
 
-
-            draw(...item,game.artifactsEquipped[i].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
-            if (Math.hypot(mouse.x-item[0],mouse.y-item[1]) < 200) drawItemDesc(game.artifactsEquipped[i],...item);
+            return;
         }
+
+        ctx.beginPath();
+
+        const size = 135;
+        draw(...item,game.artifactBackground,size,-player.rotationTick*3,false,true);
+        ctx.closePath();
+        ctx.fillStyle = "#ccc";
+        ctx.fill();
+
+        ctx.fillStyle = "#cc7777";
+        ctx.strokeStyle = "#222";
+
+        ctx.fill();
+        ctx.stroke();
+
+
+        draw(...item,game.artifactsEquipped[i].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
+        if (Math.hypot(mouse.x-item[0],mouse.y-item[1]) < 200) drawItemDesc(game.artifactsEquipped[i],...item);
     })
 }
 
@@ -450,3 +468,4 @@ function drawRegionName() {
     ctx.fillText(game.region.name[0],0,-350-200*(1-game.regionTransfer)**5);
     ctx.lineWidth = 3;
 }
+loading--;

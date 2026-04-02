@@ -1,6 +1,7 @@
 let dungeon = { "0,0": { blocks: [], items: [], connections: [], visited: true, boss: true, regionTransfer: true } };
 
 const dungeonPresets = [
+    `[]`,
     `[[-425,-125,50,250],[375,-125,50,250]]`,
     `[[-650,-250,100,100],[150,-250,100,100],[550,150,100,100],[-250,150,100,100]]`,
     `[[-425,-25,850,50]]`,
@@ -41,7 +42,7 @@ function generateDungeon() {
         pos[change[0]] += change[1];
         change[1] *= -1;
         dungeon[pos[0] + "," + pos[1]] = { blocks: JSON.parse(dungeonPresets[Math.floor(Math.random()*dungeonPresets.length)]), items: [], connections: [change] };
-        if (length > 10 && Math.random() < 0.5/*Math.abs(pos[0]) + Math.abs(pos[1]) == 6*/) {
+        if (true || length > 10 && Math.random() < 0.5/*Math.abs(pos[0]) + Math.abs(pos[1]) == 6*/) {
             dungeon[pos[0] + "," + pos[1]].boss = true;
             connected = true;
             dungeon[pos[0] + "," + pos[1]].blocks = [];
@@ -201,3 +202,5 @@ for (var i = 0; i < 6; i++) roomEffects.push({
     x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:600+Math.random()*400,
     reference:game.region.roomEffects[Math.floor(Math.random()*game.region.roomEffects.length)]
 });
+
+loading--;

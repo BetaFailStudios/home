@@ -212,3 +212,4 @@ function random(extraLuck,highBetter) {
     }
     return random;
 }
+loading--;

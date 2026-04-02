@@ -18,7 +18,7 @@ class Enemy {
 
         this.health *= 1+(game.difficulty-0.5)/2;
 
-        if (!this.projectile) {
+        if (!this.projectile && !this.noSpawning) {
             this.spawning = 1;
             setTimeout(ease,1500,this,"spawning",0,1);
         }
@@ -267,12 +267,7 @@ function enemyDraw() {
         if (enemy.ephemeral) ctx.globalAlpha = 0.6;
         if (enemy.randomRotation) {
             if (enemy.showHit > 0) {
-                ctx.beginPath();
-                ctx.fillStyle = "#ccc";
-                ctx.strokeStyle = "#ccc";
-                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, Math.random()*Math.PI*2,false,true);
-                ctx.fill();
-                ctx.stroke();
+                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, Math.random()*Math.PI*2,false,false,false,false,"#ccc");
                 enemy.showHit--;
             } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, Math.random()*Math.PI*2);
         }
@@ -341,3 +336,4 @@ function drawBossName() {
 
     if (!game.bossEase) ease(game,"bossEase",1,5);
 }
+loading--;

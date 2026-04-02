@@ -177,3 +177,4 @@ function playerDraw() {
     draw(70,0,game.weapon.reference.drawPath,25);
     ctx.restore();
 }
+loading--;

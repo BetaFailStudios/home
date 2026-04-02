@@ -5,16 +5,7 @@ function startMusic() {
 
     const song = game.region.music[game.musicPos];
 
-    song.attacklist.forEach((item) => { 
-        for (var i = 0; i < (item[2] || 1); i++) {
-            game.musicSyncList.push(
-                [(0.05+(item[0] + (item[3] || 0)*i)*song.bpb*60/song.bpm - game.warnDelay/320)%song.file.duration, item[1], true ],
-                [0.05+(item[0] + (item[3] || 0)*i)*song.bpb*60/song.bpm, item[1] ]
-            )
-        }
-    })
-
-    game.musicSyncList.sort((a,b)=> { return a[0] - b[0] });
+    game.musicSyncList = [...song.attacklistReady];
 
     song.file.volume = 0;
     song.file.currentTime = 0;
@@ -62,3 +53,4 @@ function restartMusic(input) {
         startMusic();
     },1000)
 }
+loading--;

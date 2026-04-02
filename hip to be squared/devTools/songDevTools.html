@@ -107,13 +107,13 @@
             if (e.key.toLowerCase() == "z") notes.splice( notes.length-1 );
             if (e.key.toLowerCase() == "arrowright") offset += bpb;
             if (e.key.toLowerCase() == "arrowleft" && offset > 0) offset -= bpb;
-            if (e.key.toLowerCase() == "x" && Math.abs(mouse.y) < 110) {
+            if (e.key.toLowerCase() == "x") {
                 let closest = -1;
                 let closestDist = bpb;
-                let type = "a" + Math.floor((mouse.y+140)/20);
+                let type = "a" + Math.floor((mouse.y+300)/50);
                 notes.forEach((item, i) => {
                     const dist = Math.abs(pos-item[0]);
-                    if (dist < bpb && dist < closestDist && item[1] == type) {
+                    if (dist < 1/4/bpb && dist < closestDist && Math.abs(Number(item[1][1])-Number(type[1])) <= 1) {
                         closestDist = dist;
                         closest = i;
                     }
@@ -165,7 +165,7 @@
             ctx.fillText("Bar: " + (offset/bpb + 1), -500,-440);
 
             ctx.beginPath();
-            for (var i = -100; i <= 100; i += 20) {
+            for (var i = -200; i <= 500; i += 50) {
                 ctx.moveTo(-1000,i);
                 ctx.lineTo(1000,i);
             }
@@ -186,7 +186,7 @@
 
             notes.forEach((item) => {
                 ctx.fillStyle = "#ccc";
-                const y = -120 + 20*(Number(item[1][1])); 
+                const y = -250 + 50*(Number(item[1][1])); 
                 ctx.font = "20px share tech"
                 ctx.fillText(item[1],(item[0]*bpb-bpb/2-offset)*1600/bpb+5,y);
                 ctx.fillRect((item[0]*bpb-bpb/2-offset)*1600/bpb-5, y-15, 10, 30);

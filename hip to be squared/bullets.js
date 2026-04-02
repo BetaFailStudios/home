@@ -118,7 +118,12 @@ async function bulletTick() {
                 bullet.y -= bullet.vx * sineRatio;
             }
 
-            if (bullet.triggerExpire && !game.menu) stats.bulletTicks.forEach( (item) => item[1](item[0],bullet));
+            if (bullet.triggerExpire && !game.menu) {
+                let prevDamage = bullet.damage;
+                stats.damageBoosts.forEach( (item) => bullet.damage *= item[1](item[0],bullet));
+                stats.bulletTicks.forEach( (item) => item[1](item[0],bullet));
+                bullet.damage = prevDamage;
+            }
 
             /*if (!i && (!stats.noDrawBullets || !bullet.triggerExpire)) if (bullet.size > 5) {
                 draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
@@ -160,16 +165,17 @@ async function bulletTick() {
                         enemy.showHit = 4;
 
                         bullet.enemiesTouched.push(enemy);
-                        let damage = bullet.damage;
-                        stats.damageBoosts.forEach( (item) => damage *= item[1](item[0],bullet,enemy));
-                        if (!enemy.projectile) enemy.health -= damage;
-                        if (game.showDamageNumbers) dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,damage));
+                        let prevDamage = bullet.damage;
+                        stats.damageBoosts.forEach( (item) => bullet.damage *= item[1](item[0],bullet,enemy));
+                        if (!enemy.projectile) enemy.health -= bullet.damage;
+                        if (game.showDamageNumbers) dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,bullet.damage));
                         if (bullet.pierce) bullet.pierce--;
                         else if (!enemy.projectiles || enemy.health > 0) {
                             bullet.alive = false;
                         }
                         
                         stats.onHits.forEach( (item) => item[1](item[0],bullet,enemy));
+                        bullet.damage = prevDamage;
                     }
                 } else if (bullet.enemiesTouched.includes(enemy)) bullet.enemiesTouched.splice(bullet.enemiesTouched.indexOf(enemy), 1);
             })
@@ -338,3 +344,5 @@ function bulletDraw() {
         }
     })
 }
+
+loading--;

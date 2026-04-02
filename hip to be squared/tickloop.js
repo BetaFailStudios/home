@@ -1,5 +1,4 @@
 function tickloop() {
-
     //initialize async function
     bulletTick();
     enemyTick();
@@ -128,7 +127,7 @@ function tickloop() {
         } else game.relicTick++;
     }
 
-    if (!player.burstsLeft && player.firerateTick > 0) {
+    if (stats.firerate > 10 && !player.burstsLeft && player.firerateTick > 0) {
         ctx.strokeStyle = "#cccccc50";
         ctx.beginPath();
         ctx.arc(mouse.x,mouse.y,50,-Math.PI/2,-Math.PI/2-Math.PI*2*player.firerateTick/stats.firerate);
@@ -145,10 +144,8 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.6.4",700,470);
+    ctx.fillText("Version: b.1.6.5",700,470);
 }
-
-setInterval( tickloop, 1000/60 );
-
 //enemies.push(new Enemy(enemyBlueprints[4],{x:600}));
 //game.musicPos = 1;
+loading--;

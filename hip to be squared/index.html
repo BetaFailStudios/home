@@ -4,6 +4,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="htbsplayer.png">
 </head>
 <body>
     <style>
@@ -21,8 +22,10 @@
         }
     </style>
     <script>function xy(event) {  }</script>
-    <canvas oncontextmenu="return false;" onmousemove="xy(event)" width="1500px" height="1000px" id="gameScreen"></canvas>
+    <canvas onmousemove="xy(event)" width="1500px" height="1000px" id="gameScreen"></canvas>
     <p id="fps">60</p>
+    <script>const imageSize = false;</script>
+    <script> let loading = 13; </script>
     <script src="misc.js"></script>
     <script src="items.js"></script>
     <script src="setup.js"></script>
@@ -36,4 +39,8 @@
     <script src="enemies.js"></script>
     <script src="player.js"></script>
     <script src="tickloop.js"></script>
+    <script> 
+        setInterval( tickloop, 1000/60 ); 
+        //draw(20,20,player.drawPath,15)
+    </script>
 </body>

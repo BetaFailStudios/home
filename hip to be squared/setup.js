@@ -25,17 +25,20 @@ var ctx = canvas.getContext("2d");
 var screenScale = window.innerWidth/1800;
 if (window.innerHeight/1000 < screenScale) screenScale = window.innerHeight/1000;
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = imageSize || window.innerWidth;
+canvas.height = imageSize || window.innerHeight;
 
-ctx.translate(window.innerWidth/2, window.innerHeight/2);
+if (!imageSize) ctx.translate(window.innerWidth/2, window.innerHeight/2);
 
-ctx.scale(screenScale, screenScale);
+if (!imageSize) ctx.scale(screenScale, screenScale);
 
 ctx.lineWidth = 3;
 ctx.textBaseline = 'middle';
 ctx.textAlign = 'center';
 ctx.lineJoin = "bevel";
+
+ctx.fillStyle = "#000";
+if (!imageSize) ctx.fillRect(-2000,-1500,4000,3000);
 
 //resizing
 window.addEventListener("resize", (  ) => {
@@ -61,8 +64,6 @@ window.addEventListener("resize", (  ) => {
     ctx.fillStyle = "#000";
     ctx.fillRect(-1800,-1000,3600,2000);
 });
-ctx.fillStyle = "#000";
-ctx.fillRect(-2000,-1500,4000,3000);
 
 const keys = {};
 const mouse = { x: 0, y: 0 };
@@ -256,7 +257,7 @@ function changeEaseable(item, i) {
     return contin;
 }
 
-function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove) {
+function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverride) {
     const ratio = (size+game.musicWobble)/250;
     const flipVertRatio = -1+2*(!flipVert);
 
@@ -288,12 +289,12 @@ function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove) {
                 break;
             }
             case "fill": {
-                ctx.fillStyle = "rgb("+item.r+","+item.g+","+item.b+")";
+                ctx.fillStyle = colorOverride || "rgb("+item.r+","+item.g+","+item.b+")";
                 ctx.fill();
                 break;
             }
             case "stroke": {
-                ctx.strokeStyle = "rgb("+item.r+","+item.g+","+item.b+")";
+                ctx.strokeStyle = colorOverride || "rgb("+item.r+","+item.g+","+item.b+")";
                 ctx.stroke();
                 ctx.beginPath();
                 move = true;
@@ -369,7 +370,7 @@ const game = {
     musicPopup: 1,
     tick: 0,
     musicWobble: 0,
-    warnDelay: 120,
+    warnDelay: 150,
     difficulty: 0.5,
 };
 
@@ -391,3 +392,4 @@ updateStats();
 function animationRatio(x,t,r) {
     return 1 - Math.pow( Math.abs( 2*x/t - 1 ), r);
 }
+loading--;
