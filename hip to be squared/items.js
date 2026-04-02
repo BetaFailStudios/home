@@ -65,7 +65,7 @@ const weapons = [
             `[{"type":"point","x":-250,"y":-100},{"type":"point","x":200,"y":-100},{"type":"point","x":300,"y":0},{"type":"point","x":200,"y":100},{"type":"point","x":-250,"y":100},{"type":"close"},{"type":"fill","r":50,"g":150,"b":175},{"type":"stroke","r":50,"g":75,"b":100}]`
         ), statChange(rarity) {
             stats.firerate *= 1.6;
-            stats.damage *= 2.5;
+            stats.damage *= 2;
             stats.bulletSpeed *= 8 + 2*rarity;
             stats.pierce = 2 + rarity;
             stats.bulletSize *= 2.5;
@@ -137,7 +137,7 @@ const weapons = [
             `[{"type":"point","x":-50,"y":-250},{"type":"point","x":50,"y":-250},{"type":"point","x":175,"y":-200,"move":false},{"type":"point","x":200,"y":-175,"move":false},{"type":"point","x":250,"y":-50,"move":false},{"type":"point","x":250,"y":50,"move":false},{"type":"point","x":200,"y":175,"move":false},{"type":"point","x":175,"y":200,"move":false},{"type":"point","x":50,"y":250,"move":false},{"type":"point","x":-50,"y":250,"move":false},{"type":"point","x":-175,"y":200,"move":false},{"type":"point","x":-200,"y":175,"move":false},{"type":"point","x":-250,"y":50,"move":false},{"type":"point","x":-250,"y":-50,"move":false},{"type":"point","x":-200,"y":-175,"move":false},{"type":"point","x":-175,"y":-200,"move":false},{"type":"close"},{"type":"point","x":-50,"y":-200,"move":true},{"type":"point","x":-150,"y":-150,"move":false},{"type":"point","x":-200,"y":-50,"move":false},{"type":"point","x":-200,"y":50,"move":false},{"type":"point","x":-150,"y":150,"move":false},{"type":"point","x":-50,"y":200,"move":false},{"type":"point","x":50,"y":200,"move":false},{"type":"point","x":150,"y":150,"move":false},{"type":"point","x":200,"y":50,"move":false},{"type":"point","x":200,"y":-62.5,"move":false},{"type":"point","x":150,"y":-150,"move":false},{"type":"point","x":50,"y":-200,"move":false},{"type":"close"},{"type":"fill","r":50,"g":150,"b":250},{"type":"stroke","r":50,"g":50,"b":150}]`
         ), statChange(rarity) {
             stats.firerate *= 1.5;
-            stats.damage *= 1.25 + 0.25*rarity;
+            stats.damage *= 1.75 + 0.5*rarity;
             stats.bulletSize *= 2;
             stats.bulletSpeed *= 0.85;
         }, expiration(rarity,bullet) {
@@ -932,7 +932,7 @@ const relics = [
         }, onHit(rarity,bullet) {
             bullet.enemyHit = true;
         }, expiration(rarity,bullet) {
-            if (!bullet.enemyHit) stats.deadEye = false;
+            if (!bullet.enemyHit && bullet.triggerExpire) stats.deadEye = false;
         }
 /*RD*/},{
         name: "Red Dot",
@@ -1178,13 +1178,13 @@ const artifacts = [
             enemies.forEach( (enemy,i) => {
                 if (enemy.projectile) return;
                 const dist = Math.hypot(enemy.x-bullet.x,enemy.y-bullet.y)-enemy.size-bullet.size;
-                if (dist < 600 && dist > 25 && dist < closestDist) {
+                if (dist < 600 && dist < closestDist) {
                     closestDist = dist;
                     closest = i;
                 }
             })
 
-            if (closest != -1) {
+            if (closest != -1 && closestDist > 25) {
                 bullet.vx = (enemies[closest].x-bullet.x)/closestDist*stats.bulletSpeed/25 + bullet.vx*0.97;
                 bullet.vy = (enemies[closest].y-bullet.y)/closestDist*stats.bulletSpeed/25 + bullet.vy*0.97;
                 if (bullet.tick%5 < 1) {
@@ -1334,11 +1334,6 @@ function drawItemDesc(item,x,y) {
         if (x !== undefined) item.x = x;
         if (y !== undefined) item.y = y;
         ctx.beginPath();
-        ctx.rect(item.x-150,item.y+100,300,100);
-        ctx.fillStyle = "#555";
-        ctx.strokeStyle = "#222";
-        //ctx.fill();
-        //ctx.stroke();
 
         ctx.font = "30px Share Tech";
         let name = "";

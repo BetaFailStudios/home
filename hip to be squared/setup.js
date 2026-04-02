@@ -265,7 +265,7 @@ function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverri
     ctx.translate(x,y);
     if (rotate) ctx.rotate(rotate);
 
-    if (alpha !== undefined) ctx.globalAlpha = alpha;
+    if (alpha !== undefined && alpha !== false) ctx.globalAlpha = alpha;
 
     if (!noClear) ctx.beginPath();
     let move = true;
@@ -289,12 +289,14 @@ function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverri
                 break;
             }
             case "fill": {
-                ctx.fillStyle = colorOverride || "rgb("+item.r+","+item.g+","+item.b+")";
+                if (colorOverride) ctx.fillStyle = colorOverride;
+                else ctx.fillStyle = "rgb("+item.r+","+item.g+","+item.b+")";
                 ctx.fill();
                 break;
             }
             case "stroke": {
-                ctx.strokeStyle = colorOverride || "rgb("+item.r+","+item.g+","+item.b+")";
+                if (colorOverride) ctx.strokeStyle = colorOverride;
+                else ctx.strokeStyle = "rgb("+item.r+","+item.g+","+item.b+")";
                 ctx.stroke();
                 ctx.beginPath();
                 move = true;

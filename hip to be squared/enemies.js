@@ -132,14 +132,21 @@ async function enemyTick() {
             delete enemy.reset;
         }
 
-        if (enemy.projectile) {
+        if (enemy.projectile && !enemy.noProjPierce) {
             if (Math.abs(enemy.x) > 1000+enemy.size || Math.abs(enemy.y) > 600+enemy.size) {
                 enemy.toReturn = false;
                 return false;
             }
             if (game.notLocked) enemy.health = 0;
-        } else if (!enemy.offscreen) {        
+        } else if (enemy.alive && !enemy.offscreen) {        
             if (Math.abs(enemy.x) > 850-enemy.size) {
+                if (enemy.projectile) {
+                    enemy.alive = false;
+                    ease(enemy,"size",0,0.2);
+                    enemy.vx = 0; enemy.vy = 0;
+                    enemy.toReturn = true;
+                    return true;
+                }
                 enemy.x = Math.sign(enemy.x)*(850-enemy.size);
                 enemy.vx *= 0.8;
                 enemy.vy *= 0.8;
@@ -150,6 +157,13 @@ async function enemyTick() {
                 else if (!enemy.noVelocityChange) enemy.vx = 0;            
             }
             if (Math.abs(enemy.y) > 450-enemy.size) {
+                if (enemy.projectile) {
+                    enemy.alive = false;
+                    ease(enemy,"size",0,0.2);
+                    enemy.vx = 0; enemy.vy = 0;
+                    enemy.toReturn = true;
+                    return true;
+                };
                 enemy.y = Math.sign(enemy.y)*(450-enemy.size);
                 enemy.vx *= 0.8;
                 enemy.vy *= 0.8;
@@ -161,13 +175,20 @@ async function enemyTick() {
             }
         }
 
-        if (!enemy.immovable) {
+        if (enemy.alive && (!enemy.immovable || (enemy.projectile && enemy.noProjPierce))) {
             blocks.forEach((block) => {
                 const diffx = enemy.x + enemy.size - block[0];
                 const diffy = enemy.y + enemy.size - block[1];
                 const diffx1 = -enemy.x + enemy.size + block[0]+block[2];
                 const diffy1 = -enemy.y + enemy.size + block[1]+block[3];
                 if (diffx > 0 && diffx1 > 0 && diffy > 0 && diffy1 > 0) {
+                    if (enemy.projectile) {
+                        enemy.alive = false;
+                        ease(enemy,"size",0,0.2);
+                        enemy.vx = 0; enemy.vy = 0;
+                        enemy.toReturn = true;
+                        return true;
+                    };
                     enemy.vx *= 0.8;
                     enemy.vy *= 0.8;
                     if (enemy.target == "player") enemy.target = "-player";
@@ -270,18 +291,13 @@ function enemyDraw() {
         if (enemy.ephemeral) ctx.globalAlpha = 0.6;
         if (enemy.randomRotation) {
             if (enemy.showHit > 0) {
-                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, Math.random()*Math.PI*2,false,false,false,false,"#ccc");
+                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, Math.random()*Math.PI*2,false,false,false,false,"#cccccc");
                 enemy.showHit--;
             } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, Math.random()*Math.PI*2);
         }
         else {
             if (enemy.showHit > 0) {
-                ctx.beginPath();
-                ctx.fillStyle = "#ccc";
-                ctx.strokeStyle = "#ccc";
-                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4,false,true);
-                ctx.fill();
-                ctx.stroke();
+                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4,false,false,false,false,"#cccccc");
                 enemy.showHit--;
             } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4);
         }

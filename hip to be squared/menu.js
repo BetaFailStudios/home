@@ -178,8 +178,6 @@ function drawInventory() {
     const sizeWeapon = 250;
     
     draw(200,0,game.weaponBackground,sizeWeapon,-player.rotationTick*3,false,true);
-    //ctx.fillStyle = "#ccc";
-    //ctx.fill();
 
     switch(game.weapon.rarity) {
         case 1: {
@@ -203,7 +201,6 @@ function drawInventory() {
             break; 
         }
     }
-    //ctx.fillStyle += "77";
     ctx.strokeStyle = "#222";
 
     ctx.fill();
@@ -228,8 +225,6 @@ function drawInventory() {
 
         const size = 135;
         draw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
-        ctx.fillStyle = "#ccc";
-        ctx.fill();
 
         switch(game.relicsEquipped[i].rarity) {
             case 1: {
@@ -253,7 +248,6 @@ function drawInventory() {
                 break; 
             }
         }
-        ctx.fillStyle += "77";
         ctx.strokeStyle = "#222";
 
         ctx.fill();
@@ -280,12 +274,9 @@ function drawInventory() {
         const size = 135;
         draw(...item,game.artifactBackground,size,-player.rotationTick*3,false,true);
         ctx.closePath();
-        ctx.fillStyle = "#ccc";
-        ctx.fill();
 
         ctx.fillStyle = "#cc7777";
         ctx.strokeStyle = "#222";
-
         ctx.fill();
         ctx.stroke();
 

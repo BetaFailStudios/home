@@ -144,7 +144,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.6.7",700,470);
+    ctx.fillText("Version: b.1.6.8",700,470);
 }
 //enemies.push(new Enemy(enemyBlueprints[4],{x:600}));
 //game.musicPos = 1;
