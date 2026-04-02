@@ -132,10 +132,13 @@ async function enemyTick() {
             delete enemy.reset;
         }
 
-        if (enemy.projectile) { if (Math.abs(enemy.x) > 1000+enemy.size || Math.abs(enemy.y) > 600+enemy.size) {
-            enemy.toReturn = false;
-            return false;
-        }} else if (!enemy.offscreen) {        
+        if (enemy.projectile) {
+            if (Math.abs(enemy.x) > 1000+enemy.size || Math.abs(enemy.y) > 600+enemy.size) {
+                enemy.toReturn = false;
+                return false;
+            }
+            if (game.notLocked) enemy.health = 0;
+        } else if (!enemy.offscreen) {        
             if (Math.abs(enemy.x) > 850-enemy.size) {
                 enemy.x = Math.sign(enemy.x)*(850-enemy.size);
                 enemy.vx *= 0.8;
