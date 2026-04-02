@@ -235,24 +235,4 @@ game.nextRegion = regions[0][0];
 game.regionNum = -1 ;
 game.regionTransfer = 1;
 
-setTimeout( () => {
-    regions.forEach(regionList => {
-        regionList.forEach( region => {
-            region.music.forEach(song => {
-                if (!song.warnIncrease) song.warnIncrease = [0,0,0,0,0,0,0,0,0];
-                song.attacklistReady = [];
-                song.attacklist.forEach((item) => { 
-                    for (var i = 0; i < (item[2] || 1); i++) {
-                        song.attacklistReady.push(
-                            [(-0.15+(item[0] + (item[3] || 0)*i)*song.bpb*60/song.bpm - (game.warnDelay+song.warnIncrease[Number(item[1][1])-1])/320)%song.file.duration, item[1], true ],
-                            [(-0.15+(item[0] + (item[3] || 0)*i)*song.bpb*60/song.bpm)%song.file.duration, item[1] ]
-                        )
-                    }
-                })
-                song.attacklistReady.sort((a,b) => { return a[0] - b[0] });
-            })
-        })
-    })
-
-    loading--;
-},200)
+loading--;

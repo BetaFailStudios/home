@@ -483,7 +483,7 @@ const enemyBlueprints = [
                 enemy.attackLista7.push(things);
             } else {
                 enemy.attackLista7[0].forEach(item => {
-                    enemiesBuffer.push(new Enemy(enemyBlueprints[9],{ size: 450, x: item[0], y: item[1]}));
+                    enemiesBuffer.push(new Enemy(enemyBlueprints[9],{ size: 400, x: item[0], y: item[1]}));
                 });
                 enemy.attackLista7.splice(0,1);
             }
