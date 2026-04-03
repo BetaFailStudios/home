@@ -1506,7 +1506,8 @@ function pickUpItem() {
             items.splice(closestIndex,1);
             
             const itemPos = dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos
-            if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems && ( closestIndex == itemPos || closestIndex == itemPos+1 || closestIndex == itemPos+2 ) ) {
+            if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems && ( closestIndex == itemPos || closestIndex == itemPos+1 || closestIndex == itemPos+2 && game.firstWeapon ) ) {
+                game.firstWeapon = false;
                 items.splice(itemPos,2);
                 dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems = false;
             }
