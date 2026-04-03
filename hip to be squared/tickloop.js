@@ -102,24 +102,38 @@ function tickloop() {
             dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos = items.length-3;
         } else if (game.relicTick >= 1) {
             if (game.firstWeapon) {
-                items.push(new Item(player.x-200,player.y,false,false,"weapon"));
-                while (items[items.length-1].reference.name == "Basic Gun") {
-                    items.splice(items.length-1);
-                    items.push(new Item(player.x-200,player.y,false,false,"weapon"));
-                }
-                items.push(new Item(player.x+200,player.y,false,false,"weapon"));
-            }
-            else items.push(new Item(player.x-200,player.y,false,false,"relic"), new Item(player.x+200,player.y,false,false,"relic"));
 
-            while (items[items.length-1].reference == items[items.length-2].reference || items[items.length-1].reference.name == "Basic Gun") {
-                items.splice(items.length-1);
-                if (game.firstWeapon) items.push(new Item(player.x+200,player.y,false,false,"weapon"))
-                else items.push(new Item(player.x+200,player.y,false,false,"relic"))
+                items.push(
+                    new Item(player.x-200,player.y+75,false,false,"weapon"), 
+                    new Item(player.x+200,player.y+75,false,false,"weapon"), 
+                    new Item(player.x,player.y-75,false,false,"weapon")
+                );
+
+                while (items[items.length-2].reference == items[items.length-3].reference || items[items.length-1].reference.name == "Basic Gun") {
+                    items.splice(items.length-2,1);
+                    items.push(new Item(player.x+200,player.y+75,false,false,"weapon"))
+                }
+
+                while (items[items.length-1].reference == items[items.length-2].reference || items[items.length-1].reference == items[items.length-3].reference || items[items.length-1].reference.name == "Basic Gun") {
+                    items.splice(items.length-1);
+                    items.push(new Item(player.x,player.y-75,false,false,"weapon"))
+                }
+
+                dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos = items.length-3;
+            }
+            else {
+                items.push(new Item(player.x-200,player.y,false,false,"relic"), new Item(player.x+200,player.y,false,false,"relic"));
+
+                while (items[items.length-1].reference == items[items.length-2].reference || items[items.length-1].reference.name == "Basic Gun") {
+                    items.splice(items.length-1);
+                    if (game.firstWeapon) items.push(new Item(player.x+200,player.y,false,false,"weapon"))
+                    else items.push(new Item(player.x+200,player.y,false,false,"relic"))
+                }
+                dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos = items.length-2;
             }
 
             game.relicTick = 0;
             dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems = true;
-            dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos = items.length-2;
 
 
             if (game.firstWeapon) game.firstWeapon = false;
@@ -144,7 +158,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.6.8",700,470);
+    ctx.fillText("Version: b.1.6.9",700,470);
 }
 //enemies.push(new Enemy(enemyBlueprints[4],{x:600}));
 //game.musicPos = 1;
