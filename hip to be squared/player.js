@@ -6,6 +6,8 @@ const player = {
         `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-50,"y":0},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"point","x":-200,"y":250,"move":true},{"type":"point","x":200,"y":250,"move":false},{"type":"point","x":0,"y":50,"move":false},{"type":"close"},{"type":"point","x":250,"y":200,"move":true},{"type":"point","x":250,"y":-200,"move":false},{"type":"point","x":50,"y":0,"move":false},{"type":"close"},{"type":"point","x":0,"y":-50,"move":true},{"type":"point","x":200,"y":-250,"move":false},{"type":"point","x":-200,"y":-250,"move":false},{"type":"close"},{"type":"fill","r":150,"g":200,"b":200},{"type":"stroke","r":75,"g":115,"b":125}]`
     ),dashCooldownPath: JSON.parse(
         `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-200,"y":-250},{"type":"point","x":200,"y":-250},{"type":"point","x":250,"y":-200},{"type":"point","x":250,"y":200},{"type":"point","x":200,"y":250},{"type":"point","x":-200,"y":250},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"fill","r":150,"g":150,"b":150},{"type":"stroke","r":100,"g":100,"b":100}]`
+    ),bloodPath: JSON.parse(
+        `[{"type":"point","x":-250,"y":-250},{"type":"point","x":250,"y":-250},{"type":"point","x":250,"y":250},{"type":"point","x":-250,"y":250},{"type":"close"},{"type":"fill","r":255,"g":0,"b":0},{"type":"stroke","r":50,"g":0,"b":0}]`
     ),
     firerateTick: 0,
     iFrames: 0,
@@ -59,6 +61,8 @@ async function playerTick() {
         const tempBullet = {x: 0, y: 0, direction: lookDirection, triggerExpire: true, trailColor: stats.trailColor, trailLength: stats.trailLength || 8, projHit: stats.projHit};
         
         if (stats.projectiles > 1) lookDirection -= stats.spread/2;
+        if (player.burstsLeft) playsfx("shootimpact",0.2,0.65);
+        else playsfx("shootimpact",0.2,1);
         
         for (var i = 0; i < stats.projectiles; i++) {
             tempBullet.direction = lookDirection;
@@ -88,10 +92,10 @@ async function playerTick() {
             const x = (player.x-enemy.x);
             const y = (player.y-enemy.y);
             const hypot = Math.hypot(x,y);
-            if (hypot && hypot < stats.playerSize+enemy.size/2.5) {
+            if (hypot && hypot < stats.playerSize+Math.max(enemy.size/2,enemy.size-100)) {
                 
-                player.vx += 150*Math.sign(x)/hypot + enemy.vx/2;
-                player.vy += 150*Math.sign(y)/hypot + enemy.vy/2;
+                player.vx += 100*Math.sign(x)/hypot + enemy.vx/10;
+                player.vy += 100*Math.sign(y)/hypot + enemy.vy/10;
                 if (!enemy.immovable) {
                     enemy.vx -= 25*Math.sign(x)/hypot;
                     enemy.vy -= 25*Math.sign(y)/hypot;
@@ -102,13 +106,29 @@ async function playerTick() {
                 for (var i = 0; i < 1 + (stats.extraReceivedDamage || 0); i++) if (stats.extraHealth) {
                     blue++;
                     stats.extraHealth--;
+                    player.showShieldBreak = 1;
                 } else {
                     red++;
                     stats.health--;
+                    for(var i = 0; i < 3; i++) effects.push(new Effect(player.x+(1-2*Math.random())*stats.playerSize*3,player.y+(1-2*Math.random())*stats.playerSize*3,player.bloodPath,stats.playerSize*1.5+75,20,false,false,0.3));
+                    for(var i = 0; i < 5; i++) floor.push({x:player.x+(1-2*Math.random())*stats.playerSize*3,y:player.y+(1-2*Math.random())*stats.playerSize*3,size:stats.playerSize*(0.5+Math.random()),reference:player.bloodPath,rotation:Math.PI*Math.random()});
                 }
                 game.showHit += 0.85;
+                
+                if (blue) {
+                    playsfx("blueloss");
+                    game.freezeframes = 20;
+                    game.region.music[game.musicPos].file.pause();
+                }
+                if (red) {
+                    playsfx("redloss");
+                    game.freezeframes = 10;
+                    game.region.music[game.musicPos].file.pause();
+                }
 
                 stats.onPlayerHits.forEach( (item) => item[1](item[0],enemy,blue,red));
+
+                //playerDraw();
             }
         })
     }
@@ -141,13 +161,13 @@ async function playerTick() {
 }
 
 function playerDraw() {
+    player.rotationTick += Math.PI/600;
+    if (player.rotationTick > Math.PI*2) player.rotationTick -= Math.PI*2;
+
     if (!game.menu) stats.playerTicks.forEach( (item) => item[1](item[0]));
     if (game.regionTransfer > 1) draw(player.x,player.y,player.drawPath,stats.playerSize*(-1+game.regionTransfer),player.rotationTick);
-    else if (game.regionTransfer > 0) draw(player.x,player.y,player.drawPath,stats.playerSize*(1+10*game.regionTransfer**4),player.rotationTick,1-game.regionTransfer);
+    else if (game.regionTransfer > 0) draw(player.x,player.y,player.drawPath,stats.playerSize*(1+10*game.regionTransfer**2.5),player.rotationTick,1-game.regionTransfer);
     else {
-        if (player.dashCooldown) {
-            draw(player.x,player.y,player.dashCooldownPath,(stats.playerSize+50)*player.dashCooldown,-player.rotationTick, 0.2);
-        }
 
         ctx.strokeStyle = "#cccccc50";
         ctx.beginPath();
@@ -166,15 +186,34 @@ function playerDraw() {
         if (player.iFrames > 0) ctx.globalAlpha = 0.4;
         draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
         ctx.globalAlpha = 1;
-    }
+        
+        ctx.save();
+        ctx.translate(player.x, player.y);
+        if (mouse.x < player.x) ctx.scale(-1,1);
+        ctx.rotate((Math.atan((mouse.y-player.y)/(mouse.x-player.x)) * (1-2*(mouse.x < player.x))) || 0);
+        draw(70,0,game.weapon.reference.drawPath,25);
+        ctx.restore();
 
-    player.rotationTick += Math.PI/600;
-    if (player.rotationTick > Math.PI*2) player.rotationTick -= Math.PI*2;
-    ctx.save();
-    ctx.translate(player.x, player.y);
-    if (mouse.x < player.x) ctx.scale(-1,1);
-    ctx.rotate((Math.atan((mouse.y-player.y)/(mouse.x-player.x)) * (1-2*(mouse.x < player.x))) || 0);
-    draw(70,0,game.weapon.reference.drawPath,25);
-    ctx.restore();
+        if (player.showShieldBreak > 0) {
+            ctx.beginPath();
+            //draw(player.x,player.y,player.shieldShard,stats.playerSize+200-150*player.showShieldBreak,i,false,true);
+            if (player.showShieldBreak == 1) ctx.arc(player.x,player.y,stats.playerSize+250-230*player.showShieldBreak,0,Math.PI*2);
+            else for (var i = 0; i < Math.PI*2; i += Math.PI/4) {
+                const direction = player.rotationTick + i;
+                ctx.moveTo(player.x + (1-player.showShieldBreak)*200*Math.cos(direction + Math.PI/8*player.showShieldBreak),player.y + (1-player.showShieldBreak)*200*Math.sin(direction + Math.PI/8*player.showShieldBreak));
+                ctx.arc(player.x,player.y,stats.playerSize+250-230*player.showShieldBreak,direction,direction+Math.PI/4*player.showShieldBreak);
+                ctx.closePath();
+            }
+            ctx.globalAlpha = player.showShieldBreak/2;
+            ctx.fillStyle = "#29c";
+            ctx.strokeStyle = "#068";
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.globalAlpha = 1;
+            player.showShieldBreak -= 1/30;
+            if (player.showShieldBreak < 0) player.showShieldBreak = 0;
+        }
+    }
 }
 loading--;

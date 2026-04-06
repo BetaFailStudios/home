@@ -2,7 +2,7 @@ const menuButtons = {
     "main": [[ "start", "options", "quit" ],[
         () => {
             game.menu = false;
-            ease(game,"regionTransfer",0,2.5);
+            ease(game,"regionTransfer",0,1.5);
         },() => {
             game.optionsMenu = "options";
         },() => {
@@ -167,7 +167,11 @@ function menuChoose() {
         const yPos = i*150;
         const xPos = item.length*15+50;
 
-        if (Math.abs(mouse.x-350) < xPos+100 && Math.abs(mouse.y-yPos+200) < 70) menuButtons[menuToChoose][1][i](Math.sign(mouse.x-350));
+        if (Math.abs(mouse.x-350) < xPos+100 && Math.abs(mouse.y-yPos+200) < 70) {
+            menuButtons[menuToChoose][1][i](Math.sign(mouse.x-350));
+            mouse.down = false;
+            keys.mouse = false;
+        }
     });
 }
 
@@ -407,13 +411,13 @@ function drawHealthBars() {
     ctx.strokeStyle = "#22222260";
     ctx.stroke();
 
-    if (game.showHit > 0) {
+    if (game.showHit > 0 || stats.health <= 2) {
         game.showHit -= 1/75;
         if (game.showHit > 1) game.showHit = 1;
         else if (game.showHit < 0) game.showHit = 0;
 
         const grid = 300;
-        const offset = 200*(1-game.showHit);
+        const offset = 200*(1-Math.min(1,game.showHit + 0.5*(stats.health == 2 && !stats.extraHealth) + 0.7*(stats.health == 1 && !stats.extraHealth)));
 
         ctx.lineWidth = 6;
         ctx.globalAlpha = 0.5;
@@ -440,7 +444,7 @@ function drawHealthBars() {
 
 function drawMusicPopup() {
     ctx.beginPath();
-    ctx.fillStyle = "#ccc";
+    ctx.fillStyle = game.region.name[1];
     ctx.strokeStyle = "#222";
     ctx.font = "40px share tech";
     ctx.lineWidth = 15;

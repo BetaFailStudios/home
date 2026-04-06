@@ -39,6 +39,9 @@ ctx.lineJoin = "bevel";
 
 ctx.fillStyle = "#000";
 if (!imageSize) ctx.fillRect(-2000,-1500,4000,3000);
+ctx.fillStyle = "#ccc";
+ctx.font = "150px share tech"
+if (!imageSize) ctx.fillText("Click to load content", 0, 0);
 
 //resizing
 window.addEventListener("resize", (  ) => {
@@ -76,6 +79,8 @@ window.addEventListener('keydown', async function (e) {
     keys[e.key.toLowerCase()] = true;
 
     if (e.key.toLowerCase() == " " && player.dashes >= 1 && player.dashCooldown <= 0) {
+        playsfx("dash",0.2);
+        effects.push(new Effect(player.x,player.y,player.dashCooldownPath,stats.playerSize+25,30,false,false,0.3))
         switch(0) {
             case 0: {
                 const hypot = Math.hypot(player.vx, player.vy) || 1;
@@ -108,9 +113,8 @@ window.addEventListener('keydown', async function (e) {
         if (pickUpItem()) if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].regionTransfer && Math.abs(player.x) < 150 && Math.abs(player.y) < 150) {
             game.regionTransfer = 2;
             ease(game.region.music[game.musicPos].file,"volume", 0, 2.5);
-            ease(game,"regionTransfer", 0, 5);
+            ease(game,"regionTransfer", 0, 3);
             setTimeout(() => {
-                stats.health = stats.healthMax;
                 game.region.music[game.musicPos].file.pause();
                 game.region = game.nextRegion;
                 game.regionNum++;
@@ -142,7 +146,7 @@ window.addEventListener('keydown', async function (e) {
                 generateDungeon();
 
                 blocks = [];
-            }, 2400);
+            }, 1500);
         }
     }
     if (e.key.toLowerCase() == 'tab' && game.noEnemies) if (!game.menu) {
@@ -173,6 +177,9 @@ window.addEventListener('mousedown', function () {
     if (!game.musicStarted) {
         game.musicStarted = true;
         startMusic();
+        
+        startup();
+        return;
     }
     if (game.notLocked && game.teleportPosition && !game.regionTransfer) {
         const teleportPosition = game.teleportPosition;
@@ -222,6 +229,9 @@ window.addEventListener('mousedown', function () {
 
             updateStats();
         }
+
+        mouse.down = false;
+        keys.mouse = false;
     } else if (game.menu) menuChoose();
 }, false);
 window.addEventListener('mouseup', function () {
@@ -317,6 +327,84 @@ function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverri
     //ctx.restore();
 }
 
+function drawGroup(path, groups) {
+    ctx.beginPath();
+    let firstStroke = true;
+    let stop = -1;
+    let nextStop = -1;
+    let stroke = false;
+    if (groups[0][4] !== undefined && groups[0][4] !== false) ctx.globalAlpha = groups[0][4];
+    while (stop < path.length-1) {
+        stop = nextStop;
+        groups.forEach((group, g) => {
+            const ratio = (group[2]+game.musicWobble)/250;
+            const flipVertRatio = -1+2*(!group[6]);
+
+            //ctx.save();
+            ctx.translate(group[0],group[1]);
+            if (group[3]) ctx.rotate(group[3]);
+
+            let move = true;
+            for(var i = stop + 1; i < path.length; i++) {
+                const item = path[i];
+                switch(item.type) {
+                    case "point": {
+                        if (item.move || move) {
+                            ctx.moveTo(item.x*ratio,item.y*ratio*flipVertRatio);
+                            move = false;
+                        }
+                        else ctx.lineTo(item.x*ratio,item.y*ratio*flipVertRatio);
+                        break;
+                    }
+                    case "fill": {
+                        if (g) break;
+                        nextStop = i;
+                        i = path.length;
+                        ctx.fillStyle = "rgb("+item.r+","+item.g+","+item.b+")";
+                        stroke = false;
+                        //ctx.fill();
+                        break;
+                    }
+                    case "stroke": {
+                        if (g) break;
+                        nextStop = i;
+                        i = path.length;
+                        ctx.strokeStyle = "rgb("+item.r+","+item.g+","+item.b+")";
+                        stroke = true;
+                        move = true;
+                        break;
+                    }
+                    case "close": {
+                        ctx.closePath();
+                        break;
+                    }
+                }
+            }
+        
+            if (group[3]) ctx.rotate(-group[3]);
+            ctx.translate(-group[0],-group[1]);;
+        })
+
+        if (stroke) {
+            ctx.stroke();
+            ctx.beginPath();
+        } else {
+            if (groups[0][5] && firstStroke) {
+                ctx.lineWidth = 10;
+                ctx.strokeStyle = "rgb(250,20,20)";
+                ctx.stroke();
+                ctx.lineWidth = 3;
+                firstStroke = false;
+            }
+            ctx.fill();
+        }
+    }
+
+    if (groups[0][4] !== undefined) ctx.globalAlpha = 1
+
+    //ctx.restore();
+}
+
 let blocks = JSON.parse(
     `[[-775,-375,150,150],[-550,-375,150,150],[-325,-375,150,150],[625,-375,150,150],[400,-375,150,150],[175,-375,150,150],[-775,225,150,150],[-550,225,150,150],[-325,225,150,150],[625,225,150,150],[400,225,150,150],[175,225,150,150],[-775,-150,300,300],[475,-150,300,300]]`
 );
@@ -336,6 +424,8 @@ const game = {
         `[{"type":"point","x":-250,"y":0},{"type":"point","x":0,"y":-250},{"type":"point","x":250,"y":0},{"type":"point","x":0,"y":250},{"type":"close"}]`
     ),artifactBackground: JSON.parse(
         `[{"type":"point","x":0,"y":-250},{"type":"point","x":-212.5,"y":125},{"type":"point","x":212.5,"y":125},{"type":"close"}]`
+    ),consumableBackground: JSON.parse(
+        `[]`
     ), gameIcon: JSON.parse(
         `[{"type":"point","x":-237.5,"y":-225},{"type":"point","x":-212.5,"y":-225},{"type":"point","x":-212.5,"y":-200},{"type":"point","x":-187.5,"y":-200},{"type":"point","x":-187.5,"y":-225},{"type":"point","x":-162.5,"y":-225},{"type":"point","x":-162.5,"y":-150},{"type":"point","x":-187.5,"y":-150},{"type":"point","x":-187.5,"y":-175},{"type":"point","x":-212.5,"y":-175},{"type":"point","x":-212.5,"y":-150},{"type":"point","x":-237.5,"y":-150},{"type":"close"},{"type":"point","x":-150,"y":-150,"move":true},{"type":"point","x":-125,"y":-150,"move":false},{"type":"point","x":-125,"y":-225,"move":false},{"type":"point","x":-150,"y":-225,"move":false},{"type":"close"},{"type":"point","x":-112.5,"y":-150,"move":true},{"type":"point","x":-112.5,"y":-225,"move":false},{"type":"point","x":-62.5,"y":-225,"move":false},{"type":"point","x":-62.5,"y":-175,"move":false},{"type":"point","x":-87.5,"y":-175,"move":false},{"type":"point","x":-87.5,"y":-150,"move":false},{"type":"close"},{"type":"point","x":-37.5,"y":-225,"move":true},{"type":"point","x":37.5,"y":-225,"move":false},{"type":"point","x":37.5,"y":-200,"move":false},{"type":"point","x":12.5,"y":-200,"move":false},{"type":"point","x":12.5,"y":-150,"move":false},{"type":"point","x":-12.5,"y":-150,"move":false},{"type":"point","x":-12.5,"y":-200,"move":false},{"type":"point","x":-37.5,"y":-200,"move":false},{"type":"close"},{"type":"point","x":50,"y":-150,"move":true},{"type":"point","x":50,"y":-225,"move":false},{"type":"point","x":100,"y":-225,"move":false},{"type":"point","x":100,"y":-150,"move":false},{"type":"close"},{"type":"point","x":125,"y":-150,"move":true},{"type":"point","x":125,"y":-225,"move":false},{"type":"point","x":175,"y":-225,"move":false},{"type":"point","x":175,"y":-187.5,"move":false},{"type":"point","x":162.5,"y":-187.5,"move":false},{"type":"point","x":175,"y":-187.5,"move":false},{"type":"point","x":175,"y":-150,"move":false},{"type":"close"},{"type":"point","x":187.5,"y":-150,"move":true},{"type":"point","x":237.5,"y":-150,"move":false},{"type":"point","x":237.5,"y":-175,"move":false},{"type":"point","x":212.5,"y":-175,"move":false},{"type":"point","x":225,"y":-175,"move":false},{"type":"point","x":225,"y":-200,"move":false},{"type":"point","x":212.5,"y":-200,"move":false},{"type":"point","x":237.5,"y":-200,"move":false},{"type":"point","x":237.5,"y":-225,"move":false},{"type":"point","x":187.5,"y":-225,"move":false},{"type":"close"},{"type":"fill","r":75,"g":125,"b":150},{"type":"stroke","r":25,"g":50,"b":75},{"type":"point","x":-237.5,"y":-75,"move":true},{"type":"point","x":-137.5,"y":-75,"move":false},{"type":"point","x":-137.5,"y":-25,"move":false},{"type":"point","x":-187.5,"y":-25,"move":false},{"type":"point","x":-137.5,"y":-25,"move":false},{"type":"point","x":-137.5,"y":75,"move":false},{"type":"point","x":-237.5,"y":75,"move":false},{"type":"point","x":-237.5,"y":25,"move":false},{"type":"point","x":-187.5,"y":25,"move":false},{"type":"point","x":-237.5,"y":25,"move":false},{"type":"close"},{"type":"point","x":-112.5,"y":-75,"move":true},{"type":"point","x":-112.5,"y":75,"move":false},{"type":"point","x":-37.5,"y":75,"move":false},{"type":"point","x":-25,"y":87.5,"move":false},{"type":"point","x":0,"y":62.5,"move":false},{"type":"point","x":-12.5,"y":50,"move":false},{"type":"point","x":-12.5,"y":-75,"move":false},{"type":"close"},{"type":"point","x":-75,"y":-37.5,"move":true},{"type":"point","x":-50,"y":-37.5,"move":false},{"type":"point","x":-50,"y":12.5,"move":false},{"type":"point","x":-75,"y":37.5,"move":false},{"type":"close"},{"type":"point","x":12.5,"y":-75,"move":true},{"type":"point","x":12.5,"y":75,"move":false},{"type":"point","x":62.5,"y":75,"move":false},{"type":"point","x":62.5,"y":25,"move":false},{"type":"point","x":62.5,"y":75,"move":false},{"type":"point","x":112.5,"y":75,"move":false},{"type":"point","x":112.5,"y":25,"move":false},{"type":"point","x":87.5,"y":0,"move":false},{"type":"point","x":112.5,"y":0,"move":false},{"type":"point","x":112.5,"y":-50,"move":false},{"type":"point","x":87.5,"y":-75,"move":false},{"type":"close"},{"type":"point","x":50,"y":-50,"move":true},{"type":"point","x":75,"y":-50,"move":false},{"type":"point","x":75,"y":-25,"move":false},{"type":"point","x":50,"y":-25,"move":false},{"type":"close"},{"type":"point","x":137.5,"y":-75,"move":true},{"type":"point","x":137.5,"y":75,"move":false},{"type":"point","x":212.5,"y":75,"move":false},{"type":"point","x":237.5,"y":50,"move":false},{"type":"point","x":237.5,"y":-50,"move":false},{"type":"point","x":212.5,"y":-75,"move":false},{"type":"close"},{"type":"point","x":175,"y":-37.5,"move":true},{"type":"point","x":200,"y":-37.5,"move":false},{"type":"point","x":200,"y":37.5,"move":false},{"type":"point","x":175,"y":37.5,"move":false},{"type":"close"},{"type":"point","x":225,"y":-125,"move":true},{"type":"point","x":262.5,"y":-125,"move":false},{"type":"point","x":262.5,"y":-87.5,"move":false},{"type":"point","x":237.5,"y":-87.5,"move":false},{"type":"point","x":237.5,"y":-75,"move":false},{"type":"point","x":262.5,"y":-75,"move":false},{"type":"point","x":262.5,"y":-62.5,"move":false},{"type":"point","x":225,"y":-62.5,"move":false},{"type":"point","x":225,"y":-100,"move":false},{"type":"point","x":250,"y":-100,"move":false},{"type":"point","x":250,"y":-112.5,"move":false},{"type":"point","x":225,"y":-112.5,"move":false},{"type":"close"},{"type":"fill","r":200,"g":175,"b":100},{"type":"stroke","r":50,"g":50,"b":0}]`
     ), baseEnemyPath: JSON.parse(
@@ -351,6 +441,7 @@ const game = {
     ), rectAttackWarnPath: JSON.parse(
         `[{"type":"point","x":25,"y":-250},{"type":"point","x":25,"y":250}]`
     ),
+    toDraw: [],
     noEnemies: true,
     musicSyncList: [],
     enemyAttack:[],
@@ -374,6 +465,8 @@ const game = {
     musicWobble: 0,
     warnDelay: 150,
     difficulty: 0.5,
+    mapsize: 0,
+    freezeframes: 0,
 };
 
 if (localStorage.getItem("htbs-audioVolume") !== undefined) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));

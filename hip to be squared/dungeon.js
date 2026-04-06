@@ -66,16 +66,21 @@ function generateDungeon() {
 
 function drawMap() {
     if (!game.regionTransfer) game.teleportPosition = false;
+    if (!game.regionTransfer && Math.abs(mouse.x-625) < 102.5 + 102.5 && Math.abs(mouse.y+275) < 72.5 + 82.5) game.mapsize += 0.2;
+    else game.mapsize -= 0.1;
+    game.mapsize = Math.min(1,Math.max(0,game.mapsize));
+
     ctx.save();
     ctx.globalAlpha = game.notLocked;
-    ctx.translate(675,-325);
-    ctx.lineWidth = 10;
-    ctx.rect(-160,-110,320,220);
+    ctx.translate(625,-275);
+    ctx.lineWidth = 10; //210, 160
+    ctx.rect(-107.5 - 102.5*game.mapsize,-77.5 - 82.5*game.mapsize,215 + 205*game.mapsize,155 + 165*game.mapsize);
     ctx.fillStyle = "#00000022";
     ctx.strokeStyle = game.region.wallColor;
     ctx.fill();
     ctx.stroke();
-    ctx.rect(-155,-105,310,210);
+    ctx.beginPath();
+    ctx.rect(-102.5 - 102.5*game.mapsize,-72.5 - 82.5*game.mapsize,205 + 205*game.mapsize,145 + 165*game.mapsize);
     ctx.clip();
     Object.keys(dungeon).forEach((item) => {
         if (!dungeon[item].visited) return;
@@ -102,7 +107,7 @@ function drawMap() {
             if (connection[0] == 0) ctx.rect(pos[0]-7.5+30-60*(connection[1] == -1),pos[1]-10,15,20);
             else ctx.rect(pos[0]-10,pos[1]-7.5+20-40*(connection[1] == -1),20,15);
             if (dungeon[targetPos[0] + "," + targetPos[1]].boss || dungeon[item].boss) ctx.fillStyle = "#933";
-            else ctx.fillStyle = "#333";
+            else ctx.fillStyle = game.region.floorColor;
             ctx.fill();
         })
     })
@@ -115,11 +120,11 @@ function drawMap() {
         ctx.beginPath();
         ctx.rect(pos[0]-27.5,pos[1]-17.5,55,35);
         if (pos[0] == 0 && pos[1] == 0) ctx.fillStyle = "#999";
-        else if (Math.abs(mouse.x-675-pos[0]) < 25 && Math.abs(mouse.y+325-pos[1]) < 15) {
+        else if (Math.abs(mouse.x-625-pos[0]) < 25 && Math.abs(mouse.y+275-pos[1]) < 15) {
             game.teleportPosition = [Number(item.split(",")[0]),Number(item.split(",")[1])]
-            ctx.fillStyle = "#777"
+            ctx.fillStyle = game.region.wallColor;
         } else if (dungeon[item].boss) ctx.fillStyle = "#933";
-        else ctx.fillStyle = "#333";
+        else ctx.fillStyle = game.region.floorColor;
         ctx.fill();
 
         if (dungeon[item].items.length) draw(...pos,game.dungeonItemPath,15,player.rotationTick);
@@ -132,6 +137,7 @@ function dungeonMove(change, teleport) {
     bullets.splice(0);
     enemies.splice(0);
     dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].items = items;
+    dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].floor = floor;
     game.openings = [];
     if (teleport) game.dungeonPosition = [...change];
     else game.dungeonPosition[change[0]] += change[1];
@@ -144,10 +150,13 @@ function dungeonMove(change, teleport) {
     } else change[0] = -1;
 
 
+    effects = [];
     floor = [];
 
-    for (var i = 0; i < 6; i++) 
-        floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
+    if (!room.visited) for (var i = 0; i < 4; i++) 
+        floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:300+Math.random()*150,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
+    else floor = room.floor;
+    game.region.generateBrickId();
 
     if (!teleport) roomEffects.forEach((item) => {
         if (change[0] == 0) item.x -= 1800*change[1]*Math.random();
@@ -164,22 +173,28 @@ function dungeonMove(change, teleport) {
         }
     }); 
     else {
-        stats.extraHealth = stats.extraHealthMax;
-
         room.visited = true;
 
         game.discoveredRooms++;
 
         if (room.boss) {
-            enemies.push( new Enemy(enemyBlueprints[game.region.bosses[Math.floor(game.region.bosses.length*Math.random())]]));
-            const boss = enemies[0];
+            const boss = new Enemy(enemyBlueprints[game.region.bosses[Math.floor(game.region.bosses.length*Math.random())]])
+            enemies.push( boss );
+            boss.original = true;
             if (boss.spawnPosition) {
                 boss.x = boss.spawnPosition[0];
                 boss.y = boss.spawnPosition[1];
             }
+            if (boss.coSpawn) boss.coSpawn.forEach(item => {
+                enemies.push( new Enemy(enemyBlueprints[item[0]], {x: item[1], y: item[2] }))
+            })
             restartMusic(enemies[0].boss[2]);
             game.bossEase = 1;
             ease(game,"bossEase",0,5);
+            game.bossHealthMax = 0;
+            enemies.forEach(async (enemy,i) => {
+                if (enemy.boss) game.bossHealthMax += enemy.healthMax;
+            })
         }
         else spawnEnemies(Math.floor(1 + Math.random()*0.6+0.35*game.discoveredRooms+0.15*game.regionNum));
         

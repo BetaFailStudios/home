@@ -26,6 +26,36 @@
     <p id="fps">60</p>
     <script>const imageSize = false;</script>
     <script> let loading = 13; </script>
+    <script>
+        function startup() {
+            regions.forEach(regionList => {
+                regionList.forEach( region => {
+                    region.music.forEach(song => {
+                        song.attacklist.sort((a,b) => { return a[0] - b[0] });
+                        let offset = 0;
+                        if (!song.warnIncrease) song.warnIncrease = [0,0,0,0,0,0,0,0,0];
+                        song.attacklistReady = [];
+                        song.attacklist.forEach((item) => { 
+                            if (item[1] === "ab") {
+                                offset += Math.floor(item[0]) + 1 - item[0];
+                                return;
+                            }
+                            for (var i = 0; i < (item[2] || 1); i++) {
+                                song.attacklistReady.push(
+                                    [(-0.05+(item[0]-offset + (item[3] || 0)*i)*song.bpb*60/song.bpm - (game.warnDelay+song.warnIncrease[Number(item[1][1])-1])/320)%song.file.duration, item[1], true ],
+                                    [(-0.05+(item[0]-offset + (item[3] || 0)*i)*song.bpb*60/song.bpm)%song.file.duration, item[1] ]
+                                )
+                            }
+                        })
+                        song.attacklistReady.sort((a,b) => { return a[0] - b[0] });
+                    })
+                })
+            })
+
+            setInterval( tickloop, 1000/60 ); 
+        }
+        //draw(20,20,player.drawPath,15)
+    </script>
     <script src="misc.js"></script>
     <script src="items.js"></script>
     <script src="setup.js"></script>
@@ -34,47 +64,10 @@
     <script src="effects.js"></script>
     <script src="menu.js"></script>
     <script src="music.js"></script>
+    <script src="sfx.js"></script>
     <script src="enemyblueprints.js"></script>
     <script src="bullets.js"></script>
     <script src="enemies.js"></script>
     <script src="player.js"></script>
     <script src="tickloop.js"></script>
-    <script> 
-    let resolveConstant;
-    const constantPromise = new Promise((resolve) => {
-    resolveConstant = resolve;
-    });
-
-    startup();
-    function startup() {
-        regions.forEach(regionList => {
-            regionList.forEach( region => {
-                region.music.forEach(async song => {
-                    await new Promise((resolve) => {
-                        const timer = setInterval(() => {
-                            if (!isNaN(song.file.duration)) {
-                                clearInterval(timer);
-                                resolve();
-                            }
-                        }, 100);
-                    });
-                    if (!song.warnIncrease) song.warnIncrease = [0,0,0,0,0,0,0,0,0];
-                    song.attacklistReady = [];
-                    song.attacklist.forEach((item) => { 
-                        for (var i = 0; i < (item[2] || 1); i++) {
-                            song.attacklistReady.push(
-                                [(-0.15+(item[0] + (item[3] || 0)*i)*song.bpb*60/song.bpm - (game.warnDelay+song.warnIncrease[Number(item[1][1])-1])/320)%song.file.duration, item[1], true ],
-                                [(-0.15+(item[0] + (item[3] || 0)*i)*song.bpb*60/song.bpm)%song.file.duration, item[1] ]
-                            )
-                        }
-                    })
-                    song.attacklistReady.sort((a,b) => { return a[0] - b[0] });
-                })
-            })
-        })
-
-        setInterval( tickloop, 1000/60 ); 
-    }
-        //draw(20,20,player.drawPath,15)
-    </script>
 </body>

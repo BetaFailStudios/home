@@ -88,6 +88,12 @@
             ctx.fillRect(-1800,-1000,3600,2000);
         });
 
+        //resizing
+        window.addEventListener("beforeunload", ( e ) => {
+            e.preventDefault();
+            return "Are you sure?"
+        });
+
         const keys = {};
         const mouse = { x: 0, y: 0, gridpos: 0 };
 
@@ -103,7 +109,7 @@
             const pos = (mouse.gridpos*bpb/1600+bpb/2 + offset)/bpb;
 
             if (e.key.toLowerCase() == " ") console.log("`" + JSON.stringify(notes) + "`");
-            if ("123456789".includes(e.key.toLowerCase())) notes.push( [ pos, "a" + e.key.toLowerCase() ] );
+            if ("123456789b".includes(e.key.toLowerCase())) notes.push( [ pos, "a" + e.key.toLowerCase() ] );
             if (e.key.toLowerCase() == "z") notes.splice( notes.length-1 );
             if (e.key.toLowerCase() == "arrowright") offset += bpb;
             if (e.key.toLowerCase() == "arrowleft" && offset > 0) offset -= bpb;
@@ -186,7 +192,8 @@
 
             notes.forEach((item) => {
                 ctx.fillStyle = "#ccc";
-                const y = -250 + 50*(Number(item[1][1])); 
+                let y = -250 + 50*(Number(item[1][1])); 
+                if (item[1] == "ab") y = -300;
                 ctx.font = "20px share tech"
                 ctx.fillText(item[1],(item[0]*bpb-bpb/2-offset)*1600/bpb+5,y);
                 ctx.fillRect((item[0]*bpb-bpb/2-offset)*1600/bpb-5, y-15, 10, 30);

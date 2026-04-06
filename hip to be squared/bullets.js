@@ -79,7 +79,7 @@ async function bulletTick() {
         // handle afterdeath
         if (!bullet.alive) {
             if (!stats.noDrawBullets || !bullet.triggerExpire) if (bullet.size > 5) {
-                draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
+                //oDraw.push([bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha])
             } else {
                 ctx.beginPath();
                 let color = bullet.drawPath[bullet.drawPath.length-1]
@@ -113,9 +113,9 @@ async function bulletTick() {
 
         for (var i = 0; i < numOfMoves && bullet.alive; i++) {
             if (stats.sineWaveMovement && bullet.triggerExpire) {
-                sineRatio = Math.sin(bullet.tick*Math.PI/9)*2;
-                bullet.x += bullet.vy * sineRatio;
-                bullet.y -= bullet.vx * sineRatio;
+                sineRatio = Math.sin(bullet.tick*Math.PI/9)*bullet.size*4;
+                bullet.x += bullet.vy/bullet.speed * sineRatio;
+                bullet.y -= bullet.vx/bullet.speed * sineRatio;
             }
 
             if (bullet.triggerExpire && !game.menu) {
@@ -162,13 +162,14 @@ async function bulletTick() {
                 if (hypot < bullet.size+enemy.size*0.8) {
                     if (bullet.enemiesTouched.includes(enemy)) return;
                     else {
+                        if (!enemy.showHit) playsfx("enemyhit",0.2,0.7);
                         enemy.showHit = 4;
 
                         bullet.enemiesTouched.push(enemy);
                         let prevDamage = bullet.damage;
                         stats.damageBoosts.forEach( (item) => bullet.damage *= item[1](item[0],bullet,enemy));
                         if (!enemy.projectile) enemy.health -= bullet.damage;
-                        if (game.showDamageNumbers) dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,bullet.damage));
+                        dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,bullet.damage,bullet.triggerExpire));
                         if (bullet.pierce) bullet.pierce--;
                         else if (!enemy.projectiles || enemy.health > 0) {
                             bullet.alive = false;
@@ -181,8 +182,8 @@ async function bulletTick() {
             })
 
             if (stats.sineWaveMovement && bullet.triggerExpire) {
-                bullet.x -= bullet.vy * sineRatio;
-                bullet.y += bullet.vx * sineRatio;
+                bullet.x -= bullet.vy/bullet.speed * sineRatio;
+                bullet.y += bullet.vx/bullet.speed * sineRatio;
             }
 
             blocks.forEach((block) => {
@@ -266,18 +267,26 @@ async function bulletTick() {
     bulletBuffer = [];
 }
 
-function bulletDraw() {
-    bullets.filter((bullet,i) => {
+async function bulletDraw() {
+    bullets.filter(async (bullet,i) => {
         if (bullet.size > 1500) bullet.size = 1500;
 
         bullet.speed = Math.hypot(bullet.vx, bullet.vy);
         let numOfMoves = 1;
-        if (bullet.speed-bullet.size*2 > 20) numOfMoves += Math.floor((bullet.speed-bullet.size*2)/25);
+        if (bullet.speed-bullet.size*2 > 30) numOfMoves += Math.floor((bullet.speed-bullet.size*2)/25);
 
         // handle afterdeath
         if (!bullet.alive) {
             if (!stats.noDrawBullets || !bullet.triggerExpire) if (bullet.size > 5) {
-                draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
+                let toAdd = true;
+                game.toDraw.forEach(item => {
+                    if (item[0] == bullet.drawPath) {
+                        toAdd = false;
+                        item[1].push([bullet.x, bullet.y, bullet.size, bullet.direction, bullet.drawAlpha]);
+                    }
+                })
+
+                if (toAdd) game.toDraw.push([bullet.drawPath,[[bullet.x, bullet.y, bullet.size, bullet.direction, bullet.drawAlpha]]]);
             } else {
                 ctx.beginPath();
                 let color = bullet.drawPath[bullet.drawPath.length-1]
@@ -308,13 +317,21 @@ function bulletDraw() {
         let sineRatio = 1;
 
         if (stats.sineWaveMovement && bullet.triggerExpire) {
-            sineRatio = Math.sin(bullet.tick*Math.PI/9)*2;
-            bullet.x += bullet.vy * sineRatio;
-            bullet.y -= bullet.vx * sineRatio;
+            sineRatio = Math.sin(bullet.tick*Math.PI/9)*bullet.size*4;
+            bullet.x += bullet.vy/bullet.speed * sineRatio;
+            bullet.y -= bullet.vx/bullet.speed * sineRatio;
         }
 
         if (!stats.noDrawBullets || !bullet.triggerExpire) if (bullet.size > 5) {
-            draw(bullet.x, bullet.y, bullet.drawPath, bullet.size, bullet.direction, bullet.drawAlpha);
+            let toAdd = true;
+            game.toDraw.forEach(item => {
+                if (item[0] == bullet.drawPath) {
+                    toAdd = false;
+                    item[1].push([bullet.x, bullet.y, bullet.size, bullet.direction, bullet.drawAlpha]);
+                }
+            })
+
+            if (toAdd) game.toDraw.push([bullet.drawPath,[[bullet.x, bullet.y, bullet.size, bullet.direction, bullet.drawAlpha]]]);
         } else {
             ctx.beginPath();
             let color = bullet.drawPath[bullet.drawPath.length-1]
@@ -323,6 +340,8 @@ function bulletDraw() {
             ctx.fllStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
             ctx.rect(bullet.x-bullet.size,bullet.y-bullet.size,bullet.size*2,bullet.size*2);
             ctx.fill();
+            ctx.stroke();
+            ctx.beginPath();
         }      
 
         if (bullet.trailColor && bullet.trailPoints) {
@@ -339,8 +358,8 @@ function bulletDraw() {
         }
 
         if (stats.sineWaveMovement && bullet.triggerExpire) {
-            bullet.x -= bullet.vy * sineRatio;
-            bullet.y += bullet.vx * sineRatio;
+            bullet.x -= bullet.vy/bullet.speed * sineRatio;
+            bullet.y += bullet.vx/bullet.speed * sineRatio;
         }
     })
 }

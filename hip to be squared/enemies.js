@@ -23,6 +23,16 @@ class Enemy {
             setTimeout(ease,1500,this,"spawning",0,1);
         }
 
+        if (this.offset) {
+            this.x += Math.cos(this.dirToTarget)*this.offset;
+            this.y += Math.sin(this.dirToTarget)*this.offset;
+        }
+
+        if (this.startFast && this.speed) {
+            this.vx = Math.cos(this.dirToTarget)*this.speed*25;
+            this.vy = Math.sin(this.dirToTarget)*this.speed*25;
+        }
+
         this.actualDirection = this.dirToTarget;
 
         this.healthMax = this.health;
@@ -50,17 +60,17 @@ async function enemyTick() {
     game.noEnemies = true;
     game.bossName = false;
     game.bossHealth = 0;
-    game.bossHealthMax = 0;
+    //game.bossHealthMax = 0;
     enemies.forEach(async (enemy,i) => {
         if (enemy.boss) {
             game.bossName = enemy.boss;
             game.bossHealth += enemy.health;
-            game.bossHealthMax += enemy.healthMax;
+            //game.bossHealthMax += enemy.healthMax;
         }
         if (!enemy.projectile) game.noEnemies = false;
 
         if (enemy.spawning && enemy.rotateToTarget) enemy.dirToTarget = (Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x));
-        if (enemy.spawning) {
+        if (enemy.spawning && !enemy.offscreen) {
             if (Math.abs(enemy.x) > 850-enemy.size) {
                 enemy.x = Math.sign(enemy.x)*(850-enemy.size);      
             }
@@ -111,7 +121,6 @@ async function enemyTick() {
             if (!enemy[item]/* || (enemy.noAttack && enemy.noAttack != item)*/) return;
             if (!enemy["attackList" + item]) enemy["attackList" + item] = [];
             if (triggerAttack && (enemy[item+"WarnCount"] > 0 || enemy.noWarnWait)) {
-                if (enemy.reset) enemy.reset[0]();
                 enemy[item](enemy);
                 enemy[item+"WarnCount"]--;
                 //triggerAttack = false;
@@ -259,7 +268,7 @@ async function enemyTick() {
             if (i == i2 || enemy2.projectile) return;
             const x = (enemy.x-enemy2.x);
             const y = (enemy.y-enemy2.y);
-            const hypot = Math.hypot(x,y);
+            const hypot = Math.max(30,Math.hypot(x,y));
             if (hypot && hypot < enemy.size*4+enemy2.size*4) {
                 if (!enemy.immovable && !enemy.noVelocityChange) {
                     enemy.vx += 2*Math.sign(x)/hypot;
@@ -288,24 +297,29 @@ async function enemyTick() {
 
 function enemyDraw() {
     enemies.forEach((enemy,i) => {
+        let direction = enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4;
+        if (enemy.randomRotation) direction = Math.random()*Math.PI*2;
         if (enemy.ephemeral) ctx.globalAlpha = 0.6;
-        if (enemy.randomRotation) {
-            if (enemy.showHit > 0) {
-                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, Math.random()*Math.PI*2,false,false,false,false,"#cccccc");
-                enemy.showHit--;
-            } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, Math.random()*Math.PI*2);
+        if (enemy.projectile) {
+            let toAdd = true;
+            game.toDraw.forEach(item => {
+                if (item[0] == enemy.drawPath) {
+                    toAdd = false;
+                    item[1].push([enemy.x, enemy.y, enemy.size, direction, (enemy.ephemeral*0.6) || undefined]);
+                }
+            })
+
+            if (toAdd) game.toDraw.push([enemy.drawPath,[[enemy.x, enemy.y, enemy.size, direction, (enemy.ephemeral*0.6) || undefined,true]]]);
         }
-        else {
-            if (enemy.showHit > 0) {
-                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4,false,false,false,false,"#cccccc");
-                enemy.showHit--;
-            } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4);
-        }
+        else if (enemy.showHit > 0) {
+            draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,false,false,false,false,"#cccccc");
+            enemy.showHit--;
+        } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction);
         if (enemy.ephemeral) ctx.globalAlpha = 1;
         if (enemy.spawning) {
             draw(enemy.x, enemy.y, game.enemySpawnPath, enemy.spawnSize, 0, enemy.spawning);
             return true;
-        } else if (!enemy.boss && enemy.health > 0 && enemy.health < enemy.healthMax && enemy.size) {
+        } else if (!enemy.boss && enemy.health > 0 && enemy.health < enemy.healthMax && enemy.size && !enemy.projectile) {
             ctx.lineCap = "round";
             ctx.beginPath();
             ctx.moveTo(enemy.x-enemy.size-10, enemy.y-enemy.size-10);

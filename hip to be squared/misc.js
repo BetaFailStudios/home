@@ -109,35 +109,38 @@ function drawEnvironment() {
     ctx.fillStyle = "#cc000099";
     ctx.fill();
 
-    ctx.beginPath();
-    ctx.rect(-1000,-600,2000,1200);
-    //ctx.rect(850,-450,-1700,900);
-    ctx.moveTo(-850,-450);
-    ctx.lineTo(-850,-100);
-    ctx.lineTo(-850-60*game.notLocked*game.openings.includes("left"),-100);
-    ctx.lineTo(-850-60*game.notLocked*game.openings.includes("left"),100);
-    ctx.lineTo(-850,100);
-    ctx.lineTo(-850,450);
-    ctx.lineTo(-100,450);
-    ctx.lineTo(-100,450+60*game.notLocked*game.openings.includes("down"));
-    ctx.lineTo(100,450+60*game.notLocked*game.openings.includes("down"));
-    ctx.lineTo(100,450);
-    ctx.lineTo(850,450);
-    ctx.lineTo(850,100);
-    ctx.lineTo(850+60*game.notLocked*game.openings.includes("right"),100);
-    ctx.lineTo(850+60*game.notLocked*game.openings.includes("right"),-100);
-    ctx.lineTo(850,-100);
-    ctx.lineTo(850,-450);
-    ctx.lineTo(100,-450);
-    ctx.lineTo(100,-450-60*game.notLocked*game.openings.includes("up"));
-    ctx.lineTo(-100,-450-60*game.notLocked*game.openings.includes("up"));
-    ctx.lineTo(-100,-450);
-    ctx.closePath();
-    ctx.lineWidth = 3;
-    ctx.fillStyle = game.region.wallColor;
-    ctx.fill();
-    ctx.strokeStyle = "#222";
-    ctx.stroke();
+    if (game.region.drawWalls) game.region.drawWalls();
+    else {
+        ctx.beginPath();
+        ctx.rect(-1000,-600,2000,1200);
+        //ctx.rect(850,-450,-1700,900);
+        ctx.moveTo(-850,-450);
+        ctx.lineTo(-850,-100);
+        ctx.lineTo(-850-60*game.notLocked*game.openings.includes("left"),-100);
+        ctx.lineTo(-850-60*game.notLocked*game.openings.includes("left"),100);
+        ctx.lineTo(-850,100);
+        ctx.lineTo(-850,450);
+        ctx.lineTo(-100,450);
+        ctx.lineTo(-100,450+60*game.notLocked*game.openings.includes("down"));
+        ctx.lineTo(100,450+60*game.notLocked*game.openings.includes("down"));
+        ctx.lineTo(100,450);
+        ctx.lineTo(850,450);
+        ctx.lineTo(850,100);
+        ctx.lineTo(850+60*game.notLocked*game.openings.includes("right"),100);
+        ctx.lineTo(850+60*game.notLocked*game.openings.includes("right"),-100);
+        ctx.lineTo(850,-100);
+        ctx.lineTo(850,-450);
+        ctx.lineTo(100,-450);
+        ctx.lineTo(100,-450-60*game.notLocked*game.openings.includes("up"));
+        ctx.lineTo(-100,-450-60*game.notLocked*game.openings.includes("up"));
+        ctx.lineTo(-100,-450);
+        ctx.closePath();
+        ctx.lineWidth = 3;
+        ctx.fillStyle = game.region.wallColor;
+        ctx.fill();
+        ctx.strokeStyle = "#222";
+        ctx.stroke();
+    }
 
     if (game.regionNum == -1) {
         ctx.strokeStyle = "#00000077";
@@ -160,17 +163,18 @@ function drawBlocks() {
 let dmgNumbers = [];
 
 function drawDamageNumbers() {
-    if (!game.showDamageNumbers) {
-        dmgNumbers = [];
-        console.log(1)
-        return;
-    }
     
     ctx.beginPath();
     ctx.fillStyle = "#ccc";
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 7;
     dmgNumbers = dmgNumbers.filter((item) => {
+        /*if (item.fontSize > 200 && item.canFreeze) {
+            item.canFreeze = false;
+            game.freezeframes = item.fontSize/35;
+            game.region.music[game.musicPos].file.pause();
+        }*/
+        if (!game.showDamageNumbers) return false;
         ctx.globalAlpha = 0.5;
         ctx.font = animationRatio(item.timeLeft,item.timeLeftMax,10)*item.fontSize+"px share tech";
         ctx.strokeText(item.damage,item.x,item.y);
@@ -184,7 +188,7 @@ function drawDamageNumbers() {
 }
 
 class DamageNumber {
-    constructor(x,y,damage) {
+    constructor(x,y,damage,canFreeze) {
         this.x = x + Math.random()*50-25;
         this.y = y + Math.random()*50-25;
         
@@ -192,9 +196,10 @@ class DamageNumber {
         while (damage < 10**(1-decimalPoint)) decimalPoint++;
         this.damage = damage.toFixed(decimalPoint);
 
-        this.fontSize = 70*Math.min(8,Math.max(0.3,Number(damage)/(1+0.1*game.discoveredRooms+game.regionNum*2)))
+        this.fontSize = 70*Math.min(8,Math.max(0.3,Number(damage)/(1+0.1*game.discoveredRooms+game.regionNum*2)));
         this.timeLeft = 0;
         this.timeLeftMax = 30;
+        this.canFreeze = canFreeze;
     }
 }
 

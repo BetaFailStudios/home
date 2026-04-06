@@ -5,7 +5,7 @@ function startMusic() {
 
     const song = game.region.music[game.musicPos];
 
-    game.musicSyncList = [...song.attacklistReady];
+    game.musicSyncList = Object.assign([], song.attacklistReady);
 
     song.file.volume = 0;
     song.file.currentTime = 0;
@@ -13,7 +13,7 @@ function startMusic() {
     song.file.play();
 }
 
-function musicTick() {
+async function musicTick(noClear) {
 
     //game.musicWobble = 1 + (game.musicWobble-1)*0.95;
     game.musicWobble *= 0.95;
@@ -29,6 +29,11 @@ function musicTick() {
         } else game.pauseCounter++;
     } else game.pauseCounter = 0;
 
+    if (!noClear) {
+        game.enemyAttack = [];
+        game.enemyAttackWarning = [];
+    }
+
     if (item[0] <= game.region.music[game.musicPos].file.currentTime) {
         if (item[2]) {
             game.enemyAttackWarning.push(item[1]);
@@ -40,7 +45,7 @@ function musicTick() {
             else game.musicWobble += 3;
         }
         game.musicSyncList.splice(0,1);
-        musicTick();
+        musicTick(true);
     }
 }
 

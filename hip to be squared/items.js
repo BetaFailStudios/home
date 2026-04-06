@@ -33,7 +33,7 @@ const weapons = [
             `[{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":-100},{"type":"point","x":-175,"y":-175},{"type":"point","x":-100,"y":-225},{"type":"point","x":0,"y":-250},{"type":"point","x":100,"y":-225},{"type":"point","x":175,"y":-175},{"type":"point","x":225,"y":-100},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":100},{"type":"point","x":175,"y":175},{"type":"point","x":100,"y":225},{"type":"point","x":0,"y":250},{"type":"point","x":-100,"y":225},{"type":"point","x":-175,"y":175},{"type":"point","x":-225,"y":100},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
             stats.firerate *= 2;
-            stats.damage *= 7 + 0.2*rarity;
+            stats.damage *= 5 + 1*rarity;
             stats.bulletSpeed *= 0.7;
             stats.bulletSize *= 3.5 + 0.4*rarity;
         }
@@ -157,7 +157,7 @@ const weapons = [
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":-187.5,"y":-187.5},{"type":"point","x":-250,"y":0},{"type":"point","x":-187.5,"y":187.5},{"type":"point","x":0,"y":250},{"type":"point","x":187.5,"y":187.5},{"type":"point","x":250,"y":0},{"type":"point","x":187.5,"y":-187.5},{"type":"close"},{"type":"fill","r":225,"g":175,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-100,"y":-100},{"type":"point","x":0,"y":-137.5},{"type":"point","x":100,"y":-100},{"type":"point","x":137.5,"y":0},{"type":"point","x":100,"y":100},{"type":"point","x":0,"y":137.5},{"type":"point","x":-100,"y":100},{"type":"point","x":-137.5,"y":0},{"type":"close"},{"type":"fill","r":250,"g":150,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity) {
             stats.firerate *= 4;
-            stats.damage *= 8 + 2*rarity;
+            stats.damage *= 12 + 3*rarity;
             stats.bulletSize *= 17 + 3*rarity;
             stats.bulletSpeed *= 0.25;
             stats.lifetime = 0.1;
@@ -309,7 +309,7 @@ const weapons = [
             stats.firerate *= 2;
             stats.damage *= 3 + 0.75*rarity;
             stats.bulletSize *= 4;
-            stats.lifetime = 3.5;
+            stats.lifetime = 3.5 + 0.25*rarity;
         }, bulletTick(rarity,bullet) {
             if (bullet.tick%25 < 1 && bullet.tick > 20) {
                 bulletBuffer.push(new Bullet({drawPath: this.turretBulletDrawPath, x: bullet.x, y: bullet.y, size: bullet.size / 2, damage: bullet.damage / 2.5, speed: bullet.speed * 30, direction: bullet.direction, trailColor: bullet.trailColor, trailLength: bullet.trailLength || 8, projHit: bullet.projHit}))
@@ -544,10 +544,11 @@ const relics = [
         drawPath: JSON.parse(
             `[{"type":"point","x":-250,"y":0},{"type":"point","x":-150,"y":25},{"type":"point","x":-100,"y":50},{"type":"point","x":-50,"y":100},{"type":"point","x":-25,"y":150},{"type":"point","x":0,"y":250},{"type":"point","x":125,"y":125},{"type":"point","x":200,"y":0},{"type":"point","x":225,"y":-150},{"type":"point","x":225,"y":-225},{"type":"point","x":150,"y":-225},{"type":"point","x":0,"y":-200},{"type":"point","x":-125,"y":-125},{"type":"close"},{"type":"fill","r":40,"g":115,"b":170},{"type":"stroke","r":50,"g":75,"b":75},{"type":"point","x":-200,"y":-12.5},{"type":"point","x":-125,"y":0},{"type":"point","x":-50,"y":50},{"type":"point","x":0,"y":125},{"type":"point","x":0,"y":200},{"type":"point","x":150,"y":25},{"type":"point","x":200,"y":-125},{"type":"point","x":200,"y":-200},{"type":"point","x":125,"y":-200},{"type":"point","x":-25,"y":-150},{"type":"close"},{"type":"fill","r":45,"g":140,"b":175}]`
         ), onPlayerHit(rarity, enemy, blue, red) {
-            stats.scaleTimer = 600 - 60*rarity;
+            stats.scaleTimer = 300 - 45*rarity;
         }, playerTick(rarity) {
             if (stats.scaleTimer > 0) {
-                stats.scaleTimer--;
+                if (player.iFrames) stats.scaleTimer-= 0.2;
+                else stats.scaleTimer--;
                 if (stats.scaleTimer <= 0 && stats.extraHealth < stats.extraHealthMax) {
                     stats.extraHealth++;
                     effects.push(new Effect(player.x,player.y,this.drawPath,stats.playerSize+20,60));
@@ -683,7 +684,6 @@ const relics = [
             stats.spectacleAmount = (stats.spectacleAmount || 0) + 1;
         }, onSpawn(rarity,bullet) {
             if (bullet.firstBullet) {
-                bullet.firstBullet = false;
                 effects.push(new Effect(bullet.x,bullet.y,this.glasses,50,30));
                 bullet.damage *= stats.spectacleScale/stats.spectacleAmount;
             }
@@ -770,7 +770,7 @@ const relics = [
             const bullet = {x:player.x,y:player.y,size:35,speed:15,damage:2+0.5*rarity,direction:Math.random()*Math.PI,triggerExpire:true,pierce:0,offsetTick: 6};
             for (var i = 0; i < 6; i++) {
                 bulletBuffer.push(new Bullet(bullet));
-                bullet.direction += Math.PI/6;
+                bullet.direction += Math.PI/3;
             }
         }
 
@@ -926,7 +926,7 @@ const relics = [
         drawPath: JSON.parse(
             `[{"type":"point","x":0,"y":-137.5},{"type":"point","x":-75,"y":-125},{"type":"point","x":-125,"y":-75},{"type":"point","x":-137.5,"y":0},{"type":"point","x":-125,"y":75},{"type":"point","x":-75,"y":125},{"type":"point","x":0,"y":137.5},{"type":"point","x":75,"y":125},{"type":"point","x":125,"y":75},{"type":"point","x":137.5,"y":0},{"type":"point","x":125,"y":-75},{"type":"point","x":75,"y":-125},{"type":"close"},{"type":"fill","r":30,"g":30,"b":30},{"type":"point","x":-100,"y":-100,"move":true},{"type":"point","x":-175,"y":-150,"move":false},{"type":"point","x":-200,"y":-212.5,"move":false},{"type":"point","x":100,"y":-100,"move":true},{"type":"point","x":175,"y":-150,"move":false},{"type":"point","x":200,"y":-212.5,"move":false},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":0,"y":-62.5,"move":false},{"type":"point","x":-50,"y":-50,"move":false},{"type":"point","x":-62.5,"y":0,"move":false},{"type":"point","x":-50,"y":50,"move":false},{"type":"point","x":0,"y":62.5,"move":false},{"type":"point","x":50,"y":50,"move":false},{"type":"point","x":62.5,"y":0,"move":false},{"type":"point","x":50,"y":-50,"move":false},{"type":"close"},{"type":"point","x":0,"y":-112.5,"move":true},{"type":"point","x":0,"y":112.5,"move":false},{"type":"point","x":-112.5,"y":0,"move":true},{"type":"point","x":112.5,"y":0,"move":false},{"type":"stroke","r":255,"g":75,"b":75}]`
         ), damageBoost(rarity) {
-            return 1 + (0.75 + 0.2*rarity)*!!stats.deadEye;
+            return 1 + (0.5 + 0.1*rarity)*!!stats.deadEye;
         }, playerTick(rarity) {
             if (!enemies.length) stats.deadEye = true;
         }, onHit(rarity,bullet) {
@@ -942,6 +942,7 @@ const relics = [
         ), statChange(rarity) {
             stats.damage *= 1.2 + 0.05*rarity;
             stats.bloom *= 0.2-0.04*rarity;
+            stats.spread *= 0.5;
         }
 /*AA*/},{
         name: "AA Chip",
@@ -964,7 +965,6 @@ const relics = [
                     closest = i;
                 }
             })
-            console.log(bullet.chipCharges);
 
             if (closest != -1) {
                 if (bullet.speed < closestDist/30) {
@@ -1079,7 +1079,7 @@ const artifacts = [
         drawPath: JSON.parse(
             `[{"type":"point","x":-75,"y":-225},{"type":"point","x":0,"y":-212.5},{"type":"point","x":75,"y":-225},{"type":"point","x":0,"y":-237.5},{"type":"point","x":-75,"y":-225},{"type":"point","x":-62.5,"y":-150},{"type":"point","x":-87.5,"y":-100},{"type":"point","x":-150,"y":-50},{"type":"point","x":-175,"y":0},{"type":"point","x":-175,"y":75},{"type":"point","x":-150,"y":150},{"type":"point","x":-100,"y":200},{"type":"point","x":-25,"y":225},{"type":"point","x":12.5,"y":225},{"type":"point","x":100,"y":200},{"type":"point","x":150,"y":150},{"type":"point","x":175,"y":75},{"type":"point","x":175,"y":0},{"type":"point","x":150,"y":-50},{"type":"point","x":87.5,"y":-100},{"type":"point","x":50,"y":-150},{"type":"point","x":75,"y":-225},{"type":"fill","r":100,"g":60,"b":0},{"type":"point","x":-87.5,"y":-100,"move":true},{"type":"point","x":0,"y":-62.5,"move":false},{"type":"point","x":12.5,"y":25,"move":false},{"type":"point","x":0,"y":-25,"move":true},{"type":"point","x":50,"y":-25,"move":false},{"type":"point","x":-150,"y":150,"move":true},{"type":"point","x":-100,"y":37.5,"move":false},{"type":"point","x":-25,"y":75,"move":false},{"type":"point","x":-100,"y":37.5,"move":true},{"type":"point","x":-100,"y":-25,"move":false},{"type":"point","x":-37.5,"y":225,"move":true},{"type":"point","x":-12.5,"y":112.5,"move":false},{"type":"point","x":-37.5,"y":50,"move":false},{"type":"point","x":-12.5,"y":125,"move":true},{"type":"point","x":87.5,"y":100,"move":false},{"type":"point","x":175,"y":0,"move":true},{"type":"point","x":87.5,"y":25,"move":false},{"type":"point","x":50,"y":75,"move":false},{"type":"point","x":62.5,"y":50,"move":true},{"type":"point","x":37.5,"y":12.5,"move":false},{"type":"stroke","r":50,"g":35,"b":25}]`
         ), expiration(_,bullet,enemy) {
-            const bullet2 = {offset: 50, x:bullet.x,y:bullet.y,size:bullet.size*0.5,damage:bullet.damage*0.15,direction:Math.random()*Math.PI, trailColor: bullet.trailColor, trailLength: bullet.trailLength};
+            const bullet2 = {offset: 50, x:bullet.x,y:bullet.y,size:bullet.size*0.5,damage:bullet.damage*0.35,direction:Math.random()*Math.PI, trailColor: bullet.trailColor, trailLength: bullet.trailLength};
             for (var i = 0; i < 4; i++) {
                 bulletBuffer.push(new Bullet(bullet2));
                 bullet2.direction += Math.PI/2;
@@ -1128,7 +1128,7 @@ const artifacts = [
             if (!enemy) return 1;
             if (enemy.hitMarkers) {
                 enemy.hitMarkers++;
-                return Math.log2(enemy.hitMarkers/10+2);
+                return Math.log2(enemy.hitMarkers/30+2);
             } else {
                 enemy.hitMarkers = 1;
                 return 1;
@@ -1144,7 +1144,7 @@ const artifacts = [
         ), statChange(_) {
             stats.damage *= 0.1;
         }, onHit(_,bullet,enemy) {
-            enemy.addEffect(10,60,bullet.damage*2.5,this.poison,true);
+            enemy.addEffect(15,60,bullet.damage,this.poison,true);
         }
 /*HG*/},{
         name: "Heavy Gears",
@@ -1202,6 +1202,44 @@ artifacts.forEach((item) => {
     })
 });
 
+const consumables = [
+/*FH*/{
+        name: "Full Heal",
+        desc: "Fully heal all red and blue health",
+        drawPath: JSON.parse(
+            `[{"type":"point","x":0,"y":250},{"type":"point","x":-225,"y":25},{"type":"point","x":-250,"y":-50},{"type":"point","x":-250,"y":-125},{"type":"point","x":-225,"y":-200},{"type":"point","x":-200,"y":-225},{"type":"point","x":-125,"y":-250},{"type":"point","x":-75,"y":-250},{"type":"point","x":-25,"y":-225},{"type":"point","x":0,"y":-200},{"type":"point","x":25,"y":-225},{"type":"point","x":75,"y":-250},{"type":"point","x":125,"y":-250},{"type":"point","x":200,"y":-225},{"type":"point","x":225,"y":-200},{"type":"point","x":250,"y":-125},{"type":"point","x":250,"y":-50},{"type":"point","x":225,"y":25},{"type":"close"},{"type":"fill","r":200,"g":50,"b":50},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ), pickup(_, bullet) {
+            stats.health = stats.healthMax;
+            stats.extraHealth = stats.extraHealthMax;
+        }
+    },
+/*BH*/{
+        name: "Blue Heal",
+        desc: "Fully heal all blue health",
+        drawPath: JSON.parse(
+            `[{"type":"point","x":0,"y":250},{"type":"point","x":-225,"y":25},{"type":"point","x":-250,"y":-50},{"type":"point","x":-250,"y":-125},{"type":"point","x":-225,"y":-200},{"type":"point","x":-200,"y":-225},{"type":"point","x":-125,"y":-250},{"type":"point","x":-75,"y":-250},{"type":"point","x":-25,"y":-225},{"type":"point","x":0,"y":-200},{"type":"point","x":25,"y":-225},{"type":"point","x":75,"y":-250},{"type":"point","x":125,"y":-250},{"type":"point","x":200,"y":-225},{"type":"point","x":225,"y":-200},{"type":"point","x":250,"y":-125},{"type":"point","x":250,"y":-50},{"type":"point","x":225,"y":25},{"type":"close"},{"type":"fill","r":50,"g":100,"b":200},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ), pickup(_, bullet) {
+            stats.extraHealth = stats.extraHealthMax;
+        }
+    },
+/*Red*/{
+        name: "Small Red Heal",
+        desc: "Heal one red health",
+        drawPath: JSON.parse(
+            `[{"type":"point","x":0,"y":250},{"type":"point","x":-225,"y":25},{"type":"point","x":-250,"y":-50},{"type":"point","x":-250,"y":-125},{"type":"point","x":-225,"y":-200},{"type":"point","x":-200,"y":-225},{"type":"point","x":-125,"y":-250},{"type":"point","x":-75,"y":-250},{"type":"point","x":-25,"y":-225},{"type":"point","x":0,"y":-200},{"type":"point","x":25,"y":-225},{"type":"point","x":75,"y":-250},{"type":"point","x":125,"y":-250},{"type":"point","x":200,"y":-225},{"type":"point","x":225,"y":-200},{"type":"point","x":250,"y":-125},{"type":"point","x":250,"y":-50},{"type":"point","x":225,"y":25},{"type":"close"},{"type":"fill","r":150,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":0,"y":250,"move":false},{"type":"point","x":-125,"y":125,"move":false},{"type":"point","x":-75,"y":137.5,"move":false},{"type":"point","x":-25,"y":125,"move":false},{"type":"point","x":25,"y":100,"move":false},{"type":"point","x":75,"y":100,"move":false},{"type":"point","x":125,"y":125,"move":false},{"type":"close"},{"type":"fill","r":200,"g":50,"b":50},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ), pickup(_, bullet) {
+            if (stats.health < stats.healthMax) stats.health++;
+        }
+    }
+]
+
+consumables.forEach((item) => {
+    item.type = "consumable";
+    Object.keys(item).forEach((item2) => {
+        if (typeof item[item2] == "consumable") item[item2] = item[item2].bind(item);
+    })
+});
+
 class Item {
     constructor(x,y,reference, rarity, type) {
         this.x = x || 0;
@@ -1247,10 +1285,16 @@ function itemTick() {
     let closestDist = Infinity;
     items.forEach((item, i) => {
         const dist = Math.hypot(player.x-item.x,player.y-item.y);
-        if (dist < closestDist && dist < 100) {
-            closestDist = dist;
-            closestIndex = i;
+        if (dist < 100) {
+            if (item.reference.type == "consumable") { if (dist < 25) {
+                item.reference.pickup();
+                items.splice(i,1);
+            }} else if (dist < closestDist) {
+                closestDist = dist;
+                closestIndex = i;
+            }
         }
+        if (item.reference.type == "consumable") return;
         items.forEach((item2,i2) => {
             if (i == i2) return;
             if (item.x == item2.x && item.y == item2.y) {
@@ -1268,11 +1312,11 @@ function itemTick() {
         });
     });
     items.forEach((item, i) => {
-        if (Math.abs(item.x) > 700-50) {
-            item.x = Math.sign(item.x)*(700-50);
+        if (Math.abs(item.x) > 850-50) {
+            item.x = Math.sign(item.x)*(850-50);
         }
-        if (Math.abs(item.y) > 250-50) {
-            item.y = Math.sign(item.y+100)*(250-50);
+        if (Math.abs(item.y+100) > 400-50) {
+            item.y = Math.sign(item.y+100)*(400-50)-100;
         }
         blocks.forEach((block) => {
             const diffx = item.x + 50 - block[0];
@@ -1290,37 +1334,40 @@ function itemTick() {
             }
         })
         
-        ctx.beginPath();
-        if (item.reference.type == "artifact") ctx.fillStyle = "#cc7777"
-        else switch(item.rarity) {
-            case 1: {
-                ctx.fillStyle = "#77cc77"
-                break; 
+        if (item.reference.type != "consumable") {
+            ctx.beginPath();
+            if (item.reference.type == "artifact") ctx.fillStyle = "#cc7777"
+            else if (item.reference.type == "consumable") ctx.fillStyle = "#555555"
+            else switch(item.rarity) {
+                case 1: {
+                    ctx.fillStyle = "#77cc77"
+                    break; 
+                }
+                case 2: { 
+                    ctx.fillStyle = "#7799cc"
+                    break; 
+                }
+                case 3: { 
+                    ctx.fillStyle = "#cccc77"
+                    break; 
+                }
+                case 4: { 
+                    ctx.fillStyle = "#9977cc"
+                    break; 
+                }
+                default: { 
+                    ctx.fillStyle = "#999999"
+                    break; 
+                }
             }
-            case 2: { 
-                ctx.fillStyle = "#7799cc"
-                break; 
-            }
-            case 3: { 
-                ctx.fillStyle = "#cccc77"
-                break; 
-            }
-            case 4: { 
-                ctx.fillStyle = "#9977cc"
-                break; 
-            }
-            default: { 
-                ctx.fillStyle = "#999999"
-                break; 
-            }
-        }
-        ctx.strokeStyle = "#222";
+            ctx.strokeStyle = "#222";
 
-        const size = (75+10*(i === closestIndex));
-        ctx.beginPath();
-        draw(item.x,item.y,game[item.reference.type + "Background"],size,-player.rotationTick*3,false,true);
-        ctx.fill();
-        ctx.stroke();
+            const size = (75+10*(i === closestIndex));
+            ctx.beginPath();
+            draw(item.x,item.y,game[item.reference.type + "Background"],size,-player.rotationTick*3,false,true);
+            ctx.fill();
+            ctx.stroke();
+        }
 
         ctx.beginPath();
         draw(item.x,item.y,item.reference.drawPath,40+10*(i === closestIndex),Math.sin(player.rotationTick*5)/3);
@@ -1360,8 +1407,7 @@ function drawItemDesc(item,x,y) {
                 ctx.fillStyle = "#9977cc"
                 break; 
             }
-            default: { 
-                name += "Common"; 
+            default: {
                 ctx.fillStyle = "#999999"
                 break; 
             }
@@ -1414,6 +1460,7 @@ function drawItemDesc(item,x,y) {
 }
 
 function updateStats() {
+    toEaseVariables.forEach(item => { if (item[1] == "health") stats.health = item[2]; else if (item[1] == "extraHealth") stats.extraHealth = item[2]; })
     const healthDifference = stats.healthMax-stats.health;
     const extraHealthDifference = stats.extraHealthMax-stats.extraHealth;
     if (stats.extraHealth === 0) extraHealth = 0;
@@ -1492,7 +1539,7 @@ function pickUpItem() {
     let closestIndex = 0;
     items.forEach((item,i) => {
         const dist = Math.hypot(player.x-item.x,player.y-item.y);
-        if (dist < closestDist && dist < 100) {
+        if (dist < closestDist && dist < 100 && item.reference.type != "consumable") {
             closestDist = dist;
             closestItem = item;
             closestIndex = i;
