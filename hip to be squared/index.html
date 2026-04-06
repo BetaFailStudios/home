@@ -31,6 +31,8 @@
             regions.forEach(regionList => {
                 regionList.forEach( region => {
                     region.music.forEach(song => {
+                        song.file.play();
+                        song.file.pause();
                         song.attacklist.sort((a,b) => { return a[0] - b[0] });
                         let offset = 0;
                         if (!song.warnIncrease) song.warnIncrease = [0,0,0,0,0,0,0,0,0];

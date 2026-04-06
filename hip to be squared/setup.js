@@ -175,10 +175,9 @@ window.addEventListener('mousedown', function () {
     keys.mouse = true;
     mouse.down = true;
     if (!game.musicStarted) {
+        startup();
         game.musicStarted = true;
         startMusic();
-        
-        startup();
         return;
     }
     if (game.notLocked && game.teleportPosition && !game.regionTransfer) {
@@ -327,7 +326,7 @@ function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverri
     //ctx.restore();
 }
 
-function drawGroup(path, groups) {
+function drawGroup(path, groups,drawOutline) {
     ctx.beginPath();
     let firstStroke = true;
     let stop = -1;
@@ -389,8 +388,8 @@ function drawGroup(path, groups) {
             ctx.stroke();
             ctx.beginPath();
         } else {
-            if (groups[0][5] && firstStroke) {
-                ctx.lineWidth = 10;
+            if (drawOutline && firstStroke) {
+                ctx.lineWidth = 7;
                 ctx.strokeStyle = "rgb(250,20,20)";
                 ctx.stroke();
                 ctx.lineWidth = 3;
@@ -442,6 +441,7 @@ const game = {
         `[{"type":"point","x":25,"y":-250},{"type":"point","x":25,"y":250}]`
     ),
     toDraw: [],
+    toDrawEnemies: [],
     noEnemies: true,
     musicSyncList: [],
     enemyAttack:[],

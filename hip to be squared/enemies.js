@@ -302,14 +302,14 @@ function enemyDraw() {
         if (enemy.ephemeral) ctx.globalAlpha = 0.6;
         if (enemy.projectile) {
             let toAdd = true;
-            game.toDraw.forEach(item => {
+            game.toDrawEnemies.forEach(item => {
                 if (item[0] == enemy.drawPath) {
                     toAdd = false;
                     item[1].push([enemy.x, enemy.y, enemy.size, direction, (enemy.ephemeral*0.6) || undefined]);
                 }
             })
 
-            if (toAdd) game.toDraw.push([enemy.drawPath,[[enemy.x, enemy.y, enemy.size, direction, (enemy.ephemeral*0.6) || undefined,true]]]);
+            if (toAdd) game.toDrawEnemies.push([enemy.drawPath,[[enemy.x, enemy.y, enemy.size, direction, (enemy.ephemeral*0.6) || undefined]]]);
         }
         else if (enemy.showHit > 0) {
             draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,false,false,false,false,"#cccccc");
