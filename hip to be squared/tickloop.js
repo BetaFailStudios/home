@@ -90,11 +90,11 @@ function tickloop() {
 
     if (game.noEnemies && !game.notLocked) {
         ease(game,"notLocked", 1,0.2);
-        ease(stats,"extraHealth",stats.extraHealthMax,2);
+        ease(stats,"extraHealth",stats.extraHealthMax,(stats.extraHealthMax-stats.extraHealth)/stats.extraHealthMax*2);
 
         if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].boss && game.regionNum >= 0) {
             if (game.musicStarted) restartMusic(0);
-            ease(stats,"health",stats.healthMax,2                                                                                                               );
+            ease(stats,"health",stats.healthMax,(stats.healthMax-stats.health)/stats.healthMax*2);
 
             items.push(
                 new Item(player.x-200,player.y+75,false,false,"artifact"), 
@@ -176,7 +176,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.7.1",700,470);
+    ctx.fillText("Version: b.1.7.2",700,470);
 }
 //enemies.push(new Enemy(enemyBlueprints[4],{x:600}));
 //game.musicPos = 1;

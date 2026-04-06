@@ -817,7 +817,7 @@ const relics = [
         ), blood: JSON.parse(
             `[{"type":"point","x":-175,"y":0,"move":false},{"type":"point","x":-125,"y":125,"move":false},{"type":"point","x":0,"y":175,"move":false},{"type":"point","x":125,"y":125,"move":false},{"type":"point","x":175,"y":0,"move":false},{"type":"point","x":125,"y":-125,"move":false},{"type":"point","x":50,"y":-200,"move":false},{"type":"point","x":0,"y":-300,"move":false},{"type":"point","x":-50,"y":-200,"move":false},{"type":"point","x":-125,"y":-125,"move":false},{"type":"close"},{"type":"fill","r":150,"g":0,"b":0},{"type":"stroke","r":50,"g":0,"b":0}]`
         ), onHit(rarity,bullet,enemy) {
-            enemy.addEffect(5,30,bullet.damage*0.1 + 0.03 + 0.005*rarity,this.blood,true);
+            enemy.addEffect(5,30,bullet.damage*0.05 + 0.02 + 0.005*rarity,this.blood,true);
         }
 
 /*OS*/},{
@@ -963,6 +963,7 @@ const relics = [
         ),zapPath: JSON.parse(
             `[{"type":"point","x":-250,"y":0},{"type":"point","x":250,"y":0},{"type":"stroke","r":175,"g":175,"b":50}]`
         ), onHit(rarity,bullet,enemy,noTrigger) {
+            if (noTrigger) return;
             const enemiesHit = [enemy];
             for (var a = 0; a < 1 + rarity; a++ ) {
                 let closest = false;
@@ -980,7 +981,7 @@ const relics = [
                     enemiesHit.push(closest);
                     const bulletClone = Object.assign({}, bullet);
                     bulletClone.damage *= 0.2;
-                    stats.onhits.forEach(item => item[1](item[0],bulletClone,enemy));
+                    stats.onHits.forEach(item => item[1](item[0],bulletClone,closest,true));
                     closest.health -= bullet.damage * (0.2 + 0.05*rarity);
                     dmgNumbers.push(new DamageNumber(closest.x,closest.y,bullet.damage * 0.2))
                     effects.push(new Effect((closest.x + lastFound.x)/2,(closest.y + lastFound.y)/2,this.zapPath,closestDist/2,30,Math.atan((lastFound.y-closest.y)/(lastFound.x-closest.x)) || 0.00001,Math.PI/100000));
