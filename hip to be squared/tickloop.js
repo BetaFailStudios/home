@@ -97,24 +97,30 @@ function tickloop() {
             if (stats.health < stats.healthMax) ease(stats,"health",stats.healthMax,(stats.healthMax-stats.health)/stats.healthMax*2);
 
             items.push(
-                new Item(player.x-200,player.y+75,false,false,"artifact"), 
-                new Item(player.x+200,player.y+75,false,false,"artifact"), 
-                new Item(player.x,player.y-75,false,false,"artifact")
+                new Item(player.x-200,player.y,false,false,"artifact"), 
+                new Item(player.x+200,player.y,false,false,"artifact"), 
+                new Item(player.x,player.y-200,false,false,"artifact"),
+                new Item(player.x,player.y+200,false,false,"artifact")
             );
 
-            while (items[items.length-2].reference == items[items.length-3].reference) {
-                items.splice(items.length-2,1);
-                items.push(new Item(player.x+200,player.y+75,false,false,"artifact"))
+            while (items[items.length-3].reference == items[items.length-4].reference) {
+                items.splice(items.length-3,1);
+                items.push(new Item(player.x+200,player.y,false,false,"artifact"))
             }
 
-            while (items[items.length-1].reference == items[items.length-2].reference || items[items.length-1].reference == items[items.length-3].reference) {
-                items.splice(items.length-1);
-                items.push(new Item(player.x,player.y-75,false,false,"artifact"))
+            while (items[items.length-2].reference == items[items.length-3].reference || items[items.length-2].reference == items[items.length-4].reference) {
+                items.splice(items.length-2,1);
+                items.push(new Item(player.x,player.y-200,false,false,"artifact"))
+            }
+
+            while (items[items.length-1].reference == items[items.length-3].reference || items[items.length-1].reference == items[items.length-3].reference || items[items.length-1].reference == items[items.length-4].reference) {
+                items.splice(items.length-1,1);
+                items.push(new Item(player.x,player.y+200,false,false,"artifact"))
             }
 
             game.relicTick = 0;
             dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].deleteItems = true;
-            dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos = items.length-3;
+            dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].itemPos = items.length-4;
         } else if (game.relicTick >= 1) {
             if (game.firstWeapon) {
                 
@@ -176,7 +182,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.7.6",700,470);
+    ctx.fillText("Version: b.1.7.7",700,470);
 }
 
-addEventListener("DOMContentLoaded", (event) => { loaded = true; })
+addEventListener("DOMContentLoaded", (event) => { setTimeout(() => {loaded = true;},500 )});
