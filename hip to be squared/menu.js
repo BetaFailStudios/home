@@ -463,4 +463,3 @@ function drawRegionName() {
     ctx.fillText(game.region.name[0],0,-350-200*(1-game.regionTransfer)**5);
     ctx.lineWidth = 3;
 }
-loading--;

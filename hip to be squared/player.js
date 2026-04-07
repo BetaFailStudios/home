@@ -61,9 +61,11 @@ async function playerTick() {
         const tempBullet = {x: 0, y: 0, direction: lookDirection, triggerExpire: true, trailColor: stats.trailColor, trailLength: stats.trailLength || 8, projHit: stats.projHit};
         
         if (stats.projectiles > 1) lookDirection -= stats.spread/2;
-        if (player.burstsLeft) playsfx("shootimpact",0.2,0.65);
-        else playsfx("shootimpact",0.2,1);
-        
+        if (stats.firerate > 5) {
+            if (player.burstsLeft) playsfx("shootimpact",0.2,0.65);
+            else playsfx("shootimpact",0.2,1);
+        }
+
         for (var i = 0; i < stats.projectiles; i++) {
             tempBullet.direction = lookDirection;
             if (stats.qub) {
@@ -216,4 +218,3 @@ function playerDraw() {
         }
     }
 }
-loading--;

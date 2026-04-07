@@ -305,5 +305,3 @@ for (var i = 0; i < 6; i++)
 game.nextRegion = regions[0][0];
 game.regionNum = -1 ;
 game.regionTransfer = 1;
-
-loading--;

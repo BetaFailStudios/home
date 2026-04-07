@@ -222,5 +222,3 @@ for (var i = 0; i < 6; i++) roomEffects.push({
     x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:600+Math.random()*400,
     reference:game.region.roomEffects[Math.floor(Math.random()*game.region.roomEffects.length)]
 });
-
-loading--;

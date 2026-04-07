@@ -268,6 +268,8 @@ async function enemyTick() {
             if (i == i2 || enemy2.projectile) return;
             const x = (enemy.x-enemy2.x);
             const y = (enemy.y-enemy2.y);
+            
+            if (Math.abs(x)/4 > enemy.size+enemy2.size || Math.abs(y)/2 > enemy.size+enemy2.size) return;
             const hypot = Math.max(30,Math.hypot(x,y));
             if (hypot && hypot < enemy.size*4+enemy2.size*4) {
                 if (!enemy.immovable && !enemy.noVelocityChange) {

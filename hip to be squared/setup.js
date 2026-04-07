@@ -73,6 +73,8 @@ const mouse = { x: 0, y: 0 };
 
 //detect keypresses
 window.addEventListener('keydown', async function (e) {
+    if (!loaded) return;
+
     if (e.key.toLowerCase() == "tab") e.preventDefault();
     if (e.repeat || game.regionTransfer) return;
 
@@ -172,6 +174,8 @@ window.addEventListener('keyup', function (e) {
     keys[e.key.toLowerCase()] = false;
 }, false)/[ ];
 window.addEventListener('mousedown', function () {
+    if (!loaded) return;
+
     keys.mouse = true;
     mouse.down = true;
     if (!game.musicStarted) {
@@ -267,12 +271,14 @@ function changeEaseable(item, i) {
 }
 
 function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverride) {
+    const cos = Math.cos(rotate || 0);
+    const sin = Math.sin(rotate || 0);
     const ratio = (size+game.musicWobble)/250;
     const flipVertRatio = -1+2*(!flipVert);
 
     //ctx.save();
-    ctx.translate(x,y);
-    if (rotate) ctx.rotate(rotate);
+    //ctx.translate(x,y);
+    //if (rotate) ctx.rotate(rotate);
 
     if (alpha !== undefined && alpha !== false) ctx.globalAlpha = alpha;
 
@@ -291,10 +297,10 @@ function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverri
         } else switch(item.type) {
             case "point": {
                 if (item.move || move) {
-                    ctx.moveTo(item.x*ratio,item.y*ratio*flipVertRatio);
+                    ctx.moveTo(x+(item.x*cos-item.y*sin)*ratio,y+(item.y*cos+item.x*sin)*ratio);
                     move = false;
                 }
-                else ctx.lineTo(item.x*ratio,item.y*ratio*flipVertRatio);
+                else ctx.lineTo(x+(item.x*cos-item.y*sin)*ratio,y+(item.y*cos+item.x*sin)*ratio);
                 break;
             }
             case "fill": {
@@ -318,8 +324,8 @@ function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverri
         }
     })
    
-    if (rotate) ctx.rotate(-rotate);
-    ctx.translate(-x,-y);
+    //if (rotate) ctx.rotate(-rotate);
+    //ctx.translate(-x,-y);
 
     if (alpha !== undefined) ctx.globalAlpha = 1;
 
@@ -338,10 +344,13 @@ function drawGroup(path, groups,drawOutline) {
         groups.forEach((group, g) => {
             const ratio = (group[2]+game.musicWobble)/250;
             const flipVertRatio = -1+2*(!group[6]);
+            if (typeof group[3] !== "object") {
+                group[3] = [Math.cos(group[3] || 0),Math.sin(group[3] || 0)];
+            }
 
             //ctx.save();
-            ctx.translate(group[0],group[1]);
-            if (group[3]) ctx.rotate(group[3]);
+            //ctx.translate(group[0],group[1]);
+            //if (group[3]) ctx.rotate(group[3]);
 
             let move = true;
             for(var i = stop + 1; i < path.length; i++) {
@@ -349,10 +358,10 @@ function drawGroup(path, groups,drawOutline) {
                 switch(item.type) {
                     case "point": {
                         if (item.move || move) {
-                            ctx.moveTo(item.x*ratio,item.y*ratio*flipVertRatio);
+                            ctx.moveTo(group[0]+(item.x*group[3][0]-item.y*group[3][1])*ratio,group[1]+(item.y*group[3][0]+item.x*group[3][1])*ratio);
                             move = false;
                         }
-                        else ctx.lineTo(item.x*ratio,item.y*ratio*flipVertRatio);
+                        else ctx.lineTo(group[0]+(item.x*group[3][0]-item.y*group[3][1])*ratio,group[1]+(item.y*group[3][0]+item.x*group[3][1])*ratio);
                         break;
                     }
                     case "fill": {
@@ -380,8 +389,8 @@ function drawGroup(path, groups,drawOutline) {
                 }
             }
         
-            if (group[3]) ctx.rotate(-group[3]);
-            ctx.translate(-group[0],-group[1]);;
+            //if (group[3]) ctx.rotate(-group[3]);
+            //ctx.translate(-group[0],-group[1]);;
         })
 
         if (stroke) {
@@ -487,4 +496,3 @@ updateStats();
 function animationRatio(x,t,r) {
     return 1 - Math.pow( Math.abs( 2*x/t - 1 ), r);
 }
-loading--;

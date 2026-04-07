@@ -24,4 +24,3 @@ function handleEffects() {
         return item.ticksLeft > 0;
     })
 }
-loading--;

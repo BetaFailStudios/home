@@ -157,6 +157,7 @@ async function bulletTick() {
 
             enemies.forEach((enemy) => {
                 if (enemy.projectile && !bullet.projHit || enemy.spawning) return;
+                if (Math.abs(enemy.x-bullet.x) > bullet.size+enemy.size || Math.abs(enemy.y-bullet.y) > bullet.size+enemy.size) return;
                 const hypot = Math.hypot(enemy.x-bullet.x,enemy.y-bullet.y);
 
                 if (hypot < bullet.size+enemy.size*0.8) {

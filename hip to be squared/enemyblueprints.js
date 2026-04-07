@@ -933,4 +933,3 @@ function enemyAttackDash(enemy,warn,attacklist,direction,speed,baseSpeed,advance
         enemy.reset = [ () => { enemy.immovable = false; enemy.speed = baseSpeed; if (advanced) enemy.target = "playerAdvanced"; else enemy.target = "-".repeat(Math.random()< 0.5) + "player"; enemy.vx *= 0.25; enemy.vy *= 0.25; }, length ];
     }
 }
-loading--;

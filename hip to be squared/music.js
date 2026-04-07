@@ -58,4 +58,3 @@ function restartMusic(input) {
         startMusic();
     },1000)
 }
-loading--;
