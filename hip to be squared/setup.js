@@ -288,10 +288,10 @@ function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverri
         if (noClear) { 
             if (item.type == "point") {
                 if ((item.move || move) && !noMove) {
-                    ctx.moveTo(x+(item.x*cos-item.y*sin)*ratio,y+(item.y*cos+item.x*sin)*ratio*flipVertRatio);
+                    ctx.moveTo(x+(item.x*cos-item.y*sin*flipVertRatio)*ratio,y+(item.y*cos*flipVertRatio+item.x*sin)*ratio);
                     move = false;
                 }
-                else ctx.lineTo(x+(item.x*cos-item.y*sin)*ratio,y+(item.y*cos+item.x*sin)*ratio*flipVertRatio);
+                else ctx.lineTo(x+(item.x*cos-item.y*sin*flipVertRatio)*ratio,y+(item.y*cos*flipVertRatio+item.x*sin)*ratio);
             } else if (item.type == "stroke") move = true;
             else if (item.type == "close") ctx.closePath();
         } else switch(item.type) {
