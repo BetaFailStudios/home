@@ -363,5 +363,3 @@ async function bulletDraw() {
         }
     })
 }
-
-loading--;
