@@ -1217,14 +1217,18 @@ const artifacts = [
         }
 /*BV*/},{
         name: "Blood Vial",
-        desc: "Slowly, regenerate red health passively during a fight",
+        desc: "Slowly, regenerate red health passively while near enemies",
         drawPath: JSON.parse(
             `[{"type":"point","x":-25,"y":250},{"type":"point","x":-62.5,"y":225},{"type":"point","x":-75,"y":175},{"type":"point","x":-75,"y":-200},{"type":"point","x":-25,"y":-212.5},{"type":"point","x":25,"y":-212.5},{"type":"point","x":75,"y":-200},{"type":"point","x":75,"y":175},{"type":"point","x":62.5,"y":225},{"type":"point","x":25,"y":250},{"type":"close"},{"type":"fill","r":100,"g":150,"b":150},{"type":"point","x":-75,"y":-200,"move":true},{"type":"point","x":-25,"y":-187.5,"move":false},{"type":"point","x":25,"y":-187.5,"move":false},{"type":"point","x":75,"y":-200,"move":false},{"type":"stroke","r":50,"g":75,"b":75},{"type":"point","x":-75,"y":175,"move":false},{"type":"point","x":-62.5,"y":225,"move":false},{"type":"point","x":-25,"y":250,"move":false},{"type":"point","x":25,"y":250,"move":false},{"type":"point","x":62.5,"y":225,"move":false},{"type":"point","x":75,"y":175,"move":false},{"type":"point","x":75,"y":50,"move":false},{"type":"point","x":50,"y":37.5,"move":false},{"type":"point","x":12.5,"y":50,"move":false},{"type":"point","x":-12.5,"y":75,"move":false},{"type":"point","x":-50,"y":87.5,"move":false},{"type":"point","x":-75,"y":75,"move":false},{"type":"close"},{"type":"fill","r":175,"g":25,"b":25},{"type":"stroke","r":50,"g":0,"b":0}]`
         ), playerTick(_) {
-            if (enemies.length) {
-                if (stats.health < stats.healthMax) stats.health += 1/600;
-                else if (stats.health > stats.healthMax) stats.health = stats.healthMax;
-            }
+        if (!enemies.length) return;
+            let close = false;
+            enemies.forEach(enemy => {
+                if (enemy.projectile) return;
+                if (Math.hypot(player.x-enemy.x,player.y-enemy.y) < 150) close = true;
+            })
+            if (stats.health < stats.healthMax && close) stats.health += 1/200;
+            else if (stats.health > stats.healthMax) stats.health = stats.healthMax;
         }
 /*CS*/},{
         name: "Control Stick",
