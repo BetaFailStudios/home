@@ -850,8 +850,8 @@ const relics = [
             //detect enemies
             enemies.forEach(enemy => {
                 const dist = { x: enemy.x-position.x, y: enemy.y-position.y };
-                if (x > position.size + enemy.size || y > position.size + enemy.size) return;
-                if (Math.hypot(enemy.x-position.x,enemy.y-position.y) < position.size + enemy.size) {
+                if (dist.x > position.size + enemy.size || dist.y > position.size + enemy.size) return;
+                if (Math.hypot(dist.x,dist.y) < position.size + enemy.size) {
                     if (enemy.projectile) {
                         enemy.health = 0;
                         enemy.vx = 0;
