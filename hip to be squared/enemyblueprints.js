@@ -764,7 +764,7 @@ const enemyBlueprints = [
                 attackWarnings.push(["circle",game.warnDelay,game.warnDelay,enemy.x,enemy.y,200]);
             } else {
                 enemy.speed = 0.02;
-                for (var i = 0; i < Math.PI*2; i+= Math.PI/7) enemiesBuffer.push(new Enemy(enemyBlueprints[40], {offset: enemy.size, startFast: true, offscreen: true, immovable: true, x: enemy.x, y: enemy.y, dirToTarget: i, size: 15, speed: 0.2}));
+                for (var i = 0; i < Math.PI*2; i+= Math.PI/6) enemiesBuffer.push(new Enemy(enemyBlueprints[40], {offset: enemy.size, startFast: true, offscreen: true, immovable: true, x: enemy.x, y: enemy.y, dirToTarget: i, size: 15, speed: 0.2}));
             }
         }, a4(enemy, warn) {
             if (warn) {
@@ -788,7 +788,7 @@ const enemyBlueprints = [
             const things = [];
             if (warn) {
                 x = -900;
-                for (var y = -500+175*Math.random(); y < 500; y += 250) {
+                for (var y = -500+175*Math.random(); y < 500; y += 325) {
                     const thing = new Enemy(enemyBlueprints[40], {speed: 0, size:35,x:x,y:y,dirToTarget:0});
                     enemiesBuffer.push(thing);
                     things.push(thing);
@@ -808,7 +808,7 @@ const enemyBlueprints = [
             const things = [];
             if (warn) {
                 x = 900;
-                for (var y = -500+175*Math.random(); y < 500; y += 250) {
+                for (var y = -500+175*Math.random(); y < 500; y += 325) {
                     const thing = new Enemy(enemyBlueprints[40], {speed: 0, size:35,x:x,y:y,dirToTarget:Math.PI});
                     enemiesBuffer.push(thing);
                     things.push(thing);
@@ -828,7 +828,7 @@ const enemyBlueprints = [
             const things = [];
             if (warn) {
                 y = -500;
-                for (var x = -900+175*Math.random(); x < 900; x += 250) {
+                for (var x = -900+175*Math.random(); x < 900; x += 325) {
                     const thing = new Enemy(enemyBlueprints[40], {speed: 0, size:35,x:x,y:y,dirToTarget:Math.PI/2});
                     enemiesBuffer.push(thing);
                     things.push(thing);
@@ -848,7 +848,7 @@ const enemyBlueprints = [
             const things = [];
             if (warn) {
                 y = 500;
-                for (var x = -900+175*Math.random(); x < 900; x += 250) {
+                for (var x = -900+175*Math.random(); x < 900; x += 325) {
                     const thing = new Enemy(enemyBlueprints[40], {speed: 0, size:35,x:x,y:y,dirToTarget:-Math.PI/2});
                     enemiesBuffer.push(thing);
                     things.push(thing);
@@ -869,7 +869,7 @@ const enemyBlueprints = [
                 enemy.attackLista9.push(pos);
                 attackWarnings.push(["circle",game.warnDelay,game.warnDelay,pos[0], pos[1],100]);
             } else {
-                enemiesBuffer.push(new Enemy(enemyBlueprints[42],{ a9: undefined, size: enemy.size-25, boss: false, health: 250, noSpawning: true, x: enemy.attackLista9[0][0], y: enemy.attackLista9[0][1]}));
+                enemiesBuffer.push(new Enemy(enemyBlueprints[42],{ a9: undefined, size: enemy.size-25, boss: false, health: 200, noSpawning: true, x: enemy.attackLista9[0][0], y: enemy.attackLista9[0][1]}));
                 enemy.attackLista9.splice(0,1);
             }
         }
