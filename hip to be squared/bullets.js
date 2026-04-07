@@ -167,8 +167,9 @@ async function bulletTick() {
                         enemy.showHit = 4;
 
                         bullet.enemiesTouched.push(enemy);
-                        let prevDamage = bullet.damage;
-                        stats.damageBoosts.forEach( (item) => bullet.damage *= item[1](item[0],bullet,enemy));
+                        let damageMult = 1;
+                        stats.damageBoosts.forEach( (item) => damageMult *= item[1](item[0],bullet,enemy));
+                        bullet.damage *= damageMult;
                         if (!enemy.projectile) enemy.health -= bullet.damage;
                         dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,bullet.damage,bullet.triggerExpire));
                         if (bullet.pierce) bullet.pierce--;
@@ -177,7 +178,7 @@ async function bulletTick() {
                         }
                         
                         stats.onHits.forEach( (item) => item[1](item[0],bullet,enemy));
-                        bullet.damage = prevDamage;
+                        bullet.damage /= damageMult;
                     }
                 } else if (bullet.enemiesTouched.includes(enemy)) bullet.enemiesTouched.splice(bullet.enemiesTouched.indexOf(enemy), 1);
             })
