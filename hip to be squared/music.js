@@ -11,6 +11,10 @@ function startMusic() {
     song.file.currentTime = 0;
     ease(song.file,"volume", game.audioVolume, 0.5);
     song.file.play();
+
+
+    if (game.bossHealthMax) game.bossHealthMax *= 0.3
+    enemies.forEach(enemy => { if (enemy.boss) enemy.health *= 0.3 });
 }
 
 async function musicTick(noClear) {
@@ -56,5 +60,5 @@ function restartMusic(input) {
     setTimeout(() => {
         ease(game.region.music[game.musicPos].file,"volume",game.audioVolume,1.5);
         startMusic();
-    },1000)
+    },1000);
 }

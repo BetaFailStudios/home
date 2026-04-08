@@ -182,7 +182,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.7.7",700,470);
+    ctx.fillText("Version: b.1.8.0",700,470);
 }
 
 addEventListener("DOMContentLoaded", (event) => { setTimeout(() => {loaded = true;},500 )});
