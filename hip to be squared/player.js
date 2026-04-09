@@ -105,7 +105,7 @@ async function playerTick() {
                 let red = 0;
                 let blue = 0;
                 player.iFrames = 75 + (stats.extraIframes || 0);
-                for (var i = 0; i < 1 + (stats.extraReceivedDamage || 0); i++) if (stats.extraHealth) {
+                for (var i = 0; i < 1 + (stats.extraReceivedDamage || 0); i++) if (stats.extraHealth > 0) {
                     blue++;
                     stats.extraHealth--;
                     player.showShieldBreak = 1;
