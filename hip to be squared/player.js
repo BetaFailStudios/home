@@ -105,17 +105,20 @@ async function playerTick() {
                 let red = 0;
                 let blue = 0;
                 player.iFrames = 75 + (stats.extraIframes || 0);
-                for (var i = 0; i < 1 + (stats.extraReceivedDamage || 0); i++) if (stats.extraHealth > 0) {
-                    blue++;
-                    stats.extraHealth--;
-                    player.showShieldBreak = 1;
-                } else {
-                    red++;
-                    stats.health--;
-                    for(var i = 0; i < 3; i++) effects.push(new Effect(player.x+(1-2*Math.random())*stats.playerSize*3,player.y+(1-2*Math.random())*stats.playerSize*3,player.bloodPath,stats.playerSize*1.5+75,20,false,false,0.3));
-                    for(var i = 0; i < 5; i++) floor.push({x:player.x+(1-2*Math.random())*stats.playerSize*3,y:player.y+(1-2*Math.random())*stats.playerSize*3,size:stats.playerSize*(0.5+Math.random()),reference:player.bloodPath,rotation:Math.PI*Math.random()});
+                
+                for (var i = 0; i < 1 + (stats.extraReceivedDamage || 0); i++) {
+                    if (stats.extraHealth > 0) {
+                        blue++;
+                        stats.extraHealth--;
+                        player.showShieldBreak = 1;
+                    } else {
+                        red++;
+                        stats.health--;
+                        for(var a = 0; a < 3; a++) effects.push(new Effect(player.x+(1-2*Math.random())*stats.playerSize*3,player.y+(1-2*Math.random())*stats.playerSize*3,player.bloodPath,stats.playerSize*1.5+75,20,false,false,0.3));
+                        for(var a = 0; a < 5; a++) floor.push({x:player.x+(1-2*Math.random())*stats.playerSize*3,y:player.y+(1-2*Math.random())*stats.playerSize*3,size:stats.playerSize*(0.5+Math.random()),reference:player.bloodPath,rotation:Math.PI*Math.random()});
+                    }
+                    game.showHit += 0.85;
                 }
-                game.showHit += 0.85;
                 
                 if (blue) {
                     playsfx("blueloss");
