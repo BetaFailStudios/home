@@ -11,15 +11,15 @@ const calculateSinCos = gpu.createKernel(function(groups) {
 }).setOutput([2,10]);
 const calculatePoints = gpu.createKernel(function(path,groups,sinCos) {
     if (this.thread.x === 0) 
-        return groups[this.thread.z][0]+(path[this.thread.y][0]*sinCos[this.thread.z][0]-path[this.thread.y][1]*sinCos[this.thread.z][1])*groups[this.thread.z][2]/250*(1 + Math.random());
+        return groups[this.thread.z][0]+(path[this.thread.y][0]*sinCos[this.thread.z][0]-path[this.thread.y][1]*sinCos[this.thread.z][1])*groups[this.thread.z][2]/250;
     else 
-        return groups[this.thread.z][1]+(path[this.thread.y][1]*sinCos[this.thread.z][0]+path[this.thread.y][0]*sinCos[this.thread.z][1])*groups[this.thread.z][2]/250*(1 + Math.random());
+        return groups[this.thread.z][1]+(path[this.thread.y][1]*sinCos[this.thread.z][0]+path[this.thread.y][0]*sinCos[this.thread.z][1])*groups[this.thread.z][2]/250;
 }, {
   dynamicOutput: true,
   dynamicArguments: true
 }).setOutput([2,11,50]);
 
-function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverride) {
+function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverride,outlineColor) {
     const cos = Math.cos(rotate || 0);
     const sin = Math.sin(rotate || 0);
     const ratio = (size+game.musicWobble)/250;
@@ -33,26 +33,34 @@ function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverri
 
     if (!noClear) ctx.beginPath();
     let move = true;
+    let firstStroke = true;
     path.forEach((item,i) => {
         if (noClear) { 
             if (item.type == "point") {
                 if ((item.move || move) && !noMove) {
-                    ctx.moveTo(x+(item.x*cos-item.y*sin*flipVertRatio)*ratio*(1 + Math.random()),y+(item.y*cos*flipVertRatio+item.x*sin)*ratio*(1 + Math.random()));
+                    ctx.moveTo(x+(item.x*cos-item.y*sin*flipVertRatio)*ratio,y+(item.y*cos*flipVertRatio+item.x*sin)*ratio);
                     move = false;
                 }
-                else ctx.lineTo(x+(item.x*cos-item.y*sin*flipVertRatio)*ratio*(1 + Math.random()),y+(item.y*cos*flipVertRatio+item.x*sin)*ratio*(1 + Math.random()));
+                else ctx.lineTo(x+(item.x*cos-item.y*sin*flipVertRatio)*ratio,y+(item.y*cos*flipVertRatio+item.x*sin)*ratio);
             } else if (item.type == "stroke") move = true;
             else if (item.type == "close") ctx.closePath();
         } else switch(item.type) {
             case "point": {
                 if (item.move || move) {
-                    ctx.moveTo(x+(item.x*cos-item.y*sin)*ratio*(1 + Math.random()),y+(item.y*cos+item.x*sin)*ratio*(1 + Math.random()));
+                    ctx.moveTo(x+(item.x*cos-item.y*sin)*ratio,y+(item.y*cos+item.x*sin)*ratio);
                     move = false;
                 }
-                else ctx.lineTo(x+(item.x*cos-item.y*sin)*ratio*(1 + Math.random()),y+(item.y*cos+item.x*sin)*ratio*(1 + Math.random()));
+                else ctx.lineTo(x+(item.x*cos-item.y*sin)*ratio,y+(item.y*cos+item.x*sin)*ratio);
                 break;
             }
             case "fill": {
+                if (firstStroke && outlineColor) {
+                    firstStroke = false;
+                    ctx.lineWidth += 3;
+                    ctx.strokeStyle = outlineColor;
+                    ctx.stroke();
+                    ctx.lineWidth -= 3;
+                }
                 if (colorOverride) ctx.fillStyle = colorOverride;
                 else ctx.fillStyle = "rgb("+item.r+","+item.g+","+item.b+")";
                 ctx.fill();
@@ -183,10 +191,10 @@ function drawGroup(path, groups,drawOutline) {
                 switch(item.type) {
                     case "point": {
                         if (item.move || move) {
-                            ctx.moveTo(group[0]+(item.x*group[3][0]-item.y*group[3][1])*ratio*(1 + Math.random()),group[1]+(item.y*group[3][0]+item.x*group[3][1])*ratio*(1 + Math.random()));
+                            ctx.moveTo(group[0]+(item.x*group[3][0]-item.y*group[3][1])*ratio,group[1]+(item.y*group[3][0]+item.x*group[3][1])*ratio);
                             move = false;
                         }
-                        else ctx.lineTo(group[0]+(item.x*group[3][0]-item.y*group[3][1])*ratio*(1 + Math.random()),group[1]+(item.y*group[3][0]+item.x*group[3][1])*ratio*(1 + Math.random()));
+                        else ctx.lineTo(group[0]+(item.x*group[3][0]-item.y*group[3][1])*ratio,group[1]+(item.y*group[3][0]+item.x*group[3][1])*ratio);
                         break;
                     }
                     case "fill": {
@@ -262,10 +270,10 @@ function drawGroup(path, groups,drawOutline) {
                 switch(item.type) {
                     case "point": {
                         if (item.move || move) {
-                            ctx.moveTo(group[0]+(item.x*group[3][0]-item.y*group[3][1])*ratio*(1 + Math.random()),group[1]+(item.y*group[3][0]+item.x*group[3][1])*ratio*(1 + Math.random()));
+                            ctx.moveTo(group[0]+(item.x*group[3][0]-item.y*group[3][1])*ratio,group[1]+(item.y*group[3][0]+item.x*group[3][1])*ratio);
                             move = false;
                         }
-                        else ctx.lineTo(group[0]+(item.x*group[3][0]-item.y*group[3][1])*ratio*(1 + Math.random()),group[1]+(item.y*group[3][0]+item.x*group[3][1])*ratio*(1 + Math.random()));
+                        else ctx.lineTo(group[0]+(item.x*group[3][0]-item.y*group[3][1])*ratio,group[1]+(item.y*group[3][0]+item.x*group[3][1])*ratio);
                         break;
                     }
                     case "fill": {

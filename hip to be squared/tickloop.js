@@ -1,4 +1,5 @@
 function tickloop() {
+    game.fps++;
     if (game.freezeframes > 0) {
         game.freezeframes--;
         if (game.freezeframes <= 0) {
@@ -182,7 +183,13 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.8.0",700,470);
+    ctx.fillText("Version: b.1.8.1",700,470);
 }
+
+setInterval(() => {
+    if (game.printFps) console.log(game.fps);
+    game.fps = game.fpsCount;
+    game.fpsCount = 0;
+}, 1000)
 
 addEventListener("DOMContentLoaded", (event) => { setTimeout(() => {loaded = true;},500 )});

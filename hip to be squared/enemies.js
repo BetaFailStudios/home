@@ -303,20 +303,26 @@ function enemyDraw() {
         if (enemy.randomRotation) direction = Math.random()*Math.PI*2;
         if (enemy.ephemeral) ctx.globalAlpha = 0.6;
         if (enemy.projectile) {
-            let toAdd = true;
+            /*let toAdd = true;
             game.toDrawEnemies.forEach(item => {
                 if (item[0] == enemy.drawPath) {
                     toAdd = false;
                     item[1].push([enemy.x, enemy.y, enemy.size, direction, (enemy.ephemeral*0.6) || undefined]);
                 }
-            })
+            })*/
 
-            if (toAdd) game.toDrawEnemies.push([enemy.drawPath,[[enemy.x, enemy.y, enemy.size, direction, (enemy.ephemeral*0.6) || undefined]]]);
+            //if (toAdd) game.toDrawEnemies.push([enemy.drawPath,[[enemy.x, enemy.y, enemy.size, direction, (enemy.ephemeral*0.6) || undefined]]]);
+            if (enemy.showHit > 0){
+                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4,false,true,false,false,false,"#cc0000cc");
+                ctx.fill();
+                ctx.stroke();
+                enemy.showHit--;
+            } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4,false,false,false,false,false,"#cc0000cc");
         }
         else if (enemy.showHit > 0) {
-            draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,false,false,false,false,"#cccccc");
+            draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,false,false,false,false,"#cccccc","#cc0000cc");
             enemy.showHit--;
-        } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction);
+        } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,"#cc0000cc");
         if (enemy.ephemeral) ctx.globalAlpha = 1;
         if (enemy.spawning) {
             draw(enemy.x, enemy.y, game.enemySpawnPath, enemy.spawnSize, 0, enemy.spawning);

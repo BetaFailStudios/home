@@ -24,7 +24,7 @@ class Bullet {
         if (inputStats.speed === 0) {
             this.vx = 0;
             this.vy = 0;
-        }
+        } else this.speed = Math.hypot(this.vx,this.vy);
         
         if (inputStats.vx) this.vx = inputStats.vx;
         if (inputStats.vy) this.vy = inputStats.vy;
@@ -121,7 +121,7 @@ async function bulletTick() {
             if (bullet.triggerExpire && !game.menu) {
                 let prevDamage = bullet.damage;
                 stats.damageBoosts.forEach( (item) => bullet.damage *= item[1](item[0],bullet));
-                stats.bulletTicks.forEach( (item) => item[1](item[0],bullet));
+                stats.bulletTicks.forEach( (item) => item[1](item[0],bullet) );
                 bullet.damage = prevDamage;
             }
 
@@ -258,6 +258,17 @@ async function bulletTick() {
         if (!bullet.alive) {
             ease(bullet,"size",0,0.2);
             if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
+            
+            if (bullet.phoenix) {
+                bullet.reference.direction = (Math.atan((mouse.y-bullet.reference.y)/(mouse.x-bullet.reference.x)) + Math.PI*(mouse.x < bullet.reference.x)) || (Math.PI*(mouse.x < bullet.reference.x));
+                const newBullet = new Bullet(bullet.reference);
+                bulletBuffer.push(newBullet);
+                newBullet.tick = 0;
+                newBullet.lifetime = stats.lifetime;
+                newBullet.noPhoenix = true;
+                newBullet.damage *= 0.75;
+                return;
+            }
         }
 
         bullet.toReturn = true;

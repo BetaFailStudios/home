@@ -159,7 +159,7 @@ const weapons = [
             stats.firerate *= 4;
             stats.damage *= 12 + 3*rarity;
             stats.bulletSize *= 17 + 3*rarity;
-            stats.bulletSpeed *= 0.25;
+            stats.bulletSpeed *= 0.05;
             stats.lifetime = 0.1;
             stats.pierce = 5;
             stats.wallPierce = true;
@@ -350,7 +350,7 @@ const weapons = [
             stats.firerate * 1.6;
             stats.bulletSize *= 5 + rarity;
             stats.bloom *= 2.5;
-            stats.bulletSpeed  *= -0.1;
+            stats.bulletSpeed  *= -0.05;
             stats.lifetime = 0.1;
         }
 /*SL*/},{
@@ -1255,23 +1255,32 @@ const artifacts = [
         name: "Phoenix Egg",
         desc: "Bullets revive a short time after expiring",
         drawPath: JSON.parse(
-            `[{"type":"point","x":0,"y":-175,"move":false},{"type":"point","x":-200,"y":25,"move":false},{"type":"point","x":-200,"y":75,"move":false},{"type":"point","x":0,"y":275,"move":false},{"type":"point","x":200,"y":75,"move":false},{"type":"point","x":200,"y":25,"move":false},{"type":"close"},{"type":"fill","r":65,"g":65,"b":65},{"type":"point","x":-200,"y":25,"move":true},{"type":"point","x":0,"y":225,"move":false},{"type":"point","x":200,"y":25,"move":false},{"type":"point","x":0,"y":225,"move":true},{"type":"point","x":0,"y":275,"move":false},{"type":"point","x":-25,"y":25,"move":true},{"type":"point","x":-25,"y":-75,"move":false},{"type":"point","x":25,"y":-75,"move":true},{"type":"point","x":25,"y":25,"move":false},{"type":"stroke","r":35,"g":35,"b":35},{"type":"point","x":0,"y":-62.5,"move":false},{"type":"point","x":-37.5,"y":-75,"move":false},{"type":"point","x":-50,"y":-112.5,"move":false},{"type":"point","x":-37.5,"y":-150,"move":false},{"type":"point","x":0,"y":-162.5,"move":false},{"type":"point","x":37.5,"y":-150,"move":false},{"type":"point","x":50,"y":-112.5,"move":false},{"type":"point","x":37.5,"y":-75,"move":false},{"type":"close"},{"type":"fill","r":200,"g":0,"b":0},{"type":"stroke","r":50,"g":0,"b":0}]`
-        ),drawPath: JSON.parse(
-            `[{"type":"point","x":0,"y":-175,"move":false},{"type":"point","x":-200,"y":25,"move":false},{"type":"point","x":-200,"y":75,"move":false},{"type":"point","x":0,"y":275,"move":false},{"type":"point","x":200,"y":75,"move":false},{"type":"point","x":200,"y":25,"move":false},{"type":"close"},{"type":"fill","r":65,"g":65,"b":65},{"type":"point","x":-200,"y":25,"move":true},{"type":"point","x":0,"y":225,"move":false},{"type":"point","x":200,"y":25,"move":false},{"type":"point","x":0,"y":225,"move":true},{"type":"point","x":0,"y":275,"move":false},{"type":"point","x":-25,"y":25,"move":true},{"type":"point","x":-25,"y":-75,"move":false},{"type":"point","x":25,"y":-75,"move":true},{"type":"point","x":25,"y":25,"move":false},{"type":"stroke","r":35,"g":35,"b":35},{"type":"point","x":0,"y":-62.5,"move":false},{"type":"point","x":-37.5,"y":-75,"move":false},{"type":"point","x":-50,"y":-112.5,"move":false},{"type":"point","x":-37.5,"y":-150,"move":false},{"type":"point","x":0,"y":-162.5,"move":false},{"type":"point","x":37.5,"y":-150,"move":false},{"type":"point","x":50,"y":-112.5,"move":false},{"type":"point","x":37.5,"y":-75,"move":false},{"type":"close"},{"type":"fill","r":200,"g":0,"b":0},{"type":"stroke","r":50,"g":0,"b":0}]`
+            `[{"type":"point","x":-25,"y":-300},{"type":"point","x":-75,"y":-287.5},{"type":"point","x":-125,"y":-225},{"type":"point","x":-175,"y":-25},{"type":"point","x":-175,"y":75},{"type":"point","x":-150,"y":150},{"type":"point","x":-75,"y":200},{"type":"point","x":75,"y":200},{"type":"point","x":150,"y":150},{"type":"point","x":175,"y":75},{"type":"point","x":175,"y":-25},{"type":"point","x":125,"y":-225},{"type":"point","x":75,"y":-287.5},{"type":"point","x":25,"y":-300},{"type":"close"},{"type":"fill","r":150,"g":50,"b":25},{"type":"stroke","r":50,"g":0,"b":0},{"type":"point","x":-25,"y":150},{"type":"point","x":-75,"y":125},{"type":"point","x":-100,"y":50},{"type":"point","x":-75,"y":-25},{"type":"point","x":-50,"y":50},{"type":"point","x":-25,"y":0},{"type":"point","x":-37.5,"y":-50},{"type":"point","x":-25,"y":-87.5},{"type":"point","x":25,"y":-25},{"type":"point","x":37.5,"y":25},{"type":"point","x":50,"y":50},{"type":"point","x":75,"y":-25},{"type":"point","x":100,"y":50},{"type":"point","x":75,"y":125},{"type":"point","x":25,"y":150},{"type":"close"},{"type":"fill","r":200,"g":125,"b":25},{"type":"stroke","r":50,"g":25,"b":0}]`
+        ),eggPath: JSON.parse(
+            `[{"type":"point","x":0,"y":-250},{"type":"point","x":-75,"y":-225},{"type":"point","x":-125,"y":-100},{"type":"point","x":-150,"y":50},{"type":"point","x":-125,"y":125},{"type":"point","x":-75,"y":175},{"type":"point","x":0,"y":187.5},{"type":"point","x":75,"y":175},{"type":"point","x":125,"y":125},{"type":"point","x":150,"y":50},{"type":"point","x":125,"y":-100},{"type":"point","x":75,"y":-225},{"type":"close"},{"type":"fill","r":175,"g":40,"b":25},{"type":"stroke","r":50,"g":0,"b":0}]`
         ), expiration(_,bullet) {
-            closestDist = Math.hypot(bullet.x-mouse.x,bullet.y-mouse.y);
-
-            if (closestDist > 50 && bullet.tick > 10) {
-                const target = [Math.random()*20-10+mouse.x,Math.random()*20-10+mouse.y];
-                //const bulletDirection = (Math.atan(bullet.vy/bullet.vx) + Math.PI*(bullet.vx < 0)) || (Math.PI*(bullet.vx < 0)); 
-                let direction = (-Math.PI/16+Math.PI/8*Math.random()-bullet.direction+(Math.atan((bullet.y-target[1])/(bullet.x-target[0])) + Math.PI*(bullet.x > target[0])) || (Math.PI*(bullet.x > target[0])));
-                while (direction > Math.PI) direction -= Math.PI*2;
-                while (direction < -Math.PI) direction += Math.PI*2;
-                direction = Math.sign(direction)*Math.min(Math.abs(direction),Math.PI/8) + bullet.direction;
-                bullet.vx = Math.cos(direction)*bullet.speed;
-                bullet.vy = Math.sin(direction)*bullet.speed;
-                bullet.direction = direction;
-            }
+            if (bullet.noPhoenix) return;
+            const newBullet = new Bullet(bullet);
+            newBullet.reference = Object.assign({}, bullet);
+            newBullet.reference.size *= 0.75;
+            newBullet.reference.x -= newBullet.vx*20/newBullet.speed;
+            newBullet.reference.y -= newBullet.vy*20/newBullet.speed;
+            newBullet.reference.vx = undefined;
+            newBullet.reference.vy = undefined;
+            newBullet.drawPath = this.eggPath;
+            newBullet.triggerExpire = false;
+            newBullet.phoenix = true;
+            newBullet.tick = 0;
+            newBullet.lifetime = 2;
+            newBullet.direction = 0;
+            newBullet.x -= newBullet.vx*20/newBullet.speed;
+            newBullet.y -= newBullet.vy*20/newBullet.speed;
+            newBullet.vx = 0;
+            newBullet.vy = 0;
+            newBullet.damage *= 0.05;
+            newBullet.wallPierce = true;
+            newBullet.pierce = 10;
+            bulletBuffer.push(newBullet);
         }
     }
 ]

@@ -333,6 +333,8 @@ const game = {
     difficulty: 0.5,
     mapsize: 0,
     freezeframes: 0,
+    fps: 0,
+    fpsCount: 60,
 };
 
 if (localStorage.getItem("htbs-audioVolume") !== undefined) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));
