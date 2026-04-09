@@ -196,9 +196,12 @@ function dungeonMove(change, teleport) {
             enemies.forEach(async (enemy,i) => {
                 if (enemy.boss) game.bossHealthMax += enemy.healthMax;
             })
+            game.afterBossStarted = true;
         }
-        else spawnEnemies(Math.floor(1 + Math.random()*0.6+0.35*game.discoveredRooms+0.15*game.regionNum));
-        
+        else {
+            spawnEnemies(Math.floor(1 + Math.random()*0.6+0.35*game.discoveredRooms+0.15*game.regionNum));
+            game.afterBossStarted = false;
+        }
         ease(game,"notLocked",0,0.2);
         
         setTimeout(() => {

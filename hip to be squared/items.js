@@ -1406,8 +1406,8 @@ function itemTick() {
         if (Math.abs(item.x) > 850-50) {
             item.x = Math.sign(item.x)*(850-50);
         }
-        if (Math.abs(item.y+100) > 400-50) {
-            item.y = Math.sign(item.y+100)*(400-50)-100;
+        if (Math.abs(item.y+50) > 300-50) {
+            item.y = Math.sign(item.y+50)*(300-50)-50;
         }
         blocks.forEach((block) => {
             const diffx = item.x + 50 - block[0];

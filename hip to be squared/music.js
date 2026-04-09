@@ -12,7 +12,7 @@ function startMusic() {
     ease(song.file,"volume", game.audioVolume, 0.5);
     song.file.play();
 
-
+    if (game.afterBossStarted) return;
     if (game.bossHealthMax) game.bossHealthMax *= 0.3
     enemies.forEach(enemy => { if (enemy.boss) enemy.health *= 0.3 });
 }

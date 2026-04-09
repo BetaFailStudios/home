@@ -103,25 +103,25 @@ function tickloop() {
             if (stats.health < stats.healthMax) ease(stats,"health",stats.healthMax,(stats.healthMax-stats.health)/stats.healthMax*2);
 
             items.push(
-                new Item(player.x-200,player.y,false,false,"artifact"), 
-                new Item(player.x+200,player.y,false,false,"artifact"), 
-                new Item(player.x,player.y-200,false,false,"artifact"),
-                new Item(player.x,player.y+200,false,false,"artifact")
+                new Item(-200,0,false,false,"artifact"), 
+                new Item(+200,0,false,false,"artifact"), 
+                new Item(0,-200,false,false,"artifact"),
+                new Item(0,+200,false,false,"artifact")
             );
 
             while (items[items.length-3].reference == items[items.length-4].reference) {
                 items.splice(items.length-3,1);
-                items.push(new Item(player.x+200,player.y,false,false,"artifact"))
+                items.push(new Item(+200,0,false,false,"artifact"))
             }
 
             while (items[items.length-2].reference == items[items.length-3].reference || items[items.length-2].reference == items[items.length-4].reference) {
                 items.splice(items.length-2,1);
-                items.push(new Item(player.x,player.y-200,false,false,"artifact"))
+                items.push(new Item(0,0-200,false,false,"artifact"))
             }
 
-            while (items[items.length-1].reference == items[items.length-3].reference || items[items.length-1].reference == items[items.length-3].reference || items[items.length-1].reference == items[items.length-4].reference) {
+            while (items[items.length-1].reference == items[items.length-2].reference || items[items.length-1].reference == items[items.length-3].reference || items[items.length-1].reference == items[items.length-4].reference) {
                 items.splice(items.length-1,1);
-                items.push(new Item(player.x,player.y+200,false,false,"artifact"))
+                items.push(new Item(0,0+200,false,false,"artifact"))
             }
 
             game.relicTick = 0;
@@ -131,8 +131,8 @@ function tickloop() {
             if (game.firstWeapon) {
                 
                 items.push(
-                    new Item(player.x-200,player.y+75,false,false,"weapon"), 
-                    new Item(player.x+200,player.y+75,false,false,"weapon"), 
+                    new Item(player.x-200,75,false,false,"weapon"), 
+                    new Item(player.x+200,+75,false,false,"weapon"), 
                     new Item(player.x,player.y-75,false,false,"weapon")
                 );
 
@@ -188,7 +188,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.8.2",700,470);
+    ctx.fillText("Version: b.1.8.3",700,470);
 }
 
 setInterval(() => {
