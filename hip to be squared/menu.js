@@ -184,7 +184,11 @@ function drawInventory() {
     draw(200,0,game.weaponBackground,sizeWeapon,-player.rotationTick*3,false,true);
 
     switch(game.weapon.rarity) {
-        case 1: {
+        case 0: { 
+            ctx.fillStyle = "#999999"
+            break; 
+        }
+        case 1: { 
             ctx.fillStyle = "#77cc77"
             break; 
         }
@@ -200,8 +204,8 @@ function drawInventory() {
             ctx.fillStyle = "#9977cc"
             break; 
         }
-        default: { 
-            ctx.fillStyle = "#999999"
+        default: {
+            ctx.fillStyle = "#000000"
             break; 
         }
     }
@@ -231,7 +235,11 @@ function drawInventory() {
         draw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
 
         switch(game.relicsEquipped[i].rarity) {
-            case 1: {
+            case 0: { 
+                ctx.fillStyle = "#999999"
+                break; 
+            }
+            case 1: { 
                 ctx.fillStyle = "#77cc77"
                 break; 
             }
@@ -247,8 +255,8 @@ function drawInventory() {
                 ctx.fillStyle = "#9977cc"
                 break; 
             }
-            default: { 
-                ctx.fillStyle = "#999999"
+            default: {
+                ctx.fillStyle = "#000000"
                 break; 
             }
         }

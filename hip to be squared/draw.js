@@ -11,9 +11,9 @@ const calculateSinCos = gpu.createKernel(function(groups) {
 }).setOutput([2,10]);
 const calculatePoints = gpu.createKernel(function(path,groups,sinCos) {
     if (this.thread.x === 0) 
-        return groups[this.thread.z][0]+(path[this.thread.y][0]*sinCos[this.thread.z][0]-path[this.thread.y][1]*sinCos[this.thread.z][1])*groups[this.thread.z][2]/250;
+        return groups[this.thread.z][0]+(path[this.thread.y][0]*sinCos[this.thread.z][0]-path[this.thread.y][1]*sinCos[this.thread.z][1])*groups[this.thread.z][2]/250/*(0.5+Math.random())*/;
     else 
-        return groups[this.thread.z][1]+(path[this.thread.y][1]*sinCos[this.thread.z][0]+path[this.thread.y][0]*sinCos[this.thread.z][1])*groups[this.thread.z][2]/250;
+        return groups[this.thread.z][1]+(path[this.thread.y][1]*sinCos[this.thread.z][0]+path[this.thread.y][0]*sinCos[this.thread.z][1])*groups[this.thread.z][2]/250/*(0.5+Math.random())*/;
 }, {
   dynamicOutput: true,
   dynamicArguments: true
@@ -38,19 +38,19 @@ function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverri
         if (noClear) { 
             if (item.type == "point") {
                 if ((item.move || move) && !noMove) {
-                    ctx.moveTo(x+(item.x*cos-item.y*sin*flipVertRatio)*ratio,y+(item.y*cos*flipVertRatio+item.x*sin)*ratio);
+                    ctx.moveTo(x+(item.x*cos-item.y*sin*flipVertRatio)*ratio/*(0.5+Math.random())*/,y+(item.y*cos*flipVertRatio+item.x*sin)*ratio/*(0.5+Math.random())*/);
                     move = false;
                 }
-                else ctx.lineTo(x+(item.x*cos-item.y*sin*flipVertRatio)*ratio,y+(item.y*cos*flipVertRatio+item.x*sin)*ratio);
+                else ctx.lineTo(x+(item.x*cos-item.y*sin*flipVertRatio)*ratio/*(0.5+Math.random())*/,y+(item.y*cos*flipVertRatio+item.x*sin)*ratio/*(0.5+Math.random())*/);
             } else if (item.type == "stroke") move = true;
             else if (item.type == "close") ctx.closePath();
         } else switch(item.type) {
             case "point": {
                 if (item.move || move) {
-                    ctx.moveTo(x+(item.x*cos-item.y*sin)*ratio,y+(item.y*cos+item.x*sin)*ratio);
+                    ctx.moveTo(x+(item.x*cos-item.y*sin)*ratio/*(0.5+Math.random())*/,y+(item.y*cos+item.x*sin)*ratio/*(0.5+Math.random())*/);
                     move = false;
                 }
-                else ctx.lineTo(x+(item.x*cos-item.y*sin)*ratio,y+(item.y*cos+item.x*sin)*ratio);
+                else ctx.lineTo(x+(item.x*cos-item.y*sin)*ratio/*(0.5+Math.random())*/,y+(item.y*cos+item.x*sin)*ratio/*(0.5+Math.random())*/);
                 break;
             }
             case "fill": {

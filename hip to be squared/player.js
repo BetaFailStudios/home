@@ -128,6 +128,8 @@ async function playerTick() {
                     game.region.music[game.musicPos].file.pause();
                 }
 
+                game.renderRedScreen = true;
+
                 stats.onPlayerHits.forEach( (item) => item[1](item[0],enemy,blue,red));
 
                 //playerDraw();

@@ -313,16 +313,16 @@ function enemyDraw() {
 
             //if (toAdd) game.toDrawEnemies.push([enemy.drawPath,[[enemy.x, enemy.y, enemy.size, direction, (enemy.ephemeral*0.6) || undefined]]]);
             if (enemy.showHit > 0){
-                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4,false,true,false,false,false,"#cc0000cc");
+                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4,false,true,false,false,false,"#ff0000cc");
                 ctx.fill();
                 ctx.stroke();
                 enemy.showHit--;
-            } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4,false,false,false,false,false,"#cc0000cc");
+            } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4,false,false,false,false,false,"#ff0000cc");
         }
         else if (enemy.showHit > 0) {
-            draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,false,false,false,false,"#cccccc","#cc0000cc");
+            draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction);
             enemy.showHit--;
-        } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,"#cc0000cc");
+        } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction);
         if (enemy.ephemeral) ctx.globalAlpha = 1;
         if (enemy.spawning) {
             draw(enemy.x, enemy.y, game.enemySpawnPath, enemy.spawnSize, 0, enemy.spawning);

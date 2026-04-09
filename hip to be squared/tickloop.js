@@ -1,6 +1,11 @@
 function tickloop() {
     game.fps++;
     if (game.freezeframes > 0) {
+        if (game.renderRedScreen) {
+            ctx.fillStyle = "#ff000020";
+            ctx.fillRect(-1000,-500,2000,1000);
+            game.renderRedScreen = false;
+        }
         game.freezeframes--;
         if (game.freezeframes <= 0) {
             game.region.music[game.musicPos].file.play();
@@ -183,7 +188,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.8.1",700,470);
+    ctx.fillText("Version: b.1.8.2",700,470);
 }
 
 setInterval(() => {
@@ -192,4 +197,4 @@ setInterval(() => {
     game.fpsCount = 0;
 }, 1000)
 
-addEventListener("DOMContentLoaded", (event) => { setTimeout(() => {loaded = true;},500 )});
+addEventListener("DOMContentLoaded", (event) => { setTimeout(() => {loaded = true;},1000 )});
