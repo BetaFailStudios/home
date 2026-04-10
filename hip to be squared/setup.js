@@ -41,7 +41,7 @@ ctx.fillStyle = "#000";
 if (!imageSize) ctx.fillRect(-2000,-1500,4000,3000);
 ctx.fillStyle = "#ccc";
 ctx.font = "150px share tech"
-if (!imageSize) ctx.fillText("Click to load content", 0, 0);
+if (!imageSize) ctx.fillText("Loading...", 0, 0);
 
 //resizing
 window.addEventListener("resize", (  ) => {
@@ -73,8 +73,6 @@ const mouse = { x: 0, y: 0 };
 
 //detect keypresses
 window.addEventListener('keydown', async function (e) {
-    if (!loaded) return;
-
     if (e.key.toLowerCase() == "tab") e.preventDefault();
     if (e.repeat || game.regionTransfer) return;
 
@@ -174,15 +172,11 @@ window.addEventListener('keyup', function (e) {
     keys[e.key.toLowerCase()] = false;
 }, false)/[ ];
 window.addEventListener('mousedown', function () {
-    if (!loaded) return;
-
     keys.mouse = true;
     mouse.down = true;
     if (!game.musicStarted) {
-        startup();
         game.musicStarted = true;
         startMusic();
-        return;
     }
     if (game.notLocked && game.teleportPosition && !game.regionTransfer) {
         const teleportPosition = game.teleportPosition;
@@ -323,7 +317,8 @@ const game = {
     musicPos: 0,
     showHit: 0,
     menu: "main",
-    audioVolume: 0.8,
+    audioVolume: 0.6,
+    sfxVolume: 0.6,
     showDamageNumbers: true,
     discoveredRooms: 0,
     musicPopup: 1,
@@ -339,6 +334,8 @@ const game = {
 
 if (localStorage.getItem("htbs-audioVolume") !== undefined) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));
 else localStorage.setItem("htbs-audioVolume",game.audioVolume);
+if (localStorage.getItem("htbs-sfxVolume") !== undefined) game.sfxVolume = Number(localStorage.getItem("htbs-sfxVolume"));
+else localStorage.setItem("htbs-sfxVolume",game.sfxVolume);
 if (localStorage.getItem("htbs-difficulty") !== undefined) game.difficulty = Number(localStorage.getItem("htbs-difficulty"));
 else localStorage.setItem("htbs-difficulty",game.difficulty);
 if (localStorage.getItem("htbs-dmgNumbersOption") !== undefined) game.showDamageNumbers = "true" == localStorage.getItem("htbs-dmgNumbersOption");

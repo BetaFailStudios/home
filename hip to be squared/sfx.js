@@ -10,7 +10,7 @@ const sfx = {
 async function playsfx(type,freqVariation,volumeRatio) {
     if (!sfx[type]) return;
     sfxClone = sfx[type].cloneNode(true);
-    sfxClone.volume = game.audioVolume * Math.min(1,(volumeRatio || 1));
+    sfxClone.volume = game.sfxVolume * Math.min(1,(volumeRatio || 1));
     if (freqVariation) sfxClone.playbackRate = Math.max(0.5,1-freqVariation+Math.random()*freqVariation*2);
     sfxClone.play();
 }

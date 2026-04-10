@@ -188,7 +188,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.8.3",700,470);
+    ctx.fillText("Version: b.1.8.4",700,470);
 }
 
 setInterval(() => {
@@ -197,4 +197,17 @@ setInterval(() => {
     game.fpsCount = 0;
 }, 1000)
 
-addEventListener("DOMContentLoaded", (event) => { setTimeout(() => {loaded = true;},1000 )});
+const readyCheck = setInterval(() => {
+    let ready = true;
+    regions.forEach(regionList => {
+        regionList.forEach( region => {
+            region.music.forEach(song => {
+                if (!song.file.duration) ready = false;
+            })
+        })
+    })
+    if (ready) {
+        startup();
+        clearInterval(readyCheck);
+    }
+},100)

@@ -1,57 +1,72 @@
 const menuButtons = {
     "main": [[ "start", "options", "quit" ],[
-        () => {
+        [() => {
             game.menu = false;
             ease(game,"regionTransfer",0,1.5);
-        },() => {
+        }, "function"],
+        [() => {
             game.optionsMenu = "options";
-        },() => {
+        }, "function"],[
+            () => {
             window.location.href = "https://betafailstudios.com";
-        }
+        }, "function"]
     ]],
     "pause": [[ "resume", "options", "main menu" ],[
-        () => {
+        [() => {
             game.menu = false;
             game.region.music[game.musicPos].file.play();
-        },() => {
+        }, "function"],
+        [() => {
             game.optionsMenu = "options";
-        },() => {
+        }, "function"],
+        [() => {
             window.location.reload()
-        }
+        }, "function"]
     ]],
     "options": [[ "back", "audio", "misc" ],[
-        () => {
+        [() => {
             game.optionsMenu = false;
-        },() => {
+        }, "function"],
+        [() => {
             game.optionsMenu = "audio";
-        },() => {
+        }, "function"],
+        [() => {
             game.optionsMenu = "misc";
-        }
+        }, "function"]
     ]],
-    "audio": [[ "back", "- volume +", "music wobble" ],[
-        () => {
+    "audio": [[ "back", "- music +", "- SFX +", "music wobble" ],[
+        [() => {
             game.optionsMenu = "options";
-        },(lr) => {
+        }, "function"],
+        [(lr) => {
             game.audioVolume += lr*0.1;
             game.audioVolume = Math.min(1,Math.max(0,game.audioVolume));
             game.region.music[game.musicPos].file.volume = game.audioVolume;
             localStorage.setItem("htbs-audioVolume",game.audioVolume);
-        },() => {
+        }, "slider", "audioVolume"],
+        [(lr) => {
+            game.sfxVolume += lr*0.1;
+            game.sfxVolume = Math.min(1,Math.max(0,game.sfxVolume));
+            localStorage.setItem("htbs-sfxVolume",game.sfxVolume);
+        }, "slider", "sfxVolume"],
+        [() => {
             game.showMusicWobble = !game.showMusicWobble;
             localStorage.setItem("htbs-showMusicWobble",game.showMusicWobble);
-        }
+        }, "boolean", "showMusicWobble"]
     ]],
     "misc": [[ "back", "- difficulty +", "damage numbers" ],[
-        () => {
+        [() => {
             game.optionsMenu = "options";
-        },(lr) => {
+        }, "function"],
+        [(lr) => {
             game.difficulty += lr*0.1;
             game.difficulty = Math.min(1,Math.max(0,game.difficulty));
             localStorage.setItem("htbs-difficulty",game.difficulty);
-        },() => {
+        }, "slider", "difficulty"],[
+            () => {
             game.showDamageNumbers = !game.showDamageNumbers;
             localStorage.setItem("htbs-dmgNumbersOption",game.showDamageNumbers);
-        }
+        }, "boolean", "showDamageNumbers"]
     ]]
 }
 
@@ -119,7 +134,7 @@ function drawMenu() {
         ctx.strokeText(item.toUpperCase(),350,yPos-200);
         ctx.fillText(item.toUpperCase(),350,yPos-200)
 
-        if (game.optionsMenu && game.optionsMenu != "options") if (i == 1) {
+        if (game.optionsMenu && game.optionsMenu != "options") if (menuButtons[menuToChoose][1][i][1] == "slider") {
             ctx.strokeText("Lower Rez: CTRL +",350,yPos+200);
             ctx.fillText("Lower Rez: CTRL +",350,yPos+200)
 
@@ -134,12 +149,12 @@ function drawMenu() {
             ctx.lineWidth = 5;
             ctx.beginPath();
             ctx.moveTo(350-xPos,yPos-125);
-            ctx.lineTo(350-xPos+xPos*(game.audioVolume * (game.optionsMenu == "audio") + game.difficulty * (game.optionsMenu == "misc"))*2,yPos-125);
+            ctx.lineTo(350-xPos+xPos*game[menuButtons[menuToChoose][1][i][2]]*2,yPos-125);
             ctx.strokeStyle = "#999";
             ctx.stroke();
             ctx.lineCap = "butt";
             ctx.lineWidth = 10;
-        } else if (i == 2) {
+        } else if (menuButtons[menuToChoose][1][i][1] == "boolean") {
             ctx.lineCap = "round";
             ctx.beginPath();
             ctx.moveTo(350-xPos,yPos-125);
@@ -148,7 +163,7 @@ function drawMenu() {
             ctx.strokeStyle = "#222";
             ctx.stroke();
             ctx.lineWidth = 5;
-            if (game.showMusicWobble && game.optionsMenu == "audio" || game.showDamageNumbers && game.optionsMenu == "misc") ctx.strokeStyle = "#3c3";
+            if (game[menuButtons[menuToChoose][1][i][2]]) ctx.strokeStyle = "#3c3";
             else ctx.strokeStyle = "#c33";
             ctx.stroke();
             ctx.lineCap = "butt";
@@ -168,7 +183,7 @@ function menuChoose() {
         const xPos = item.length*15+50;
 
         if (Math.abs(mouse.x-350) < xPos+100 && Math.abs(mouse.y-yPos+200) < 70) {
-            menuButtons[menuToChoose][1][i](Math.sign(mouse.x-350));
+            menuButtons[menuToChoose][1][i][0](Math.sign(mouse.x-350));
             mouse.down = false;
             keys.mouse = false;
         }

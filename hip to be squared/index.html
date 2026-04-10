@@ -24,12 +24,11 @@
         }
     </style>
     <script>function xy(event) {  }</script>
-    <canvas onmousemove="xy(event)" width="1500px" height="1000px" id="gameScreen"></canvas>
+    <canvas onmousemove="xy(event)" oncontextmenu="event.preventDefault()" width="1500px" height="1000px" id="gameScreen"></canvas>
     <p id="fps">60</p>
     <script>const imageSize = false;</script>
     <script> let loading = 13; </script>
     <script>
-        let loaded = false;
         function startup() {
             regions.forEach(regionList => {
                 regionList.forEach( region => {
