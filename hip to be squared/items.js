@@ -1028,7 +1028,7 @@ const relics = [
                     const bulletClone = Object.assign({}, bullet);
                     bulletClone.damage *= 0.2 + 0.02*rarity;
                     stats.onHits.forEach(item => item[1](item[0],bulletClone,closest,true));
-                    closest.health -= bulletClone;
+                    closest.health -= bulletClone.damage;
                     dmgNumbers.push(new DamageNumber(closest.x,closest.y,bulletClone.damage))
                     effects.push(new Effect((closest.x + lastFound.x)/2,(closest.y + lastFound.y)/2,this.zapPath,closestDist/2,30,Math.atan((lastFound.y-closest.y)/(lastFound.x-closest.x)) || 0.00001,Math.PI/100000));
                 } else return;
