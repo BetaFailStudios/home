@@ -67,26 +67,27 @@ function generateDungeon() {
 
 function drawMap() {
     if (!game.regionTransfer) game.teleportPosition = false;
-    if (!game.regionTransfer && Math.abs(mouse.x-625) < 102.5 + 102.5 && Math.abs(mouse.y+275) < 72.5 + 82.5) game.mapsize += 0.2;
-    else game.mapsize -= 0.1;
-    game.mapsize = Math.min(1,Math.max(0,game.mapsize));
+    let xMax = 0;
+    let yMax = 0;
+
+    Object.keys(dungeon).forEach((item) => {
+        if (!dungeon[item].visited) return;
+        const pos = [Number(item.split(",")[0]),Number(item.split(",")[1])];
+        if (pos[0] > xMax) xMax = pos[0];
+        if (pos[1] < yMax) yMax = pos[1];
+    })
+
+    xMax = xMax*60 - 160;
+    yMax = yMax*40 + 120;
 
     ctx.save();
     ctx.globalAlpha = game.notLocked;
     ctx.translate(625,-275);
     ctx.lineWidth = 10; //210, 160
-    ctx.rect(-107.5 - 102.5*game.mapsize,-77.5 - 82.5*game.mapsize,215 + 205*game.mapsize,155 + 165*game.mapsize);
-    ctx.fillStyle = "#00000022";
-    ctx.strokeStyle = game.region.wallColor;
-    ctx.fill();
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.rect(-102.5 - 102.5*game.mapsize,-72.5 - 82.5*game.mapsize,205 + 205*game.mapsize,145 + 165*game.mapsize);
-    ctx.clip();
     Object.keys(dungeon).forEach((item) => {
         if (!dungeon[item].visited) return;
 
-        const pos = [Number(item.split(",")[0])*60-60*game.dungeonPosition[0],Number(item.split(",")[1])*40-40*game.dungeonPosition[1]];
+        const pos = [Number(item.split(",")[0])*60-xMax,Number(item.split(",")[1])*40-yMax];
         ctx.beginPath();
         dungeon[item].connections.forEach((connection) => {
             if (connection[0] == 0) ctx.rect(pos[0]-7.5+30-60*(connection[1] == -1),pos[1]-10,15,20);
@@ -100,7 +101,7 @@ function drawMap() {
     Object.keys(dungeon).forEach((item) => {
         if (!dungeon[item].visited) return;
 
-        const pos = [Number(item.split(",")[0])*60-60*game.dungeonPosition[0],Number(item.split(",")[1])*40-40*game.dungeonPosition[1]];
+        const pos = [Number(item.split(",")[0])*60-xMax,Number(item.split(",")[1])*40-yMax];
         dungeon[item].connections.forEach((connection) => {
             ctx.beginPath();    
             const targetPos = [Number(item.split(",")[0]),Number(item.split(",")[1])];
@@ -116,11 +117,11 @@ function drawMap() {
     Object.keys(dungeon).forEach((item) => {
         if (!dungeon[item].visited) return;
 
-        const pos = [Number(item.split(",")[0])*60-60*game.dungeonPosition[0],Number(item.split(",")[1])*40-40*game.dungeonPosition[1]];
+        const pos = [Number(item.split(",")[0])*60-xMax,Number(item.split(",")[1])*40-yMax];
         
         ctx.beginPath();
         ctx.rect(pos[0]-27.5,pos[1]-17.5,55,35);
-        if (pos[0] == 0 && pos[1] == 0) ctx.fillStyle = "#999";
+        if (Number(item.split(",")[0]) == game.dungeonPosition[0] && Number(item.split(",")[1]) == game.dungeonPosition[1]) ctx.fillStyle = "#999";
         else if (Math.abs(mouse.x-625-pos[0]) < 25 && Math.abs(mouse.y+275-pos[1]) < 15) {
             game.teleportPosition = [Number(item.split(",")[0]),Number(item.split(",")[1])]
             ctx.fillStyle = game.region.wallColor;

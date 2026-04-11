@@ -1,5 +1,6 @@
 function tickloop() {
     game.fps++;
+    if (game.freezeframes && !game.enableFreezeFrames) game.freezeframes = false;
     if (game.freezeframes > 0) {
         if (game.renderRedScreen) {
             ctx.fillStyle = "#ff000020";
@@ -96,7 +97,6 @@ function tickloop() {
 
     if (game.noEnemies && !game.notLocked) {
         ease(game,"notLocked", 1,0.2);
-        if (stats.extraHealth < stats.extraHealthMax) ease(stats,"extraHealth",stats.extraHealthMax,(stats.extraHealthMax-stats.extraHealth)/stats.extraHealthMax*2);
 
         if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].boss && game.regionNum >= 0) {
             if (game.musicStarted) restartMusic(0);
@@ -188,7 +188,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.8.4",700,470);
+    ctx.fillText("Version: b.1.8.5",700,470);
 }
 
 setInterval(() => {

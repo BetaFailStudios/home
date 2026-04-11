@@ -18,6 +18,11 @@ const player = {
 async function playerTick() {
     if (game.menu) return;
 
+    if (game.notLocked) {
+        if (stats.extraHealth < stats.extraHealthMax) stats.extraHealth += stats.extraHealthMax/60;
+        else stats.extraHealth = stats.extraHealthMax;
+    }
+
     player.x += player.vx;
     player.y += player.vy;
     player.vx *= 1-stats.friction;
@@ -119,14 +124,12 @@ async function playerTick() {
                     game.showHit += 0.85;
                 }
                 
-                if (blue) {
-                    playsfx("blueloss");
-                    game.freezeframes = 20;
-                    game.region.music[game.musicPos].file.pause();
-                }
+                game.freezeframes = 10;
                 if (red) {
                     playsfx("redloss");
-                    game.freezeframes = 10;
+                    game.region.music[game.musicPos].file.pause();
+                } else {
+                    playsfx("blueloss");
                     game.region.music[game.musicPos].file.pause();
                 }
 

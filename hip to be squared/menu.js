@@ -54,7 +54,7 @@ const menuButtons = {
             localStorage.setItem("htbs-showMusicWobble",game.showMusicWobble);
         }, "boolean", "showMusicWobble"]
     ]],
-    "misc": [[ "back", "- difficulty +", "damage numbers" ],[
+    "misc": [[ "back", "- difficulty +", "damage numbers", "freeze frames" ],[
         [() => {
             game.optionsMenu = "options";
         }, "function"],
@@ -62,11 +62,15 @@ const menuButtons = {
             game.difficulty += lr*0.1;
             game.difficulty = Math.min(1,Math.max(0,game.difficulty));
             localStorage.setItem("htbs-difficulty",game.difficulty);
-        }, "slider", "difficulty"],[
-            () => {
+        }, "slider", "difficulty"],
+        [() => {
             game.showDamageNumbers = !game.showDamageNumbers;
             localStorage.setItem("htbs-dmgNumbersOption",game.showDamageNumbers);
-        }, "boolean", "showDamageNumbers"]
+        }, "boolean", "showDamageNumbers"],
+        [() => {
+            game.enableFreezeFrames = !game.enableFreezeFrames;
+            localStorage.setItem("htbs-enableFreezeFrames",game.enableFreezeFrames);
+        }, "boolean", "enableFreezeFrames"]
     ]]
 }
 
@@ -91,7 +95,7 @@ function drawMenu() {
     
     ctx.lineWidth = 10;
     
-    draw(-400,-200,game.gameIcon,300);
+    draw(-400,-100,game.gameIcon,300);
 
     let menuToChoose = game.menu;
     if (game.optionsMenu) menuToChoose = game.optionsMenu;
@@ -134,10 +138,12 @@ function drawMenu() {
         ctx.strokeText(item.toUpperCase(),350,yPos-200);
         ctx.fillText(item.toUpperCase(),350,yPos-200)
 
-        if (game.optionsMenu && game.optionsMenu != "options") if (menuButtons[menuToChoose][1][i][1] == "slider") {
-            ctx.strokeText("Lower Rez: CTRL +",350,yPos+200);
-            ctx.fillText("Lower Rez: CTRL +",350,yPos+200)
-
+        if (game.optionsMenu) if (game.optionsMenu == "options") {
+            if (!i) {
+                ctx.strokeText("Lower Rez: CTRL +",350,yPos+200);
+                ctx.fillText("Lower Rez: CTRL +",350,yPos+200)
+            }
+        } else if (menuButtons[menuToChoose][1][i][1] == "slider") {
             ctx.lineCap = "round";
             ctx.lineWidth = 15;
             ctx.beginPath();

@@ -68,6 +68,13 @@ async function enemyTick() {
             //game.bossHealthMax += enemy.healthMax;
         }
         if (!enemy.projectile) game.noEnemies = false;
+        else if (game.noEnemies && enemy.alive) {
+            enemy.alive = false;
+            ease(enemy,"size",0,0.2);
+            enemy.vx = 0; enemy.vy = 0;
+            enemy.toReturn = true;
+            return true;
+        };
 
         if (enemy.spawning && enemy.rotateToTarget) enemy.dirToTarget = (Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x));
         if (enemy.spawning && !enemy.offscreen) {
@@ -303,24 +310,10 @@ function enemyDraw() {
         if (enemy.randomRotation) direction = Math.random()*Math.PI*2;
         if (enemy.ephemeral) ctx.globalAlpha = 0.6;
         if (enemy.projectile) {
-            /*let toAdd = true;
-            game.toDrawEnemies.forEach(item => {
-                if (item[0] == enemy.drawPath) {
-                    toAdd = false;
-                    item[1].push([enemy.x, enemy.y, enemy.size, direction, (enemy.ephemeral*0.6) || undefined]);
-                }
-            })*/
-
-            //if (toAdd) game.toDrawEnemies.push([enemy.drawPath,[[enemy.x, enemy.y, enemy.size, direction, (enemy.ephemeral*0.6) || undefined]]]);
-            if (enemy.showHit > 0){
-                draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4,false,true,false,false,false,"#ff0000cc");
-                ctx.fill();
-                ctx.stroke();
-                enemy.showHit--;
-            } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4,false,false,false,false,false,"#ff0000cc");
+            draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,false,false,false,false,false,"#ff0000cc");
         }
         else if (enemy.showHit > 0) {
-            draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction);
+            draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,false,false,false,false,"#ccc");
             enemy.showHit--;
         } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction);
         if (enemy.ephemeral) ctx.globalAlpha = 1;

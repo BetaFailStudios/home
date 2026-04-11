@@ -1,23 +1,19 @@
 const gpu = new GPU.GPU();
 
-const calculateSinCos = gpu.createKernel(function(groups) {
+const calculatePoints = gpu.createKernel(function(path,groups,pathLength,groupsLength) {
+    if (this.thread.y > pathLength || this.thread.z > groupsLength) return 0;
+    const cos = Math.cos(groups[this.thread.z][3]);
+    const sin = Math.sin(groups[this.thread.z][3]);
     if (this.thread.x === 0) 
-        return Math.cos(groups[this.thread.y][3]);
+        return groups[this.thread.z][0]+(path[this.thread.y][0]*cos-path[this.thread.y][1]*sin)*groups[this.thread.z][2]/250/*(0.5+Math.random())*/;
     else 
-        return Math.sin(groups[this.thread.y][3]);
+        return groups[this.thread.z][1]+(path[this.thread.y][1]*cos+path[this.thread.y][0]*sin)*groups[this.thread.z][2]/250/*(0.5+Math.random())*/;
 }, {
   dynamicOutput: true,
   dynamicArguments: true
-}).setOutput([2,10]);
-const calculatePoints = gpu.createKernel(function(path,groups,sinCos) {
-    if (this.thread.x === 0) 
-        return groups[this.thread.z][0]+(path[this.thread.y][0]*sinCos[this.thread.z][0]-path[this.thread.y][1]*sinCos[this.thread.z][1])*groups[this.thread.z][2]/250/*(0.5+Math.random())*/;
-    else 
-        return groups[this.thread.z][1]+(path[this.thread.y][1]*sinCos[this.thread.z][0]+path[this.thread.y][0]*sinCos[this.thread.z][1])*groups[this.thread.z][2]/250/*(0.5+Math.random())*/;
-}, {
-  dynamicOutput: true,
-  dynamicArguments: true
-}).setOutput([2,11,50]);
+}).setOutput([2,20,50]);
+
+const highest = [20,50];
 
 function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverride,outlineColor) {
     const cos = Math.cos(rotate || 0);
@@ -99,23 +95,25 @@ function drawGroup(path, groups,drawOutline) {
         }
     } )
 
-    calculateSinCos.setOutput([2,groups.length]);
-    calculatePoints.setOutput([2,path2.length,groups.length]);
-    const sinCos = calculateSinCos(groups);
-    const points = calculatePoints(path2,groups,sinCos);
+    if (path2.length > highest[0] || groups.length > highest[1]) {
+        calculatePoints.setOutput([2,path2.length,groups.length]);
+        highest[0] = path2.length;
+        highest[1] = groups.length;
+    }
+    const points = calculatePoints(path2,groups,path2.length,groups.length);
 
     let firstStroke = true;
     let stop = -1;
     let nextStop = -1;
     let stroke = false;
 
-    if (groups[0][4] !== undefined) ctx.globalAlpha = groups[0][4];
     ctx.beginPath();
-    while (stop < path.length-1) {
+    if (groups[0][4] !== undefined) ctx.globalAlpha = groups[0][4];
+    while (stop < path.length-3) {
         stop = nextStop;
-        for (var i = 0; i < points.length; i++) {
+        for (var i = 0; i < groups.length; i++) {
             let move = true;
-            for(var i2 = stop + 1; i2 < path.length; i2++) {
+            for(var i2 = stop+1; i2 < path.length; i2++) {
                 const item = path[i2];
                 switch(item.type) {
                     case "point": {
@@ -132,7 +130,6 @@ function drawGroup(path, groups,drawOutline) {
                         i2 = path.length;
                         ctx.fillStyle = "rgb("+item.r+","+item.g+","+item.b+")";
                         stroke = false;
-                        //ctx.fill();
                         break;
                     }
                     case "stroke": {
@@ -145,6 +142,7 @@ function drawGroup(path, groups,drawOutline) {
                         break;
                     }
                     case "close": {
+                        move = true;
                         ctx.closePath();
                         break;
                     }
@@ -165,6 +163,14 @@ function drawGroup(path, groups,drawOutline) {
                 firstStroke = false;
             }
             ctx.fill();
+
+            if (false && path[stop+1].type == "stroke") {
+                ctx.strokeStyle = "rgb("+item.r+","+item.g+","+item.b+")";
+                ctx.stroke();
+                ctx.beginPath();
+                stop++;
+                nextStop++;
+            }
         }
     }
 
