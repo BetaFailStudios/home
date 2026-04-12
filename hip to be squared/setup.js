@@ -333,15 +333,15 @@ const game = {
     enableFreezeFrames: true
 };
 
-if (localStorage.getItem("htbs-audioVolume") !== undefined) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));
+if (localStorage.getItem("htbs-audioVolume") !== null) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));
 else localStorage.setItem("htbs-audioVolume",game.audioVolume);
-if (localStorage.getItem("htbs-sfxVolume") !== undefined) game.sfxVolume = Number(localStorage.getItem("htbs-sfxVolume"));
+if (localStorage.getItem("htbs-sfxVolume") !== null) game.sfxVolume = Number(localStorage.getItem("htbs-sfxVolume"));
 else localStorage.setItem("htbs-sfxVolume",game.sfxVolume);
-if (localStorage.getItem("htbs-difficulty") !== undefined) game.difficulty = Number(localStorage.getItem("htbs-difficulty"));
+if (localStorage.getItem("htbs-difficulty") !== null) game.difficulty = Number(localStorage.getItem("htbs-difficulty"));
 else localStorage.setItem("htbs-difficulty",game.difficulty);
-if (localStorage.getItem("htbs-dmgNumbersOption") !== undefined) game.showDamageNumbers = "true" == localStorage.getItem("htbs-dmgNumbersOption");
-if (localStorage.getItem("htbs-showMusicWobble") !== undefined) game.showMusicWobble = "true" == localStorage.getItem("htbs-showMusicWobble");
-if (localStorage.getItem("htbs-enableFreezeFrames") !== undefined) game.enableFreezeFrames = "true" == localStorage.getItem("htbs-enableFreezeFrames");
+if (localStorage.getItem("htbs-dmgNumbersOption") !== null) game.showDamageNumbers = "true" == localStorage.getItem("htbs-dmgNumbersOption");
+if (localStorage.getItem("htbs-showMusicWobble") !== null) game.showMusicWobble = "true" == localStorage.getItem("htbs-showMusicWobble");
+if (localStorage.getItem("htbs-enableFreezeFrames") !== null) game.enableFreezeFrames = "true" == localStorage.getItem("htbs-enableFreezeFrames");
 let bullets = [];
 let enemies = [];
 let attackWarnings = [];
