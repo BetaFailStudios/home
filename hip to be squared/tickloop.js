@@ -1,6 +1,5 @@
 function tickloop() {
     game.fps++;
-    if (game.freezeframes && !game.enableFreezeFrames) game.freezeframes = false;
     if (game.freezeframes > 0) {
         if (game.renderRedScreen) {
             ctx.fillStyle = "#ff000020";
@@ -8,7 +7,8 @@ function tickloop() {
             game.renderRedScreen = false;
         }
         game.freezeframes--;
-        if (game.freezeframes <= 0) {
+        if (game.freezeframes <= 0 || !game.enableFreezeFrames) {
+            game.freezeframes = 0;
             game.region.music[game.musicPos].file.play();
         }
         return;
