@@ -202,7 +202,7 @@ function drawInventory() {
     ctx.beginPath();
     const sizeWeapon = 250;
     
-    draw(200,0,game.weaponBackground,sizeWeapon,-player.rotationTick*3,false,true);
+    drawRaw(200,0,game.weaponBackground,sizeWeapon,-player.rotationTick*3,false,true);
 
     switch(game.weapon.rarity) {
         case 0: { 
@@ -236,14 +236,14 @@ function drawInventory() {
     ctx.stroke();
     ctx.beginPath();
 
-    draw(200,0,game.weapon.reference.drawPath,100,Math.sin(player.rotationTick*5)/3);
+    drawRaw(200,0,game.weapon.reference.drawPath,100,Math.sin(player.rotationTick*5)/3);
     if (Math.hypot(mouse.x-200,mouse.y) < 200) drawItemDesc(game.weapon,200,0);
 
     [[-150,-300],[-550,-300],[-300,0],[-700,0],[-150,300],[-550,300]].forEach((item, i) => {
         ctx.beginPath();
         if (!game.relicsEquipped[i]) {
             const size = 50;
-            draw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
+            drawRaw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
             ctx.strokeStyle = "#222";
             ctx.fillStyle = "#555";
             ctx.fill();
@@ -253,7 +253,7 @@ function drawInventory() {
         }
 
         const size = 135;
-        draw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
+        drawRaw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
 
         switch(game.relicsEquipped[i].rarity) {
             case 0: { 
@@ -287,13 +287,13 @@ function drawInventory() {
         ctx.stroke();
 
 
-        draw(...item,game.relicsEquipped[i].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
+        drawRaw(...item,game.relicsEquipped[i].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
         if (Math.hypot(mouse.x-item[0],mouse.y-item[1]) < 200) drawItemDesc(game.relicsEquipped[i],...item);
     });
     [[550,-300],[700,0],[550,300]].forEach((item, i) => {
         if (!game.artifactsEquipped[i]) {
             const size = 50;
-            draw(...item,game.artifactBackground,size,-player.rotationTick*3,false,true);
+            drawRaw(...item,game.artifactBackground,size,-player.rotationTick*3,false,true);
             ctx.strokeStyle = "#222";
             ctx.fillStyle = "#555";
             ctx.fill();
@@ -305,7 +305,7 @@ function drawInventory() {
         ctx.beginPath();
 
         const size = 135;
-        draw(...item,game.artifactBackground,size,-player.rotationTick*3,false,true);
+        drawRaw(...item,game.artifactBackground,size,-player.rotationTick*3,false,true);
         ctx.closePath();
 
         ctx.fillStyle = "#cc7777";
@@ -314,7 +314,7 @@ function drawInventory() {
         ctx.stroke();
 
 
-        draw(...item,game.artifactsEquipped[i].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
+        drawRaw(...item,game.artifactsEquipped[i].reference.drawPath,75,Math.sin(player.rotationTick*5)/3);
         if (Math.hypot(mouse.x-item[0],mouse.y-item[1]) < 200) drawItemDesc(game.artifactsEquipped[i],...item);
     })
 }
