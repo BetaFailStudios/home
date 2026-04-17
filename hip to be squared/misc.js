@@ -25,11 +25,11 @@ function drawEnemyAttacks() {
         ctx.beginPath();  
         const ratio = animationRatio(item[1],item[2],6);
         if (item[0] == "circle") {
-            draw(item[3],item[4],game[item[0] + "AttackWarnPath"],item[5]*ratio,item[6]);
+            drawRaw(item[3],item[4],game[item[0] + "AttackWarnPath"],item[5]*ratio,item[6]);
         } else if (game[item[0] + "AttackWarnPath"]) {
             ctx.beginPath();
-            draw(item[3],item[4],game[item[0] + "AttackWarnPath"],item[8]*ratio,item[7]);
-            draw(item[5],item[6],game[item[0] + "AttackWarnPath"],item[8]*ratio,item[7],false,true,true,true);
+            drawRaw(item[3],item[4],game[item[0] + "AttackWarnPath"],item[8]*ratio,item[7]);
+            drawRaw(item[5],item[6],game[item[0] + "AttackWarnPath"],item[8]*ratio,item[7],false,true,true,true);
             ctx.closePath();
         }
     
@@ -85,10 +85,10 @@ let brickId = [];//[[2,1,15],[1,-2,5]]
 function drawEnvironment() {
     game.region.drawFloor()
 
-    floor.forEach((item) => { draw(item.x,item.y,item.reference,item.size,item.rotation,0.25) })
+    floor.forEach((item) => { drawRaw(item.x,item.y,item.reference,item.size,item.rotation,0.25) })
 
     if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].regionTransfer && game.notLocked) {
-        draw(0,0,game.nextRegion.entrancePath,75 * game.notLocked );
+        drawRaw(0,0,game.nextRegion.entrancePath,75 * game.notLocked );
         if (!game.regionTransfer && game.notLocked == 1 && Math.abs(player.x) < 150 && Math.abs(player.y) < 150) {
             ctx.beginPath();
             ctx.fillStyle = "#ccc";

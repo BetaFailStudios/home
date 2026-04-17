@@ -1,4 +1,5 @@
 function tickloop() {
+    //toDraw = [];
     game.fps++;
     if (game.freezeframes > 0) {
         if (game.renderRedScreen) {
@@ -39,9 +40,11 @@ function tickloop() {
         drawGroup(...item,true)
     })
     game.toDrawEnemies = [];
+    itemTick();
     playerDraw();
     handleEffects();
-    itemTick();
+    ctx.lineWidth = 3;
+    drawAll();
     drawDamageNumbers();
     if (game.bossName) drawBossName();
     if (game.musicPopup != 1) drawMusicPopup();
@@ -49,25 +52,6 @@ function tickloop() {
     drawRoommEffects();
     if (game.notLocked && game.regionNum >= 0) drawMap();
     drawHealthBars();
-    
-    ctx.lineWidth = 15;
-    ctx.beginPath();
-    ctx.moveTo(70-900, 500);
-    ctx.lineTo(-900, 500-70);
-    ctx.lineTo(-900, -500+70);
-    ctx.lineTo(70-900, -500);
-    ctx.lineTo(-70+900, -500);
-    ctx.lineTo(900, -500+70);
-    ctx.lineTo(900, 500-70);
-    ctx.lineTo(-70+900, 500);
-    ctx.closePath();
-
-    ctx.rect(1800,-1000,-3600,2000);
-    //ctx.rect(-900,-500,1800,1000);
-    ctx.strokeStyle = "#222";
-    ctx.fillStyle = "#000";
-    ctx.stroke();
-    ctx.fill();
     ctx.lineWidth = 3;
 
     if (game.regionTransfer > 1) {
@@ -181,14 +165,34 @@ function tickloop() {
         ctx.lineWidth = 3;
         ctx.lineCap = "butt";
     }
-    draw(mouse.x,mouse.y,game.cursorPath,30,player.rotationTick);
+    drawRaw(mouse.x,mouse.y,game.cursorPath,30,player.rotationTick);
 
     toEaseVariables = toEaseVariables.filter(changeEaseable);
 
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.8.5",700,470);
+    ctx.fillText("Version: b.1.8.6",700,470);
+    
+    ctx.lineWidth = 15;
+    ctx.beginPath();
+    ctx.moveTo(70-900, 500);
+    ctx.lineTo(-900, 500-70);
+    ctx.lineTo(-900, -500+70);
+    ctx.lineTo(70-900, -500);
+    ctx.lineTo(-70+900, -500);
+    ctx.lineTo(900, -500+70);
+    ctx.lineTo(900, 500-70);
+    ctx.lineTo(-70+900, 500);
+    ctx.closePath();
+
+    ctx.rect(1800,-1000,-3600,2000);
+    //ctx.rect(-900,-500,1800,1000);
+    ctx.strokeStyle = "#222";
+    ctx.fillStyle = "#000";
+    ctx.stroke();
+    ctx.fill();
+    ctx.lineWidth = 3;
 }
 
 setInterval(() => {

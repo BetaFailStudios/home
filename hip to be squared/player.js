@@ -2,11 +2,11 @@ const player = {
     x: 0, y: 200,
     vx: 0, vy: 0,
     rotationTick: 0,
-    drawPath: JSON.parse(
+    drawPath: pathParse(
         `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-50,"y":0},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"point","x":-200,"y":250,"move":true},{"type":"point","x":200,"y":250,"move":false},{"type":"point","x":0,"y":50,"move":false},{"type":"close"},{"type":"point","x":250,"y":200,"move":true},{"type":"point","x":250,"y":-200,"move":false},{"type":"point","x":50,"y":0,"move":false},{"type":"close"},{"type":"point","x":0,"y":-50,"move":true},{"type":"point","x":200,"y":-250,"move":false},{"type":"point","x":-200,"y":-250,"move":false},{"type":"close"},{"type":"fill","r":150,"g":200,"b":200},{"type":"stroke","r":75,"g":115,"b":125}]`
-    ),dashCooldownPath: JSON.parse(
+    ),dashCooldownPath: pathParse(
         `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-200,"y":-250},{"type":"point","x":200,"y":-250},{"type":"point","x":250,"y":-200},{"type":"point","x":250,"y":200},{"type":"point","x":200,"y":250},{"type":"point","x":-200,"y":250},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"fill","r":150,"g":150,"b":150},{"type":"stroke","r":100,"g":100,"b":100}]`
-    ),bloodPath: JSON.parse(
+    ),bloodPath: pathParse(
         `[{"type":"point","x":-250,"y":-250},{"type":"point","x":250,"y":-250},{"type":"point","x":250,"y":250},{"type":"point","x":-250,"y":250},{"type":"close"},{"type":"fill","r":255,"g":0,"b":0},{"type":"stroke","r":50,"g":0,"b":0}]`
     ),
     firerateTick: 0,
@@ -196,12 +196,8 @@ function playerDraw() {
         draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
         ctx.globalAlpha = 1;
         
-        ctx.save();
-        ctx.translate(player.x, player.y);
-        if (mouse.x < player.x) ctx.scale(-1,1);
-        ctx.rotate((Math.atan((mouse.y-player.y)/(mouse.x-player.x)) * (1-2*(mouse.x < player.x))) || 0);
-        draw(70,0,game.weapon.reference.drawPath,25);
-        ctx.restore();
+        const direction = (Math.atan((mouse.y-player.y)/(mouse.x-player.x)) + Math.PI*(mouse.x < player.x)) || 0;
+        draw(player.x + 70*Math.cos(direction),player.y + 70*Math.sin(direction),game.weapon.reference.drawPath,25,direction,undefined,undefined,mouse.x < player.x);
 
         if (player.showShieldBreak > 0) {
             ctx.beginPath();

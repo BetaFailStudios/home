@@ -280,7 +280,7 @@ async function bulletTick() {
     bulletBuffer = [];
 }
 
-async function bulletDraw() {
+function bulletDraw() {
     bullets.filter(async (bullet,i) => {
         if (bullet.size > 1500) bullet.size = 1500;
 
@@ -291,7 +291,8 @@ async function bulletDraw() {
         // handle afterdeath
         if (!bullet.alive) {
             if (!stats.noDrawBullets || !bullet.triggerExpire) if (bullet.size > 5) {
-                let toAdd = true;
+                draw(bullet.x,bullet.y,bullet.drawPath,bullet.size,bullet.direction,bullet.drawAlpha);
+                /*let toAdd = true;
                 game.toDraw.forEach(item => {
                     if (item[0] == bullet.drawPath) {
                         toAdd = false;
@@ -299,13 +300,13 @@ async function bulletDraw() {
                     }
                 })
 
-                if (toAdd) game.toDraw.push([bullet.drawPath,[[bullet.x, bullet.y, bullet.size, bullet.direction, bullet.drawAlpha]]]);
+                if (toAdd) game.toDraw.push([bullet.drawPath,[[bullet.x, bullet.y, bullet.size, bullet.direction, bullet.drawAlpha]]]);*/
             } else {
                 ctx.beginPath();
                 let color = bullet.drawPath[bullet.drawPath.length-1]
-                ctx.strokeStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+                ctx.strokeStyle = "rgb(" + color[1] + "," + color[2] + "," + color[3] + ")";
                 color = bullet.drawPath[bullet.drawPath.length-2]
-                ctx.fllStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+                ctx.fllStyle = "rgb(" + color[1] + "," + color[2] + "," + color[3] + ")";
                 ctx.rect(bullet.x-bullet.size,bullet.y-bullet.size,bullet.size*2,bullet.size*2);
                 ctx.fill();
                 ctx.stroke();
@@ -336,7 +337,8 @@ async function bulletDraw() {
         }
 
         if (!stats.noDrawBullets || !bullet.triggerExpire) if (bullet.size > 5) {
-            let toAdd = true;
+            draw(bullet.x,bullet.y,bullet.drawPath,bullet.size,bullet.direction,bullet.drawAlpha);
+            /*let toAdd = true;
             game.toDraw.forEach(item => {
                 if (item[0] == bullet.drawPath) {
                     toAdd = false;
@@ -344,7 +346,7 @@ async function bulletDraw() {
                 }
             })
 
-            if (toAdd) game.toDraw.push([bullet.drawPath,[[bullet.x, bullet.y, bullet.size, bullet.direction, bullet.drawAlpha]]]);
+            if (toAdd) game.toDraw.push([bullet.drawPath,[[bullet.x, bullet.y, bullet.size, bullet.direction, bullet.drawAlpha]]]);*/
         } else {
             ctx.beginPath();
             let color = bullet.drawPath[bullet.drawPath.length-1]

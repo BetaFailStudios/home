@@ -95,7 +95,7 @@ function drawMenu() {
     
     ctx.lineWidth = 10;
     
-    draw(-400,-100,game.gameIcon,300);
+    drawRaw(-400,-100,game.gameIcon,300);
 
     let menuToChoose = game.menu;
     if (game.optionsMenu) menuToChoose = game.optionsMenu;

@@ -129,7 +129,7 @@ function drawMap() {
         else ctx.fillStyle = game.region.floorColor;
         ctx.fill();
 
-        if (dungeon[item].items.length) draw(...pos,game.dungeonItemPath,15,player.rotationTick);
+        if (dungeon[item].items.length) drawRaw(...pos,game.dungeonItemPath,15,player.rotationTick);
     })
     ctx.restore();
 }
@@ -151,6 +151,7 @@ function dungeonMove(change, teleport) {
         else player.y -= 1000*change[1];
     } else change[0] = -1;
 
+    updateStats();
 
     effects = [];
     floor = [];
