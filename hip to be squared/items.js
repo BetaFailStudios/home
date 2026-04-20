@@ -508,7 +508,7 @@ const weapons = [
         ),bulletDrawPath: pathParse(
             `[{"type":"point","x":0,"y":0},{"type":"point","x":-125,"y":-125},{"type":"point","x":-250,"y":0},{"type":"point","x":-125,"y":125},{"type":"close"},{"type":"point","x":300,"y":0,"move":true},{"type":"point","x":0,"y":300,"move":false},{"type":"point","x":-75,"y":225,"move":false},{"type":"point","x":150,"y":0,"move":false},{"type":"point","x":-75,"y":-225,"move":false},{"type":"point","x":0,"y":-300,"move":false},{"type":"close"},{"type":"fill","r":50,"g":150,"b":175},{"type":"stroke","r":25,"g":50,"b":75}]`
         ), statChange(rarity) {
-            stats.damage *= 1.35 + 1.35*rarity;
+            stats.damage *= 2 + 0.2*rarity;
             stats.bulletSpeed *= 1.6 + 0.2*rarity;
             stats.bulletSize *= 1.5;
             stats.bloom *= 0.5;

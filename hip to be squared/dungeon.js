@@ -82,8 +82,10 @@ function drawMap() {
 
     ctx.save();
     ctx.globalAlpha = game.notLocked;
+    if (player.x > 600 && player.y < -300) ctx.globalAlpha *= 0.3;
     ctx.translate(625,-275);
     ctx.lineWidth = 10; //210, 160
+    ctx.strokeStyle = game.region.wallColor;
     Object.keys(dungeon).forEach((item) => {
         if (!dungeon[item].visited) return;
 
@@ -222,7 +224,7 @@ function dungeonMove(change, teleport) {
     items = room.items;
 }
 
-for (var i = 0; i < 6; i++) roomEffects.push({
+for (var i = 0; i < 3; i++) roomEffects.push({
     moveSpeed: 0.5 + Math.random()*2,
     x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:600+Math.random()*400,
     reference:game.region.roomEffects[Math.floor(Math.random()*game.region.roomEffects.length)]

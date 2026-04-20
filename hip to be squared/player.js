@@ -192,7 +192,7 @@ function playerDraw() {
         ctx.lineWidth = 3;
         ctx.lineCap = "butt";
 
-        if (player.iFrames > 0) ctx.globalAlpha = 0.4;
+        if (player.iFrames > 0) draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick,0.4);
         draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
         ctx.globalAlpha = 1;
         

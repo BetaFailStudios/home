@@ -113,7 +113,7 @@ const regions = [
     ],
     [
         {
-            name: ["Super Computer", "#060"], wallColor: "#070", floorColor: "#030",
+            name: ["Super Computer", "#060"], wallColor: "#070", floorColor: "#050",
             enemies: [19,21,22,23,24,25,29],
             bosses: [26],
             music: [
@@ -150,33 +150,27 @@ const regions = [
                 )
             ], generateBrickId() {
                 brickId = [];
-                for (var i = 0; i < 30; i++) brickId.push([-1700+100*Math.round(26*Math.random()),Math.ceil(10*Math.random())]);
             }, drawFloor() {
                 ctx.beginPath();
                 ctx.fillStyle = "#077341";
                 ctx.fillRect(-900, -500, 1800, 1000);
 
                 ctx.beginPath();
-                for (var i = -900-1000; i <= 900; i += 100) {
+                for (var i = -900-600; i < 900; i += 300) {
                     ctx.moveTo(i,-500);
-                    for (var i2 = 1; i2 < 11; i2++) {
-                        if (i == brickId[i2][0] || i2 == 10) ctx.lineTo(i+100*i2,-500+100*i2);
-                        if (i == brickId[i2][0]) {
-                            i += 100;
-                            ctx.lineTo(i+100*i2,-500+100*i2);
-                        }
-                    }
+                    ctx.lineTo(i+900,500);
                 }
-                ctx.lineWidth = 15;
+                ctx.lineWidth = 30;
                 ctx.strokeStyle = "#044321";
                 ctx.stroke();
-                ctx.lineWidth = 3;
-                ctx.strokeStyle = "#a48f27";
+                ctx.lineWidth = 10;
+                ctx.strokeStyle = "#746f17";
                 ctx.stroke();
+                ctx.lineWidth = 3;
             }, drawBlock(block) {
                 ctx.beginPath()
                 ctx.rect(...block);
-                for (var i = 0; i < block[2]+block[3]; i += 30) {
+                for (var i = 0; i < block[2]+block[3]; i += 100) {
                     if (i > block[2]) ctx.moveTo(block[0],block[1]+i-block[2]);
                     else ctx.moveTo(block[0]+block[2]-i,block[1]);
                     if (i > block[3]) ctx.lineTo(block[0]+block[2]-i+block[3],block[1]+block[3]);

@@ -507,7 +507,7 @@ const enemyBlueprints = [
             }
         }
     },{ // 27 CPU gold shard
-        size: 45, health: 1, projectile: true, rotateToTarget: true, immovable: true, speed: -0.1, target: "direction", drawPath: pathParse(
+        size: 25, health: 1, projectile: true, rotateToTarget: true, immovable: true, speed: -0.1, target: "direction", drawPath: pathParse(
             `[{"type":"point","x":0,"y":-75},{"type":"point","x":-250,"y":0},{"type":"point","x":0,"y":75},{"type":"point","x":250,"y":0},{"type":"close"},{"type":"fill","r":255,"g":255,"b":0},{"type":"stroke","r":50,"g":50,"b":0}]`
         )
     },{ // 28 tiny knives

@@ -1,5 +1,4 @@
 function tickloop() {
-    //toDraw = [];
     game.fps++;
     if (game.freezeframes > 0) {
         if (game.renderRedScreen) {
@@ -28,18 +27,10 @@ function tickloop() {
     ctx.fillStyle = "#000";
     ctx.fillRect(-1800,-1000,3600,2000);
     drawEnvironment();
-    game.toDraw.forEach(item => {
-        drawGroup(...item)
-    })
-    game.toDraw = [];
     bulletDraw();
     drawBlocks();
     drawEnemyAttacks();
     enemyDraw();
-    game.toDrawEnemies.forEach(item => {
-        drawGroup(...item,true)
-    })
-    game.toDrawEnemies = [];
     itemTick();
     playerDraw();
     handleEffects();
@@ -172,7 +163,8 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.8.6",700,470);
+    ctx.fillText("Version: b.1.8.7",700,470);
+    if (game.fpsShow) ctx.fillText(game.fpsShow,815,470);
     
     ctx.lineWidth = 15;
     ctx.beginPath();
@@ -196,7 +188,7 @@ function tickloop() {
 }
 
 setInterval(() => {
-    if (game.printFps) console.log(game.fps);
+    game.fpsShow = game.fps;
     game.fps = game.fpsCount;
     game.fpsCount = 0;
 }, 1000)
