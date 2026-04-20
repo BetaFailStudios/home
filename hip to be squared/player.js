@@ -193,7 +193,7 @@ function playerDraw() {
         ctx.lineCap = "butt";
 
         if (player.iFrames > 0) draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick,0.4);
-        draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
+        else draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
         ctx.globalAlpha = 1;
         
         const direction = (Math.atan((mouse.y-player.y)/(mouse.x-player.x)) + Math.PI*(mouse.x < player.x)) || 0;

@@ -690,11 +690,11 @@ const relics = [
         drawPath: pathParse(
             `[{"type":"point","x":-250,"y":0},{"type":"point","x":-150,"y":25},{"type":"point","x":-100,"y":50},{"type":"point","x":-50,"y":100},{"type":"point","x":-25,"y":150},{"type":"point","x":0,"y":250},{"type":"point","x":125,"y":125},{"type":"point","x":200,"y":0},{"type":"point","x":225,"y":-150},{"type":"point","x":225,"y":-225},{"type":"point","x":150,"y":-225},{"type":"point","x":0,"y":-200},{"type":"point","x":-125,"y":-125},{"type":"close"},{"type":"fill","r":40,"g":115,"b":170},{"type":"stroke","r":50,"g":75,"b":75},{"type":"point","x":-200,"y":-12.5},{"type":"point","x":-125,"y":0},{"type":"point","x":-50,"y":50},{"type":"point","x":0,"y":125},{"type":"point","x":0,"y":200},{"type":"point","x":150,"y":25},{"type":"point","x":200,"y":-125},{"type":"point","x":200,"y":-200},{"type":"point","x":125,"y":-200},{"type":"point","x":-25,"y":-150},{"type":"close"},{"type":"fill","r":45,"g":140,"b":175}]`
         ), onPlayerHit(rarity, enemy, blue, red) {
-            stats.scaleTimer = 300 - 30*rarity;
+            stats.scaleTimer = 300
         }, playerTick(rarity) {
             if (stats.scaleTimer > 0) {
                 if (player.iFrames) stats.scaleTimer-= 0.2;
-                else stats.scaleTimer--;
+                else stats.scaleTimer -= 1+0.1*rarity;
                 if (stats.scaleTimer <= 0 && stats.extraHealth < stats.extraHealthMax) {
                     stats.extraHealth++;
                     effects.push(new Effect(player.x,player.y,this.drawPath,stats.playerSize+20,60));
@@ -937,7 +937,7 @@ const relics = [
         }, playerTick(rarity) {
             if (player.rage > 0) {
                 draw(player.x,player.y,this.angerPath,(stats.playerSize+50)*player.rage/2,-player.rotationTick, 0.2);
-                player.rage -= 1/75;
+                player.rage -= 1/300;
             }
         }
 /*Metal*/},{
@@ -1138,7 +1138,7 @@ const relics = [
             `[{"type":"point","x":-250,"y":125},{"type":"point","x":-100,"y":-25},{"type":"point","x":-87.5,"y":0,"move":false},{"type":"point","x":-62.5,"y":0,"move":false},{"type":"point","x":-50,"y":37.5,"move":false},{"type":"point","x":-12.5,"y":50,"move":false},{"type":"point","x":-12.5,"y":75,"move":false},{"type":"point","x":25,"y":87.5,"move":false},{"type":"point","x":25,"y":100,"move":false},{"type":"point","x":-125,"y":250,"move":false},{"type":"point","x":-150,"y":237.5,"move":false},{"type":"point","x":-162.5,"y":212.5,"move":false},{"type":"point","x":-200,"y":200,"move":false},{"type":"point","x":-212.5,"y":162.5,"move":false},{"type":"point","x":-237.5,"y":150,"move":false},{"type":"close"},{"type":"fill","r":75,"g":60,"b":45},{"type":"point","x":-175,"y":100,"move":true},{"type":"point","x":-212.5,"y":75,"move":false},{"type":"point","x":-150,"y":62.5,"move":true},{"type":"point","x":-200,"y":37.5,"move":false},{"type":"point","x":-212.5,"y":112.5,"move":true},{"type":"point","x":-237.5,"y":100,"move":false},{"type":"point","x":-125,"y":25,"move":true},{"type":"point","x":-162.5,"y":0,"move":false},{"type":"point","x":-12.5,"y":112.5,"move":true},{"type":"point","x":12.5,"y":150,"move":false},{"type":"point","x":-62.5,"y":150,"move":true},{"type":"point","x":-37.5,"y":200,"move":false},{"type":"point","x":-87.5,"y":187.5,"move":true},{"type":"point","x":-87.5,"y":225,"move":false},{"type":"point","x":-112.5,"y":162.5,"move":true},{"type":"point","x":-112.5,"y":200,"move":false},{"type":"point","x":-150,"y":112.5,"move":true},{"type":"point","x":-200,"y":112.5,"move":false},{"type":"point","x":-87.5,"y":87.5,"move":true},{"type":"point","x":-137.5,"y":75,"move":false},{"type":"point","x":-75,"y":87.5,"move":true},{"type":"point","x":-50,"y":125,"move":false},{"type":"stroke","r":40,"g":35,"b":25},{"type":"point","x":-100,"y":-12.5,"move":false},{"type":"point","x":-50,"y":-150,"move":false},{"type":"point","x":25,"y":-225,"move":false},{"type":"point","x":25,"y":-175,"move":false},{"type":"point","x":-12.5,"y":-125,"move":false},{"type":"point","x":-12.5,"y":-100,"move":false},{"type":"point","x":37.5,"y":-137.5,"move":false},{"type":"point","x":87.5,"y":-200,"move":false},{"type":"point","x":125,"y":-237.5,"move":false},{"type":"point","x":125,"y":-200,"move":false},{"type":"point","x":100,"y":-150,"move":false},{"type":"point","x":75,"y":-112.5,"move":false},{"type":"point","x":37.5,"y":-75,"move":false},{"type":"point","x":100,"y":-125,"move":false},{"type":"point","x":150,"y":-187.5,"move":false},{"type":"point","x":187.5,"y":-225,"move":false},{"type":"point","x":175,"y":-175,"move":false},{"type":"point","x":150,"y":-125,"move":false},{"type":"point","x":112.5,"y":-75,"move":false},{"type":"point","x":87.5,"y":-50,"move":false},{"type":"point","x":137.5,"y":-75,"move":false},{"type":"point","x":187.5,"y":-137.5,"move":false},{"type":"point","x":212.5,"y":-162.5,"move":false},{"type":"point","x":212.5,"y":-125,"move":false},{"type":"point","x":175,"y":-62.5,"move":false},{"type":"point","x":112.5,"y":-12.5,"move":false},{"type":"point","x":175,"y":-50,"move":false},{"type":"point","x":212.5,"y":-87.5,"move":false},{"type":"point","x":187.5,"y":-25,"move":false},{"type":"point","x":125,"y":25,"move":false},{"type":"point","x":12.5,"y":87.5,"move":false},{"type":"point","x":-12.5,"y":75,"move":false},{"type":"point","x":-25,"y":50,"move":false},{"type":"point","x":-62.5,"y":37.5,"move":false},{"type":"close"},{"type":"fill","r":115,"g":110,"b":95},{"type":"stroke","r":45,"g":40,"b":30}]`
         ), statChange(rarity) {
             stats.luck += 1 + rarity;
-            switch(Math.floor(Math.random()*8)) {
+            switch(Math.floor(Math.random()*7)) {
                 case 1: {
                     stats.health -= 4;
                     stats.healthMax -= 4;
@@ -1154,18 +1154,14 @@ const relics = [
                     break;
                 }
                 case 4: {
-                    stats.dashRegenerateRate *= 0.7;
+                    stats.dashRegenerateRate *= 0.5;
                     break;
                 }
                 case 5: {
-                    stats.bloom *= 2;
+                    stats.playerSpeed *= 0.6;
                     break;
                 }
                 case 6: {
-                    stats.playerSpeed *= 0.7;
-                    break;
-                }
-                case 7: {
                     stats.extraReceivedDamage += 1;
                     break;
                 }

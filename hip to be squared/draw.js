@@ -32,11 +32,8 @@ function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverri
         drawRaw(x,y,path,size,rotate,alpha,noClear,flipVert,noMove,colorOverride,outlineColor);
         return;
     }
-    
+    console.log(alpha)
     if (alpha === 0) return;
-    //return;
-    //if (nuhUhh) return;
-    //nuhUhh = true;
     toDraw.push([x,y,size,rotate || 0,alpha || -1,flipVert || 0,colorOverride || 0,outlineColor || 0,...path]);
     return;
     const cos = Math.cos(rotate || 0);
