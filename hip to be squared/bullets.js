@@ -60,7 +60,7 @@ class Bullet {
         if (game.firstBullet) {
             this.firstBullet = true;
         }
-        if (this.triggerExpire) stats.onSpawns.forEach( (item) => item[1](item[0],this));
+        if (this.triggerExpire) stats.onSpawns.forEach( (item) => item[2](item[0],item[1],this));
         this.distance = 0;
     }
 }
@@ -120,8 +120,8 @@ async function bulletTick() {
 
             if (bullet.triggerExpire && !game.menu) {
                 let prevDamage = bullet.damage;
-                stats.damageBoosts.forEach( (item) => bullet.damage *= item[1](item[0],bullet));
-                stats.bulletTicks.forEach( (item) => item[1](item[0],bullet) );
+                stats.damageBoosts.forEach( (item) => bullet.damage *= item[2](item[0],item[1],bullet));
+                stats.bulletTicks.forEach( (item) => item[2](item[0],item[1],bullet) );
                 bullet.damage = prevDamage;
             }
 
@@ -168,7 +168,7 @@ async function bulletTick() {
 
                         bullet.enemiesTouched.push(enemy);
                         let damageMult = 1;
-                        stats.damageBoosts.forEach( (item) => damageMult *= item[1](item[0],bullet,enemy));
+                        stats.damageBoosts.forEach( (item) => damageMult *= item[2](item[0],item[1],bullet,enemy));
                         bullet.damage *= damageMult;
                         if (!enemy.projectile) enemy.health -= bullet.damage;
                         dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,bullet.damage,bullet.triggerExpire));
@@ -177,7 +177,7 @@ async function bulletTick() {
                             bullet.alive = false;
                         }
                         
-                        stats.onHits.forEach( (item) => item[1](item[0],bullet,enemy));
+                        stats.onHits.forEach( (item) => item[2](item[0],item[1],bullet,enemy));
                         bullet.damage /= damageMult;
                     }
                 } else if (bullet.enemiesTouched.includes(enemy)) bullet.enemiesTouched.splice(bullet.enemiesTouched.indexOf(enemy), 1);
@@ -257,7 +257,7 @@ async function bulletTick() {
 
         if (!bullet.alive) {
             ease(bullet,"size",0,0.2);
-            if (bullet.triggerExpire) stats.expirationEffects.forEach( (item) => item[1](item[0],bullet));
+            if (bullet.triggerExpire) stats.onExpirations.forEach( (item) => item[2](item[0],item[1],bullet));
             
             if (bullet.phoenix) {
                 bullet.reference.direction = (Math.atan((mouse.y-bullet.reference.y)/(mouse.x-bullet.reference.x)) + Math.PI*(mouse.x < bullet.reference.x)) || (Math.PI*(mouse.x < bullet.reference.x));

@@ -1,9 +1,19 @@
-function startMusic() {
+//const audioCtx = new window.AudioContext();
+//const audioElement = document.getElementById('music');
+//const source = audioCtx.createMediaElementSource(audioElement);
+
+//const filter = audioCtx.createBiquadFilter();
+//filter.type = 'lowpass';
+//filter.frequency.value = 2000;
+
+async function startMusic() {
     game.musicSyncList = [];
     ease(game,"musicPopup",0,3);
     setTimeout(() => { ease(game,"musicPopup",1,3); }, 3000);
 
     const song = game.region.music[game.musicPos];
+
+    //audioCtx.createMediaElementSource(song.file).connect(filter);
 
     game.musicSyncList = Object.assign([], song.attacklistReady);
 

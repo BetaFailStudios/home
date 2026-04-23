@@ -135,7 +135,7 @@ async function playerTick() {
 
                 game.renderRedScreen = true;
 
-                stats.onPlayerHits.forEach( (item) => item[1](item[0],enemy,blue,red));
+                stats.onPlayerHits.forEach( (item) => item[2](item[0],item[1],enemy,blue,red));
 
                 //playerDraw();
             }
@@ -173,7 +173,7 @@ function playerDraw() {
     player.rotationTick += Math.PI/600;
     if (player.rotationTick > Math.PI*2) player.rotationTick -= Math.PI*2;
 
-    if (!game.menu) stats.playerTicks.forEach( (item) => item[1](item[0]));
+    if (!game.menu) stats.playerTicks.forEach( (item) => item[2](item[0],item[1]));
     if (game.regionTransfer > 1) draw(player.x,player.y,player.drawPath,stats.playerSize*(-1+game.regionTransfer),player.rotationTick);
     else if (game.regionTransfer > 0) draw(player.x,player.y,player.drawPath,stats.playerSize*(1+10*game.regionTransfer**2.5),player.rotationTick,1-game.regionTransfer);
     else {
@@ -194,7 +194,6 @@ function playerDraw() {
 
         if (player.iFrames > 0) draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick,0.4);
         else draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
-        ctx.globalAlpha = 1;
         
         const direction = (Math.atan((mouse.y-player.y)/(mouse.x-player.x)) + Math.PI*(mouse.x < player.x)) || 0;
         draw(player.x + 70*Math.cos(direction),player.y + 70*Math.sin(direction),game.weapon.reference.drawPath,25,direction,undefined,undefined,mouse.x < player.x);

@@ -5,10 +5,10 @@ const calculatePoints = gpu.createKernel(function(groups,groupsLength,musicWobbl
     if (this.thread.x < 9 || this.thread.y >= groupsLength) return groups[this.thread.y][this.thread.x];
     if (this.thread.x > groups[this.thread.y][8]) return 0;
     if (groups[this.thread.y][Math.floor((this.thread.x-9)/4)*4+9] > 0) return groups[this.thread.y][this.thread.x];
+
     const cos = Math.cos(groups[this.thread.y][3]);
     const sin = Math.sin(groups[this.thread.y][3]);
-
-    const flipVertRatio = 1-2*groups[this.thread.y][5]
+    const flipVertRatio = 1 - 2*groups[this.thread.y][5];
     if ((this.thread.x-9)%4 === 1) 
         return groups[this.thread.y][0]+(groups[this.thread.y][this.thread.x]*cos-groups[this.thread.y][this.thread.x+1]*sin*flipVertRatio)*(groups[this.thread.y][2]+musicWobble)/250/*(0.5+Math.random())*/;
     else if ((this.thread.x-9)%4 === 2) 
@@ -32,77 +32,9 @@ function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverri
         drawRaw(x,y,path,size,rotate,alpha,noClear,flipVert,noMove,colorOverride,outlineColor);
         return;
     }
-    console.log(alpha)
+    console.log(!!flipVert);
     if (alpha === 0) return;
     toDraw.push([x,y,size,rotate || 0,alpha || -1,flipVert || 0,colorOverride || 0,outlineColor || 0,...path]);
-    return;
-    const cos = Math.cos(rotate || 0);
-    const sin = Math.sin(rotate || 0);
-    const ratio = (size+game.musicWobble)/250;
-    const flipVertRatio = -1+2*(!flipVert);
-
-    //ctx.save();
-    //ctx.translate(x,y);
-    //if (rotate) ctx.rotate(rotate);
-
-    if (alpha !== undefined && alpha !== false) ctx.globalAlpha = alpha;
-
-    if (!noClear) ctx.beginPath();
-    let move = true;
-    let firstStroke = true;
-    path.forEach((item,i) => {
-        if (noClear) { 
-            if (item.type == "point") {
-                if ((item.move || move) && !noMove) {
-                    ctx.moveTo(x+(item.x*cos-item.y*sin*flipVertRatio)*ratio/*(0.5+Math.random())*/,y+(item.y*cos*flipVertRatio+item.x*sin)*ratio/*(0.5+Math.random())*/);
-                    move = false;
-                }
-                else ctx.lineTo(x+(item.x*cos-item.y*sin*flipVertRatio)*ratio/*(0.5+Math.random())*/,y+(item.y*cos*flipVertRatio+item.x*sin)*ratio/*(0.5+Math.random())*/);
-            } else if (item.type == "stroke") move = true;
-            else if (item.type == "close") ctx.closePath();
-        } else switch(item.type) {
-            case "point": {
-                if (item.move || move) {
-                    ctx.moveTo(x+(item.x*cos-item.y*sin)*ratio/*(0.5+Math.random())*/,y+(item.y*cos+item.x*sin)*ratio/*(0.5+Math.random())*/);
-                    move = false;
-                }
-                else ctx.lineTo(x+(item.x*cos-item.y*sin)*ratio/*(0.5+Math.random())*/,y+(item.y*cos+item.x*sin)*ratio/*(0.5+Math.random())*/);
-                break;
-            }
-            case "fill": {
-                if (firstStroke && outlineColor) {
-                    firstStroke = false;
-                    ctx.lineWidth += 3;
-                    ctx.strokeStyle = outlineColor;
-                    ctx.stroke();
-                    ctx.lineWidth -= 3;
-                }
-                if (colorOverride) ctx.fillStyle = colorOverride;
-                else ctx.fillStyle = "rgb("+item.r+","+item.g+","+item.b+")";
-                ctx.fill();
-                break;
-            }
-            case "stroke": {
-                if (colorOverride) ctx.strokeStyle = colorOverride;
-                else ctx.strokeStyle = "rgb("+item.r+","+item.g+","+item.b+")";
-                ctx.stroke();
-                ctx.beginPath();
-                move = true;
-                break;
-            }
-            case "close": {
-                ctx.closePath();
-                break;
-            }
-        }
-    })
-   
-    //if (rotate) ctx.rotate(-rotate);
-    //ctx.translate(-x,-y);
-
-    if (alpha !== undefined) ctx.globalAlpha = 1;
-
-    //ctx.restore();
 }
 function drawRaw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverride,outlineColor) {
     const cos = Math.cos(rotate || 0);
@@ -132,10 +64,10 @@ function drawRaw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOve
         } else switch(path[i]) {
             case 0: {
                 if (path[i+3] || move) {
-                    ctx.moveTo(x+(path[i+1]*cos-path[i+2]*sin)*ratio/*(0.5+Math.random())*/,y+(path[i+2]*cos+path[i+1]*sin)*ratio/*(0.5+Math.random())*/);
+                    ctx.moveTo(x+(path[i+1]*cos-path[i+2]*sin*flipVertRatio)*ratio/*(0.5+Math.random())*/,y+(path[i+2]*cos*flipVertRatio+path[i+1]*sin)*ratio/*(0.5+Math.random())*/);
                     move = false;
                 }
-                else ctx.lineTo(x+(path[i+1]*cos-path[i+2]*sin)*ratio/*(0.5+Math.random())*/,y+(path[i+2]*cos+path[i+1]*sin)*ratio/*(0.5+Math.random())*/);
+                else ctx.lineTo(x+(path[i+1]*cos-path[i+2]*sin*flipVertRatio)*ratio/*(0.5+Math.random())*/,y+(path[i+2]*cos*flipVertRatio+path[i+1]*sin)*ratio/*(0.5+Math.random())*/);
                 break;
             }
             case 1: {

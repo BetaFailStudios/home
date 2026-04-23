@@ -6,8 +6,8 @@ class Enemy {
         this.drawPath = game.baseEnemyPath;
         this.vx = 0;
         this.vy = 0;
-        this.health = 7;
-        this.speed = 0.8;
+        this.health = 4;
+        this.speed = 0;
         this.target = "-".repeat(Math.random() < 0.5) + "player";
         this.dirToTarget = 0;
         this.alive = true;
