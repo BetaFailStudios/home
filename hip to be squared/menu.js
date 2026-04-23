@@ -323,7 +323,7 @@ function drawHealthBars() {
     if (game.bossHealth) {
         ctx.lineWidth = 7;
         ctx.beginPath();
-        const maxBounds = 1600;
+        const maxBounds = 1600 - 600*Math.random()*game.seismicActivity;
         ctx.moveTo(-870, -500+5);
         ctx.lineTo(maxBounds+55-870, -500+5);
         ctx.lineTo(maxBounds+20-870, -500+40);
@@ -334,7 +334,7 @@ function drawHealthBars() {
         ctx.fill();
         ctx.stroke();
 
-        const healthBounds = 1600*game.bossHealth/game.bossHealthMax;
+        const healthBounds = 1600*game.bossHealth/game.bossHealthMax - 600*Math.random()*game.seismicActivity;
         ctx.beginPath();
         ctx.moveTo(-870, -500+5);
         ctx.lineTo(healthBounds+55-870, -500+5);
@@ -348,10 +348,10 @@ function drawHealthBars() {
 
     ctx.lineWidth = 7;
     ctx.beginPath();
-    const maxBounds = 500;
+    const maxBounds = 500 - 100*Math.random()*game.seismicActivity;
     ctx.moveTo(-870, 500-5);
-    ctx.lineTo(maxBounds+40-870, 500-5);
-    ctx.lineTo(maxBounds+20-870, 500-25);
+    ctx.lineTo(maxBounds+40-870 - 100*Math.random()*game.seismicActivity, 500-5);
+    ctx.lineTo(maxBounds+20-870 - 100*Math.random()*game.seismicActivity, 500-25);
     ctx.lineTo(-870, 500-25);
     ctx.closePath();
     ctx.fillStyle = "#333"
@@ -360,11 +360,11 @@ function drawHealthBars() {
     ctx.stroke();
         
     if (stats.health > 0) {
-        const healthBounds = 500*stats.health/stats.healthMax;
+        const healthBounds = 500*stats.health/stats.healthMax - 100*Math.random()*game.seismicActivity;
         ctx.beginPath();
         ctx.moveTo(-870, 500-5);
-        ctx.lineTo(healthBounds+40-870, 500-5);
-        ctx.lineTo(healthBounds+20-870, 500-25);
+        ctx.lineTo(healthBounds+40-870 - 100*Math.random()*game.seismicActivity, 500-5);
+        ctx.lineTo(healthBounds+20-870 - 100*Math.random()*game.seismicActivity, 500-25);
         ctx.lineTo(-870, 500-25);
         ctx.closePath();
         ctx.fillStyle = "#900";
@@ -374,10 +374,10 @@ function drawHealthBars() {
 
     ctx.lineWidth = 7;
     ctx.beginPath();
-    const maxExtraBounds = 150;
+    const maxExtraBounds = 150 - 100*Math.random()*game.seismicActivity;
     ctx.moveTo(maxBounds+40-870, 500-5);
-    ctx.lineTo(maxBounds+maxExtraBounds+40-870, 500-5);
-    ctx.lineTo(maxBounds+maxExtraBounds+20-870, 500-25);
+    ctx.lineTo(maxBounds+maxExtraBounds+40-870 - 100*Math.random()*game.seismicActivity, 500-5);
+    ctx.lineTo(maxBounds+maxExtraBounds+20-870 - 100*Math.random()*game.seismicActivity, 500-25);
     ctx.lineTo(maxBounds+20-870, 500-25);
     ctx.closePath();
     ctx.fillStyle = "#333"
@@ -386,11 +386,11 @@ function drawHealthBars() {
     ctx.stroke();
         
     if (stats.extraHealth > 0 ) {
-        const extraBounds = 150*(stats.extraHealth/stats.extraHealthMax);
+        const extraBounds = 150*(stats.extraHealth/stats.extraHealthMax) - 100*Math.random()*game.seismicActivity;
         ctx.beginPath();
         ctx.moveTo(maxBounds+40-870, 500-5);
-        ctx.lineTo(maxBounds+extraBounds+40-870, 500-5);
-        ctx.lineTo(maxBounds+extraBounds+20-870, 500-25);
+        ctx.lineTo(maxBounds+extraBounds+40-870 - 100*Math.random()*game.seismicActivity, 500-5);
+        ctx.lineTo(maxBounds+extraBounds+20-870 - 100*Math.random()*game.seismicActivity, 500-25);
         ctx.lineTo(maxBounds+20-870, 500-25);
         ctx.closePath();
         ctx.fillStyle = "#29c";
@@ -400,10 +400,10 @@ function drawHealthBars() {
 
     ctx.lineWidth = 7;
     ctx.beginPath();
-    const maxBoundsDash = 400;
+    const maxBoundsDash = 400 - 100*Math.random()*game.seismicActivity;
     ctx.moveTo(-900+20, 500-25);
-    ctx.lineTo(maxBoundsDash+35-900, 500-25);
-    ctx.lineTo(maxBoundsDash+20-900, 500-40);
+    ctx.lineTo(maxBoundsDash+35-900 - 100*Math.random()*game.seismicActivity, 500-25);
+    ctx.lineTo(maxBoundsDash+20-900 - 100*Math.random()*game.seismicActivity, 500-40);
     ctx.lineTo(-900+20, 500-40);
     ctx.closePath();
     ctx.fillStyle = "#333"
@@ -412,11 +412,11 @@ function drawHealthBars() {
     ctx.stroke();
         
     if (player.dashes > 0 ) {
-        const dashBounds = 400*Math.min(1,player.dashes/3);
+        const dashBounds = 400*Math.min(1,player.dashes/3) - 100*Math.random()*game.seismicActivity;
         ctx.beginPath();
         ctx.moveTo(-900+20, 500-25);
-        ctx.lineTo(dashBounds+35-900, 500-25);
-        ctx.lineTo(dashBounds+20-900, 500-40);
+        ctx.lineTo(dashBounds+35-900 - 100*Math.random()*game.seismicActivity, 500-25);
+        ctx.lineTo(dashBounds+20-900 - 100*Math.random()*game.seismicActivity, 500-40);
         ctx.lineTo(-900+20, 500-40);
         ctx.closePath();
         ctx.fillStyle = "#ccc";
@@ -426,16 +426,16 @@ function drawHealthBars() {
 
     ctx.beginPath();
     for(var i = 1; i < stats.healthMax; i++) {
-        ctx.moveTo(maxBounds*i/stats.healthMax+40-870, 500-5);
-        ctx.lineTo(maxBounds*i/stats.healthMax+20-870, 500-25);
+        ctx.moveTo(maxBounds*i/stats.healthMax+40-870 - 100*Math.random()*game.seismicActivity, 500-5);
+        ctx.lineTo(maxBounds*i/stats.healthMax+20-870 - 100*Math.random()*game.seismicActivity, 500-25);
     }
     for(var i = 1; i < stats.extraHealthMax; i++) {
-        ctx.moveTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+40-870, 500-5);
-        ctx.lineTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+20-870, 500-25);
+        ctx.moveTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+40-870 - 100*Math.random()*game.seismicActivity, 500-5);
+        ctx.lineTo(maxBounds+maxExtraBounds*i/stats.extraHealthMax+20-870 - 100*Math.random()*game.seismicActivity, 500-25);
     }
     for(var i = 1; i < 3; i++) {
-        ctx.moveTo(maxBoundsDash*i/3+35-900, 500-25);
-        ctx.lineTo(maxBoundsDash*i/3+20-900, 500-40);
+        ctx.moveTo(maxBoundsDash*i/3+35-900 - 100*Math.random()*game.seismicActivity, 500-25);
+        ctx.lineTo(maxBoundsDash*i/3+20-900 - 100*Math.random()*game.seismicActivity, 500-40);
     }
     ctx.strokeStyle = "#22222260";
     ctx.stroke();

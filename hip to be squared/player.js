@@ -85,9 +85,9 @@ async function playerTick() {
         }
         game.firstBullet = false;
 
-        if (!player.burstsLeft) player.burstsLeft = stats.bursts-1;
+        if (player.burstsLeft <= 0) player.burstsLeft = stats.bursts-1;
         else player.burstsLeft--;
-        if (player.burstsLeft) player.firerateTick += Math.min(3,stats.firerate/10);
+        if (player.burstsLeft > 0) player.firerateTick += Math.min(3,stats.firerate/10);
         else player.firerateTick += stats.firerate;
     }
     if (player.firerateTick > 0) player.firerateTick--;

@@ -83,7 +83,8 @@ let floor = [];
 let brickId = [];//[[2,1,15],[1,-2,5]]
 
 function drawEnvironment() {
-    game.region.drawFloor()
+    game.region.drawFloor();
+    //game.region.generateBrickId();
 
     floor.forEach((item) => { drawRaw(item.x,item.y,item.reference,item.size,item.rotation,0.25) })
 

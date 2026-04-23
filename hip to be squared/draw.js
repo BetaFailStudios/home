@@ -1,7 +1,7 @@
 const gpu = new GPU.GPU();
 // [ 0x,1y,2size,3rotate,4alpha,5flipVert, 6...path ]
 // x/y, path, group
-const calculatePoints = gpu.createKernel(function(groups,groupsLength,musicWobble) {
+const calculatePoints = gpu.createKernel(function(groups,groupsLength,musicWobble,seismicActivity) {
     if (this.thread.x < 9 || this.thread.y >= groupsLength) return groups[this.thread.y][this.thread.x];
     if (this.thread.x > groups[this.thread.y][8]) return 0;
     if (groups[this.thread.y][Math.floor((this.thread.x-9)/4)*4+9] > 0) return groups[this.thread.y][this.thread.x];
@@ -9,10 +9,12 @@ const calculatePoints = gpu.createKernel(function(groups,groupsLength,musicWobbl
     const cos = Math.cos(groups[this.thread.y][3]);
     const sin = Math.sin(groups[this.thread.y][3]);
     const flipVertRatio = 1 - 2*groups[this.thread.y][5];
+    let seismicMove = 0;
+    if (seismicActivity) seismicMove = -size+size*2*Math.random();
     if ((this.thread.x-9)%4 === 1) 
-        return groups[this.thread.y][0]+(groups[this.thread.y][this.thread.x]*cos-groups[this.thread.y][this.thread.x+1]*sin*flipVertRatio)*(groups[this.thread.y][2]+musicWobble)/250/*(0.5+Math.random())*/;
+        return seismicMove+groups[this.thread.y][0]+(groups[this.thread.y][this.thread.x]*cos-groups[this.thread.y][this.thread.x+1]*sin*flipVertRatio)*(groups[this.thread.y][2]+musicWobble)/250/*(0.5+Math.random())*/;
     else if ((this.thread.x-9)%4 === 2) 
-        return groups[this.thread.y][1]+(groups[this.thread.y][this.thread.x]*cos*flipVertRatio+groups[this.thread.y][this.thread.x-1]*sin)*(groups[this.thread.y][2]+musicWobble)/250/*(0.5+Math.random())*/;
+        return seismicMove+groups[this.thread.y][1]+(groups[this.thread.y][this.thread.x]*cos*flipVertRatio+groups[this.thread.y][this.thread.x-1]*sin)*(groups[this.thread.y][2]+musicWobble)/250/*(0.5+Math.random())*/;
     return groups[this.thread.y][this.thread.x];
 }, {
   dynamicOutput: true,
@@ -172,7 +174,7 @@ function drawAll() {
     if (!toDraw.length) return;
     const toDrawClone = toDraw;
     toDraw = [];
-    calculatePoints(toDrawClone,toDrawClone.length,game.musicWobble).forEach((item,itemIndex) => {
+    calculatePoints(toDrawClone,toDrawClone.length,game.musicWobble,game.seismicActivity).forEach((item,itemIndex) => {
         //console.log(item)
         if (item[8]) {
             //console.log(item)

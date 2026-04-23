@@ -331,7 +331,8 @@ const game = {
     freezeframes: 0,
     fps: 0,
     fpsCount: 60,
-    enableFreezeFrames: true
+    enableFreezeFrames: true,
+    seismicActivity: false
 };
 
 if (localStorage.getItem("htbs-audioVolume") !== null) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));

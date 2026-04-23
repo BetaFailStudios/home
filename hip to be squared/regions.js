@@ -94,7 +94,8 @@ const regions = [
                 ctx.stroke();
             }, drawBlock(block) {
                 ctx.beginPath()
-                ctx.rect(...block);
+                if (game.seismicActivity) ctx.rect(block[0]-block[2]/2+block[2]*Math.random(),block[1]-block[3]/2+block[3]*Math.random(),block[2]*2*Math.random(),block[3]*2*Math.random());
+                else ctx.rect(...block);
                 for (var i = block[1]; i <= block[1]+block[3]-25; i += 25) {
                     ctx.moveTo(block[0],i);
                     ctx.lineTo(block[0]+block[2],i);
@@ -149,7 +150,7 @@ const regions = [
                     `[{"type":"point","x":-250,"y":-150},{"type":"point","x":0,"y":-175},{"type":"point","x":-162.5,"y":-212.5},{"type":"point","x":112.5,"y":-237.5},{"type":"point","x":275,"y":-175},{"type":"point","x":62.5,"y":-137.5},{"type":"point","x":262.5,"y":-112.5},{"type":"point","x":50,"y":-75},{"type":"point","x":300,"y":-37.5},{"type":"point","x":-100,"y":0},{"type":"point","x":187.5,"y":37.5},{"type":"point","x":-75,"y":75},{"type":"point","x":250,"y":87.5},{"type":"point","x":-62.5,"y":125},{"type":"point","x":262.5,"y":175},{"type":"point","x":-87.5,"y":225},{"type":"point","x":-250,"y":200},{"type":"point","x":-25,"y":162.5},{"type":"point","x":-237.5,"y":125},{"type":"point","x":-62.5,"y":50},{"type":"point","x":-250,"y":37.5},{"type":"point","x":-62.5,"y":-25},{"type":"point","x":-237.5,"y":-62.5},{"type":"point","x":12.5,"y":-112.5},{"type":"close"},{"type":"fill","r":0,"g":50,"b":0},{"type":"stroke","r":0,"g":100,"b":0}]`
                 )
             ], generateBrickId() {
-                brickId = [];
+                brickId = [-50+100*Math.random()];
             }, drawFloor() {
                 ctx.beginPath();
                 ctx.fillStyle = "#077341";
@@ -157,8 +158,8 @@ const regions = [
 
                 ctx.beginPath();
                 for (var i = -900-600; i < 900; i += 300) {
-                    ctx.moveTo(i,-500);
-                    ctx.lineTo(i+900,500);
+                    ctx.moveTo(i+brickId[0],-500);
+                    ctx.lineTo(i+brickId[0]+900,500);
                 }
                 ctx.lineWidth = 30;
                 ctx.strokeStyle = "#044321";
@@ -169,7 +170,8 @@ const regions = [
                 ctx.lineWidth = 3;
             }, drawBlock(block) {
                 ctx.beginPath()
-                ctx.rect(...block);
+                if (game.seismicActivity) ctx.rect(block[0]-block[2]/2+block[2]*Math.random(),block[1]-block[3]/2+block[3]*Math.random(),block[2]*2*Math.random(),block[3]*2*Math.random());
+                else ctx.rect(...block);
                 for (var i = 0; i < block[2]+block[3]; i += 100) {
                     if (i > block[2]) ctx.moveTo(block[0],block[1]+i-block[2]);
                     else ctx.moveTo(block[0]+block[2]-i,block[1]);
@@ -246,7 +248,8 @@ const regions = [
                 ctx.stroke();
             }, drawBlock(block) {
                 ctx.beginPath()
-                ctx.rect(...block);
+                if (game.seismicActivity) ctx.rect(block[0]-block[2]/2+block[2]*Math.random(),block[1]-block[3]/2+block[3]*Math.random(),block[2]*2*Math.random(),block[3]*2*Math.random());
+                else ctx.rect(...block);
                 ctx.lineWidth = 3;
                 ctx.fillStyle = "#600";
                 ctx.fill();
@@ -282,7 +285,8 @@ game.region = {
         ctx.fillRect(-900, -500, 1800, 1000);
     }, drawBlock(block) {
         ctx.beginPath()
-        ctx.rect(...block);
+        if (game.seismicActivity) ctx.rect(block[0]-block[2]/2+block[2]*Math.random(),block[1]-block[3]/2+block[3]*Math.random(),block[2]*2*Math.random(),block[3]*2*Math.random());
+        else ctx.rect(...block);
         ctx.lineWidth = 3;
         ctx.fillStyle = "#777";
         ctx.fill();
