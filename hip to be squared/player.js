@@ -13,6 +13,7 @@ const player = {
     iFrames: 0,
     dashCooldown: 0,
     dashes: 3,
+    burstsLeft: 0
 }
 
 async function playerTick() {
