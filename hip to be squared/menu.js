@@ -64,9 +64,26 @@ const menuButtons = {
             localStorage.setItem("htbs-difficulty",game.difficulty);
         }, "slider", "difficulty"],
         [() => {
-            game.showDamageNumbers = !game.showDamageNumbers;
+            switch(game.showDamageNumbers) {
+                case "Off": {
+                    game.showDamageNumbers = "All"
+                    break;
+                }
+                case "All": {
+                    game.showDamageNumbers = "Aggregate"
+                    break;
+                }
+                case "Aggregate": {
+                    game.showDamageNumbers = "Combine"
+                    break;
+                }
+                default: {
+                    game.showDamageNumbers = "Off";
+                    break;
+                }
+            }
             localStorage.setItem("htbs-dmgNumbersOption",game.showDamageNumbers);
-        }, "boolean", "showDamageNumbers"],
+        }, "tuple", "showDamageNumbers"],
         [() => {
             game.enableFreezeFrames = !game.enableFreezeFrames;
             localStorage.setItem("htbs-enableFreezeFrames",game.enableFreezeFrames);
@@ -174,6 +191,10 @@ function drawMenu() {
             ctx.stroke();
             ctx.lineCap = "butt";
             ctx.lineWidth = 10;
+        } else if (menuButtons[menuToChoose][1][i][1] == "tuple") {
+            ctx.font = "25px share tech";
+            ctx.strokeText(game[menuButtons[menuToChoose][1][i][2]],350,yPos-125);
+            ctx.fillText(game[menuButtons[menuToChoose][1][i][2]],350,yPos-125);
         }
     });
 

@@ -889,7 +889,7 @@ const relics = [
         drawPath: pathParse(
             `[{"type":"point","x":-237.5,"y":-75,"move":false},{"type":"point","x":-237.5,"y":75,"move":false},{"type":"point","x":237.5,"y":75,"move":false},{"type":"point","x":237.5,"y":-75,"move":false},{"type":"close"},{"type":"fill","r":30,"g":30,"b":30},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-187.5,"y":-50,"move":false},{"type":"point","x":-212.5,"y":-25,"move":false},{"type":"point","x":-212.5,"y":25,"move":false},{"type":"point","x":-187.5,"y":50,"move":false},{"type":"point","x":-162.5,"y":25,"move":false},{"type":"point","x":-162.5,"y":-25,"move":false},{"type":"close"},{"type":"point","x":-112.5,"y":-50,"move":true},{"type":"point","x":-137.5,"y":-25,"move":false},{"type":"point","x":-137.5,"y":25,"move":false},{"type":"point","x":-112.5,"y":50,"move":false},{"type":"point","x":-87.5,"y":25,"move":false},{"type":"point","x":-87.5,"y":-25,"move":false},{"type":"close"},{"type":"point","x":-37.5,"y":-50,"move":true},{"type":"point","x":-62.5,"y":-25,"move":false},{"type":"point","x":-62.5,"y":25,"move":false},{"type":"point","x":-37.5,"y":50,"move":false},{"type":"point","x":-12.5,"y":25,"move":false},{"type":"point","x":-12.5,"y":-25,"move":false},{"type":"close"},{"type":"point","x":12.5,"y":-25,"move":true},{"type":"point","x":37.5,"y":-50,"move":false},{"type":"point","x":62.5,"y":-25,"move":false},{"type":"point","x":12.5,"y":25,"move":false},{"type":"point","x":37.5,"y":50,"move":false},{"type":"point","x":62.5,"y":25,"move":false},{"type":"point","x":87.5,"y":-25,"move":true},{"type":"point","x":112.5,"y":-50,"move":false},{"type":"point","x":137.5,"y":-25,"move":false},{"type":"point","x":112.5,"y":0,"move":false},{"type":"point","x":137.5,"y":25,"move":false},{"type":"point","x":112.5,"y":50,"move":false},{"type":"point","x":87.5,"y":25,"move":false},{"type":"point","x":212.5,"y":-25,"move":true},{"type":"point","x":187.5,"y":-50,"move":false},{"type":"point","x":162.5,"y":-25,"move":false},{"type":"point","x":162.5,"y":25,"move":false},{"type":"point","x":187.5,"y":50,"move":false},{"type":"point","x":212.5,"y":25,"move":false},{"type":"point","x":187.5,"y":0,"move":false},{"type":"point","x":162.5,"y":25,"move":false},{"type":"stroke","r":150,"g":150,"b":150}]`
         ), damageBoost(rarity,rarityRaw, bullet, enemy) {
-            return 1 + bullet.distance*0.001*rarity;
+            return 1 + bullet.distance*0.0007*rarity;
         }
 
 /*WindU*/},{
@@ -1001,7 +1001,7 @@ const relics = [
         drawPath: pathParse(
             `[{"type":"point","x":-200,"y":200},{"type":"point","x":-225,"y":150},{"type":"point","x":-225,"y":50},{"type":"point","x":-175,"y":-25},{"type":"point","x":-100,"y":-100},{"type":"point","x":100,"y":100},{"type":"point","x":25,"y":175},{"type":"point","x":-50,"y":225},{"type":"point","x":-150,"y":225},{"type":"close"},{"type":"fill","r":100,"g":100,"b":175},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-100,"y":-100},{"type":"point","x":100,"y":100},{"type":"point","x":175,"y":25},{"type":"point","x":225,"y":-50},{"type":"point","x":225,"y":-150},{"type":"point","x":200,"y":-200},{"type":"point","x":150,"y":-225},{"type":"point","x":50,"y":-225},{"type":"point","x":-25,"y":-175},{"type":"close"},{"type":"fill","r":175,"g":175,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), statChange(rarity,rarityRaw) {
-            stats.playerSize /= 1 + .4*rarity;
+            stats.playerSize /= 1 + .7*rarity;
         }
 /*TailF*/},{
         name: "Tail Feather",
@@ -1058,10 +1058,10 @@ const relics = [
             })
 
             if (closest != -1) {
-                if (bullet.speed < 5) {
-                    bullet.vx = (enemies[closest].x-bullet.x)/closestDist*5;
-                    bullet.vy = (enemies[closest].y-bullet.y)/closestDist*5;
-                    bullet.speed = 5;
+                if (bullet.speed < 10) {
+                    bullet.vx = (enemies[closest].x-bullet.x)/closestDist*10;
+                    bullet.vy = (enemies[closest].y-bullet.y)/closestDist*10;
+                    bullet.speed = 10;
                 } else {
                     bullet.vx = (enemies[closest].x-bullet.x)/closestDist*bullet.speed;
                     bullet.vy = (enemies[closest].y-bullet.y)/closestDist*bullet.speed;
@@ -1251,7 +1251,7 @@ const artifacts = [
             if (!enemy) return 1;
             if (enemy.hitMarkers) {
                 enemy.hitMarkers++;
-                return Math.log(enemy.hitMarkers/125+2);
+                return Math.log10(enemy.hitMarkers/30+10);
             } else {
                 enemy.hitMarkers = 1;
                 return 1;
@@ -1335,7 +1335,7 @@ const artifacts = [
             let close = false;
             enemies.forEach(enemy => {
                 if (enemy.projectile) return;
-                if (Math.hypot(player.x-enemy.x,player.y-enemy.y) < 250) close = true;
+                if (Math.hypot(player.x-enemy.x,player.y-enemy.y) < 300) close = true;
             })
             if (stats.health < stats.healthMax && close) stats.health += 1/200;
             else if (stats.health > stats.healthMax) stats.health = stats.healthMax;

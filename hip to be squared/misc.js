@@ -175,11 +175,17 @@ function drawDamageNumbers() {
             game.freezeframes = item.fontSize/35;
             game.region.music[game.musicPos].file.pause();
         }*/
-        if (!game.showDamageNumbers) return false;
+        if (game.showDamageNumbers == "Off") return false;
         ctx.globalAlpha = 0.5;
         ctx.font = animationRatio(item.timeLeft,item.timeLeftMax,10)*item.fontSize+"px share tech";
-        ctx.strokeText(item.damage,item.x,item.y);
-        ctx.fillText(item.damage,item.x,item.y);
+        if (item.count) {
+            const text = item.damage + "x" + String(item.count);
+            ctx.strokeText(text,item.x,item.y);
+            ctx.fillText(text,item.x,item.y);
+        } else {
+            ctx.strokeText(item.damage,item.x,item.y);
+            ctx.fillText(item.damage,item.x,item.y);
+        }
         ctx.globalAlpha = 1;
 
         item.timeLeft++;
@@ -192,15 +198,43 @@ class DamageNumber {
     constructor(x,y,damage,canFreeze) {
         this.x = x + Math.random()*50-25;
         this.y = y + Math.random()*50-25;
-        
+
+        const oldDamage = damage;
+        if (game.showDamageNumbers == "Aggregate") {
+            dmgNumbers.forEach(item => {
+                if (item.timeLeft < 30) if (Math.abs(this.x-item.x) < 150 && Math.abs(this.y-item.y) < 150) {
+                    damage += Number(item.damage);
+                    item.timeLeft = 30;
+                }
+            })
+        }
+        else if (game.showDamageNumbers == "Combine") {
+            this.count = 0;
+            dmgNumbers.forEach(item => {
+                if (item.timeLeft < 30) if (
+                    (Math.abs(Number(item.damage)/damage-1) < 0.15 || Math.abs(damage/Number(item.damage)-1) < 0.15) && 
+                    Math.abs(this.x-item.x) < 150 && Math.abs(this.y-item.y) < 150
+                ) {
+                    if (item.count) this.count += item.count;
+                    else this.count++;
+                    item.timeLeft = 30;
+                }
+            })
+            if (this.count) this.count++;
+        }
+
         let decimalPoint = 0;
         while (damage < 10**(1-decimalPoint)) decimalPoint++;
         this.damage = damage.toFixed(decimalPoint);
+        this.damageShow = this.damage;
 
-        this.fontSize = 70*Math.min(8,Math.max(0.3,Number(damage)/(1+0.1*game.discoveredRooms+game.regionNum*2)));
+        this.fontSize = 70*Math.min(8,Math.max(0.3,Number(oldDamage + damage/10)/(1+0.1*game.discoveredRooms+game.regionNum*2)));
         this.timeLeft = 0;
         this.timeLeftMax = 30;
         this.canFreeze = canFreeze;
+
+        this.x = Math.max(-800+this.fontSize,Math.min(800-this.fontSize,this.x));
+        this.y = Math.max(-400,Math.min(400,this.y));
     }
 }
 

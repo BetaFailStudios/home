@@ -320,7 +320,8 @@ const game = {
     menu: "main",
     audioVolume: 0.6,
     sfxVolume: 0.6,
-    showDamageNumbers: true,
+    showDamageNumbers: "Off",
+    showMusicWobble: true,
     discoveredRooms: 0,
     musicPopup: 1,
     tick: 0,
@@ -341,7 +342,7 @@ if (localStorage.getItem("htbs-sfxVolume") !== null) game.sfxVolume = Number(loc
 else localStorage.setItem("htbs-sfxVolume",game.sfxVolume);
 if (localStorage.getItem("htbs-difficulty") !== null) game.difficulty = Number(localStorage.getItem("htbs-difficulty"));
 else localStorage.setItem("htbs-difficulty",game.difficulty);
-if (localStorage.getItem("htbs-dmgNumbersOption") !== null) game.showDamageNumbers = "true" == localStorage.getItem("htbs-dmgNumbersOption");
+if (localStorage.getItem("htbs-dmgNumbersOption") !== null) game.showDamageNumbers = localStorage.getItem("htbs-dmgNumbersOption");
 if (localStorage.getItem("htbs-showMusicWobble") !== null) game.showMusicWobble = "true" == localStorage.getItem("htbs-showMusicWobble");
 if (localStorage.getItem("htbs-enableFreezeFrames") !== null) game.enableFreezeFrames = "true" == localStorage.getItem("htbs-enableFreezeFrames");
 let bullets = [];
