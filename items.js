@@ -1058,10 +1058,10 @@ const relics = [
             })
 
             if (closest != -1) {
-                if (bullet.speed < 5) {
-                    bullet.vx = (enemies[closest].x-bullet.x)/closestDist*5;
-                    bullet.vy = (enemies[closest].y-bullet.y)/closestDist*5;
-                    bullet.speed = 5;
+                if (bullet.speed < 10) {
+                    bullet.vx = (enemies[closest].x-bullet.x)/closestDist*10;
+                    bullet.vy = (enemies[closest].y-bullet.y)/closestDist*10;
+                    bullet.speed = 10;
                 } else {
                     bullet.vx = (enemies[closest].x-bullet.x)/closestDist*bullet.speed;
                     bullet.vy = (enemies[closest].y-bullet.y)/closestDist*bullet.speed;
