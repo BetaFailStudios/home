@@ -163,7 +163,7 @@ function tickloop() {
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.9.1",700,470);
+    ctx.fillText("Version: b.1.9.2",700,470);
     if (game.fpsShow) ctx.fillText(game.fpsShow,815,470);
     
     ctx.lineWidth = 15;
