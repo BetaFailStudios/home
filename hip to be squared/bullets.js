@@ -172,7 +172,13 @@ async function bulletTick() {
                         bullet.damage *= damageMult;
                         if (!enemy.projectile) enemy.health -= bullet.damage;
                         dmgNumbers.push(new DamageNumber(bullet.x,bullet.y,bullet.damage,bullet.triggerExpire));
-                        if (bullet.pierce) bullet.pierce--;
+                        if (bullet.pierce) {
+                            bullet.pierce--;
+                            if (!stats.noPierceDebuff) {
+                                bullet.damage *= 0.65;
+                                bullet.size *= 0.8;
+                            }
+                        }
                         else if (!enemy.projectiles || enemy.health > 0) {
                             bullet.alive = false;
                         }
@@ -180,7 +186,7 @@ async function bulletTick() {
                         stats.onHits.forEach( (item) => item[2](item[0],item[1],bullet,enemy));
                         bullet.damage /= damageMult;
                     }
-                } else if (bullet.enemiesTouched.includes(enemy)) bullet.enemiesTouched.splice(bullet.enemiesTouched.indexOf(enemy), 1);
+                } else if (hypot < bullet.size*1.3+enemy.size && bullet.enemiesTouched.includes(enemy)) bullet.enemiesTouched.splice(bullet.enemiesTouched.indexOf(enemy), 1);
             })
 
             if (stats.sineWaveMovement && bullet.triggerExpire) {
@@ -198,7 +204,7 @@ async function bulletTick() {
                     if (bullet.wallPierce) return;
                     if (bullet.bulletBounce) {
                         bullet.bulletBounce--;
-                        bullet.damage *= 1.2;
+                        bullet.damage *= 1.1;
                         bullet.direction = Math.PI*2*Math.random();
 
                         if (Math.min(diffx, diffx1) < Math.min(diffy,diffy1)) {
