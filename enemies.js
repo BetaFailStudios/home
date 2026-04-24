@@ -1,0 +1,373 @@
+class Enemy {
+    constructor(inputStats, override) {
+        this.x = 0;
+        this.y = 0;
+        this.size = 50;
+        this.drawPath = game.baseEnemyPath;
+        this.vx = 0;
+        this.vy = 0;
+        this.health = 4;
+        this.speed = 0;
+        this.target = "-".repeat(Math.random() < 0.5) + "player";
+        this.dirToTarget = 0;
+        this.alive = true;
+        this.id = enemyBlueprints.indexOf(inputStats);
+
+        if (inputStats) Object.keys(inputStats).forEach((key) => this[key] = inputStats[key]);
+        if (override) Object.keys(override).forEach((key) => this[key] = override[key]);
+
+        this.health *= 1+(game.difficulty-0.5)/2;
+
+        if (!this.projectile && !this.noSpawning) {
+            this.spawning = 1;
+            setTimeout(ease,1500,this,"spawning",0,1);
+        }
+
+        if (this.offset) {
+            this.x += Math.cos(this.dirToTarget)*this.offset;
+            this.y += Math.sin(this.dirToTarget)*this.offset;
+        }
+
+        if (this.startFast && this.speed) {
+            this.vx = Math.cos(this.dirToTarget)*this.speed*25;
+            this.vy = Math.sin(this.dirToTarget)*this.speed*25;
+        }
+
+        this.actualDirection = this.dirToTarget;
+
+        this.healthMax = this.health;
+        this.spawnSize = this.size*1.4;
+
+        this.effects = [];
+    }
+
+    addEffect(count,interval,damage,path,combine) {
+        let combineFound = false;
+        if (combine) this.effects.forEach(effect => {
+            if (effect[3] == path) {
+                combineFound = true;
+                effect[0].push([damage,count]);
+            }
+        })
+        if (!combineFound) if (combine) this.effects.push([[[damage,count]],interval,interval,path]);
+            else this.effects.push([count,interval,interval,path,damage]);
+    }
+}
+
+let enemiesBuffer = [];
+
+async function enemyTick() {
+    game.noEnemies = true;
+    game.bossName = false;
+    game.bossHealth = 0;
+    //game.bossHealthMax = 0;
+    enemies.forEach(async (enemy,i) => {
+        if (enemy.boss) {
+            game.bossName = enemy.boss;
+            game.bossHealth += enemy.health;
+            //game.bossHealthMax += enemy.healthMax;
+        }
+        if (!enemy.projectile) game.noEnemies = false;
+        else if (game.noEnemies && enemy.alive) {
+            enemy.alive = false;
+            ease(enemy,"size",0,0.2);
+            enemy.vx = 0; enemy.vy = 0;
+            enemy.toReturn = true;
+            return true;
+        };
+
+        if (enemy.spawning && enemy.rotateToTarget) enemy.dirToTarget = (Math.atan((player.y-enemy.y)/(player.x-enemy.x)) + Math.PI*(player.x < enemy.x)) || (Math.PI*(player.x < enemy.x));
+        if (enemy.spawning && !enemy.offscreen) {
+            if (Math.abs(enemy.x) > 850-enemy.size) {
+                enemy.x = Math.sign(enemy.x)*(850-enemy.size);      
+            }
+            if (Math.abs(enemy.y) > 450-enemy.size) {
+                enemy.y = Math.sign(enemy.y)*(450-enemy.size);    
+            }
+            blocks.forEach((block) => {
+                const diffx = enemy.x + enemy.size - block[0];
+                const diffy = enemy.y + enemy.size - block[1];
+                const diffx1 = -enemy.x + enemy.size + block[0]+block[2];
+                const diffy1 = -enemy.y + enemy.size + block[1]+block[3];
+                if (diffx > 0 && diffx1 > 0 && diffy > 0 && diffy1 > 0) {
+                    if (Math.min(diffx, diffx1) < Math.min(diffy,diffy1)) {
+                        if (diffx < diffx1) enemy.x = block[0]-enemy.size;
+                        else enemy.x = block[0]+block[2]+enemy.size;
+                    } else {
+                        if (diffy < diffy1) enemy.y = block[1]-enemy.size;
+                        else enemy.y = block[1]+block[3]+enemy.size;
+                    }
+                }
+            })
+
+            enemy.toReturn = true;
+            return true;
+        }
+
+        let triggerWarn = true;
+        let triggerAttack = true;
+        
+        if (game.menu) {
+            enemy.toReturn = true;
+            return true;
+        }
+
+        game.enemyAttackWarning.forEach((item) => {
+            if (!enemy[item]/* || (enemy.noAttack && enemy.noAttack != item)*/) return;
+            if (!enemy["attackList" + item]) enemy["attackList" + item] = [];
+            if (triggerWarn) {
+                //if (enemy.reset) enemy.reset[0]();
+                enemy[item](enemy,game.warnDelay);
+                if (!enemy[item+"WarnCount"]) enemy[item+"WarnCount"] = 0;
+                enemy[item+"WarnCount"]++;
+                //triggerWarn = false;
+                enemy.lastWarning = item;
+            }
+        })
+        game.enemyAttack.forEach((item) => {
+            if (!enemy[item]/* || (enemy.noAttack && enemy.noAttack != item)*/) return;
+            if (!enemy["attackList" + item]) enemy["attackList" + item] = [];
+            if (triggerAttack && (enemy[item+"WarnCount"] > 0 || enemy.noWarnWait)) {
+                enemy[item](enemy);
+                enemy[item+"WarnCount"]--;
+                //triggerAttack = false;
+            }
+        })
+
+        enemy.x += enemy.vx;
+        enemy.y += enemy.vy;
+        if (!enemy.frictionless) {
+            enemy.vx *= 0.98;
+            enemy.vy *= 0.98;
+        }
+
+        if (enemy.reset) if (enemy.reset[1] > 0) {
+            enemy.reset[1]--;
+        } else {
+            enemy.reset[0]();
+            delete enemy.reset;
+        }
+
+        if (enemy.projectile && !enemy.noProjPierce) {
+            if (Math.abs(enemy.x) > 1000+enemy.size || Math.abs(enemy.y) > 600+enemy.size) {
+                enemy.toReturn = false;
+                return false;
+            }
+            if (game.notLocked) enemy.health = 0;
+        } else if (enemy.alive && !enemy.offscreen) {        
+            if (Math.abs(enemy.x) > 850-enemy.size) {
+                if (enemy.projectile) {
+                    enemy.alive = false;
+                    ease(enemy,"size",0,0.2);
+                    enemy.vx = 0; enemy.vy = 0;
+                    enemy.toReturn = true;
+                    return true;
+                }
+                enemy.x = Math.sign(enemy.x)*(850-enemy.size);
+                enemy.vx *= 0.8;
+                enemy.vy *= 0.8;
+                
+                if (enemy.immovable) {
+                    enemy.vx = 0;
+                } else if (enemy.wallBounce && Math.sign(enemy.vx) == Math.sign(enemy.x)) enemy.vx *= -1;
+                else if (!enemy.noVelocityChange) enemy.vx = 0;            
+            }
+            if (Math.abs(enemy.y) > 450-enemy.size) {
+                if (enemy.projectile) {
+                    enemy.alive = false;
+                    ease(enemy,"size",0,0.2);
+                    enemy.vx = 0; enemy.vy = 0;
+                    enemy.toReturn = true;
+                    return true;
+                };
+                enemy.y = Math.sign(enemy.y)*(450-enemy.size);
+                enemy.vx *= 0.8;
+                enemy.vy *= 0.8;
+
+                if (enemy.immovable) {
+                    enemy.vy = 0;
+                } else if (enemy.wallBounce && Math.sign(enemy.vy) == Math.sign(enemy.y)) enemy.vy *= -1;
+                else if (!enemy.noVelocityChange) enemy.vy = 0;            
+            }
+        }
+
+        if (enemy.alive && (!enemy.immovable || (enemy.projectile && enemy.noProjPierce))) {
+            blocks.forEach((block) => {
+                const diffx = enemy.x + enemy.size - block[0];
+                const diffy = enemy.y + enemy.size - block[1];
+                const diffx1 = -enemy.x + enemy.size + block[0]+block[2];
+                const diffy1 = -enemy.y + enemy.size + block[1]+block[3];
+                if (diffx > 0 && diffx1 > 0 && diffy > 0 && diffy1 > 0) {
+                    if (enemy.projectile) {
+                        enemy.alive = false;
+                        ease(enemy,"size",0,0.2);
+                        enemy.vx = 0; enemy.vy = 0;
+                        enemy.toReturn = true;
+                        return true;
+                    };
+                    enemy.vx *= 0.8;
+                    enemy.vy *= 0.8;
+                    if (enemy.target == "player") enemy.target = "-player";
+                    else if (enemy.target == "-player") enemy.target = "player";
+                    if (Math.min(diffx, diffx1) < Math.min(diffy,diffy1)) {
+                        if (enemy.wallBounce && Math.sign(enemy.vx) == Math.sign(diffx)) enemy.vx *= -1;
+                        else if (!enemy.noVelocityChange) enemy.vx = 0;
+
+                        if (diffx < diffx1) enemy.x = block[0]-enemy.size;
+                        else enemy.x = block[0]+block[2]+enemy.size;
+                    } else {
+                        if (enemy.wallBounce && Math.sign(enemy.vy) == Math.sign(diffy)) enemy.vy *= -1;
+                        else if (!enemy.noVelocityChange) enemy.vy = 0;
+
+                        if (diffy < diffy1) enemy.y = block[1]-enemy.size;
+                        else enemy.y = block[1]+block[3]+enemy.size;
+                    }
+                }
+            })
+        }
+
+        if (!enemy.alive) {
+            enemy.toReturn = enemy.size;
+            return enemy.size;
+        }
+
+        enemy.effects = enemy.effects.filter( (item) => {
+            toReturnOrNotToReturn = true;
+            if (item[2] <= 0) {
+                let damage = 0;
+                item[2] += item[1];
+                if (item[4]) {
+                    toReturnOrNotToReturn = false;
+                    item[0]--;
+                    dmgNumbers.push(new DamageNumber(enemy.x,enemy.y,item[4]));
+                } else {
+                    item[0] = item[0].filter(instance => {
+                        damage += instance[0];
+                        instance[1]--;
+                        return instance[1] > 0;
+                    })
+                    toReturnOrNotToReturn = item[0].length > 0;
+                    dmgNumbers.push(new DamageNumber(enemy.x,enemy.y,damage));
+                }
+                enemy.health -= item[4] || damage;
+                effects.push( new Effect(enemy.x,enemy.y,item[3],20,15) )
+            } else item[2]--;
+            if (item[4]) return item[0] > 0;
+            return toReturnOrNotToReturn;
+        })
+
+        if (enemy.target.includes("player") && !enemy.spawning) {
+            enemy.dirToTarget = (Math.atan((player.y+player.vy*30*enemy.target.includes("Advanced")-enemy.y)/(player.x+player.vx*30*enemy.target.includes("Advanced")-enemy.x)) + Math.PI*(player.x+player.vx*30*enemy.target.includes("Advanced") < enemy.x)) || (Math.PI*(player.x+player.vx*30*enemy.target.includes("Advanced") < enemy.x));
+            const dist = (Math.hypot(enemy.x-player.x,enemy.y-player.y) * (1-2*enemy.target.includes("-"))) || 1;
+            enemy.vx += enemy.speed*(player.y-enemy.y)/dist + enemy.speed*(player.x-enemy.x)/Math.abs(dist);
+            enemy.vy -= enemy.speed*(player.x-enemy.x)/dist - enemy.speed*(player.y-enemy.y)/Math.abs(dist);;
+        } else if (enemy.target == "direction") {
+            enemy.vx += enemy.speed*Math.cos(enemy.dirToTarget);
+            enemy.vy += enemy.speed*Math.sin(enemy.dirToTarget);
+        }
+
+        let diffToActualDir = ((enemy.dirToTarget-enemy.actualDirection))%(Math.PI*2);
+        if (diffToActualDir > Math.PI) diffToActualDir -= Math.PI*2;
+        if (diffToActualDir < -Math.PI) diffToActualDir += Math.PI*2;
+        enemy.actualDirection += diffToActualDir/3;
+
+        if (!enemy.projectile) enemies.forEach((enemy2,i2) => {
+            if (i == i2 || enemy2.projectile) return;
+            const x = (enemy.x-enemy2.x);
+            const y = (enemy.y-enemy2.y);
+            
+            if (Math.abs(x)/4 > enemy.size+enemy2.size || Math.abs(y)/2 > enemy.size+enemy2.size) return;
+            const hypot = Math.max(30,Math.hypot(x,y));
+            if (hypot && hypot < enemy.size*4+enemy2.size*4) {
+                if (!enemy.immovable && !enemy.noVelocityChange) {
+                    enemy.vx += 2*Math.sign(x)/hypot;
+                    enemy.vy += 2*Math.sign(y)/hypot;
+                }
+                if (!enemy2.immovable && !enemy.noVelocityChange) {
+                    enemy2.vx -= 2*Math.sign(x)/hypot;
+                    enemy2.vy -= 2*Math.sign(y)/hypot;
+                }
+            }
+        });
+
+        if (enemy.health <= 0) {
+            enemy.alive = false;
+            ease(enemy,"size",0,0.2);
+        }
+        enemy.toReturn = true;
+        return true;
+    })
+
+    enemies = enemies.filter(enemy => enemy.toReturn);
+    if (!game.menu) enemies.push(...enemiesBuffer);
+    enemiesBuffer = [];
+}
+
+
+function enemyDraw() {
+    enemies.forEach((enemy,i) => {
+        let direction = enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4;
+        if (enemy.randomRotation) direction = Math.random()*Math.PI*2;
+        if (enemy.ephemeral) ctx.globalAlpha = 0.6;
+        if (enemy.projectile) {
+            draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,false,false,false,false,false,"#ff0000cc");
+        }
+        else if (enemy.showHit > 0) {
+            draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,false,false,false,false,"#ccc");
+            enemy.showHit--;
+        } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction);
+        if (enemy.ephemeral) ctx.globalAlpha = 1;
+        if (enemy.spawning) {
+            draw(enemy.x, enemy.y, game.enemySpawnPath, enemy.spawnSize, 0, enemy.spawning);
+            return true;
+        } else if (!enemy.boss && enemy.health > 0 && enemy.health < enemy.healthMax && enemy.size && !enemy.projectile) {
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(enemy.x-enemy.size-10, enemy.y-enemy.size-10);
+            ctx.lineTo(enemy.x+enemy.size+10, enemy.y-enemy.size-10);
+            ctx.lineWidth = 10;   
+            ctx.strokeStyle = "#222";
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(enemy.x-enemy.size-10, enemy.y-enemy.size-10);
+            ctx.lineTo(enemy.x-enemy.size-10+enemy.health/enemy.healthMax*(enemy.size*2+20), enemy.y-enemy.size-10);
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = "#822";
+            ctx.stroke();
+            ctx.lineWidth = 3;
+        }
+        return true;
+    })
+
+    if (!game.menu) enemies.push(...enemiesBuffer);
+    enemiesBuffer = [];
+}
+
+function spawnEnemies(num) {
+    const enemyIndexes = game.region.enemies;
+    for(var i = 0; i < (num || 1); i++) {
+        const id = enemyIndexes[Math.floor(Math.random()*enemyIndexes.length)]
+        const x = Math.random()*1600-800;
+        const y = Math.random()*800-400;
+        for (var b = 0; b < (enemyBlueprints[id].num || 1); b++) {
+            const enemy = new Enemy(enemyBlueprints[id]);
+                enemy.x = x - enemy.size*3+ Math.random()*enemy.size*6;
+                enemy.y = y - enemy.size*3 + Math.random()*enemy.size*6;
+                enemies.push(enemy);
+            }
+        }
+}
+
+function drawBossName() {
+    ctx.beginPath();
+    ctx.fillStyle = game.bossName[1];
+    ctx.strokeStyle = "#222";
+    ctx.font = "75px share tech";
+    ctx.lineWidth = 20;
+    ctx.strokeText(game.bossName[0],0,-400-200*game.bossEase**5);
+    ctx.fillText(game.bossName[0],0,-400-200*game.bossEase**5);
+    ctx.lineWidth = 3;
+
+    if (!game.bossEase) ease(game,"bossEase",1,5);
+}
+loading--;
