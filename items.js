@@ -1251,7 +1251,7 @@ const artifacts = [
             if (!enemy) return 1;
             if (enemy.hitMarkers) {
                 enemy.hitMarkers++;
-                return Math.log10(enemy.hitMarkers/30+2);
+                return Math.log10(enemy.hitMarkers/30+10);
             } else {
                 enemy.hitMarkers = 1;
                 return 1;
