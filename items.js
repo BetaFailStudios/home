@@ -1335,7 +1335,7 @@ const artifacts = [
             let close = false;
             enemies.forEach(enemy => {
                 if (enemy.projectile) return;
-                if (Math.hypot(player.x-enemy.x,player.y-enemy.y) < 350) close = true;
+                if (Math.hypot(player.x-enemy.x,player.y-enemy.y) < 300) close = true;
             })
             if (stats.health < stats.healthMax && close) stats.health += 1/200;
             else if (stats.health > stats.healthMax) stats.health = stats.healthMax;
