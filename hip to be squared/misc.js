@@ -1,3 +1,5 @@
+// This file is Copyright (C) 2025 BetaFail Studios, all rights reserved.
+
 function drawEnemyAttacks() {
     ctx.beginPath();
     ctx.lineCap = "round";
@@ -103,10 +105,10 @@ function drawEnvironment() {
     }
 
     ctx.beginPath();
-    if (game.openings.includes("left")) if (dungeon[(game.dungeonPosition[0]-1) + "," + (game.dungeonPosition[1])].boss) ctx.rect(-970,-500,100,1000);
-    if (game.openings.includes("right")) if (dungeon[(game.dungeonPosition[0]+1) + "," + (game.dungeonPosition[1])].boss) ctx.rect(870,-500,100,1000);
-    if (game.openings.includes("up")) if (dungeon[(game.dungeonPosition[0]) + "," + (game.dungeonPosition[1]-1)].boss) ctx.rect(-900,-570,1800,100);
-    if (game.openings.includes("down")) if (dungeon[(game.dungeonPosition[0]) + "," + (game.dungeonPosition[1]+1)].boss) ctx.rect(-900,470,1800,100);
+    if (game.openings.includes("left")) if (dungeon[(game.dungeonPosition[0]-1) + "," + (game.dungeonPosition[1])].boss) ctx.rect(-950,-500,100,1000);
+    if (game.openings.includes("right")) if (dungeon[(game.dungeonPosition[0]+1) + "," + (game.dungeonPosition[1])].boss) ctx.rect(850,-500,100,1000);
+    if (game.openings.includes("up")) if (dungeon[(game.dungeonPosition[0]) + "," + (game.dungeonPosition[1]-1)].boss) ctx.rect(-900,-550,1800,100);
+    if (game.openings.includes("down")) if (dungeon[(game.dungeonPosition[0]) + "," + (game.dungeonPosition[1]+1)].boss) ctx.rect(-900,450,1800,100);
     ctx.fillStyle = "#cc000099";
     ctx.fill();
 
@@ -139,7 +141,7 @@ function drawEnvironment() {
         ctx.lineWidth = 3;
         ctx.fillStyle = game.region.wallColor;
         ctx.fill();
-        ctx.strokeStyle = "#222";
+        ctx.strokeStyle = game.region.wallOutlineColor || "#222";
         ctx.stroke();
     }
 
@@ -173,7 +175,7 @@ function drawDamageNumbers() {
         /*if (item.fontSize > 200 && item.canFreeze) {
             item.canFreeze = false;
             game.freezeframes = item.fontSize/35;
-            game.region.music[game.musicPos].file.pause();
+            game.currentMusic.file.pause();
         }*/
         if (game.showDamageNumbers == "Off") return false;
         ctx.globalAlpha = 0.5;

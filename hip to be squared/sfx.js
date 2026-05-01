@@ -1,3 +1,5 @@
+// This file is Copyright (C) 2025 BetaFail Studios, all rights reserved.
+
 const sfx = {
     dash: new Audio('sfx/playerdash.mp3'),
     shootimpact: new Audio('sfx/shoot impact.ogg'),

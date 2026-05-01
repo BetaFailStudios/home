@@ -1,3 +1,5 @@
+// This file is Copyright (C) 2025 BetaFail Studios, all rights reserved.
+
 const menuButtons = {
     "main": [[ "start", "options", "quit" ],[
         [() => {
@@ -14,7 +16,7 @@ const menuButtons = {
     "pause": [[ "resume", "options", "main menu" ],[
         [() => {
             game.menu = false;
-            game.region.music[game.musicPos].file.play();
+            game.currentMusic.file.play();
         }, "function"],
         [() => {
             game.optionsMenu = "options";
@@ -41,7 +43,7 @@ const menuButtons = {
         [(lr) => {
             game.audioVolume += lr*0.1;
             game.audioVolume = Math.min(1,Math.max(0,game.audioVolume));
-            game.region.music[game.musicPos].file.volume = game.audioVolume;
+            game.currentMusic.file.volume = game.audioVolume;
             localStorage.setItem("htbs-audioVolume",game.audioVolume);
         }, "slider", "audioVolume"],
         [(lr) => {
@@ -93,57 +95,56 @@ const menuButtons = {
 
 function drawMenu() {
     if (game.menu == "death") {
-        ctx.beginPath();
-        ctx.fillStyle = "#000000cc";
-        ctx.fillRect(-900,-500,1800,1000);
+        if (!game.deathScreen) {
+            game.deathScreen = 1 - 2*(Math.random() < 0.5);
+            game.deathScreenEase = 0;
+            ease(game, "deathScreenEase", 1,3);
+            game.currentMusic.file.preservesPitch = false;
+            ease(game.currentMusic.file,"playbackRate",0.2,3);
+            ease(game.currentMusic.file,"volume",0,3);
+        } else {
+            ctx.globalAlpha = game.deathScreenEase/5;
+            ctx.fillStyle = "#ff0000";
+            ctx.fillRect(-5000,-5000,10000,10000);
+            ctx.globalAlpha = 1;
+        }
 
-        ctx.beginPath();
-        ctx.strokeStyle = "#777";
-        ctx.fillStyle = "#ccc";
-        ctx.font = "100px share tech"
-        ctx.strokeText("Game over, ctrl + r to restart", 0, 0);
-        ctx.fillText("Game over, ctrl + r to restart", 0, 0);
+        if (game.deathScreenEase < 1) return;
 
-        return;
+        ctx.save();
+        ctx.translate(player.x,player.y);
+        ctx.scale(0.25,0.25);
     }
-
-    ctx.fillStyle = "#cccccc99";
-    ctx.fillRect(-900,-500,1800,1000);
-    
-    ctx.lineWidth = 10;
-    
-    drawRaw(-400,-100,game.gameIcon,300);
 
     let menuToChoose = game.menu;
     if (game.optionsMenu) menuToChoose = game.optionsMenu;
+        
+    ctx.lineWidth = 10;
 
-    menuButtons[menuToChoose][0].forEach((item,i) => {
-        const yPos = i*150;
-        const xPos = item.length*15;
+    if (game.menu == "death") {
 
         ctx.beginPath();
-        ctx.moveTo(300-xPos,yPos-200);
-        ctx.lineTo(350-xPos,yPos-250);
-        ctx.lineTo(350+xPos,yPos-250);
-        ctx.lineTo(400+xPos,yPos-200);
-        ctx.lineTo(350+xPos,yPos-150);
-        ctx.lineTo(350-xPos,yPos-150);
+        ctx.moveTo(-185,200);
+        ctx.lineTo(-135,250);
+        ctx.lineTo(135,250);
+        ctx.lineTo(185,200);
+        ctx.lineTo(135,150);
+        ctx.lineTo(-135,150);
         ctx.closePath();
         ctx.fillStyle = "#555";
         ctx.strokeStyle = "#222";
         ctx.fill();
         ctx.stroke();
 
-        if (Math.abs(mouse.x-350) < xPos+100 && Math.abs(mouse.y-yPos+200) < 70) {
-            const xPosExtra = item.length*15+25;
+        if (Math.abs(mouse.x-player.x) < 25 && Math.abs(mouse.y-50-player.y) < 20) {
 
             ctx.beginPath();
-            ctx.moveTo(350-xPosExtra,yPos-150);
-            ctx.lineTo(300-xPosExtra,yPos-200);
-            ctx.lineTo(350-xPosExtra,yPos-250);
-            ctx.moveTo(350+xPosExtra,yPos-150);
-            ctx.lineTo(400+xPosExtra,yPos-200);
-            ctx.lineTo(350+xPosExtra,yPos-250);
+            ctx.moveTo(-160,150);
+            ctx.lineTo(-210,200);
+            ctx.lineTo(-160,250);
+            ctx.moveTo(160,150);
+            ctx.lineTo(210,200);
+            ctx.lineTo(160,250);
             ctx.strokeStyle = "#222";
             ctx.stroke();
         }
@@ -152,58 +153,109 @@ function drawMenu() {
         ctx.fillStyle = "#999";
         ctx.strokeStyle = "#222";
         ctx.font = "55px share tech";
-        ctx.strokeText(item.toUpperCase(),350,yPos-200);
-        ctx.fillText(item.toUpperCase(),350,yPos-200)
+        ctx.strokeText("Main Menu",0,200);
+        ctx.fillText("Main Menu",0,200)
+    } else {
+        ctx.fillStyle = "#cccccc99";
+        ctx.fillRect(-900,-500,1800,1000);
+        
+        drawRaw(-400,-100,game.gameIcon,300);
 
-        if (game.optionsMenu) if (game.optionsMenu == "options") {
-            if (!i) {
-                ctx.strokeText("Lower Rez: CTRL +",350,yPos+200);
-                ctx.fillText("Lower Rez: CTRL +",350,yPos+200)
+        menuButtons[menuToChoose][0].forEach((item,i) => {
+            const yPos = i*150;
+            const xPos = item.length*15;
+
+            ctx.beginPath();
+            ctx.moveTo(300-xPos,yPos-200);
+            ctx.lineTo(350-xPos,yPos-250);
+            ctx.lineTo(350+xPos,yPos-250);
+            ctx.lineTo(400+xPos,yPos-200);
+            ctx.lineTo(350+xPos,yPos-150);
+            ctx.lineTo(350-xPos,yPos-150);
+            ctx.closePath();
+            ctx.fillStyle = "#555";
+            ctx.strokeStyle = "#222";
+            ctx.fill();
+            ctx.stroke();
+
+            if (Math.abs(mouse.x-350) < xPos+100 && Math.abs(mouse.y-yPos+200) < 70) {
+                const xPosExtra = item.length*15+25;
+
+                ctx.beginPath();
+                ctx.moveTo(350-xPosExtra,yPos-150);
+                ctx.lineTo(300-xPosExtra,yPos-200);
+                ctx.lineTo(350-xPosExtra,yPos-250);
+                ctx.moveTo(350+xPosExtra,yPos-150);
+                ctx.lineTo(400+xPosExtra,yPos-200);
+                ctx.lineTo(350+xPosExtra,yPos-250);
+                ctx.strokeStyle = "#222";
+                ctx.stroke();
             }
-        } else if (menuButtons[menuToChoose][1][i][1] == "slider") {
-            ctx.lineCap = "round";
-            ctx.lineWidth = 15;
-            ctx.beginPath();
-            ctx.moveTo(350-xPos,yPos-125);
-            ctx.lineTo(350+xPos,yPos-125);
-            ctx.strokeStyle = "#222";
-            ctx.stroke();
 
-            ctx.lineWidth = 5;
             ctx.beginPath();
-            ctx.moveTo(350-xPos,yPos-125);
-            ctx.lineTo(350-xPos+xPos*game[menuButtons[menuToChoose][1][i][2]]*2,yPos-125);
-            ctx.strokeStyle = "#999";
-            ctx.stroke();
-            ctx.lineCap = "butt";
-            ctx.lineWidth = 10;
-        } else if (menuButtons[menuToChoose][1][i][1] == "boolean") {
-            ctx.lineCap = "round";
-            ctx.beginPath();
-            ctx.moveTo(350-xPos,yPos-125);
-            ctx.lineTo(350+xPos,yPos-125);
-            ctx.lineWidth = 15;
+            ctx.fillStyle = "#999";
             ctx.strokeStyle = "#222";
-            ctx.stroke();
-            ctx.lineWidth = 5;
-            if (game[menuButtons[menuToChoose][1][i][2]]) ctx.strokeStyle = "#3c3";
-            else ctx.strokeStyle = "#c33";
-            ctx.stroke();
-            ctx.lineCap = "butt";
-            ctx.lineWidth = 10;
-        } else if (menuButtons[menuToChoose][1][i][1] == "tuple") {
-            ctx.font = "25px share tech";
-            ctx.strokeText(game[menuButtons[menuToChoose][1][i][2]],350,yPos-125);
-            ctx.fillText(game[menuButtons[menuToChoose][1][i][2]],350,yPos-125);
-        }
-    });
+            ctx.font = "55px share tech";
+            ctx.strokeText(item.toUpperCase(),350,yPos-200);
+            ctx.fillText(item.toUpperCase(),350,yPos-200)
+
+            if (game.optionsMenu) if (game.optionsMenu == "options") {
+                if (!i) {
+                    ctx.strokeText("Lower Rez: CTRL +",350,yPos+200);
+                    ctx.fillText("Lower Rez: CTRL +",350,yPos+200)
+                }
+            } else if (menuButtons[menuToChoose][1][i][1] == "slider") {
+                ctx.lineCap = "round";
+                ctx.lineWidth = 15;
+                ctx.beginPath();
+                ctx.moveTo(350-xPos,yPos-125);
+                ctx.lineTo(350+xPos,yPos-125);
+                ctx.strokeStyle = "#222";
+                ctx.stroke();
+
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(350-xPos,yPos-125);
+                ctx.lineTo(350-xPos+xPos*game[menuButtons[menuToChoose][1][i][2]]*2,yPos-125);
+                ctx.strokeStyle = "#999";
+                ctx.stroke();
+                ctx.lineCap = "butt";
+                ctx.lineWidth = 10;
+            } else if (menuButtons[menuToChoose][1][i][1] == "boolean") {
+                ctx.lineCap = "round";
+                ctx.beginPath();
+                ctx.moveTo(350-xPos,yPos-125);
+                ctx.lineTo(350+xPos,yPos-125);
+                ctx.lineWidth = 15;
+                ctx.strokeStyle = "#222";
+                ctx.stroke();
+                ctx.lineWidth = 5;
+                if (game[menuButtons[menuToChoose][1][i][2]]) ctx.strokeStyle = "#3c3";
+                else ctx.strokeStyle = "#c33";
+                ctx.stroke();
+                ctx.lineCap = "butt";
+                ctx.lineWidth = 10;
+            } else if (menuButtons[menuToChoose][1][i][1] == "tuple") {
+                ctx.font = "25px share tech";
+                ctx.strokeText(game[menuButtons[menuToChoose][1][i][2]],350,yPos-125);
+                ctx.fillText(game[menuButtons[menuToChoose][1][i][2]],350,yPos-125);
+            }
+        });
+    }
 
     ctx.lineWidth = 3;
+
+    if (game.menu == "death") ctx.restore();
 }
 
 function menuChoose() {
     let menuToChoose = game.menu;
     if (game.optionsMenu) menuToChoose = game.optionsMenu;
+
+    if (game.menu == "death") {
+        if (Math.abs(mouse.x-player.x) < 25 && Math.abs(mouse.y-50-player.y) < 20) window.location.reload();
+        return;
+    }
 
     menuButtons[menuToChoose][0].forEach((item,i) => {
         const yPos = i*150;
@@ -223,7 +275,11 @@ function drawInventory() {
     ctx.beginPath();
     const sizeWeapon = 250;
     
-    drawRaw(200,0,game.weaponBackground,sizeWeapon,-player.rotationTick*3,false,true);
+    for(var i = 0; i < Math.PI*2; i += Math.PI/3) {
+        ctx.lineTo(200 + Math.cos(i-player.rotationTick*3)*sizeWeapon,Math.sin(i-player.rotationTick*3)*sizeWeapon);
+    }
+    ctx.closePath();
+    //drawRaw(200,0,game.weaponBackground,sizeWeapon,-player.rotationTick*3,false,true);
 
     switch(game.weapon.rarity) {
         case 0: { 
@@ -264,8 +320,11 @@ function drawInventory() {
         ctx.beginPath();
         if (!game.relicsEquipped[i]) {
             const size = 50;
-            drawRaw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
-            ctx.strokeStyle = "#222";
+            for(var i2 = 0; i2 < Math.PI*2; i2 += Math.PI/2) {
+                ctx.lineTo(item[0] + Math.cos(i2-player.rotationTick*3)*size,item[1] + Math.sin(i2-player.rotationTick*3)*size);
+            }
+            ctx.closePath();
+            ctx.strokeStyle = "#222";2
             ctx.fillStyle = "#555";
             ctx.fill();
             ctx.stroke();
@@ -274,7 +333,11 @@ function drawInventory() {
         }
 
         const size = 135;
-        drawRaw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
+        for(var i2 = 0; i2 < Math.PI*2; i2 += Math.PI/2) {
+            ctx.lineTo(item[0] + Math.cos(i2-player.rotationTick*3)*size,item[1] + Math.sin(i2-player.rotationTick*3)*size);
+        }
+        ctx.closePath();
+        //drawRaw(...item,game.relicBackground,size,-player.rotationTick*3,false,true);
 
         switch(game.relicsEquipped[i].rarity) {
             case 0: { 
@@ -314,7 +377,11 @@ function drawInventory() {
     [[550,-300],[700,0],[550,300]].forEach((item, i) => {
         if (!game.artifactsEquipped[i]) {
             const size = 50;
-            drawRaw(...item,game.artifactBackground,size,-player.rotationTick*3,false,true);
+            ctx.beginPath();
+            for(var i2 = 0; i2 < Math.PI*2; i2 += Math.PI/3*2) {
+                ctx.lineTo(item[0] + Math.cos(i2-player.rotationTick*3)*size,item[1] + Math.sin(i2-player.rotationTick*3)*size);
+            }
+            ctx.closePath();
             ctx.strokeStyle = "#222";
             ctx.fillStyle = "#555";
             ctx.fill();
@@ -326,7 +393,9 @@ function drawInventory() {
         ctx.beginPath();
 
         const size = 135;
-        drawRaw(...item,game.artifactBackground,size,-player.rotationTick*3,false,true);
+        for(var i2 = 0; i2 < Math.PI*2; i2 += Math.PI/3*2) {
+            ctx.lineTo(item[0] + Math.cos(i2-player.rotationTick*3)*size,item[1] + Math.sin(i2-player.rotationTick*3)*size);
+        }
         ctx.closePath();
 
         ctx.fillStyle = "#cc7777";
@@ -367,9 +436,12 @@ function drawHealthBars() {
         ctx.stroke();
     }
 
+    let ratio = 1;
+    if (stats.healthMax + stats.extraHealthMax > 32) ratio = 32/(stats.healthMax + stats.extraHealthMax)
+
     ctx.lineWidth = 7;
     ctx.beginPath();
-    const maxBounds = 500 - 100*Math.random()*game.seismicActivity;
+    const maxBounds = ratio*50*stats.healthMax - 100*Math.random()*game.seismicActivity;
     ctx.moveTo(-870, 500-5);
     ctx.lineTo(maxBounds+40-870 - 100*Math.random()*game.seismicActivity, 500-5);
     ctx.lineTo(maxBounds+20-870 - 100*Math.random()*game.seismicActivity, 500-25);
@@ -381,7 +453,7 @@ function drawHealthBars() {
     ctx.stroke();
         
     if (stats.health > 0) {
-        const healthBounds = 500*stats.health/stats.healthMax - 100*Math.random()*game.seismicActivity;
+        const healthBounds = ratio*50*stats.health - 100*Math.random()*game.seismicActivity;
         ctx.beginPath();
         ctx.moveTo(-870, 500-5);
         ctx.lineTo(healthBounds+40-870 - 100*Math.random()*game.seismicActivity, 500-5);
@@ -395,7 +467,7 @@ function drawHealthBars() {
 
     ctx.lineWidth = 7;
     ctx.beginPath();
-    const maxExtraBounds = 150 - 100*Math.random()*game.seismicActivity;
+    const maxExtraBounds = ratio*50*stats.extraHealthMax - 100*Math.random()*game.seismicActivity;
     ctx.moveTo(maxBounds+40-870, 500-5);
     ctx.lineTo(maxBounds+maxExtraBounds+40-870 - 100*Math.random()*game.seismicActivity, 500-5);
     ctx.lineTo(maxBounds+maxExtraBounds+20-870 - 100*Math.random()*game.seismicActivity, 500-25);
@@ -407,7 +479,7 @@ function drawHealthBars() {
     ctx.stroke();
         
     if (stats.extraHealth > 0 ) {
-        const extraBounds = 150*(stats.extraHealth/stats.extraHealthMax) - 100*Math.random()*game.seismicActivity;
+        const extraBounds = ratio*50*stats.extraHealth - 100*Math.random()*game.seismicActivity;
         ctx.beginPath();
         ctx.moveTo(maxBounds+40-870, 500-5);
         ctx.lineTo(maxBounds+extraBounds+40-870 - 100*Math.random()*game.seismicActivity, 500-5);
@@ -498,8 +570,8 @@ function drawMusicPopup() {
     ctx.strokeStyle = "#222";
     ctx.font = "40px share tech";
     ctx.lineWidth = 15;
-    ctx.strokeText(game.region.music[game.musicPos].popup,300,450+100*game.musicPopup**5);
-    ctx.fillText(game.region.music[game.musicPos].popup,300,450+100*game.musicPopup**5);
+    ctx.strokeText(game.currentMusic.popup,300,450+100*game.musicPopup**5);
+    ctx.fillText(game.currentMusic.popup,300,450+100*game.musicPopup**5);
     ctx.lineWidth = 3;
 }
 

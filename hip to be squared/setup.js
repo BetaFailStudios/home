@@ -1,3 +1,72 @@
+// This file is Copyright (C) 2025 BetaFail Studios, all rights reserved.
+
+const game = {
+    cursorPath: pathParse(
+        `[{"type":"point","x":0,"y":-125,"move":false},{"type":"point","x":50,"y":-250,"move":false},{"type":"point","x":-50,"y":-250,"move":false},{"type":"point","x":0,"y":-125,"move":false},{"type":"point","x":125,"y":0,"move":true},{"type":"point","x":250,"y":-50,"move":false},{"type":"point","x":250,"y":50,"move":false},{"type":"point","x":125,"y":0,"move":false},{"type":"point","x":0,"y":125,"move":true},{"type":"point","x":50,"y":250,"move":false},{"type":"point","x":-50,"y":250,"move":false},{"type":"point","x":0,"y":125,"move":false},{"type":"point","x":-125,"y":0,"move":true},{"type":"point","x":-250,"y":-50,"move":false},{"type":"point","x":-250,"y":50,"move":false},{"type":"point","x":-125,"y":0,"move":false},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
+    ),dungeonItemPath: pathParse(
+        `[{"type":"point","x":0,"y":-250},{"type":"point","x":-75,"y":-75},{"type":"point","x":-250,"y":0},{"type":"point","x":-75,"y":75},{"type":"point","x":0,"y":250},{"type":"point","x":75,"y":75},{"type":"point","x":250,"y":0},{"type":"point","x":75,"y":-75},{"type":"close"},{"type":"fill","r":150,"g":150,"b":0},{"type":"stroke","r":50,"g":50,"b":0}]`
+    ),keyboardTutorial: pathParse(
+        `[{"type":"point","x":-50,"y":-50},{"type":"point","x":50,"y":-50},{"type":"point","x":50,"y":50},{"type":"point","x":-50,"y":50},{"type":"close"},{"type":"point","x":-50,"y":-75,"move":true},{"type":"point","x":-50,"y":-175,"move":false},{"type":"point","x":50,"y":-175,"move":false},{"type":"point","x":50,"y":-75,"move":false},{"type":"close"},{"type":"point","x":-75,"y":-50,"move":true},{"type":"point","x":-75,"y":50,"move":false},{"type":"point","x":-175,"y":50,"move":false},{"type":"point","x":-175,"y":-50,"move":false},{"type":"close"},{"type":"point","x":75,"y":-50,"move":true},{"type":"point","x":75,"y":50,"move":false},{"type":"point","x":175,"y":50,"move":false},{"type":"point","x":175,"y":-50,"move":false},{"type":"close"},{"type":"point","x":-175,"y":75,"move":true},{"type":"point","x":175,"y":75,"move":false},{"type":"point","x":175,"y":175,"move":false},{"type":"point","x":-175,"y":175,"move":false},{"type":"close"},{"type":"point","x":-150,"y":-75,"move":true},{"type":"point","x":-150,"y":-175,"move":false},{"type":"point","x":-300,"y":-175,"move":false},{"type":"point","x":-300,"y":-75,"move":false},{"type":"close"}]`
+    ),mouseTutorial: pathParse(
+        `[{"type":"point","x":12.5,"y":-200,"move":false},{"type":"point","x":12.5,"y":-25,"move":false},{"type":"point","x":150,"y":-25,"move":false},{"type":"point","x":125,"y":-175,"move":false},{"type":"close"},{"type":"point","x":-12.5,"y":-200,"move":true},{"type":"point","x":-12.5,"y":-25,"move":false},{"type":"point","x":-150,"y":-25,"move":false},{"type":"point","x":-125,"y":-175,"move":false},{"type":"close"},{"type":"point","x":-150,"y":0,"move":true},{"type":"point","x":-137.5,"y":150,"move":false},{"type":"point","x":-50,"y":250,"move":false},{"type":"point","x":50,"y":250,"move":false},{"type":"point","x":137.5,"y":150,"move":false},{"type":"point","x":150,"y":0,"move":false},{"type":"close"},{"type":"point","x":0,"y":-200,"move":true},{"type":"point","x":0,"y":-250,"move":false}]`
+    ),weaponBackground: pathParse(
+        `[{"type":"point","x":-250,"y":0},{"type":"point","x":-125,"y":-212.5},{"type":"point","x":125,"y":-212.5},{"type":"point","x":250,"y":0},{"type":"point","x":125,"y":212.5},{"type":"point","x":-125,"y":212.5},{"type":"close"}]`
+    ),relicBackground: pathParse(
+        `[{"type":"point","x":-250,"y":0},{"type":"point","x":0,"y":-250},{"type":"point","x":250,"y":0},{"type":"point","x":0,"y":250},{"type":"close"}]`
+    ),artifactBackground: pathParse(
+        `[{"type":"point","x":0,"y":-250},{"type":"point","x":-212.5,"y":125},{"type":"point","x":212.5,"y":125},{"type":"close"}]`
+    ),consumableBackground: pathParse(
+        `[]`
+    ), gameIcon: pathParse(
+        `[{"type":"point","x":-200,"y":-200},{"type":"point","x":-150,"y":-200},{"type":"point","x":-150,"y":-125},{"type":"point","x":-100,"y":-125},{"type":"point","x":-100,"y":-200},{"type":"point","x":-50,"y":-200},{"type":"point","x":-50,"y":0},{"type":"point","x":-100,"y":0},{"type":"point","x":-100,"y":-75},{"type":"point","x":-150,"y":-75},{"type":"point","x":-150,"y":0},{"type":"point","x":-200,"y":0},{"type":"close"},{"type":"point","x":-25,"y":-50,"move":true},{"type":"point","x":-25,"y":-200,"move":false},{"type":"point","x":25,"y":-200,"move":false},{"type":"point","x":25,"y":-50,"move":false},{"type":"close"},{"type":"point","x":50,"y":-50,"move":true},{"type":"point","x":50,"y":-200,"move":false},{"type":"point","x":125,"y":-200,"move":false},{"type":"point","x":150,"y":-175,"move":false},{"type":"point","x":150,"y":-125,"move":false},{"type":"point","x":125,"y":-100,"move":false},{"type":"point","x":100,"y":-100,"move":false},{"type":"point","x":100,"y":-50,"move":false},{"type":"close"},{"type":"point","x":-200,"y":25,"move":true},{"type":"point","x":-75,"y":25,"move":false},{"type":"point","x":-75,"y":75,"move":false},{"type":"point","x":-112.5,"y":75,"move":false},{"type":"point","x":-112.5,"y":200,"move":false},{"type":"point","x":-162.5,"y":200,"move":false},{"type":"point","x":-162.5,"y":75,"move":false},{"type":"point","x":-200,"y":75,"move":false},{"type":"close"},{"type":"point","x":-75,"y":125,"move":true},{"type":"point","x":-50,"y":100,"move":false},{"type":"point","x":0,"y":100,"move":false},{"type":"point","x":25,"y":125,"move":false},{"type":"point","x":25,"y":175,"move":false},{"type":"point","x":0,"y":200,"move":false},{"type":"point","x":-50,"y":200,"move":false},{"type":"point","x":-75,"y":175,"move":false},{"type":"close"},{"type":"point","x":-25,"y":-25,"move":true},{"type":"point","x":50,"y":-25,"move":false},{"type":"point","x":75,"y":0,"move":false},{"type":"point","x":75,"y":50,"move":false},{"type":"point","x":62.5,"y":62.5,"move":false},{"type":"point","x":75,"y":75,"move":false},{"type":"point","x":75,"y":125,"move":false},{"type":"point","x":50,"y":150,"move":false},{"type":"point","x":37.5,"y":150,"move":false},{"type":"point","x":37.5,"y":112.5,"move":false},{"type":"point","x":12.5,"y":87.5,"move":false},{"type":"point","x":-25,"y":87.5,"move":false},{"type":"close"},{"type":"point","x":100,"y":75,"move":true},{"type":"point","x":125,"y":50,"move":false},{"type":"point","x":175,"y":50,"move":false},{"type":"point","x":200,"y":75,"move":false},{"type":"point","x":200,"y":112.5,"move":false},{"type":"point","x":150,"y":112.5,"move":false},{"type":"point","x":150,"y":125,"move":false},{"type":"point","x":200,"y":125,"move":false},{"type":"point","x":175,"y":150,"move":false},{"type":"point","x":125,"y":150,"move":false},{"type":"point","x":100,"y":125,"move":false},{"type":"close"},{"type":"point","x":62.5,"y":62.5,"move":true},{"type":"point","x":50,"y":62.5,"move":false},{"type":"fill","r":200,"g":175,"b":100},{"type":"stroke","r":50,"g":50,"b":0},{"type":"point","x":175,"y":-250,"move":false},{"type":"point","x":225,"y":-250,"move":false},{"type":"point","x":225,"y":-225,"move":false},{"type":"point","x":175,"y":-225,"move":false},{"type":"point","x":175,"y":-150,"move":false},{"type":"point","x":250,"y":-150,"move":false},{"type":"point","x":250,"y":-175,"move":false},{"type":"point","x":200,"y":-175,"move":false},{"type":"point","x":200,"y":-200,"move":false},{"type":"point","x":250,"y":-200,"move":false},{"type":"point","x":250,"y":-275,"move":false},{"type":"point","x":175,"y":-275,"move":false},{"type":"close"},{"type":"point","x":162.5,"y":-237.5,"move":true},{"type":"point","x":162.5,"y":-212.5,"move":false},{"type":"point","x":-212.5,"y":-212.5,"move":false},{"type":"point","x":-212.5,"y":212.5,"move":false},{"type":"point","x":212.5,"y":212.5,"move":false},{"type":"point","x":212.5,"y":-137.5,"move":false},{"type":"point","x":237.5,"y":-137.5,"move":false},{"type":"point","x":237.5,"y":237.5,"move":false},{"type":"point","x":-237.5,"y":237.5,"move":false},{"type":"point","x":-237.5,"y":-237.5,"move":false},{"type":"close"},{"type":"fill","r":75,"g":125,"b":150},{"type":"stroke","r":25,"g":50,"b":75}]`
+    ), baseEnemyPath: pathParse(
+        `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-200,"y":-250},{"type":"point","x":200,"y":-250},{"type":"point","x":250,"y":-200},{"type":"point","x":250,"y":200},{"type":"point","x":200,"y":250},{"type":"point","x":-200,"y":250},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"point","x":-100,"y":-125,"move":true},{"type":"point","x":-125,"y":-100,"move":false},{"type":"point","x":-125,"y":100,"move":false},{"type":"point","x":-100,"y":125,"move":false},{"type":"point","x":100,"y":125,"move":false},{"type":"point","x":125,"y":100,"move":false},{"type":"point","x":125,"y":-100,"move":false},{"type":"point","x":100,"y":-125,"move":false},{"type":"close"},{"type":"fill","r":200,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
+    ), enemySpawnPath: pathParse(
+        `[{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":-100},{"type":"point","x":-175,"y":-175},{"type":"point","x":-100,"y":-225},{"type":"point","x":0,"y":-250},{"type":"point","x":100,"y":-225},{"type":"point","x":175,"y":-175},{"type":"point","x":225,"y":-100},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":100},{"type":"point","x":175,"y":175},{"type":"point","x":100,"y":225},{"type":"point","x":0,"y":250},{"type":"point","x":-100,"y":225},{"type":"point","x":-175,"y":175},{"type":"point","x":-225,"y":100},{"type":"close"},{"type":"fill","r":200,"g":200,"b":200},{"type":"stroke","r":255,"g":100,"b":100},{"type":"point","x":-150,"y":-100,"move":false},{"type":"point","x":-100,"y":-150,"move":false},{"type":"point","x":0,"y":-50,"move":false},{"type":"point","x":100,"y":-150,"move":false},{"type":"point","x":150,"y":-100,"move":false},{"type":"point","x":50,"y":0,"move":false},{"type":"point","x":150,"y":100,"move":false},{"type":"point","x":100,"y":150,"move":false},{"type":"point","x":0,"y":50,"move":false},{"type":"point","x":-100,"y":150,"move":false},{"type":"point","x":-150,"y":100,"move":false},{"type":"point","x":-50,"y":0,"move":false},{"type":"close"},{"type":"fill","r":255,"g":100,"b":100},{"type":"close"}]`
+    ), circleAttackWarnPath: pathParse(
+        `[{"type":"point","x":-250,"y":0,"move":true},{"type":"point","x":-225,"y":-100},{"type":"point","x":-175,"y":-175},{"type":"point","x":-100,"y":-225},{"type":"point","x":0,"y":-250},{"type":"point","x":100,"y":-225},{"type":"point","x":175,"y":-175},{"type":"point","x":225,"y":-100},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":100},{"type":"point","x":175,"y":175},{"type":"point","x":100,"y":225},{"type":"point","x":0,"y":250},{"type":"point","x":-100,"y":225},{"type":"point","x":-175,"y":175},{"type":"point","x":-225,"y":100},{"type":"close"}]`
+    ), sliceAttackWarnPath: pathParse(
+        `[{"type":"point","x":-50,"y":-250},{"type":"point","x":0,"y":-200},{"type":"point","x":50,"y":-100},{"type":"point","x":62.5,"y":0},{"type":"point","x":50,"y":100},{"type":"point","x":0,"y":200},{"type":"point","x":-50,"y":250}]`
+    ), stabAttackWarnPath: pathParse(
+        `[{"type":"point","x":-100,"y":-250},{"type":"point","x":150,"y":0},{"type":"point","x":-100,"y":250}]`
+    ), rectAttackWarnPath: pathParse(
+        `[{"type":"point","x":25,"y":-250},{"type":"point","x":25,"y":250}]`
+    ),
+    canvasOffset: [window.innerWidth/2, window.innerHeight/2],
+    toDraw: [],
+    toDrawEnemies: [],
+    noEnemies: true,
+    musicSyncList: [],
+    enemyAttack:[],
+    enemyAttackWarning:[],
+    dungeonPosition: [0,0],
+    notLocked: 0,
+    openings: [  ],
+    relicsEquipped: [0,0,0,0,0,0],
+    artifactsEquipped: [0,0,0],
+    weapon: new Item(0,0,weapons[0],0),
+    relicTick: 0,
+    firstWeapon: true,
+    showHit: 0,
+    menu: "main",
+    audioVolume: 0.6,
+    sfxVolume: 0.6,
+    showDamageNumbers: "Off",
+    showMusicWobble: true,
+    discoveredRooms: 0,
+    musicPopup: 1,
+    tick: 0,
+    musicWobble: 0,
+    warnDelay: 150,
+    difficulty: 0.5,
+    mapsize: 0,
+    freezeframes: 0,
+    fps: 0,
+    fpsCount: 60,
+    enableFreezeFrames: true,
+    seismicActivity: false
+};
+
 function startAnimating(fps) {
     fpsInterval = 1000 / fps;
     then = Date.now();
@@ -28,7 +97,11 @@ if (window.innerHeight/1000 < screenScale) screenScale = window.innerHeight/1000
 canvas.width = imageSize || window.innerWidth;
 canvas.height = imageSize || window.innerHeight;
 
-if (!imageSize) ctx.translate(window.innerWidth/2, window.innerHeight/2);
+if (!imageSize) {
+    game.canvasOffset = [window.innerWidth/2, window.innerHeight/2];
+
+    ctx.translate(...game.canvasOffset);
+}
 
 if (!imageSize) ctx.scale(screenScale, screenScale);
 
@@ -54,7 +127,9 @@ window.addEventListener("resize", (  ) => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    ctx.translate(window.innerWidth/2, window.innerHeight/2);
+    game.canvasOffset = [window.innerWidth/2, window.innerHeight/2];
+
+    ctx.translate(...game.canvasOffset);
 
     ctx.scale(screenScale, screenScale);
 
@@ -88,7 +163,10 @@ window.addEventListener('keydown', async function (e) {
                 player.vx *= 60/hypot;
                 player.vy *= 60/hypot;
                 player.iFrames += 15;
-                if (stats.smoke) player.smokeFrames = 15;
+                if (stats.smoke && player.firerateTick > 0) {
+                    player.firerateTick -= stats.smoke*30;
+                    if (player.firerateTick < 0) player.firerateTick = 0;
+                }
                 break;
             }
             case 1: {
@@ -113,14 +191,14 @@ window.addEventListener('keydown', async function (e) {
     if (e.key.toLowerCase() == 'e') {
         if (pickUpItem()) if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].regionTransfer && Math.abs(player.x) < 150 && Math.abs(player.y) < 150) {
             game.regionTransfer = 2;
-            ease(game.region.music[game.musicPos].file,"volume", 0, 2.5);
+            ease(game.currentMusic.file,"volume", 0, 2.5);
             ease(game,"regionTransfer", 0, 3);
             setTimeout(() => {
-                game.region.music[game.musicPos].file.pause();
+                game.currentMusic.file.pause();
                 game.region = game.nextRegion;
                 game.regionNum++;
                 if (game.regionNum+1 < regions.length) game.nextRegion = regions[game.regionNum+1][Math.floor(regions[game.regionNum+1].length*Math.random())];
-                startMusic();
+                startMusic(game.region.music[0]);
                 items = [];
                 enemies = [];
                 bullets = [];
@@ -158,11 +236,11 @@ window.addEventListener('keydown', async function (e) {
     }
     if (e.key.toLowerCase() == 'escape') if (!game.menu) {
         game.menu = "pause";
-        game.region.music[game.musicPos].file.pause();
+        game.currentMusic.file.pause();
     } else if (game.menu == "pause") {
         if (game.optionsMenu) game.optionsMenu = false;
         else {
-            game.region.music[game.musicPos].file.play();
+            game.currentMusic.file.play();
             game.menu = false;
         }
         game.replaceItem = false;
@@ -239,8 +317,8 @@ window.addEventListener('mouseup', function () {
 function xy(e) {
     game.menuSelectType = "mouse";
 
-    mouse.x = e.x/screenScale - (window.innerWidth-1800*screenScale)/2/screenScale -900;
-    mouse.y = e.y/screenScale - (window.innerHeight-1000*screenScale)/2/screenScale -500;
+    mouse.x = e.x/screenScale - (game.canvasOffset[0]-900*screenScale)/screenScale -900;
+    mouse.y = e.y/screenScale - (game.canvasOffset[1]-500*screenScale)/screenScale -500;
 }
 
 let toEaseVariables = [];
@@ -268,73 +346,6 @@ function changeEaseable(item, i) {
 let blocks = JSON.parse(
     `[[-775,-375,150,150],[-550,-375,150,150],[-325,-375,150,150],[625,-375,150,150],[400,-375,150,150],[175,-375,150,150],[-775,225,150,150],[-550,225,150,150],[-325,225,150,150],[625,225,150,150],[400,225,150,150],[175,225,150,150],[-775,-150,300,300],[475,-150,300,300]]`
 );
-
-const game = {
-    cursorPath: pathParse(
-        `[{"type":"point","x":0,"y":-125,"move":false},{"type":"point","x":50,"y":-250,"move":false},{"type":"point","x":-50,"y":-250,"move":false},{"type":"point","x":0,"y":-125,"move":false},{"type":"point","x":125,"y":0,"move":true},{"type":"point","x":250,"y":-50,"move":false},{"type":"point","x":250,"y":50,"move":false},{"type":"point","x":125,"y":0,"move":false},{"type":"point","x":0,"y":125,"move":true},{"type":"point","x":50,"y":250,"move":false},{"type":"point","x":-50,"y":250,"move":false},{"type":"point","x":0,"y":125,"move":false},{"type":"point","x":-125,"y":0,"move":true},{"type":"point","x":-250,"y":-50,"move":false},{"type":"point","x":-250,"y":50,"move":false},{"type":"point","x":-125,"y":0,"move":false},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50}]`
-    ),dungeonItemPath: pathParse(
-        `[{"type":"point","x":0,"y":-250},{"type":"point","x":-75,"y":-75},{"type":"point","x":-250,"y":0},{"type":"point","x":-75,"y":75},{"type":"point","x":0,"y":250},{"type":"point","x":75,"y":75},{"type":"point","x":250,"y":0},{"type":"point","x":75,"y":-75},{"type":"close"},{"type":"fill","r":150,"g":150,"b":0},{"type":"stroke","r":50,"g":50,"b":0}]`
-    ),keyboardTutorial: pathParse(
-        `[{"type":"point","x":-50,"y":-50},{"type":"point","x":50,"y":-50},{"type":"point","x":50,"y":50},{"type":"point","x":-50,"y":50},{"type":"close"},{"type":"point","x":-50,"y":-75,"move":true},{"type":"point","x":-50,"y":-175,"move":false},{"type":"point","x":50,"y":-175,"move":false},{"type":"point","x":50,"y":-75,"move":false},{"type":"close"},{"type":"point","x":-75,"y":-50,"move":true},{"type":"point","x":-75,"y":50,"move":false},{"type":"point","x":-175,"y":50,"move":false},{"type":"point","x":-175,"y":-50,"move":false},{"type":"close"},{"type":"point","x":75,"y":-50,"move":true},{"type":"point","x":75,"y":50,"move":false},{"type":"point","x":175,"y":50,"move":false},{"type":"point","x":175,"y":-50,"move":false},{"type":"close"},{"type":"point","x":-175,"y":75,"move":true},{"type":"point","x":175,"y":75,"move":false},{"type":"point","x":175,"y":175,"move":false},{"type":"point","x":-175,"y":175,"move":false},{"type":"close"},{"type":"point","x":-150,"y":-75,"move":true},{"type":"point","x":-150,"y":-175,"move":false},{"type":"point","x":-300,"y":-175,"move":false},{"type":"point","x":-300,"y":-75,"move":false},{"type":"close"}]`
-    ),mouseTutorial: pathParse(
-        `[{"type":"point","x":12.5,"y":-200,"move":false},{"type":"point","x":12.5,"y":-25,"move":false},{"type":"point","x":150,"y":-25,"move":false},{"type":"point","x":125,"y":-175,"move":false},{"type":"close"},{"type":"point","x":-12.5,"y":-200,"move":true},{"type":"point","x":-12.5,"y":-25,"move":false},{"type":"point","x":-150,"y":-25,"move":false},{"type":"point","x":-125,"y":-175,"move":false},{"type":"close"},{"type":"point","x":-150,"y":0,"move":true},{"type":"point","x":-137.5,"y":150,"move":false},{"type":"point","x":-50,"y":250,"move":false},{"type":"point","x":50,"y":250,"move":false},{"type":"point","x":137.5,"y":150,"move":false},{"type":"point","x":150,"y":0,"move":false},{"type":"close"},{"type":"point","x":0,"y":-200,"move":true},{"type":"point","x":0,"y":-250,"move":false}]`
-    ),weaponBackground: pathParse(
-        `[{"type":"point","x":-250,"y":0},{"type":"point","x":-125,"y":-212.5},{"type":"point","x":125,"y":-212.5},{"type":"point","x":250,"y":0},{"type":"point","x":125,"y":212.5},{"type":"point","x":-125,"y":212.5},{"type":"close"}]`
-    ),relicBackground: pathParse(
-        `[{"type":"point","x":-250,"y":0},{"type":"point","x":0,"y":-250},{"type":"point","x":250,"y":0},{"type":"point","x":0,"y":250},{"type":"close"}]`
-    ),artifactBackground: pathParse(
-        `[{"type":"point","x":0,"y":-250},{"type":"point","x":-212.5,"y":125},{"type":"point","x":212.5,"y":125},{"type":"close"}]`
-    ),consumableBackground: pathParse(
-        `[]`
-    ), gameIcon: pathParse(
-        `[{"type":"point","x":-200,"y":-200},{"type":"point","x":-150,"y":-200},{"type":"point","x":-150,"y":-125},{"type":"point","x":-100,"y":-125},{"type":"point","x":-100,"y":-200},{"type":"point","x":-50,"y":-200},{"type":"point","x":-50,"y":0},{"type":"point","x":-100,"y":0},{"type":"point","x":-100,"y":-75},{"type":"point","x":-150,"y":-75},{"type":"point","x":-150,"y":0},{"type":"point","x":-200,"y":0},{"type":"close"},{"type":"point","x":-25,"y":-50,"move":true},{"type":"point","x":-25,"y":-200,"move":false},{"type":"point","x":25,"y":-200,"move":false},{"type":"point","x":25,"y":-50,"move":false},{"type":"close"},{"type":"point","x":50,"y":-50,"move":true},{"type":"point","x":50,"y":-200,"move":false},{"type":"point","x":125,"y":-200,"move":false},{"type":"point","x":150,"y":-175,"move":false},{"type":"point","x":150,"y":-125,"move":false},{"type":"point","x":125,"y":-100,"move":false},{"type":"point","x":100,"y":-100,"move":false},{"type":"point","x":100,"y":-50,"move":false},{"type":"close"},{"type":"point","x":-200,"y":25,"move":true},{"type":"point","x":-75,"y":25,"move":false},{"type":"point","x":-75,"y":75,"move":false},{"type":"point","x":-112.5,"y":75,"move":false},{"type":"point","x":-112.5,"y":200,"move":false},{"type":"point","x":-162.5,"y":200,"move":false},{"type":"point","x":-162.5,"y":75,"move":false},{"type":"point","x":-200,"y":75,"move":false},{"type":"close"},{"type":"point","x":-75,"y":125,"move":true},{"type":"point","x":-50,"y":100,"move":false},{"type":"point","x":0,"y":100,"move":false},{"type":"point","x":25,"y":125,"move":false},{"type":"point","x":25,"y":175,"move":false},{"type":"point","x":0,"y":200,"move":false},{"type":"point","x":-50,"y":200,"move":false},{"type":"point","x":-75,"y":175,"move":false},{"type":"close"},{"type":"point","x":-25,"y":-25,"move":true},{"type":"point","x":50,"y":-25,"move":false},{"type":"point","x":75,"y":0,"move":false},{"type":"point","x":75,"y":50,"move":false},{"type":"point","x":62.5,"y":62.5,"move":false},{"type":"point","x":75,"y":75,"move":false},{"type":"point","x":75,"y":125,"move":false},{"type":"point","x":50,"y":150,"move":false},{"type":"point","x":37.5,"y":150,"move":false},{"type":"point","x":37.5,"y":112.5,"move":false},{"type":"point","x":12.5,"y":87.5,"move":false},{"type":"point","x":-25,"y":87.5,"move":false},{"type":"close"},{"type":"point","x":100,"y":75,"move":true},{"type":"point","x":125,"y":50,"move":false},{"type":"point","x":175,"y":50,"move":false},{"type":"point","x":200,"y":75,"move":false},{"type":"point","x":200,"y":112.5,"move":false},{"type":"point","x":150,"y":112.5,"move":false},{"type":"point","x":150,"y":125,"move":false},{"type":"point","x":200,"y":125,"move":false},{"type":"point","x":175,"y":150,"move":false},{"type":"point","x":125,"y":150,"move":false},{"type":"point","x":100,"y":125,"move":false},{"type":"close"},{"type":"point","x":62.5,"y":62.5,"move":true},{"type":"point","x":50,"y":62.5,"move":false},{"type":"fill","r":200,"g":175,"b":100},{"type":"stroke","r":50,"g":50,"b":0},{"type":"point","x":175,"y":-250,"move":false},{"type":"point","x":225,"y":-250,"move":false},{"type":"point","x":225,"y":-225,"move":false},{"type":"point","x":175,"y":-225,"move":false},{"type":"point","x":175,"y":-150,"move":false},{"type":"point","x":250,"y":-150,"move":false},{"type":"point","x":250,"y":-175,"move":false},{"type":"point","x":200,"y":-175,"move":false},{"type":"point","x":200,"y":-200,"move":false},{"type":"point","x":250,"y":-200,"move":false},{"type":"point","x":250,"y":-275,"move":false},{"type":"point","x":175,"y":-275,"move":false},{"type":"close"},{"type":"point","x":162.5,"y":-237.5,"move":true},{"type":"point","x":162.5,"y":-212.5,"move":false},{"type":"point","x":-212.5,"y":-212.5,"move":false},{"type":"point","x":-212.5,"y":212.5,"move":false},{"type":"point","x":212.5,"y":212.5,"move":false},{"type":"point","x":212.5,"y":-137.5,"move":false},{"type":"point","x":237.5,"y":-137.5,"move":false},{"type":"point","x":237.5,"y":237.5,"move":false},{"type":"point","x":-237.5,"y":237.5,"move":false},{"type":"point","x":-237.5,"y":-237.5,"move":false},{"type":"close"},{"type":"fill","r":75,"g":125,"b":150},{"type":"stroke","r":25,"g":50,"b":75}]`
-    ), baseEnemyPath: pathParse(
-        `[{"type":"point","x":-250,"y":-200},{"type":"point","x":-200,"y":-250},{"type":"point","x":200,"y":-250},{"type":"point","x":250,"y":-200},{"type":"point","x":250,"y":200},{"type":"point","x":200,"y":250},{"type":"point","x":-200,"y":250},{"type":"point","x":-250,"y":200},{"type":"close"},{"type":"point","x":-100,"y":-125,"move":true},{"type":"point","x":-125,"y":-100,"move":false},{"type":"point","x":-125,"y":100,"move":false},{"type":"point","x":-100,"y":125,"move":false},{"type":"point","x":100,"y":125,"move":false},{"type":"point","x":125,"y":100,"move":false},{"type":"point","x":125,"y":-100,"move":false},{"type":"point","x":100,"y":-125,"move":false},{"type":"close"},{"type":"fill","r":200,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
-    ), enemySpawnPath: pathParse(
-        `[{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":-100},{"type":"point","x":-175,"y":-175},{"type":"point","x":-100,"y":-225},{"type":"point","x":0,"y":-250},{"type":"point","x":100,"y":-225},{"type":"point","x":175,"y":-175},{"type":"point","x":225,"y":-100},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":100},{"type":"point","x":175,"y":175},{"type":"point","x":100,"y":225},{"type":"point","x":0,"y":250},{"type":"point","x":-100,"y":225},{"type":"point","x":-175,"y":175},{"type":"point","x":-225,"y":100},{"type":"close"},{"type":"fill","r":200,"g":200,"b":200},{"type":"stroke","r":255,"g":100,"b":100},{"type":"point","x":-150,"y":-100,"move":false},{"type":"point","x":-100,"y":-150,"move":false},{"type":"point","x":0,"y":-50,"move":false},{"type":"point","x":100,"y":-150,"move":false},{"type":"point","x":150,"y":-100,"move":false},{"type":"point","x":50,"y":0,"move":false},{"type":"point","x":150,"y":100,"move":false},{"type":"point","x":100,"y":150,"move":false},{"type":"point","x":0,"y":50,"move":false},{"type":"point","x":-100,"y":150,"move":false},{"type":"point","x":-150,"y":100,"move":false},{"type":"point","x":-50,"y":0,"move":false},{"type":"close"},{"type":"fill","r":255,"g":100,"b":100},{"type":"close"}]`
-    ), circleAttackWarnPath: pathParse(
-        `[{"type":"point","x":-250,"y":0,"move":true},{"type":"point","x":-225,"y":-100},{"type":"point","x":-175,"y":-175},{"type":"point","x":-100,"y":-225},{"type":"point","x":0,"y":-250},{"type":"point","x":100,"y":-225},{"type":"point","x":175,"y":-175},{"type":"point","x":225,"y":-100},{"type":"point","x":250,"y":0},{"type":"point","x":225,"y":100},{"type":"point","x":175,"y":175},{"type":"point","x":100,"y":225},{"type":"point","x":0,"y":250},{"type":"point","x":-100,"y":225},{"type":"point","x":-175,"y":175},{"type":"point","x":-225,"y":100},{"type":"close"}]`
-    ), sliceAttackWarnPath: pathParse(
-        `[{"type":"point","x":-50,"y":-250},{"type":"point","x":0,"y":-200},{"type":"point","x":50,"y":-100},{"type":"point","x":62.5,"y":0},{"type":"point","x":50,"y":100},{"type":"point","x":0,"y":200},{"type":"point","x":-50,"y":250}]`
-    ), stabAttackWarnPath: pathParse(
-        `[{"type":"point","x":-100,"y":-250},{"type":"point","x":150,"y":0},{"type":"point","x":-100,"y":250}]`
-    ), rectAttackWarnPath: pathParse(
-        `[{"type":"point","x":25,"y":-250},{"type":"point","x":25,"y":250}]`
-    ),
-    toDraw: [],
-    toDrawEnemies: [],
-    noEnemies: true,
-    musicSyncList: [],
-    enemyAttack:[],
-    enemyAttackWarning:[],
-    dungeonPosition: [0,0],
-    notLocked: 0,
-    openings: [  ],
-    relicsEquipped: [0,0,0,0,0,0],
-    artifactsEquipped: [0,0,0],
-    weapon: new Item(0,0,weapons[0],0),
-    relicTick: 0,
-    firstWeapon: true,
-    musicPos: 0,
-    showHit: 0,
-    menu: "main",
-    audioVolume: 0.6,
-    sfxVolume: 0.6,
-    showDamageNumbers: "Off",
-    showMusicWobble: true,
-    discoveredRooms: 0,
-    musicPopup: 1,
-    tick: 0,
-    musicWobble: 0,
-    warnDelay: 150,
-    difficulty: 0.5,
-    mapsize: 0,
-    freezeframes: 0,
-    fps: 0,
-    fpsCount: 60,
-    enableFreezeFrames: true,
-    seismicActivity: false
-};
 
 if (localStorage.getItem("htbs-audioVolume") !== null) game.audioVolume = Number(localStorage.getItem("htbs-audioVolume"));
 else localStorage.setItem("htbs-audioVolume",game.audioVolume);

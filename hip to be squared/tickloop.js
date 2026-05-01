@@ -1,3 +1,5 @@
+// This file is Copyright (C) 2025 BetaFail Studios, all rights reserved.
+
 function tickloop() {
     game.fps++;
     if (game.freezeframes > 0) {
@@ -9,9 +11,37 @@ function tickloop() {
         game.freezeframes--;
         if (game.freezeframes <= 0 || !game.enableFreezeFrames) {
             game.freezeframes = 0;
-            game.region.music[game.musicPos].file.play();
+            game.currentMusic.file.play();
+            if (stats.health > 0) ease(game.currentMusic.file,"playbackRate",1,1);
         }
         return;
+    }
+
+    if (game.menu == "death" && game.deathScreen) {
+        ctx.resetTransform();
+
+        //settings canvas size and scale
+        screenScale = window.innerWidth/1800;
+        if (window.innerHeight/1000 < screenScale) screenScale = window.innerHeight/1000;
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const ratio = animationRatio(game.deathScreenEase,2,4);
+
+        screenScale *= 1 + ratio*3;
+        game.canvasOffset = [window.innerWidth/2-player.x*screenScale*ratio, window.innerHeight/2-player.y*screenScale*ratio];
+
+        ctx.rotate(game.deathScreen*Math.PI/12*ratio);
+
+        ctx.translate(...game.canvasOffset);
+
+        ctx.scale(screenScale, screenScale);
+
+        ctx.lineWidth = 3;
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+        ctx.lineJoin = "bevel";
     }
 
     //initialize async function
@@ -23,9 +53,9 @@ function tickloop() {
     game.tick++;
     if (game.tick > 1000000000) game.tick = 0;
 
-    ctx.beginPath();
-    ctx.fillStyle = "#000";
-    ctx.fillRect(-1800,-1000,3600,2000);
+    //ctx.beginPath();
+    //ctx.fillStyle = "#000";
+    //ctx.fillRect(-1800,-1000,3600,2000);
     drawEnvironment();
     bulletDraw();
     drawBlocks();
@@ -74,7 +104,7 @@ function tickloop() {
         ease(game,"notLocked", 1,0.2);
 
         if (dungeon[game.dungeonPosition[0] + "," + game.dungeonPosition[1]].boss && game.regionNum >= 0) {
-            if (game.musicStarted) restartMusic(0);
+            if (game.musicStarted) restartMusic(game.region.music[0]);
             if (stats.health < stats.healthMax) ease(stats,"health",stats.healthMax,(stats.healthMax-stats.health)/stats.healthMax*2);
 
             items.push(
@@ -146,24 +176,26 @@ function tickloop() {
         } else game.relicTick++;
     }
 
-    if (stats.firerate > 10 && !player.burstsLeft && player.firerateTick > 0) {
-        ctx.strokeStyle = "#cccccc50";
+    if (game.menu != "death" && stats.firerate > 10 && !player.burstsLeft && player.firerateTick > 0) {
         ctx.beginPath();
         ctx.arc(mouse.x,mouse.y,50,-Math.PI/2,-Math.PI/2-Math.PI*2*player.firerateTick/stats.firerate);
         ctx.lineCap = "round";
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = "#00000050";
+        ctx.stroke();
         ctx.lineWidth = 7;
+        ctx.strokeStyle = "#ffffff50";
         ctx.stroke();
         ctx.lineWidth = 3;
         ctx.lineCap = "butt";
     }
-    drawRaw(mouse.x,mouse.y,game.cursorPath,30,player.rotationTick);
 
     toEaseVariables = toEaseVariables.filter(changeEaseable);
 
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.font = "25px share tech";
-    ctx.fillText("Version: b.1.9.2",700,470);
+    ctx.fillText("Version: b.2.0.0",700,470);
     if (game.fpsShow) ctx.fillText(game.fpsShow,815,470);
     
     ctx.lineWidth = 15;
@@ -185,6 +217,12 @@ function tickloop() {
     ctx.stroke();
     ctx.fill();
     ctx.lineWidth = 3;
+
+    if (game.menu == "death") { if (game.deathScreenEase == 1) {
+        ctx.lineWidth = 1;
+        drawRaw(mouse.x,mouse.y,game.cursorPath,10,player.rotationTick);
+        ctx.lineWidth = 3;
+    } } else drawRaw(mouse.x,mouse.y,game.cursorPath,30,player.rotationTick);
 }
 
 setInterval(() => {

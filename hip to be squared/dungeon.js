@@ -1,4 +1,6 @@
-let dungeon = { "0,0": { blocks: [], items: [], connections: [], visited: true, boss: true, regionTransfer: true } };
+// This file is Copyright (C) 2025 BetaFail Studios, all rights reserved.
+
+let dungeon = { "0,0": { blocks: [], items: items, connections: [], visited: true, boss: true, regionTransfer: true } };
 
 const dungeonPresets = [
     `[]`,
@@ -47,7 +49,7 @@ function generateDungeon() {
         pos[change[0]] += change[1];
         change[1] *= -1;
         dungeon[pos[0] + "," + pos[1]] = { blocks: JSON.parse(dungeonPresets[Math.floor(Math.random()*dungeonPresets.length)]), items: [], connections: [change] };
-        if (length > 10+2*game.regionNum && Math.random() < 0.5/*Math.abs(pos[0]) + Math.abs(pos[1]) == 6*/) {
+        if (false || length > 10+2*game.regionNum + 8*(game.regionNum == 3) && Math.random() < 0.5/*Math.abs(pos[0]) + Math.abs(pos[1]) == 6*/) {
             dungeon[pos[0] + "," + pos[1]].boss = true;
             connected = true;
             dungeon[pos[0] + "," + pos[1]].blocks = [];
@@ -69,23 +71,27 @@ function drawMap() {
     if (!game.regionTransfer) game.teleportPosition = false;
     let xMax = 0;
     let yMax = 0;
+    let xMin = 0;
+    let yMin = 0;
 
     Object.keys(dungeon).forEach((item) => {
         if (!dungeon[item].visited) return;
         const pos = [Number(item.split(",")[0]),Number(item.split(",")[1])];
         if (pos[0] > xMax) xMax = pos[0];
+        else if (pos[0] < xMin) xMin = pos[0];
         if (pos[1] < yMax) yMax = pos[1];
+        else if (pos[1] > yMin) yMin = pos[1];
     })
-
-    xMax = xMax*60 - 160;
-    yMax = yMax*40 + 120;
 
     ctx.save();
     ctx.globalAlpha = game.notLocked;
-    if (player.x > 600 && player.y < -300) ctx.globalAlpha *= 0.3;
+    if (player.x > 700-60*(xMax-xMin) && player.y < -325-40*(yMax-yMin)) ctx.globalAlpha *= 0.3;
     ctx.translate(625,-275);
     ctx.lineWidth = 10; //210, 160
     ctx.strokeStyle = game.region.wallColor;
+
+    xMax = xMax*60 - 160;
+    yMax = yMax*40 + 120;
     Object.keys(dungeon).forEach((item) => {
         if (!dungeon[item].visited) return;
 
@@ -131,7 +137,41 @@ function drawMap() {
         else ctx.fillStyle = game.region.floorColor;
         ctx.fill();
 
-        if (dungeon[item].items.length) drawRaw(...pos,game.dungeonItemPath,15,player.rotationTick);
+        ctx.lineWidth = 2;
+        const rotation = Math.sin(player.rotationTick*5)/3;
+        if (dungeon[item].items.length) dungeon[item].items.forEach((relic,i) => {
+            let color = false;
+            if (relic.reference.type == "artifact") color = "#c77";
+            else switch(relic.rarity) {
+                case 0: {
+                    color = false;
+                    break;
+                }
+                case 1: {
+                    color = "#7c7";
+                    break;
+                }
+                case 2: {
+                    color = "#79c";
+                    break;
+                }
+                case 3: {
+                    color = "#cc7";
+                    break;
+                }
+                case 4: {
+                    color = "#97c";
+                    break;
+                }
+                default: {
+                    color = "#000";
+                    break;
+                }
+            }
+            drawRaw(pos[0]+20*(.5+i-dungeon[item].items.length/2),pos[1]+8*(.5+i-dungeon[item].items.length/2),relic.reference.drawPath,15,rotation,false,false,false,false,false,color);
+        })
+        ctx.lineWidth = 3;
+        //if (dungeon[item].items.length) drawRaw(...pos,game.dungeonItemPath,15,player.rotationTick);
     })
     ctx.restore();
 }
@@ -193,18 +233,18 @@ function dungeonMove(change, teleport) {
             if (boss.coSpawn) boss.coSpawn.forEach(item => {
                 enemies.push( new Enemy(enemyBlueprints[item[0]], {x: item[1], y: item[2] }))
             })
-            restartMusic(enemies[0].boss[2]);
+            restartMusic(game.region.music[enemies[0].boss[2]]);
             game.bossEase = 1;
             ease(game,"bossEase",0,5);
             game.bossHealthMax = 0;
             enemies.forEach(async (enemy,i) => {
                 if (enemy.boss) game.bossHealthMax += enemy.healthMax;
             })
-            game.afterBossStarted = true;
+            //game.afterBossStarted = true;
         }
         else {
             spawnEnemies(Math.floor(1 + Math.random()*0.6+0.35*game.discoveredRooms+0.15*game.regionNum));
-            game.afterBossStarted = false;
+            //game.afterBossStarted = false;
         }
         ease(game,"notLocked",0,0.2);
         

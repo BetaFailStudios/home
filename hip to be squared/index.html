@@ -1,12 +1,16 @@
+<!--
+    // This file is Copyright (C) 2025 BetaFail Studios, all rights reserved.
+-->
+
 <!DOCTYPE html>
 <head>
     <title>Hip to be Squared</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="htbsplayer.png">
     <meta charset="utf-8">
-    <script src="GPUjs/gpu-browser.min.js"></script>
+    <font src="resources/ShareTech-Regular.ttf"></font>
+    <script src="resources/gpu-browser.min.js"></script>
 </head>
 <body>
     <style>
@@ -33,6 +37,7 @@
             regions.forEach(regionList => {
                 regionList.forEach( region => {
                     region.music.forEach(song => {
+                        song.file.preservesPitch = false;
                         song.attacklist.sort((a,b) => { return a[0] - b[0] });
                         let offset = 0;
                         if (!song.warnIncrease) song.warnIncrease = [0,0,0,0,0,0,0,0,0];
@@ -68,9 +73,9 @@
     <script src="menu.js"></script>
     <script src="music.js"></script>
     <script src="sfx.js"></script>
-    <script src="enemyblueprints.js"></script>
     <script src="bullets.js"></script>
     <script src="enemies.js"></script>
     <script src="player.js"></script>
+    <script src="enemyblueprints.js"></script>
     <script src="tickloop.js"></script>
 </body>

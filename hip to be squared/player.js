@@ -1,3 +1,5 @@
+// This file is Copyright (C) 2025 BetaFail Studios, all rights reserved.
+
 const player = {
     x: 0, y: 200,
     vx: 0, vy: 0,
@@ -15,6 +17,14 @@ const player = {
     dashes: 3,
     burstsLeft: 0
 }
+
+player.inverseDrawPath = Object.assign([],player.drawPath);
+
+for (i = 1; i < player.inverseDrawPath[0]; i += 4) { if (player.inverseDrawPath[i] == 2 || player.inverseDrawPath[i] == 3) {
+    player.inverseDrawPath[i+1] = 255-player.inverseDrawPath[i+1];
+    player.inverseDrawPath[i+2] = 255-player.inverseDrawPath[i+2];
+    player.inverseDrawPath[i+3] = 255-player.inverseDrawPath[i+3];
+}}
 
 async function playerTick() {
     if (game.menu) return;
@@ -84,12 +94,14 @@ async function playerTick() {
             bullets.push(new Bullet(tempBullet));
             lookDirection += stats.spread/(stats.projectiles-1);
         }
-        game.firstBullet = false;
 
         if (player.burstsLeft <= 0) player.burstsLeft = stats.bursts-1;
         else player.burstsLeft--;
         if (player.burstsLeft > 0) player.firerateTick += Math.min(3,stats.firerate/10);
-        else player.firerateTick += stats.firerate;
+        else {
+            player.firerateTick += stats.firerate;
+            game.firstBullet = false;
+        }
     }
     if (player.firerateTick > 0) player.firerateTick--;
 
@@ -102,8 +114,8 @@ async function playerTick() {
             const hypot = Math.hypot(x,y);
             if (hypot && hypot < stats.playerSize+Math.max(enemy.size/2,enemy.size-100)) {
                 
-                player.vx += 100*Math.sign(x)/hypot + enemy.vx/10;
-                player.vy += 100*Math.sign(y)/hypot + enemy.vy/10;
+                player.vx += 30*x/hypot + enemy.vx/10;
+                player.vy += 30*y/hypot + enemy.vy/10;
                 if (!enemy.immovable) {
                     enemy.vx -= 25*Math.sign(x)/hypot;
                     enemy.vy -= 25*Math.sign(y)/hypot;
@@ -124,19 +136,21 @@ async function playerTick() {
                     }
                     game.showHit += 0.85;
                 }
+
+                game.currentMusic.file.playbackRate = 0.95;
                 
                 game.freezeframes = 10;
                 if (red) {
                     playsfx("redloss");
-                    game.region.music[game.musicPos].file.pause();
+                    game.currentMusic.file.pause();
                 } else {
                     playsfx("blueloss");
-                    game.region.music[game.musicPos].file.pause();
+                    game.currentMusic.file.pause();
                 }
 
                 game.renderRedScreen = true;
 
-                stats.onPlayerHits.forEach( (item) => item[2](item[0],item[1],enemy,blue,red));
+                stats.onPlayerHits.forEach( (item) => item[3](item[0],item[1],item[2],enemy,blue,red));
 
                 //playerDraw();
             }
@@ -171,10 +185,11 @@ async function playerTick() {
 }
 
 function playerDraw() {
-    player.rotationTick += Math.PI/600;
+    if (game.menu == "death") player.rotationTick += Math.PI/600 * (1-(game.deathScreenEase || 0));
+    else player.rotationTick += Math.PI/600;
     if (player.rotationTick > Math.PI*2) player.rotationTick -= Math.PI*2;
 
-    if (!game.menu) stats.playerTicks.forEach( (item) => item[2](item[0],item[1]));
+    if (!game.menu) stats.playerTicks.forEach( (item) => item[3](item[0],item[1],item[2]));
     if (game.regionTransfer > 1) draw(player.x,player.y,player.drawPath,stats.playerSize*(-1+game.regionTransfer),player.rotationTick);
     else if (game.regionTransfer > 0) draw(player.x,player.y,player.drawPath,stats.playerSize*(1+10*game.regionTransfer**2.5),player.rotationTick,1-game.regionTransfer);
     else {
@@ -196,8 +211,8 @@ function playerDraw() {
         if (player.iFrames > 0) draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick,0.4);
         else draw(player.x,player.y,player.drawPath,stats.playerSize,player.rotationTick);
         
-        const direction = (Math.atan((mouse.y-player.y)/(mouse.x-player.x)) + Math.PI*(mouse.x < player.x)) || 0;
-        draw(player.x + 70*Math.cos(direction),player.y + 70*Math.sin(direction),game.weapon.reference.drawPath,25,direction,undefined,undefined,mouse.x < player.x);
+        if (game.menu !== "death") player.direction = (Math.atan((mouse.y-player.y)/(mouse.x-player.x)) + Math.PI*(mouse.x < player.x)) || 0;
+        draw(player.x + 70*Math.cos(player.direction),player.y + 70*Math.sin(player.direction),game.weapon.reference.drawPath,25,player.direction,1-(game.deathScreenEase || 0),undefined,mouse.x < player.x);
 
         if (player.showShieldBreak > 0) {
             ctx.beginPath();

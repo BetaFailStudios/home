@@ -1,3 +1,5 @@
+// This file is Copyright (C) 2025 BetaFail Studios, all rights reserved.
+
 const gpu = new GPU.GPU();
 // [ 0x,1y,2size,3rotate,4alpha,5flipVert, 6...path ]
 // x/y, path, group
@@ -30,12 +32,12 @@ let highestPathLength = 0;
 let nuhUhh = false;
 
 function draw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverride,outlineColor) {
+    if (alpha === 0 || size <= 0) return;
     if (path.length > 200) {
         drawRaw(x,y,path,size,rotate,alpha,noClear,flipVert,noMove,colorOverride,outlineColor);
         return;
     }
     console.log(!!flipVert);
-    if (alpha === 0) return;
     toDraw.push([x,y,size,rotate || 0,alpha || -1,flipVert || 0,colorOverride || 0,outlineColor || 0,...path]);
 }
 function drawRaw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOverride,outlineColor) {
@@ -48,11 +50,10 @@ function drawRaw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOve
     //ctx.translate(x,y);
     //if (rotate) ctx.rotate(rotate);
 
-    if (alpha !== undefined && alpha !== false) ctx.globalAlpha = alpha;
+    if (alpha) ctx.globalAlpha = alpha;
 
     if (!noClear) ctx.beginPath();
     let move = true;
-    let firstStroke = true;
     for (var i = 1; i < path[0]-8; i += 4) {
         if (noClear) { 
             if (path[i] == 0) {
@@ -77,8 +78,7 @@ function drawRaw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOve
                 break;
             }
             case 2: {
-                if (firstStroke && outlineColor) {
-                    firstStroke = false;
+                if (outlineColor) {
                     ctx.lineWidth += 3;
                     ctx.strokeStyle = outlineColor;
                     ctx.stroke();
@@ -103,7 +103,7 @@ function drawRaw(x,y,path, size, rotate, alpha, noClear,flipVert,noMove,colorOve
     //if (rotate) ctx.rotate(-rotate);
     //ctx.translate(-x,-y);
 
-    if (alpha !== undefined) ctx.globalAlpha = 1;
+    if (alpha) ctx.globalAlpha = 1;
 
     //ctx.restore();
 }

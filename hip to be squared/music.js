@@ -1,3 +1,5 @@
+// This file is Copyright (C) 2025 BetaFail Studios, all rights reserved.
+
 //const audioCtx = new window.AudioContext();
 //const audioElement = document.getElementById('music');
 //const source = audioCtx.createMediaElementSource(audioElement);
@@ -6,37 +8,37 @@
 //filter.type = 'lowpass';
 //filter.frequency.value = 2000;
 
-async function startMusic() {
+async function startMusic(input) {
     game.musicSyncList = [];
     ease(game,"musicPopup",0,3);
     setTimeout(() => { ease(game,"musicPopup",1,3); }, 3000);
 
-    const song = game.region.music[game.musicPos];
+    if (input) game.currentMusic = input;
 
-    //audioCtx.createMediaElementSource(song.file).connect(filter);
+    //audioCtx.createMediaElementSource(game.currentMusic.file).connect(filter);
 
-    game.musicSyncList = Object.assign([], song.attacklistReady);
+    game.musicSyncList = Object.assign([], game.currentMusic.attacklistReady);
 
-    song.file.volume = 0;
-    song.file.currentTime = 0;
-    ease(song.file,"volume", game.audioVolume, 0.5);
-    song.file.play();
+    game.currentMusic.file.volume = 0;
+    game.currentMusic.file.currentTime = 0;
+    ease(game.currentMusic.file,"volume", game.audioVolume, 0.5);
+    game.currentMusic.file.play();
 
-    if (game.afterBossStarted) return;
-    if (game.bossHealthMax) game.bossHealthMax *= 0.3
-    enemies.forEach(enemy => { if (enemy.boss) enemy.health *= 0.3 });
+    //if (!game.afterBossStarted) return;
+    //if (game.bossHealthMax) game.bossHealthMax *= 0.3
+    //enemies.forEach(enemy => { if (enemy.boss) enemy.health *= 0.3 });
 }
 
 async function musicTick(noClear) {
-
+    if (game.menu == "death") return;
     //game.musicWobble = 1 + (game.musicWobble-1)*0.95;
     game.musicWobble *= 0.95;
 
-    if (game.region.music[game.musicPos].file.currentTime == game.region.music[game.musicPos].file.duration) startMusic();
+    if (game.currentMusic.file.currentTime == game.currentMusic.file.duration) startMusic();
     if (!game.musicSyncList.length) return;
     const item = game.musicSyncList[0];
 
-    if (!game.menu && game.region.music[game.musicPos].file.paused) {
+    if (!game.menu && game.currentMusic.file.paused) {
         if (game.pauseCounter > 100) {
             game.menu = "pause";
             return;
@@ -48,7 +50,7 @@ async function musicTick(noClear) {
         game.enemyAttackWarning = [];
     }
 
-    if (item[0] <= game.region.music[game.musicPos].file.currentTime) {
+    if (item[0] <= game.currentMusic.file.currentTime) {
         if (item[2]) {
             game.enemyAttackWarning.push(item[1]);
         } else {
@@ -64,11 +66,11 @@ async function musicTick(noClear) {
 }
 
 function restartMusic(input) {
-    ease(game.region.music[game.musicPos].file,"volume",0,1);
-    game.musicPos = input;
-    game.region.music[game.musicPos].file.volume = 0;
+    ease(game.currentMusic.file,"volume",0,1);
+    game.currentMusic = input;
+    input.file.volume = 0;
     setTimeout(() => {
-        ease(game.region.music[game.musicPos].file,"volume",game.audioVolume,1.5);
+        ease(input.file,"volume",game.audioVolume,1.5);
         startMusic();
     },1000);
 }

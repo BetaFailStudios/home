@@ -1,3 +1,5 @@
+// This file is Copyright (C) 2025 BetaFail Studios, all rights reserved.
+
 class Enemy {
     constructor(inputStats, override) {
         this.x = 0;
@@ -231,6 +233,8 @@ async function enemyTick() {
             return enemy.size;
         }
 
+        if (enemy.tick) enemy.tick(enemy);
+
         enemy.effects = enemy.effects.filter( (item) => {
             toReturnOrNotToReturn = true;
             if (item[2] <= 0) {
@@ -306,16 +310,19 @@ async function enemyTick() {
 
 function enemyDraw() {
     enemies.forEach((enemy,i) => {
+        let flipVert = false;
         let direction = enemy.actualDirection*enemy.rotateToTarget + (enemy.passiveRotation == true) * player.rotationTick*4;
         if (enemy.randomRotation) direction = Math.random()*Math.PI*2;
+        else if (enemy.passiveRotation) direction = -player.rotationTick;
+        else if (enemy.direction != "direction" && enemy.rotateToTarget && enemy.x > player.x) flipVert = true;
         if (enemy.ephemeral) ctx.globalAlpha = 0.6;
         if (enemy.projectile) {
             draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,false,false,false,false,false,"#ff0000cc");
         }
         else if (enemy.showHit > 0) {
-            draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,false,false,false,false,"#ccc");
+            draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,false,false,flipVert,false,"#ccc","#000");
             enemy.showHit--;
-        } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction);
+        } else draw(enemy.x, enemy.y, enemy.drawPath, enemy.size, direction,false,false,flipVert);
         if (enemy.ephemeral) ctx.globalAlpha = 1;
         if (enemy.spawning) {
             draw(enemy.x, enemy.y, game.enemySpawnPath, enemy.spawnSize, 0, enemy.spawning);
@@ -344,21 +351,43 @@ function enemyDraw() {
 }
 
 function spawnEnemies(num) {
+    const consecutiveEnemyIndexes = [];
     const enemyIndexes = game.region.enemies;
     for(var i = 0; i < (num || 1); i++) {
-        const id = enemyIndexes[Math.floor(Math.random()*enemyIndexes.length)]
+        let healthoverride;
+        let id = enemyIndexes[Math.floor(Math.random()*enemyIndexes.length)];
+        while (consecutiveEnemyIndexes[id] > 1+num/enemyIndexes.length) id = enemyIndexes[Math.floor(Math.random()*enemyIndexes.length)];
+        if (!consecutiveEnemyIndexes[id]) consecutiveEnemyIndexes[id] = 1;
+        else consecutiveEnemyIndexes[id]++;
+        if (game.region.name[0] == "Abstraction" && Math.random() < 0.3) {
+            const region = regions[Math.floor(Math.random()*3)][0].enemies;
+            id = region[Math.floor(Math.random()*region.length)];
+            healthoverride = 300/(enemyBlueprints[id].num || 1);
+        }
         const x = Math.random()*1600-800;
         const y = Math.random()*800-400;
         for (var b = 0; b < (enemyBlueprints[id].num || 1); b++) {
             const enemy = new Enemy(enemyBlueprints[id]);
-                enemy.x = x - enemy.size*3+ Math.random()*enemy.size*6;
-                enemy.y = y - enemy.size*3 + Math.random()*enemy.size*6;
-                enemies.push(enemy);
+            if (healthoverride) {
+                enemy.health = healthoverride;
+                enemy.healthMax = healthoverride;
             }
+            enemy.x = x - enemy.size*3+ Math.random()*enemy.size*6;
+            enemy.y = y - enemy.size*3 + Math.random()*enemy.size*6;
+            enemies.push(enemy);
         }
+    }
 }
 
 function drawBossName() {
+    if (game.region.name[0] == "Abstraction") {
+        let newString = [];
+        for(let i = 0; i < game.bossName[0].length; i++) {
+            if (Math.random() < 0.5) newString.push(game.bossName[0][i]);
+            else newString = [game.bossName[0][i],...newString];
+        }
+        game.bossName[0] = newString.join("");
+    }
     ctx.beginPath();
     ctx.fillStyle = game.bossName[1];
     ctx.strokeStyle = "#222";

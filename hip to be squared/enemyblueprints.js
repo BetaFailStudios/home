@@ -1,3 +1,5 @@
+// This file is Copyright (C) 2025 BetaFail Studios, all rights reserved.
+
 const enemyBlueprints = [
     { // 0 spear
         size: 60, health: 10, rotateToTarget: true, speed: 0.15, drawPath: pathParse(
@@ -7,7 +9,7 @@ const enemyBlueprints = [
         }, 
         a2(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista2,true,"stab",35,enemy.dirToTarget,enemyBlueprints[5],0.15) }
     },{ // 1 greatsword
-        size: 55, health: 11, rotateToTarget: true, speed: 0.1, drawPath: pathParse(
+        size: 55, health: 9, rotateToTarget: true, speed: 0.1, drawPath: pathParse(
             `[{"type":"point","x":-75,"y":-50},{"type":"point","x":200,"y":-50},{"type":"point","x":250,"y":0},{"type":"point","x":200,"y":50},{"type":"point","x":-75,"y":50},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-125,"y":-25},{"type":"point","x":-225,"y":-25},{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":25},{"type":"point","x":-125,"y":25},{"type":"fill","r":75,"g":50,"b":0},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-75,"y":100},{"type":"point","x":-100,"y":100},{"type":"point","x":-125,"y":75},{"type":"point","x":-125,"y":-75},{"type":"point","x":-100,"y":-100},{"type":"point","x":-75,"y":-100},{"type":"close"},{"type":"fill","r":75,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50}]`
         ),
         a2(enemy, warn) { enemyAttackDash(enemy,warn,enemy.attackLista2,enemy.dirToTarget,4,0.1,false,25) },
@@ -17,7 +19,7 @@ const enemyBlueprints = [
             `[{"type":"point","x":125,"y":-50},{"type":"point","x":125,"y":50},{"type":"point","x":100,"y":125},{"type":"point","x":50,"y":200},{"type":"point","x":0,"y":175},{"type":"point","x":50,"y":100},{"type":"point","x":75,"y":0},{"type":"point","x":50,"y":-100},{"type":"point","x":0,"y":-175},{"type":"point","x":50,"y":-200},{"type":"point","x":100,"y":-125},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40}]`
         )
     },{ // 3 scythe
-        size: 55, health: 9, rotateToTarget: true, speed: -0.05, target: "player", drawPath: pathParse(
+        size: 55, health: 8, rotateToTarget: true, speed: -0.05, target: "player", drawPath: pathParse(
             `[{"type":"point","x":-200,"y":175,"move":false},{"type":"point","x":-175,"y":200,"move":false},{"type":"point","x":200,"y":-175,"move":false},{"type":"point","x":175,"y":-200,"move":false},{"type":"close"},{"type":"fill","r":75,"g":50,"b":0},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":125,"y":-200,"move":false},{"type":"point","x":200,"y":-125,"move":false},{"type":"point","x":225,"y":-50,"move":false},{"type":"point","x":225,"y":25,"move":false},{"type":"point","x":200,"y":75,"move":false},{"type":"point","x":175,"y":-50,"move":false},{"type":"point","x":150,"y":-100,"move":false},{"type":"point","x":100,"y":-150,"move":false},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), a1(enemy, warn) {
             if (!warn) {
@@ -51,9 +53,10 @@ const enemyBlueprints = [
             `[{"type":"point","x":250,"y":0},{"type":"point","x":175,"y":-50},{"type":"point","x":-250,"y":0},{"type":"point","x":175,"y":50},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40},{"type":"point","x":250,"y":0},{"type":"point","x":125,"y":-125},{"type":"point","x":175,"y":0},{"type":"point","x":125,"y":125},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40}]`
         )
     },{ // 8 --- Ephemeral Zweihänder
-        size: 125, health: 600, boss: ["Ephemeral Zweihander", "#5cf", 1], rotateToTarget: true, speed: 0.05, target: "playerAdvanced", ephemeral: true, drawPath: pathParse(
+        size: 125, health: 450, boss: ["Ephemeral Zweihander", "#5cf", 1], rotateToTarget: true, speed: 0.05, target: "playerAdvanced", ephemeral: true, drawPath: pathParse(
             `[{"type":"point","x":-150,"y":-12.5},{"type":"point","x":-75,"y":-12.5},{"type":"point","x":-62.5,"y":-62.5},{"type":"point","x":-50,"y":-75},{"type":"point","x":-50,"y":-62.5},{"type":"point","x":-62.5,"y":-12.5},{"type":"point","x":250,"y":-12.5},{"type":"point","x":300,"y":0},{"type":"point","x":250,"y":12.5},{"type":"point","x":-62.5,"y":12.5},{"type":"point","x":-50,"y":62.5},{"type":"point","x":-50,"y":75},{"type":"point","x":-62.5,"y":62.5},{"type":"point","x":-75,"y":12.5},{"type":"point","x":-150,"y":12.5},{"type":"fill","r":175,"g":235,"b":230},{"type":"stroke","r":50,"g":80,"b":85},{"type":"point","x":-175,"y":-12.5},{"type":"point","x":-275,"y":-12.5},{"type":"point","x":-275,"y":12.5},{"type":"point","x":-175,"y":12.5},{"type":"fill","r":75,"g":105,"b":105},{"type":"stroke","r":85,"g":175,"b":165},{"type":"point","x":-150,"y":-75},{"type":"point","x":-150,"y":75},{"type":"point","x":-137.5,"y":112.5},{"type":"point","x":-162.5,"y":100},{"type":"point","x":-175,"y":50},{"type":"point","x":-175,"y":-50},{"type":"point","x":-162.5,"y":-100},{"type":"point","x":-137.5,"y":-112.5},{"type":"close"},{"type":"point","x":-250,"y":0,"move":true},{"type":"point","x":-275,"y":-25,"move":false},{"type":"point","x":-300,"y":0,"move":false},{"type":"point","x":-275,"y":25,"move":false},{"type":"close"},{"type":"fill","r":100,"g":145,"b":150},{"type":"stroke","r":50,"g":130,"b":130}]`
-        ), a1(enemy, warn) { // wall explosion
+        ), tetraSummons: [[55,-300,0,500],[55,300,0,500]],
+        a1(enemy, warn) { // wall explosion
             if (warn) {
                 const pos = [-800+Math.random()*1600,-450 + 900*(Math.random() < 0.5)]
                 enemy.attackLista1.push(pos);
@@ -165,7 +168,7 @@ const enemyBlueprints = [
             `[{"type":"point","x":-125,"y":-125},{"type":"point","x":0,"y":-175},{"type":"point","x":125,"y":-125},{"type":"point","x":175,"y":0},{"type":"point","x":125,"y":125},{"type":"point","x":0,"y":175},{"type":"point","x":-125,"y":125},{"type":"point","x":-100,"y":175},{"type":"point","x":0,"y":225},{"type":"point","x":100,"y":225},{"type":"point","x":200,"y":175},{"type":"point","x":250,"y":75},{"type":"point","x":262.5,"y":0},{"type":"point","x":250,"y":-75},{"type":"point","x":200,"y":-175},{"type":"point","x":100,"y":-225},{"type":"point","x":0,"y":-225},{"type":"point","x":-100,"y":-175},{"type":"close"},{"type":"fill","r":200,"g":75,"b":75},{"type":"stroke","r":80,"g":40,"b":40}]`
         )
     },{ // 15 --- Morning Star
-        size: 125, health: 550, boss: ["Morning Star", "#cc5", 2], rotateToTarget: true, speed: 0.05, target: "player", drawPath: pathParse(
+        size: 125, health: 400, boss: ["Morning Star", "#cc5", 2], rotateToTarget: true, speed: 0.05, target: "player", drawPath: pathParse(
             `[{"type":"point","x":-250,"y":-12.5},{"type":"point","x":150,"y":-12.5},{"type":"point","x":150,"y":12.5},{"type":"point","x":-250,"y":12.5},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-225,"y":-25},{"type":"point","x":-225,"y":25},{"type":"point","x":-100,"y":25},{"type":"point","x":-100,"y":-25},{"type":"close"},{"type":"fill","r":75,"g":50,"b":0},{"type":"stroke","r":50,"g":25,"b":0},{"type":"point","x":137.5,"y":-12.5,"move":false},{"type":"point","x":150,"y":-37.5,"move":false},{"type":"point","x":175,"y":-50,"move":false},{"type":"point","x":200,"y":-50,"move":false},{"type":"point","x":225,"y":-37.5,"move":false},{"type":"point","x":237.5,"y":-12.5,"move":false},{"type":"point","x":237.5,"y":12.5,"move":false},{"type":"point","x":225,"y":37.5,"move":false},{"type":"point","x":200,"y":50,"move":false},{"type":"point","x":175,"y":50,"move":false},{"type":"point","x":150,"y":37.5,"move":false},{"type":"point","x":137.5,"y":12.5,"move":false},{"type":"close"},{"type":"point","x":112.5,"y":-37.5,"move":false},{"type":"point","x":150,"y":-37.5,"move":false},{"type":"point","x":150,"y":-75,"move":false},{"type":"point","x":175,"y":-50,"move":false},{"type":"point","x":187.5,"y":-87.5,"move":false},{"type":"point","x":200,"y":-50,"move":false},{"type":"point","x":225,"y":-75,"move":false},{"type":"point","x":225,"y":-37.5,"move":false},{"type":"point","x":262.5,"y":-37.5,"move":false},{"type":"point","x":237.5,"y":-12.5,"move":false},{"type":"point","x":275,"y":0,"move":false},{"type":"point","x":237.5,"y":12.5,"move":false},{"type":"point","x":262.5,"y":37.5,"move":false},{"type":"point","x":225,"y":37.5,"move":false},{"type":"point","x":225,"y":75,"move":false},{"type":"point","x":200,"y":50,"move":false},{"type":"point","x":187.5,"y":87.5,"move":false},{"type":"point","x":175,"y":50,"move":false},{"type":"point","x":150,"y":75,"move":false},{"type":"point","x":150,"y":37.5,"move":false},{"type":"point","x":112.5,"y":37.5,"move":false},{"type":"point","x":137.5,"y":12.5,"move":false},{"type":"fill","r":150,"g":150,"b":150},{"type":"stroke","r":75,"g":75,"b":75}]`
         ), a1(enemy, warn) { // spike explosion
             if (warn) {
@@ -303,13 +306,13 @@ const enemyBlueprints = [
             `[{"type":"point","x":-250,"y":-250},{"type":"point","x":250,"y":-25},{"type":"point","x":-250,"y":250},{"type":"close"},{"type":"fill","r":150,"g":150,"b":150},{"type":"stroke","r":75,"g":75,"b":75}]`
         )
     },{ // 19 microchip
-        size: 35, health: 65, target: "playerAdvanced", rotateToTarget: true, speed: -0.05, drawPath: pathParse(
+        size: 35, health: 30, target: "playerAdvanced", rotateToTarget: true, speed: -0.05, drawPath: pathParse(
             `[{"type":"point","x":-225,"y":-125},{"type":"point","x":225,"y":-125},{"type":"point","x":250,"y":-100},{"type":"point","x":250,"y":100},{"type":"point","x":225,"y":125},{"type":"point","x":-225,"y":125},{"type":"point","x":-250,"y":100},{"type":"point","x":-250,"y":-100},{"type":"close"},{"type":"fill","r":25,"g":25,"b":25},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-200,"y":-125},{"type":"point","x":-200,"y":-175},{"type":"point","x":-250,"y":-200},{"type":"point","x":-150,"y":-125,"move":true},{"type":"point","x":-150,"y":-175,"move":false},{"type":"point","x":-200,"y":-200,"move":false},{"type":"point","x":-100,"y":-125,"move":true},{"type":"point","x":-100,"y":-175,"move":false},{"type":"point","x":-150,"y":-200,"move":false},{"type":"point","x":-50,"y":-125,"move":true},{"type":"point","x":-50,"y":-175,"move":false},{"type":"point","x":-100,"y":-200,"move":false},{"type":"point","x":0,"y":-125,"move":true},{"type":"point","x":0,"y":-175,"move":false},{"type":"point","x":-50,"y":-200,"move":false},{"type":"point","x":50,"y":-125,"move":true},{"type":"point","x":50,"y":-175,"move":false},{"type":"point","x":0,"y":-200,"move":false},{"type":"point","x":100,"y":-125,"move":true},{"type":"point","x":100,"y":-175,"move":false},{"type":"point","x":50,"y":-200,"move":false},{"type":"point","x":150,"y":-125,"move":true},{"type":"point","x":150,"y":-175,"move":false},{"type":"point","x":100,"y":-200,"move":false},{"type":"point","x":200,"y":-125,"move":true},{"type":"point","x":200,"y":-175,"move":false},{"type":"point","x":150,"y":-200,"move":false},{"type":"point","x":-200,"y":125,"move":true},{"type":"point","x":-200,"y":175,"move":false},{"type":"point","x":-250,"y":200,"move":false},{"type":"point","x":-150,"y":125,"move":true},{"type":"point","x":-150,"y":175,"move":false},{"type":"point","x":-200,"y":200,"move":false},{"type":"point","x":-100,"y":125,"move":true},{"type":"point","x":-100,"y":175,"move":false},{"type":"point","x":-150,"y":200,"move":false},{"type":"point","x":-50,"y":125,"move":true},{"type":"point","x":-50,"y":175,"move":false},{"type":"point","x":-100,"y":200,"move":false},{"type":"point","x":0,"y":125,"move":true},{"type":"point","x":0,"y":175,"move":false},{"type":"point","x":-50,"y":200,"move":false},{"type":"point","x":50,"y":125,"move":true},{"type":"point","x":50,"y":175,"move":false},{"type":"point","x":0,"y":200,"move":false},{"type":"point","x":100,"y":125,"move":true},{"type":"point","x":100,"y":175,"move":false},{"type":"point","x":50,"y":200,"move":false},{"type":"point","x":150,"y":125,"move":true},{"type":"point","x":150,"y":175,"move":false},{"type":"point","x":100,"y":200,"move":false},{"type":"point","x":200,"y":125,"move":true},{"type":"point","x":200,"y":175,"move":false},{"type":"point","x":150,"y":200,"move":false},{"type":"stroke","r":125,"g":125,"b":0}]`
         ),
-        a2(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista2,true,false,65,enemy.dirToTarget,enemyBlueprints[20],-0.05) },
+        a2(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista2,true,false,60,enemy.dirToTarget,enemyBlueprints[20],-0.05) },
         a3(enemy, warn) { enemyAttackTeleport(enemy,warn,enemy.attackLista3,35,player.x - 50 + 100 * Math.random(),player.y - 50 + 100 * Math.random()) }
     },{ // 20 chip pin
-        size: 30, health: 1, projectile: true, rotateToTarget: true, immovable: true, speed: 5, target: "direction", drawPath: pathParse(
+        size: 60, health: 1, projectile: true, rotateToTarget: true, immovable: true, speed: 5, target: "direction", drawPath: pathParse(
             `[{"type":"point","x":-250,"y":-25,"move":false},{"type":"point","x":200,"y":-25,"move":false},{"type":"point","x":250,"y":0,"move":false},{"type":"point","x":200,"y":25,"move":false},{"type":"point","x":-250,"y":25,"move":false},{"type":"fill","r":125,"g":125,"b":0},{"type":"stroke","r":50,"g":50,"b":0}]`
         )
     },{ // 21 Binary
@@ -334,7 +337,7 @@ const enemyBlueprints = [
             }
         }
     },{ // 22 capacitor
-        size: 50, health: 65, rotateToTarget: true, speed: 0.1, drawPath: pathParse(
+        size: 50, health: 35, rotateToTarget: true, speed: 0.1, drawPath: pathParse(
             `[{"type":"point","x":-150,"y":-150},{"type":"point","x":225,"y":-150},{"type":"point","x":250,"y":-125},{"type":"point","x":275,"y":-25},{"type":"point","x":275,"y":25},{"type":"point","x":250,"y":125},{"type":"point","x":225,"y":150},{"type":"point","x":-150,"y":150},{"type":"point","x":-125,"y":125},{"type":"point","x":-100,"y":25},{"type":"point","x":-100,"y":-25},{"type":"point","x":-125,"y":-125},{"type":"close"},{"type":"fill","r":15,"g":130,"b":180},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-150,"y":-150},{"type":"point","x":-125,"y":-125},{"type":"point","x":-100,"y":-25},{"type":"point","x":-100,"y":25},{"type":"point","x":-125,"y":125},{"type":"point","x":-150,"y":150},{"type":"point","x":-175,"y":125},{"type":"point","x":-200,"y":25},{"type":"point","x":-200,"y":-25},{"type":"point","x":-175,"y":-125},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"point","x":-150,"y":-100,"move":true},{"type":"point","x":-275,"y":-100,"move":false},{"type":"point","x":-300,"y":-112.5,"move":false},{"type":"point","x":-150,"y":100,"move":true},{"type":"point","x":-287.5,"y":100,"move":false},{"type":"point","x":-300,"y":125,"move":false},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), a2(enemy, warn) {
             if (warn) {
@@ -350,7 +353,7 @@ const enemyBlueprints = [
         },
         a3(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista3,true,"rect",250,enemy.dirToTarget,enemyBlueprints[9],0.1,1) }
     },{ // 23 CD
-        size: 85, health: 70, rotateToTarget: false, speed: 0.2, drawPath: pathParse(
+        size: 85, health: 35, rotateToTarget: false, speed: 0.2, drawPath: pathParse(
             `[{"type":"point","x":0,"y":-75},{"type":"point","x":50,"y":-50},{"type":"point","x":75,"y":0},{"type":"point","x":50,"y":50},{"type":"point","x":0,"y":75},{"type":"point","x":-50,"y":50},{"type":"point","x":-75,"y":0},{"type":"point","x":-50,"y":-50},{"type":"close"},{"type":"point","x":0,"y":-225,"move":true},{"type":"point","x":-100,"y":-200,"move":false},{"type":"point","x":-162.5,"y":-162.5,"move":false},{"type":"point","x":-200,"y":-100,"move":false},{"type":"point","x":-225,"y":0,"move":false},{"type":"point","x":-200,"y":100,"move":false},{"type":"point","x":-162.5,"y":162.5,"move":false},{"type":"point","x":-100,"y":200,"move":false},{"type":"point","x":0,"y":225,"move":false},{"type":"point","x":100,"y":200,"move":false},{"type":"point","x":162.5,"y":162.5,"move":false},{"type":"point","x":200,"y":100,"move":false},{"type":"point","x":225,"y":0,"move":false},{"type":"point","x":200,"y":-100,"move":false},{"type":"point","x":162.5,"y":-162.5,"move":false},{"type":"point","x":100,"y":-200,"move":false},{"type":"close"},{"type":"fill","r":150,"g":150,"b":150},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":0,"y":-225,"move":false},{"type":"point","x":225,"y":0,"move":false},{"type":"point","x":200,"y":-100,"move":false},{"type":"point","x":100,"y":-200,"move":false},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"point","x":-212.5,"y":-50,"move":true},{"type":"point","x":50,"y":212.5,"move":false},{"type":"point","x":0,"y":225,"move":false},{"type":"point","x":-225,"y":0,"move":false},{"type":"close"},{"type":"fill","r":150,"g":175,"b":175}]`
         ), a3(enemy, warn) {
             if (warn) {
@@ -368,14 +371,14 @@ const enemyBlueprints = [
             }
         }
     },{ // 24 Ram
-        size: 85, health: 65, rotateToTarget: true, speed: 0.2, drawPath: pathParse(
+        size: 85, health: 30, rotateToTarget: true, speed: 0.2, drawPath: pathParse(
             `[{"type":"point","x":-100,"y":-250},{"type":"point","x":-100,"y":250},{"type":"point","x":87.5,"y":250},{"type":"point","x":87.5,"y":-250},{"type":"close"},{"type":"fill","r":0,"g":60,"b":0},{"type":"stroke","r":0,"g":35,"b":0},{"type":"point","x":87.5,"y":-237.5},{"type":"point","x":100,"y":-237.5},{"type":"point","x":100,"y":87.5},{"type":"point","x":87.5,"y":87.5},{"type":"point","x":87.5,"y":112.5,"move":true},{"type":"point","x":100,"y":112.5,"move":false},{"type":"point","x":100,"y":237.5,"move":false},{"type":"point","x":87.5,"y":237.5,"move":false},{"type":"fill","r":175,"g":175,"b":50},{"type":"stroke","r":110,"g":110,"b":50},{"type":"point","x":-75,"y":-225,"move":false},{"type":"point","x":62.5,"y":-225,"move":false},{"type":"point","x":62.5,"y":-87.5,"move":false},{"type":"point","x":-75,"y":-87.5,"move":false},{"type":"close"},{"type":"point","x":-75,"y":0,"move":true},{"type":"point","x":62.5,"y":0,"move":false},{"type":"point","x":62.5,"y":137.5,"move":false},{"type":"point","x":-75,"y":137.5,"move":false},{"type":"close"},{"type":"fill","r":25,"g":25,"b":25},{"type":"stroke","r":50,"g":50,"b":50}]`
         ), a1(enemy, warn) {
             enemiesBuffer.push(new Enemy(enemyBlueprints[20], {noProjPierce: true, speed: 0.3,size: 30,x: enemy.x-50+100*Math.random(), y: enemy.y-50+100*Math.random(), dirToTarget: enemy.dirToTarget}));
         },
         a3(enemy, warn) { enemyAttackDash(enemy,warn,enemy.attackLista3,enemy.dirToTarget,4,0.2,false,25,"rect",85) }
     },{ // 25 SSD
-        size: 80, health: 70, rotateToTarget: true, speed: 0.2, target: "playeradvanced", drawPath: pathParse(
+        size: 80, health: 30, rotateToTarget: true, speed: 0.2, target: "playeradvanced", drawPath: pathParse(
             `[{"type":"point","x":-237.5,"y":-100},{"type":"point","x":237.5,"y":-100},{"type":"point","x":237.5,"y":100},{"type":"point","x":-237.5,"y":100},{"type":"close"},{"type":"fill","r":0,"g":50,"b":0},{"type":"stroke","r":0,"g":25,"b":0},{"type":"point","x":-212.5,"y":-75},{"type":"point","x":212.5,"y":-75},{"type":"point","x":212.5,"y":75},{"type":"point","x":-212.5,"y":75},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":100,"g":100,"b":100},{"type":"point","x":-237.5,"y":-75},{"type":"point","x":-250,"y":-75},{"type":"point","x":-250,"y":25},{"type":"point","x":-237.5,"y":25},{"type":"point","x":-237.5,"y":37.5,"move":true},{"type":"point","x":-250,"y":37.5,"move":false},{"type":"point","x":-250,"y":87.5,"move":false},{"type":"point","x":-237.5,"y":87.5,"move":false},{"type":"point","x":237.5,"y":-87.5,"move":true},{"type":"point","x":250,"y":-87.5,"move":false},{"type":"point","x":250,"y":-25,"move":false},{"type":"point","x":237.5,"y":-25,"move":false},{"type":"point","x":237.5,"y":-12.5,"move":true},{"type":"point","x":250,"y":-12.5,"move":false},{"type":"point","x":250,"y":87.5,"move":false},{"type":"point","x":237.5,"y":87.5,"move":false},{"type":"fill","r":175,"g":175,"b":50},{"type":"stroke","r":50,"g":50,"b":0}]`
         ), a2(enemy, warn) {
             if (warn) {
@@ -388,9 +391,9 @@ const enemyBlueprints = [
         },
         a3(enemy, warn) { enemyAttackDash(enemy,warn,enemy.attackLista3,enemy.dirToTarget,4,0.2,true,25,"rect",50) }
     },{ // 26 --- Central Processing Unit
-        size: 75, health: 2250, boss: ["Central Processing Unit", "#292", 1], spawnPosition: [0,-300],rotateToTarget: false, speed: 0, immovable: true, drawPath: pathParse(
+        size: 75, health: 1500, boss: ["Central Processing Unit", "#292", 1], spawnPosition: [0,-300],rotateToTarget: false, speed: 0, immovable: true, drawPath: pathParse(
             `[{"type":"point","x":-150,"y":-175},{"type":"point","x":-150,"y":175},{"type":"point","x":150,"y":175},{"type":"point","x":150,"y":-175},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"point","x":-125,"y":-150,"move":true},{"type":"point","x":87.5,"y":-150,"move":false},{"type":"point","x":-125,"y":-125,"move":true},{"type":"point","x":50,"y":-125,"move":false},{"type":"point","x":-100,"y":-50,"move":true},{"type":"point","x":25,"y":-50,"move":false},{"type":"point","x":-75,"y":-25,"move":true},{"type":"point","x":75,"y":-25,"move":false},{"type":"point","x":-100,"y":75,"move":true},{"type":"point","x":112.5,"y":75,"move":false},{"type":"point","x":-25,"y":100,"move":true},{"type":"point","x":100,"y":100,"move":false},{"type":"stroke","r":150,"g":150,"b":150},{"type":"point","x":-175,"y":-175,"move":false},{"type":"point","x":-150,"y":-200,"move":false},{"type":"point","x":150,"y":-200,"move":false},{"type":"point","x":175,"y":-175,"move":false},{"type":"point","x":175,"y":175,"move":false},{"type":"point","x":150,"y":200,"move":false},{"type":"point","x":-150,"y":200,"move":false},{"type":"point","x":-175,"y":175,"move":false},{"type":"close"},{"type":"point","x":-150,"y":-175,"move":true},{"type":"point","x":-150,"y":175,"move":false},{"type":"point","x":150,"y":175,"move":false},{"type":"point","x":150,"y":-175,"move":false},{"type":"close"},{"type":"fill","r":0,"g":100,"b":0},{"type":"stroke","r":25,"g":50,"b":25},{"type":"point","x":-175,"y":100,"move":false},{"type":"point","x":-250,"y":100,"move":false},{"type":"point","x":-175,"y":25,"move":true},{"type":"point","x":-212.5,"y":25,"move":false},{"type":"point","x":-162.5,"y":-87.5,"move":true},{"type":"point","x":-225,"y":-87.5,"move":false},{"type":"point","x":-250,"y":-112.5,"move":false},{"type":"point","x":-162.5,"y":-162.5,"move":true},{"type":"point","x":-212.5,"y":-162.5,"move":false},{"type":"point","x":-150,"y":-187.5,"move":true},{"type":"point","x":-200,"y":-237.5,"move":false},{"type":"point","x":-225,"y":-237.5,"move":false},{"type":"point","x":-112.5,"y":-187.5,"move":true},{"type":"point","x":-112.5,"y":-250,"move":false},{"type":"point","x":-50,"y":-200,"move":true},{"type":"point","x":-50,"y":-237.5,"move":false},{"type":"point","x":-25,"y":-262.5,"move":false},{"type":"point","x":0,"y":-187.5,"move":true},{"type":"point","x":0,"y":-250,"move":false},{"type":"point","x":87.5,"y":-187.5,"move":true},{"type":"point","x":87.5,"y":-237.5,"move":false},{"type":"point","x":50,"y":-275,"move":false},{"type":"point","x":125,"y":-187.5,"move":true},{"type":"point","x":125,"y":-225,"move":false},{"type":"point","x":150,"y":-250,"move":false},{"type":"point","x":150,"y":-175,"move":true},{"type":"point","x":212.5,"y":-237.5,"move":false},{"type":"point","x":237.5,"y":-237.5,"move":false},{"type":"point","x":162.5,"y":-137.5,"move":true},{"type":"point","x":200,"y":-175,"move":false},{"type":"point","x":225,"y":-175,"move":false},{"type":"point","x":162.5,"y":-100,"move":true},{"type":"point","x":237.5,"y":-100,"move":false},{"type":"point","x":175,"y":-37.5,"move":true},{"type":"point","x":225,"y":-37.5,"move":false},{"type":"point","x":237.5,"y":-25,"move":false},{"type":"point","x":162.5,"y":62.5,"move":true},{"type":"point","x":225,"y":62.5,"move":false},{"type":"point","x":175,"y":12.5,"move":true},{"type":"point","x":200,"y":12.5,"move":false},{"type":"point","x":162.5,"y":162.5,"move":true},{"type":"point","x":225,"y":162.5,"move":false},{"type":"point","x":250,"y":187.5,"move":false},{"type":"point","x":175,"y":125,"move":true},{"type":"point","x":212.5,"y":125,"move":false},{"type":"point","x":250,"y":87.5,"move":false},{"type":"point","x":150,"y":175,"move":true},{"type":"point","x":200,"y":237.5,"move":false},{"type":"point","x":237.5,"y":237.5,"move":false},{"type":"point","x":112.5,"y":175,"move":true},{"type":"point","x":150,"y":212.5,"move":false},{"type":"point","x":25,"y":187.5,"move":true},{"type":"point","x":25,"y":250,"move":false},{"type":"point","x":87.5,"y":187.5,"move":true},{"type":"point","x":87.5,"y":225,"move":false},{"type":"point","x":-50,"y":200,"move":true},{"type":"point","x":-50,"y":225,"move":false},{"type":"point","x":-75,"y":250,"move":false},{"type":"point","x":-125,"y":187.5,"move":true},{"type":"point","x":-125,"y":250,"move":false},{"type":"point","x":-162.5,"y":175,"move":true},{"type":"point","x":-200,"y":225,"move":false},{"type":"point","x":-250,"y":225,"move":false},{"type":"stroke","r":0,"g":75,"b":0}]`
-        ), a1(enemy, warn) {
+        ), tetraSummons: [[19,-600,-300,250],[19,-300,-300,250],[19,300,-300,250],[19,600,-300,250]], a1(enemy, warn) {
             if (warn) {
                 const things = [];
                 for (var i = 0; i < 3; i++) {
@@ -502,7 +505,7 @@ const enemyBlueprints = [
                 enemy.attackLista9.push(pos);
                 attackWarnings.push(["circle",game.warnDelay,game.warnDelay,pos[0], pos[1],100]);
             } else {
-                enemiesBuffer.push(new Enemy(enemyBlueprints[19],{ a3: undefined, health: 5, noSpawning: true, x: enemy.attackLista9[0][0], y: enemy.attackLista9[0][1]}));
+                enemiesBuffer.push(new Enemy(enemyBlueprints[19],{ a3: undefined, health: 10, noSpawning: true, x: enemy.attackLista9[0][0], y: enemy.attackLista9[0][1]}));
                 enemy.attackLista9.splice(0,1);
             }
         }
@@ -529,7 +532,7 @@ const enemyBlueprints = [
             }
         }
     },{ // 29 tiny gold shard
-        size: 35, health: 25, num: 3, rotateToTarget: true, speed: 0.1, drawPath: pathParse(
+        size: 35, health: 10, num: 3, rotateToTarget: true, speed: 0.1, drawPath: pathParse(
             `[{"type":"point","x":0,"y":-75},{"type":"point","x":-250,"y":0},{"type":"point","x":0,"y":75},{"type":"point","x":250,"y":0},{"type":"close"},{"type":"fill","r":255,"g":255,"b":0},{"type":"stroke","r":50,"g":50,"b":0}]`
         ), a2(enemy, warn) {
             if (warn) {
@@ -547,7 +550,7 @@ const enemyBlueprints = [
             }
         }
     },{ // 30 white cell
-        size: 85, health: 170, num: 1, rotateToTarget: false, randomRotation: true, speed: 0.03, drawPath: pathParse(
+        size: 85, health: 100, num: 1, rotateToTarget: false, randomRotation: true, speed: 0.03, drawPath: pathParse(
             `[{"type":"point","x":-50,"y":-250},{"type":"point","x":-150,"y":-225},{"type":"point","x":-225,"y":-150},{"type":"point","x":-250,"y":-50},{"type":"point","x":-250,"y":50},{"type":"point","x":-225,"y":150},{"type":"point","x":-150,"y":225},{"type":"point","x":-50,"y":250},{"type":"point","x":50,"y":250},{"type":"point","x":150,"y":225},{"type":"point","x":225,"y":150},{"type":"point","x":250,"y":50},{"type":"point","x":250,"y":-50},{"type":"point","x":225,"y":-150},{"type":"point","x":150,"y":-225},{"type":"point","x":50,"y":-250},{"type":"close"},{"type":"fill","r":150,"g":150,"b":160},{"type":"stroke","r":80,"g":80,"b":80},{"type":"point","x":-25,"y":-125},{"type":"point","x":-100,"y":-100},{"type":"point","x":-125,"y":-25},{"type":"point","x":-125,"y":25},{"type":"point","x":-100,"y":100},{"type":"point","x":-25,"y":125},{"type":"point","x":25,"y":125},{"type":"point","x":100,"y":100},{"type":"point","x":125,"y":25},{"type":"point","x":125,"y":-25},{"type":"point","x":100,"y":-100},{"type":"point","x":25,"y":-125},{"type":"close"},{"type":"fill","r":150,"g":195,"b":210},{"type":"stroke","r":75,"g":125,"b":125}]`
         ), a1(enemy, warn) {
             if (!warn) for (var i = 0; i < 3; i++) enemiesBuffer.push(new Enemy(enemyBlueprints[31], {noProjPierce: true, x: enemy.x + Math.random()*70-35, y: enemy.y + Math.random()*70-35, dirToTarget: Math.random()*Math.PI*2, size: 15, speed: 0.3}));
@@ -573,7 +576,7 @@ const enemyBlueprints = [
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":-187.5,"y":-187.5},{"type":"point","x":-300,"y":0},{"type":"point","x":-187.5,"y":187.5},{"type":"point","x":0,"y":250},{"type":"point","x":187.5,"y":187.5},{"type":"point","x":250,"y":0},{"type":"point","x":187.5,"y":-187.5},{"type":"close"},{"type":"fill","r":150,"g":160,"b":160},{"type":"stroke","r":100,"g":110,"b":110}]`
         )
     },{ // 32 green bacteria
-        size: 50, health: 80, num: 2, rotateToTarget: true, randomRotation: false, speed: -0.05, drawPath: pathParse(
+        size: 50, health: 60, num: 2, rotateToTarget: true, randomRotation: false, speed: -0.05, drawPath: pathParse(
             `[{"type":"point","x":-175,"y":-125},{"type":"point","x":200,"y":-125},{"type":"point","x":250,"y":-100},{"type":"point","x":287.5,"y":-50},{"type":"point","x":300,"y":0},{"type":"point","x":287.5,"y":50},{"type":"point","x":250,"y":100},{"type":"point","x":200,"y":125},{"type":"point","x":-175,"y":125},{"type":"point","x":-200,"y":100},{"type":"point","x":-225,"y":25},{"type":"point","x":-225,"y":-25},{"type":"point","x":-200,"y":-100},{"type":"close"},{"type":"fill","r":50,"g":150,"b":50},{"type":"stroke","r":0,"g":50,"b":0},{"type":"point","x":-225,"y":-12.5,"move":false},{"type":"point","x":-250,"y":-50,"move":false},{"type":"point","x":-275,"y":-62.5,"move":false},{"type":"point","x":-300,"y":-50,"move":false},{"type":"point","x":-300,"y":-25,"move":false},{"type":"point","x":-275,"y":37.5,"move":false},{"type":"point","x":-250,"y":62.5,"move":false},{"type":"point","x":-275,"y":-25,"move":false},{"type":"point","x":-262.5,"y":-25,"move":false},{"type":"point","x":-225,"y":12.5,"move":false},{"type":"fill","r":0,"g":150,"b":0},{"type":"stroke","r":0,"g":50,"b":0},{"type":"point","x":-150,"y":-75,"move":false},{"type":"point","x":-175,"y":0,"move":false},{"type":"point","x":-150,"y":75,"move":false},{"type":"point","x":175,"y":75,"move":false},{"type":"point","x":225,"y":50,"move":false},{"type":"point","x":250,"y":0,"move":false},{"type":"point","x":225,"y":-50,"move":false},{"type":"point","x":175,"y":-75,"move":false},{"type":"close"},{"type":"fill","r":50,"g":255,"b":50},{"type":"stroke","r":50,"g":200,"b":50}]`
         ),
         a2(enemy, warn) {
@@ -602,7 +605,7 @@ const enemyBlueprints = [
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":-187.5,"y":-187.5},{"type":"point","x":-300,"y":0},{"type":"point","x":-187.5,"y":187.5},{"type":"point","x":0,"y":250},{"type":"point","x":187.5,"y":187.5},{"type":"point","x":250,"y":0},{"type":"point","x":187.5,"y":-187.5},{"type":"close"},{"type":"fill","r":0,"g":200,"b":0},{"type":"stroke","r":0,"g":75,"b":0}]`
         )
     },{ // 34 blue cell
-        size: 35, health: 50, num: 3, rotateToTarget: false, randomRotation: true, speed: 0.05, drawPath: pathParse(
+        size: 35, health: 40, num: 3, rotateToTarget: false, randomRotation: true, speed: 0.05, drawPath: pathParse(
             `[{"type":"point","x":-50,"y":-250},{"type":"point","x":-150,"y":-225},{"type":"point","x":-225,"y":-150},{"type":"point","x":-250,"y":-50},{"type":"point","x":-250,"y":50},{"type":"point","x":-225,"y":150},{"type":"point","x":-150,"y":225},{"type":"point","x":-50,"y":250},{"type":"point","x":50,"y":250},{"type":"point","x":150,"y":225},{"type":"point","x":225,"y":150},{"type":"point","x":250,"y":50},{"type":"point","x":250,"y":-50},{"type":"point","x":225,"y":-150},{"type":"point","x":150,"y":-225},{"type":"point","x":50,"y":-250},{"type":"close"},{"type":"fill","r":110,"g":125,"b":200},{"type":"stroke","r":80,"g":80,"b":80},{"type":"point","x":-25,"y":-125},{"type":"point","x":-100,"y":-100},{"type":"point","x":-125,"y":-25},{"type":"point","x":-125,"y":25},{"type":"point","x":-100,"y":100},{"type":"point","x":-25,"y":125},{"type":"point","x":25,"y":125},{"type":"point","x":100,"y":100},{"type":"point","x":125,"y":25},{"type":"point","x":125,"y":-25},{"type":"point","x":100,"y":-100},{"type":"point","x":25,"y":-125},{"type":"close"},{"type":"fill","r":125,"g":150,"b":150},{"type":"stroke","r":75,"g":100,"b":125}]`
         ), 
         a2(enemy, warn) {
@@ -631,7 +634,7 @@ const enemyBlueprints = [
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":-187.5,"y":-187.5},{"type":"point","x":-300,"y":0},{"type":"point","x":-187.5,"y":187.5},{"type":"point","x":0,"y":250},{"type":"point","x":187.5,"y":187.5},{"type":"point","x":250,"y":0},{"type":"point","x":187.5,"y":-187.5},{"type":"close"},{"type":"fill","r":100,"g":135,"b":200},{"type":"stroke","r":50,"g":60,"b":110}]`
         )
     },{ // 36 cross white cell
-        size: 35, health: 80, num: 2, rotateToTarget: false, randomRotation: true, speed: 0.05, drawPath: pathParse(
+        size: 35, health: 60, num: 2, rotateToTarget: false, randomRotation: true, speed: 0.05, drawPath: pathParse(
             `[{"type":"point","x":-50,"y":-250},{"type":"point","x":-150,"y":-225},{"type":"point","x":-225,"y":-150},{"type":"point","x":-250,"y":-50},{"type":"point","x":-250,"y":50},{"type":"point","x":-225,"y":150},{"type":"point","x":-150,"y":225},{"type":"point","x":-50,"y":250},{"type":"point","x":50,"y":250},{"type":"point","x":150,"y":225},{"type":"point","x":225,"y":150},{"type":"point","x":250,"y":50},{"type":"point","x":250,"y":-50},{"type":"point","x":225,"y":-150},{"type":"point","x":150,"y":-225},{"type":"point","x":50,"y":-250},{"type":"close"},{"type":"fill","r":150,"g":150,"b":160},{"type":"stroke","r":80,"g":80,"b":80},{"type":"point","x":0,"y":-225},{"type":"point","x":-25,"y":-212.5},{"type":"point","x":-25,"y":-25},{"type":"point","x":-212.5,"y":-25},{"type":"point","x":-225,"y":0},{"type":"point","x":-212.5,"y":25},{"type":"point","x":-25,"y":25},{"type":"point","x":-25,"y":212.5},{"type":"point","x":0,"y":225},{"type":"point","x":25,"y":212.5},{"type":"point","x":25,"y":25},{"type":"point","x":212.5,"y":25},{"type":"point","x":225,"y":0},{"type":"point","x":212.5,"y":-25},{"type":"point","x":25,"y":-25},{"type":"point","x":25,"y":-212.5},{"type":"close"},{"type":"fill","r":150,"g":200,"b":210},{"type":"stroke","r":75,"g":125,"b":125}]`
         ), a1(enemy, warn) {
             if (!warn) enemiesBuffer.push(new Enemy(enemyBlueprints[31], {noProjPierce: true, x: enemy.x, y: enemy.y, dirToTarget: enemy.dirToTarget-Math.PI/8+Math.PI/4*Math.random(), size: 15, speed: 0.2}));
@@ -639,7 +642,7 @@ const enemyBlueprints = [
             if (!warn) enemiesBuffer.push(new Enemy(enemyBlueprints[35], {noProjPierce: true, x: enemy.x, y: enemy.y, dirToTarget: enemy.dirToTarget-Math.PI/8+Math.PI/4*Math.random(), size: 40, speed: 0.5}));
         }, 
     },{ // 37 red cell
-        size: 30, health: 30, num: 6, target: "playeradvanced", rotateToTarget: false, randomRotation: true, speed: 0, drawPath: pathParse(
+        size: 30, health: 20, num: 6, target: "playeradvanced", rotateToTarget: false, randomRotation: true, speed: 0, drawPath: pathParse(
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":-187.5,"y":-187.5},{"type":"point","x":-250,"y":0},{"type":"point","x":-187.5,"y":187.5},{"type":"point","x":0,"y":250},{"type":"point","x":187.5,"y":187.5},{"type":"point","x":250,"y":0},{"type":"point","x":187.5,"y":-187.5},{"type":"close"},{"type":"fill","r":150,"g":20,"b":20},{"type":"stroke","r":50,"g":0,"b":0},{"type":"point","x":0,"y":-175,"move":false},{"type":"point","x":125,"y":-125,"move":false},{"type":"point","x":175,"y":0,"move":false},{"type":"point","x":125,"y":125,"move":false},{"type":"point","x":0,"y":175,"move":false},{"type":"point","x":-125,"y":125,"move":false},{"type":"point","x":-175,"y":0,"move":false},{"type":"point","x":-125,"y":-125,"move":false},{"type":"close"},{"type":"fill","r":75,"g":0,"b":0},{"type":"stroke","r":50,"g":0,"b":0}]`
         ), a2(enemy, warn) {
             if (warn) return;
@@ -656,7 +659,7 @@ const enemyBlueprints = [
             }
         }, 
     },{ // 38 big cross
-        size: 80, health: 160, target: "playeradvanced", rotateToTarget: false, randomRotation: true, speed: 0, drawPath: pathParse(
+        size: 80, health: 150, target: "playeradvanced", rotateToTarget: false, randomRotation: true, speed: 0, drawPath: pathParse(
             `[{"type":"point","x":-50,"y":-250},{"type":"point","x":-150,"y":-225},{"type":"point","x":-225,"y":-150},{"type":"point","x":-250,"y":-50},{"type":"point","x":-250,"y":50},{"type":"point","x":-225,"y":150},{"type":"point","x":-150,"y":225},{"type":"point","x":-50,"y":250},{"type":"point","x":50,"y":250},{"type":"point","x":150,"y":225},{"type":"point","x":225,"y":150},{"type":"point","x":250,"y":50},{"type":"point","x":250,"y":-50},{"type":"point","x":225,"y":-150},{"type":"point","x":150,"y":-225},{"type":"point","x":50,"y":-250},{"type":"close"},{"type":"fill","r":150,"g":150,"b":160},{"type":"stroke","r":80,"g":80,"b":80},{"type":"point","x":0,"y":-225},{"type":"point","x":-25,"y":-212.5},{"type":"point","x":-25,"y":-25},{"type":"point","x":-212.5,"y":-25},{"type":"point","x":-225,"y":0},{"type":"point","x":-212.5,"y":25},{"type":"point","x":-25,"y":25},{"type":"point","x":-25,"y":212.5},{"type":"point","x":0,"y":225},{"type":"point","x":25,"y":212.5},{"type":"point","x":25,"y":25},{"type":"point","x":212.5,"y":25},{"type":"point","x":225,"y":0},{"type":"point","x":212.5,"y":-25},{"type":"point","x":25,"y":-25},{"type":"point","x":25,"y":-212.5},{"type":"close"},{"type":"fill","r":150,"g":200,"b":210},{"type":"stroke","r":75,"g":125,"b":125}]`
         ), a2(enemy, warn) {
             if (warn) return;
@@ -730,9 +733,9 @@ const enemyBlueprints = [
             `[{"type":"point","x":-287.5,"y":-225},{"type":"point","x":287.5,"y":-225},{"type":"point","x":287.5,"y":225},{"type":"point","x":-287.5,"y":225},{"type":"close"},{"type":"fill","r":150,"g":50,"b":50},{"type":"stroke","r":150,"g":50,"b":50},{"type":"point","x":-287.5,"y":-187.5},{"type":"point","x":287.5,"y":-187.5},{"type":"point","x":287.5,"y":187.5},{"type":"point","x":-287.5,"y":187.5},{"type":"close"},{"type":"fill","r":175,"g":100,"b":100},{"type":"stroke","r":175,"g":100,"b":100},{"type":"point","x":-287.5,"y":-112.5},{"type":"point","x":287.5,"y":-112.5},{"type":"point","x":287.5,"y":112.5},{"type":"point","x":-287.5,"y":112.5},{"type":"close"},{"type":"fill","r":255,"g":200,"b":200},{"type":"stroke","r":255,"g":200,"b":200}]`
         )
     },{ // 42 --- Virus
-        size: 75, health: 7500, boss: ["Virus", "#922", 2], spawnPosition: [0,0],rotateToTarget: false, target:"playerAdvanced", randomRotation: true, speed: 0.02, immovable: false, offscreen: false, drawPath: pathParse(
+        size: 75, health: 5000, boss: ["Virus", "#922", 2], spawnPosition: [0,0],rotateToTarget: false, target:"playerAdvanced", randomRotation: true, speed: 0.02, immovable: false, offscreen: false, drawPath: pathParse(
             `[{"type":"point","x":37.5,"y":-200},{"type":"point","x":125,"y":-175},{"type":"point","x":175,"y":-125},{"type":"point","x":200,"y":-37.5},{"type":"point","x":200,"y":37.5},{"type":"point","x":175,"y":125},{"type":"point","x":125,"y":175},{"type":"point","x":37.5,"y":200},{"type":"point","x":-37.5,"y":200},{"type":"point","x":-125,"y":175},{"type":"point","x":-175,"y":125},{"type":"point","x":-200,"y":37.5},{"type":"point","x":-200,"y":-37.5},{"type":"point","x":-175,"y":-125},{"type":"point","x":-125,"y":-175},{"type":"point","x":-37.5,"y":-200},{"type":"close"},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":75,"g":75,"b":75},{"type":"point","x":-25,"y":-150},{"type":"point","x":-25,"y":-250},{"type":"point","x":25,"y":-250},{"type":"point","x":25,"y":-150},{"type":"point","x":-150,"y":-125,"move":true},{"type":"point","x":-250,"y":-225,"move":false},{"type":"point","x":-225,"y":-250,"move":false},{"type":"point","x":-125,"y":-150,"move":false},{"type":"point","x":125,"y":-150,"move":true},{"type":"point","x":225,"y":-250,"move":false},{"type":"point","x":250,"y":-225,"move":false},{"type":"point","x":150,"y":-125,"move":false},{"type":"point","x":150,"y":-25,"move":true},{"type":"point","x":250,"y":-25,"move":false},{"type":"point","x":250,"y":25,"move":false},{"type":"point","x":150,"y":25,"move":false},{"type":"point","x":150,"y":125,"move":true},{"type":"point","x":250,"y":225,"move":false},{"type":"point","x":225,"y":250,"move":false},{"type":"point","x":125,"y":150,"move":false},{"type":"point","x":25,"y":150,"move":true},{"type":"point","x":25,"y":250,"move":false},{"type":"point","x":-25,"y":250,"move":false},{"type":"point","x":-25,"y":150,"move":false},{"type":"point","x":-125,"y":150,"move":true},{"type":"point","x":-225,"y":250,"move":false},{"type":"point","x":-250,"y":225,"move":false},{"type":"point","x":-150,"y":125,"move":false},{"type":"point","x":-150,"y":-25,"move":true},{"type":"point","x":-250,"y":-25,"move":false},{"type":"point","x":-250,"y":25,"move":false},{"type":"point","x":-150,"y":25,"move":false},{"type":"point","x":-100,"y":-25,"move":true},{"type":"point","x":-225,"y":-75,"move":false},{"type":"point","x":-212.5,"y":-100,"move":false},{"type":"point","x":-87.5,"y":-50,"move":false},{"type":"point","x":25,"y":-100,"move":true},{"type":"point","x":75,"y":-225,"move":false},{"type":"point","x":100,"y":-212.5,"move":false},{"type":"point","x":50,"y":-87.5,"move":false},{"type":"point","x":100,"y":25,"move":true},{"type":"point","x":225,"y":75,"move":false},{"type":"point","x":212.5,"y":100,"move":false},{"type":"point","x":87.5,"y":50,"move":false},{"type":"point","x":-25,"y":100,"move":true},{"type":"point","x":-75,"y":225,"move":false},{"type":"point","x":-100,"y":212.5,"move":false},{"type":"point","x":-50,"y":87.5,"move":false},{"type":"fill","r":50,"g":200,"b":50},{"type":"stroke","r":0,"g":50,"b":0},{"type":"point","x":-25,"y":-125,"move":false},{"type":"point","x":-100,"y":-100,"move":false},{"type":"point","x":-125,"y":-25,"move":false},{"type":"point","x":-125,"y":25,"move":false},{"type":"point","x":-100,"y":100,"move":false},{"type":"point","x":-25,"y":125,"move":false},{"type":"point","x":25,"y":125,"move":false},{"type":"point","x":100,"y":100,"move":false},{"type":"point","x":125,"y":25,"move":false},{"type":"point","x":125,"y":-25,"move":false},{"type":"point","x":100,"y":-100,"move":false},{"type":"point","x":25,"y":-125,"move":false},{"type":"close"},{"type":"fill","r":175,"g":75,"b":75},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":-25,"y":-75,"move":false},{"type":"point","x":25,"y":-75,"move":false},{"type":"point","x":75,"y":-25,"move":false},{"type":"point","x":75,"y":25,"move":false},{"type":"point","x":25,"y":75,"move":false},{"type":"point","x":-25,"y":75,"move":false},{"type":"point","x":-75,"y":25,"move":false},{"type":"point","x":-75,"y":-25,"move":false},{"type":"close"},{"type":"fill","r":20,"g":20,"b":20},{"type":"stroke","r":50,"g":50,"b":50}]`
-        ), a1(enemy, warn) {
+        ),tetraSummons:[[42,-150+300*Math.random(),-150+300*Math.random(),2000],], a1(enemy, warn) {
             if (warn) {
                 const things = [];
                 for (var i = 0; i < 3; i++) {                
@@ -879,6 +882,470 @@ const enemyBlueprints = [
         size: 15, projectile: true, target: "direction", rotateToTarget: true, speed: 2, drawPath: pathParse(
             `[{"type":"point","x":0,"y":-250},{"type":"point","x":200,"y":-200},{"type":"point","x":250,"y":0},{"type":"point","x":200,"y":200},{"type":"point","x":0,"y":250},{"type":"point","x":-200,"y":200},{"type":"point","x":-250,"y":0},{"type":"point","x":-200,"y":-200},{"type":"close"},{"type":"fill","r":150,"g":50,"b":50},{"type":"stroke","r":150,"g":50,"b":50},{"type":"point","x":0,"y":-200},{"type":"point","x":150,"y":-150},{"type":"point","x":200,"y":0},{"type":"point","x":150,"y":150},{"type":"point","x":0,"y":200},{"type":"point","x":-150,"y":150},{"type":"point","x":-200,"y":0},{"type":"point","x":-150,"y":-150},{"type":"close"},{"type":"fill","r":175,"g":100,"b":100},{"type":"stroke","r":175,"g":100,"b":100},{"type":"point","x":0,"y":-100},{"type":"point","x":-75,"y":-75},{"type":"point","x":-100,"y":0},{"type":"point","x":-75,"y":75},{"type":"point","x":0,"y":100},{"type":"point","x":75,"y":75},{"type":"point","x":100,"y":0},{"type":"point","x":75,"y":-75},{"type":"close"},{"type":"fill","r":255,"g":200,"b":200},{"type":"stroke","r":255,"g":200,"b":200}]`
         )
+    },{ // 44 big square
+        size: 80, health: 300, target: "playeradvanced", rotateToTarget: false, speed: 0, drawPath: pathParse(
+            `[{"type":"point","x":-250,"y":-250},{"type":"point","x":-250,"y":250},{"type":"point","x":250,"y":250},{"type":"point","x":250,"y":-250},{"type":"close"},{"type":"point","x":-125,"y":-125,"move":true},{"type":"point","x":125,"y":-125,"move":false},{"type":"point","x":125,"y":125,"move":false},{"type":"point","x":-125,"y":125,"move":false},{"type":"close"},{"type":"fill","r":175,"g":50,"b":50},{"type":"stroke","r":125,"g":50,"b":50}]`
+        ),
+        a2(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista2,true,"rect",70,enemy.dirToTarget,enemyBlueprints[52],0.1) },
+        a3(enemy, warn) { // grow
+            if (warn) {
+                if (enemy.reset) enemy.reset[0]();
+                enemy.reset = false;
+                enemy.offscreen = true;
+                enemy.immovable = true;
+                enemy.speed = 0;
+                enemy.vx = 0; enemy.vy = 0;
+                attackWarnings.push(["circle",game.warnDelay,game.warnDelay,enemy.x,enemy.y,350]);
+            } else {
+                enemy.vx *= -1; enemy.vy *= -1;
+                enemy.speed = 0;
+                ease(enemy,"size",350,0.1);
+                enemy.reset = [ () => { setTimeout( () => {enemy.offscreen = false; enemy.immovable = false;},400); enemy.speed = 0.03; ease(enemy,"size",85,0.4) }, 20 ];
+            }
+        }, 
+    },{ // 45 small red square
+        size: 30, health: 300, target: "playeradvanced", rotateToTarget: true, speed: 0, drawPath: pathParse(
+            `[{"type":"point","x":300,"y":0,"move":false},{"type":"point","x":0,"y":300,"move":false},{"type":"point","x":-300,"y":0,"move":false},{"type":"point","x":0,"y":-300,"move":false},{"type":"close"},{"type":"fill","r":175,"g":50,"b":50},{"type":"stroke","r":125,"g":50,"b":50}]`
+        ), a1(enemy, warn) {
+            if (!warn) enemiesBuffer.push(new Enemy(enemyBlueprints[46], {noProjPierce: true, x: enemy.x, y: enemy.y, dirToTarget: enemy.dirToTarget-Math.PI/8+Math.PI/4*Math.random(), size: 15, speed: 0.2}));
+        },
+        a3(enemy, warn) { enemyAttackTeleport(enemy,warn,enemy.attackLista3,35,player.x - 100 + 200 * Math.random(),player.y - 100 + 200 * Math.random()) }
+    },{ // 46 red square projectile
+        size: 15, projectile: true, target: "direction", rotateToTarget: true, speed: 2, drawPath: pathParse(
+            `[{"type":"point","x":300,"y":0,"move":false},{"type":"point","x":0,"y":300,"move":false},{"type":"point","x":-300,"y":0,"move":false},{"type":"point","x":0,"y":-300,"move":false},{"type":"close"},{"type":"fill","r":175,"g":50,"b":50},{"type":"stroke","r":125,"g":50,"b":50}]`
+        )
+    },{ // 47 green boids
+        size: 25, health: 65, num: 5, target: "playeradvanced", rotateToTarget: true, speed: 0, drawPath: pathParse(
+            `[{"type":"point","x":-200,"y":250,"move":false},{"type":"point","x":-200,"y":-250,"move":false},{"type":"point","x":250,"y":0,"move":false},{"type":"close"},{"type":"fill","r":50,"g":175,"b":50},{"type":"stroke","r":50,"g":125,"b":50}]`
+        ), a2(enemy, warn) {
+            if (warn) return;
+            enemy.speed = 10;
+            enemy.reset = [() => {enemy.speed = 0; enemy.vx *= 0.1; enemy.vy *= 0.1;}, 6];
+        },
+        a3(enemy, warn) { enemyAttackTeleport(enemy,warn,enemy.attackLista3,35,player.x - 25 + 50 * Math.random(),player.y - 25 + 50 * Math.random()) }
+    },{ // 48 big green triangle
+        size: 65, health: 300, target: "playeradvanced", rotateToTarget: true, speed: 0.1, drawPath: pathParse(
+            `[{"type":"point","x":-200,"y":250,"move":false},{"type":"point","x":-200,"y":-250,"move":false},{"type":"point","x":250,"y":0,"move":false},{"type":"close"},{"type":"point","x":-100,"y":-100,"move":true},{"type":"point","x":-100,"y":100,"move":false},{"type":"point","x":75,"y":0,"move":false},{"type":"close"},{"type":"fill","r":50,"g":175,"b":50},{"type":"stroke","r":50,"g":125,"b":50}]`
+        ),
+        a2(enemy, warn) { 
+            enemyAttackSlice(enemy,warn,enemy.attackLista2,true,"stab",50,enemy.dirToTarget,enemyBlueprints[49],0.1);
+            enemyAttackSlice(enemy,warn,enemy.attackLista2,true,"stab",50,enemy.dirToTarget+2*Math.PI/3,enemyBlueprints[49],0.1);
+            enemyAttackSlice(enemy,warn,enemy.attackLista2,true,"stab",50,enemy.dirToTarget-2*Math.PI/3,enemyBlueprints[49],0.1);
+        }, a3(enemy, warn) {
+            if (warn) return;
+            enemy.speed = 10;
+            enemy.reset = [() => {enemy.speed = 0.1; enemy.vx *= 0.1; enemy.vy *= 0.1;}, 6];
+        },
+    },{ // 49 green triangle projectile
+        size: 15, immovable: true, projectile: true, target: "direction", rotateToTarget: true, speed: 2, drawPath: pathParse(
+            `[{"type":"point","x":-200,"y":250,"move":false},{"type":"point","x":-200,"y":-250,"move":false},{"type":"point","x":250,"y":0,"move":false},{"type":"close"},{"type":"fill","r":50,"g":175,"b":50},{"type":"stroke","r":50,"g":125,"b":50}]`
+        )
+    },{ // 50 medium green triangle
+        size: 35, health: 300, target: "playeradvanced", rotateToTarget: false, randomRotation: true, speed: 0.1, drawPath: pathParse(
+            `[{"type":"point","x":-200,"y":250,"move":false},{"type":"point","x":-200,"y":-250,"move":false},{"type":"point","x":250,"y":0,"move":false},{"type":"close"},{"type":"point","x":-100,"y":-100,"move":true},{"type":"point","x":-100,"y":100,"move":false},{"type":"point","x":75,"y":0,"move":false},{"type":"close"},{"type":"fill","r":50,"g":175,"b":50},{"type":"stroke","r":50,"g":125,"b":50}]`
+        ), a2(enemy, warn) {
+            enemiesBuffer.push(new Enemy(enemyBlueprints[49], {noProjPierce: true, x: enemy.x + Math.random()*100-50, y: enemy.y + Math.random()*100-50, dirToTarget: Math.random()*Math.PI*2, size: 15, speed: 0.02, randomRotation: true, rotateToTarget: false }));
+        },
+        a3(enemy, warn) { enemyAttackTeleport(enemy,warn,enemy.attackLista3,35,player.x - 50 + 100 * Math.random(),player.y - 50 + 100 * Math.random()) }
+    },{ // 51 red shield dude -> white cell
+        size: 85, health: 300, num: 1, rotateToTarget: false, speed: 0.03, drawPath: pathParse(
+            `[{"type":"point","x":-250,"y":-250,"move":false},{"type":"point","x":-250,"y":0,"move":false},{"type":"point","x":0,"y":250,"move":false},{"type":"point","x":250,"y":0,"move":false},{"type":"point","x":250,"y":-250,"move":false},{"type":"close"},{"type":"fill","r":175,"g":50,"b":50},{"type":"stroke","r":125,"g":50,"b":50}]`
+        ), a1(enemy, warn) {
+            if (!warn) for (var i = 0; i < 3; i++) enemiesBuffer.push(new Enemy(enemyBlueprints[46], {noProjPierce: true, x: enemy.x + Math.random()*70-35, y: enemy.y + Math.random()*70-35, dirToTarget: Math.random()*Math.PI*2, size: 15, speed: 0.3}));
+        },
+        a3(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista3,true,"stab",45,enemy.dirToTarget,enemyBlueprints[52],0.03,3)}, 
+    },{ // 52 red square projectile wallpierce
+        size: 15, projectile: true,immovable: true, target: "direction", rotateToTarget: true, speed: 2, drawPath: pathParse(
+            `[{"type":"point","x":300,"y":0,"move":false},{"type":"point","x":0,"y":300,"move":false},{"type":"point","x":-300,"y":0,"move":false},{"type":"point","x":0,"y":-300,"move":false},{"type":"close"},{"type":"fill","r":175,"g":50,"b":50},{"type":"stroke","r":125,"g":50,"b":50}]`
+        )
+    },{ // 53 blue trapazoid thing
+        size: 40, health: 300, rotateToTarget: true, speed: 0, target: "player", drawPath: pathParse(
+            `[{"type":"point","x":300,"y":0},{"type":"point","x":150,"y":150},{"type":"point","x":-300,"y":150},{"type":"point","x":-150,"y":0},{"type":"point","x":-300,"y":-150},{"type":"point","x":150,"y":-150},{"type":"close"},{"type":"fill","r":50,"g":125,"b":175},{"type":"stroke","r":50,"g":75,"b":125}]`
+        ),
+        a2(enemy, warn) {
+            if (warn) return;
+            enemy.speed = 10;
+            enemy.reset = [() => {enemy.speed = 0; enemy.vx *= 0.1; enemy.vy *= 0.1;}, 6];
+        },
+        a3(enemy, warn) { enemyAttackTeleport(enemy,warn,enemy.attackLista3,40) }
+    },{ // 54 --- ɒɿƚɘT
+        size: 25, health: 15000, boss: ["??????????!!!!!     ", "#000", 1], spawnPosition: [0,0],rotateToTarget: false, passiveRotation: true, target:"playerAdvanced", speed: 0.15, immovable: false, offscreen: false, drawPath: player.inverseDrawPath, 
+        phase: 0,
+        tick(enemy) {
+            switch(enemy.phase) {
+                case 0: {
+                    if (enemy.health/game.bossHealthMax < 0.8) {
+                        enemy.phase = -1;
+                        ease(enemy, "size", 0, 1);
+                        game.regionTransfer = 2;
+                        ease(game, "regionTransfer", 0, 2);
+                        setTimeout(() => {
+                            enemies = [enemy];
+                            updateStats();
+                            enemy.phase = 1;
+                            enemy.immovable = true; 
+                            enemy.speed = 0;
+                            enemy.vx = 0;
+                            enemy.vy = 0
+                            enemy.x = 0;
+                            enemy.y = -10000;
+                            enemy.boss = false;
+                            
+                            player.x = 0;
+                            player.y = 300;
+
+                            game.region = regions[0][0];
+                            game.region.generateBrickId();
+                            floor = [];
+                            roomEffects = [];
+
+                            for (var i = 0; i < 6; i++) 
+                                floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
+            
+                            for (var i = 0; i < 3; i++) roomEffects.push({
+                                moveSpeed: 0.5 + Math.random()*2,
+                                x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:600+Math.random()*400,
+                                reference:game.region.roomEffects[Math.floor(Math.random()*game.region.roomEffects.length)]
+                            });
+                            
+                            const boss = new Enemy(enemyBlueprints[game.region.bosses[0]],{health: 3000})
+                            enemies.push( boss );
+                            boss.original = true;
+                            if (boss.spawnPosition) {
+                                boss.x = boss.spawnPosition[0];
+                                boss.y = boss.spawnPosition[1];
+                            }
+                            if (boss.tetraSummons) boss.tetraSummons.forEach(item => {
+                                enemies.push( new Enemy(enemyBlueprints[item[0]], {x: item[1], y: item[2], health: item[3]}))
+                            })
+                            restartMusic(game.region.music[boss.boss[2]]);
+                            game.bossEase = 0;
+                            game.bossHealthMax = 0;
+                            enemies.forEach(async (enemy,i) => {
+                                if (enemy.boss) game.bossHealthMax += enemy.healthMax;
+                            })
+                        },1000)
+                    }
+                    break;
+                }
+                case 1: {
+                    if (!game.boss) {
+                        enemy.phase = -1;
+                        game.regionTransfer = 2;
+                        ease(game, "regionTransfer", 0, 2);
+                        setTimeout(() => {
+                            updateStats();
+                            enemy.phase = 2;
+                            ease(enemy, "size", 25, 1);
+                            enemy.immovable = false; 
+                            enemy.speed = 0.15;
+                            enemy.x = 0;
+                            enemy.y = 0;
+                            enemy.boss = ["??????????!!!!!     ", "#000", 1];
+
+                            game.region = regions[3][0];
+                            game.region.generateBrickId();
+                            floor = [];
+                            roomEffects = [];
+
+                            for (var i = 0; i < 6; i++) 
+                                floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
+            
+                            for (var i = 0; i < 3; i++) roomEffects.push({
+                                moveSpeed: 0.5 + Math.random()*2,
+                                x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:600+Math.random()*400,
+                                reference:game.region.roomEffects[Math.floor(Math.random()*game.region.roomEffects.length)]
+                            });
+
+                            player.x = 0;
+                            player.y = 300;
+                            restartMusic(game.region.music[1]);
+                            game.bossEase = 0;
+                            enemy.health = 15000*0.8;
+                            game.bossHealthMax = 15000;
+                        },1000)
+                        
+                    }
+                }
+                case 2: {
+                    if (enemy.health/game.bossHealthMax < 0.6) {
+                        enemy.phase = -1;
+                        ease(enemy, "size", 0, 1);
+                        game.regionTransfer = 2;
+                        ease(game, "regionTransfer", 0, 2);
+                        setTimeout(() => {
+                            enemies = [enemy];
+                            updateStats();
+                            enemy.phase = 3;
+                            enemy.immovable = true; 
+                            enemy.speed = 0;
+                            enemy.vx = 0;
+                            enemy.vy = 0
+                            enemy.x = 0;
+                            enemy.y = -10000;
+                            enemy.boss = false;
+                            
+                            player.x = 0;
+                            player.y = 300;
+
+                            game.region = regions[1][0];
+                            game.region.generateBrickId();
+                            floor = [];
+                            roomEffects = [];
+
+                            for (var i = 0; i < 6; i++) 
+                                floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
+            
+                            for (var i = 0; i < 3; i++) roomEffects.push({
+                                moveSpeed: 0.5 + Math.random()*2,
+                                x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:600+Math.random()*400,
+                                reference:game.region.roomEffects[Math.floor(Math.random()*game.region.roomEffects.length)]
+                            });
+                            
+                            const boss = new Enemy(enemyBlueprints[game.region.bosses[0]],{health: 3000})
+                            enemies.push( boss );
+                            boss.original = true;
+                            if (boss.spawnPosition) {
+                                boss.x = boss.spawnPosition[0];
+                                boss.y = boss.spawnPosition[1];
+                            }
+                            if (boss.tetraSummons) boss.tetraSummons.forEach(item => {
+                                enemies.push( new Enemy(enemyBlueprints[item[0]], {x: item[1], y: item[2], health: item[3]}))
+                            })
+                            restartMusic(game.region.music[boss.boss[2]]);
+                            game.bossEase = 0;
+                            game.bossHealthMax = 0;
+                            enemies.forEach(async (enemy,i) => {
+                                if (enemy.boss) game.bossHealthMax += enemy.healthMax;
+                            })
+                        },1000)
+                    }
+                    break;
+                }
+                case 3: {
+                    if (!game.boss) {
+                        enemy.phase = -1;
+                        game.regionTransfer = 2;
+                        ease(game, "regionTransfer", 0, 2);
+                        setTimeout(() => {
+                            updateStats();
+                            enemy.phase = 4;
+                            ease(enemy, "size", 25, 1);
+                            enemy.immovable = false; 
+                            enemy.speed = 0.15;
+                            enemy.x = 0;
+                            enemy.y = 0;
+                            enemy.boss = ["??????????!!!!!     ", "#000", 1];
+
+                            game.region = regions[3][0];
+                            game.region.generateBrickId();
+                            floor = [];
+                            roomEffects = [];
+
+                            for (var i = 0; i < 6; i++) 
+                                floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
+            
+                            for (var i = 0; i < 3; i++) roomEffects.push({
+                                moveSpeed: 0.5 + Math.random()*2,
+                                x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:600+Math.random()*400,
+                                reference:game.region.roomEffects[Math.floor(Math.random()*game.region.roomEffects.length)]
+                            });
+
+                            player.x = 0;
+                            player.y = 300;
+                            restartMusic(game.region.music[1]);
+                            game.bossEase = 0;
+                            enemy.health = 15000*0.6;
+                            game.bossHealthMax = 15000;
+                        },1000)
+                        
+                    }
+                }
+                case 4: {
+                    if (enemy.health/game.bossHealthMax < 0.4) {
+                        enemy.phase = -1;
+                        ease(enemy, "size", 0, 1);
+                        game.regionTransfer = 2;
+                        ease(game, "regionTransfer", 0, 2);
+                        setTimeout(() => {
+                            enemies = [enemy];
+                            updateStats();
+                            enemy.phase = 5;
+                            enemy.immovable = true; 
+                            enemy.speed = 0;
+                            enemy.vx = 0;
+                            enemy.vy = 0
+                            enemy.x = 0;
+                            enemy.y = -10000;
+                            enemy.boss = false;
+                            
+                            player.x = 0;
+                            player.y = 300;
+
+                            game.region = regions[2][0];
+                            game.region.generateBrickId();
+                            floor = [];
+                            roomEffects = [];
+
+                            for (var i = 0; i < 6; i++) 
+                                floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
+            
+                            for (var i = 0; i < 3; i++) roomEffects.push({
+                                moveSpeed: 0.5 + Math.random()*2,
+                                x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:600+Math.random()*400,
+                                reference:game.region.roomEffects[Math.floor(Math.random()*game.region.roomEffects.length)]
+                            });
+                            
+                            const boss = new Enemy(enemyBlueprints[game.region.bosses[0]],{health: 3000})
+                            enemies.push( boss );
+                            boss.original = true;
+                            if (boss.spawnPosition) {
+                                boss.x = boss.spawnPosition[0];
+                                boss.y = boss.spawnPosition[1];
+                            }
+                            if (boss.tetraSummons) boss.tetraSummons.forEach(item => {
+                                enemies.push( new Enemy(enemyBlueprints[item[0]], {x: item[1], y: item[2], health: item[3]}))
+                            })
+                            restartMusic(game.region.music[boss.boss[2]]);
+                            game.bossEase = 0;
+                            game.bossHealthMax = 0;
+                            enemies.forEach(async (enemy,i) => {
+                                if (enemy.boss) game.bossHealthMax += enemy.healthMax;
+                            })
+                        },1000)
+                    }
+                    break;
+                }
+                case 5: {
+                    if (!game.boss) {
+                        enemy.phase = -1;
+                        game.regionTransfer = 2;
+                        ease(game, "regionTransfer", 0, 2);
+                        setTimeout(() => {
+                            updateStats();
+                            enemy.phase = 6;
+                            ease(enemy, "size", 25, 1);
+                            enemy.immovable = false; 
+                            enemy.speed = 0.15;
+                            enemy.x = 0;
+                            enemy.y = 0;
+                            enemy.boss = ["??????????!!!!!     ", "#000", 1];
+
+                            game.region = regions[3][0];
+                            game.region.generateBrickId();
+                            floor = [];
+                            roomEffects = [];
+
+                            for (var i = 0; i < 6; i++) 
+                                floor.push({x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:200+Math.random()*100,rotation:Math.random()*Math.PI,reference:game.region.floorPaths[Math.floor(Math.random()*game.region.floorPaths.length)]});
+            
+                            for (var i = 0; i < 3; i++) roomEffects.push({
+                                moveSpeed: 0.5 + Math.random()*2,
+                                x:-1300+Math.random()*2600,y:-800+Math.random()*1600,size:600+Math.random()*400,
+                                reference:game.region.roomEffects[Math.floor(Math.random()*game.region.roomEffects.length)]
+                            });
+
+                            player.x = 0;
+                            player.y = 300;
+                            restartMusic(game.region.music[enemy.boss[2]]);
+                            game.bossEase = 0;
+                            enemy.health = 15000*0.4;
+                            game.bossHealthMax = 15000;
+                        },1000)
+                        
+                    }
+                }
+                case 6: {
+                    if (enemy.health/game.bossHealthMax < 0.4) {
+                        enemy.phase = -1;
+                        ease(enemy, "size", 0, 1);
+                        setTimeout(() => {
+                            enemy.boss[0] = "ɒɿƚɘT";
+                            ease(enemy, "health", 10000, 15);
+                            ease(game, "bossHealthMax", 10000, 15);
+                            updateStats();
+                            enemy.phase = 7;
+                            enemy.immovable = true; 
+                            enemy.speed = 0;
+                            enemy.vx = 0;
+                            enemy.vy = 0
+                            enemy.x = 0;
+                            enemy.y = -10000;
+                            updateStats();
+                            floor = [];
+                            roomEffects = [];
+                            
+                            restartMusic(game.region.music[enemy.boss[2]]);
+
+                            setTimeout(() => {
+                                ease(enemy, "size", 25, 1);
+                                enemy.phase = 7;
+                                enemy.immovable = true; 
+                                enemy.speed = 0.15;
+                                enemy.vx = 0;
+                                enemy.vy = 0
+                                enemy.x = 0;
+                                enemy.y = 0;
+                                
+                                /*
+                                enemies = [enemy];
+                                updateStats();
+                                enemy.phase = 5;
+                                enemy.immovable = true; 
+                                enemy.speed = 0;
+                                enemy.vx = 0;
+                                enemy.vy = 0
+                                enemy.x = 0;
+                                enemy.y = -10000;
+                                updateStats();
+                                enemy.phase = 7;
+                                floor = [];
+                                roomEffects = [];
+                                
+                                restartMusic(game.region.music[enemy.boss[2]]);*/
+                            },10000)
+                        },1000)
+                    }
+                    break;
+                }
+            }
+        }, a3(enemy, warn) {
+            if (enemy.phase%2) return;
+            if (warn) {
+                const pos = [enemy.x-100+Math.random()*200,enemy.y-100+Math.random()*200]
+                enemy.attackLista3.push(pos);
+                attackWarnings.push(["circle",game.warnDelay,game.warnDelay,pos[0], pos[1],50]);
+            } else {
+                enemiesBuffer.push(new Enemy(enemyBlueprints[56],{ noSpawning: true, x: enemy.attackLista3[0][0], y: enemy.attackLista3[0][1]}));
+                enemy.attackLista3.splice(0,1);
+            }
+        }
+    },{ // 55 greatsword
+        size: 55, health: 11, rotateToTarget: true, speed: 0.1, ephemeral: true, drawPath: pathParse(
+            `[{"type":"point","x":-75,"y":-50},{"type":"point","x":200,"y":-50},{"type":"point","x":250,"y":0},{"type":"point","x":200,"y":50},{"type":"point","x":-75,"y":50},{"type":"fill","r":175,"g":235,"b":230},{"type":"stroke","r":50,"g":80,"b":85},{"type":"point","x":-125,"y":-25},{"type":"point","x":-225,"y":-25},{"type":"point","x":-250,"y":0},{"type":"point","x":-225,"y":25},{"type":"point","x":-125,"y":25},{"type":"fill","r":75,"g":105,"b":105},{"type":"stroke","r":85,"g":175,"b":165},{"type":"point","x":-75,"y":100},{"type":"point","x":-100,"y":100},{"type":"point","x":-125,"y":75},{"type":"point","x":-125,"y":-75},{"type":"point","x":-100,"y":-100},{"type":"point","x":-75,"y":-100},{"type":"close"},{"type":"fill","r":100,"g":145,"b":150},{"type":"stroke","r":50,"g":130,"b":130}]`
+        ),
+        a2(enemy, warn) { enemyAttackDash(enemy,warn,enemy.attackLista2,enemy.dirToTarget,4,0.1,false,25) },
+        a3(enemy, warn) { enemyAttackSlice(enemy,warn,enemy.attackLista3,false,"slice",125,enemy.dirToTarget,enemyBlueprints[2],0.1) }
+    },{ // 56 minigun
+        size: 30, health: 200, target: "playeradvanced", rotateToTarget: true, speed: 0, immovable: true, drawPath: pathParse(
+            `[{"type":"point","x":300,"y":-50,"move":false},{"type":"point","x":300,"y":50,"move":false},{"type":"point","x":-50,"y":50,"move":false},{"type":"point","x":-50,"y":-50,"move":false},{"type":"close"},{"type":"point","x":250,"y":-50,"move":true},{"type":"point","x":250,"y":-100,"move":false},{"type":"point","x":-50,"y":-100,"move":false},{"type":"point","x":-50,"y":-50,"move":false},{"type":"point","x":-50,"y":50,"move":true},{"type":"point","x":-50,"y":100,"move":false},{"type":"point","x":250,"y":100,"move":false},{"type":"point","x":250,"y":50,"move":false},{"type":"fill","r":175,"g":175,"b":175},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":100,"y":-125,"move":true},{"type":"point","x":100,"y":125,"move":false},{"type":"point","x":50,"y":125,"move":false},{"type":"point","x":50,"y":-125,"move":false},{"type":"close"},{"type":"point","x":-50,"y":-125,"move":true},{"type":"point","x":-50,"y":125,"move":false},{"type":"point","x":-250,"y":125,"move":false},{"type":"point","x":-250,"y":-125,"move":false},{"type":"point","x":-150,"y":-175,"move":false},{"type":"point","x":-75,"y":-175,"move":false},{"type":"point","x":-75,"y":-150,"move":false},{"type":"point","x":-125,"y":-150,"move":false},{"type":"point","x":-175,"y":-125,"move":false},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
+        ), a1(enemy, warn) {
+            if (!warn) enemiesBuffer.push(new Enemy(enemyBlueprints[57], {noProjPierce: true, x: enemy.x, y: enemy.y, dirToTarget: enemy.dirToTarget-Math.PI/8+Math.PI/4*Math.random()}));
+        },
+    },{ // 57 minigun bullet
+        size: 10, projectile: true, target: "direction", rotateToTarget: true, speed: 0.4, drawPath: pathParse(
+            `[{"type":"point","x":-250,"y":-100},{"type":"point","x":200,"y":-100},{"type":"point","x":300,"y":0},{"type":"point","x":200,"y":100},{"type":"point","x":-250,"y":100},{"type":"close"},{"type":"fill","r":100,"g":100,"b":100},{"type":"stroke","r":50,"g":50,"b":50}]`
+        )
+    },{ // 58 railgun
+        size: 30, health: 200, target: "playeradvanced", rotateToTarget: true, speed: 0, immovable: true, drawPath: pathParse(
+            `[{"type":"point","x":237.5,"y":-25},{"type":"point","x":225,"y":0},{"type":"point","x":237.5,"y":25},{"type":"point","x":-75,"y":25},{"type":"point","x":-75,"y":-25},{"type":"close"},{"type":"fill","r":125,"g":255,"b":255},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":287.5,"y":25},{"type":"point","x":250,"y":50},{"type":"point","x":225,"y":75},{"type":"point","x":200,"y":87.5},{"type":"point","x":-50,"y":100},{"type":"point","x":-100,"y":75},{"type":"point","x":-200,"y":50},{"type":"point","x":-225,"y":100},{"type":"point","x":-250,"y":175},{"type":"point","x":-275,"y":162.5},{"type":"point","x":-250,"y":75},{"type":"point","x":-237.5,"y":0},{"type":"point","x":-250,"y":-37.5},{"type":"point","x":-225,"y":-50},{"type":"point","x":-100,"y":-75},{"type":"point","x":-50,"y":-100},{"type":"point","x":200,"y":-87.5},{"type":"point","x":225,"y":-75},{"type":"point","x":250,"y":-50},{"type":"point","x":287.5,"y":-25},{"type":"point","x":200,"y":-25},{"type":"point","x":187.5,"y":0},{"type":"point","x":175,"y":-25},{"type":"point","x":75,"y":-25},{"type":"point","x":62.5,"y":0},{"type":"point","x":50,"y":-25},{"type":"point","x":-50,"y":-25},{"type":"point","x":-62.5,"y":0},{"type":"point","x":-50,"y":25},{"type":"point","x":50,"y":25},{"type":"point","x":62.5,"y":0},{"type":"point","x":75,"y":25},{"type":"point","x":175,"y":25},{"type":"point","x":187.5,"y":0},{"type":"point","x":200,"y":25},{"type":"close"},{"type":"fill","r":75,"g":75,"b":100},{"type":"stroke","r":50,"g":50,"b":50},{"type":"point","x":200,"y":-50},{"type":"point","x":-75,"y":-50},{"type":"point","x":-100,"y":0,"move":false},{"type":"point","x":-75,"y":50,"move":false},{"type":"point","x":187.5,"y":50,"move":false},{"type":"point","x":-112.5,"y":-37.5,"move":true},{"type":"point","x":-125,"y":0,"move":false},{"type":"point","x":-112.5,"y":37.5,"move":false},{"type":"point","x":-150,"y":-25,"move":true},{"type":"point","x":-162.5,"y":0,"move":false},{"type":"point","x":-150,"y":25,"move":false},{"type":"point","x":-187.5,"y":-12.5,"move":true},{"type":"point","x":-200,"y":0,"move":false},{"type":"point","x":-187.5,"y":12.5,"move":false},{"type":"stroke","r":125,"g":255,"b":255}]`
+        ), a2(enemy, warn) {
+            if (!warn) enemiesBuffer.push(new Enemy(enemyBlueprints[57], {noProjPierce: true, x: enemy.x, y: enemy.y, dirToTarget: enemy.dirToTarget-Math.PI/8+Math.PI/4*Math.random()}));
+        },
+    },{ // 59 railgun bullet
+        size: 30, projectile: true, target: "direction", rotateToTarget: true, speed: 4, drawPath: pathParse(
+            `[{"type":"point","x":-250,"y":-100},{"type":"point","x":200,"y":-100},{"type":"point","x":300,"y":0},{"type":"point","x":200,"y":100},{"type":"point","x":-250,"y":100},{"type":"close"},{"type":"fill","r":50,"g":150,"b":175},{"type":"stroke","r":50,"g":75,"b":100}]`
+        )
     }
 ]
 
@@ -932,6 +1399,7 @@ function enemyAttackDash(enemy,warn,attacklist,direction,speed,baseSpeed,advance
         attacklist.splice(0,1);
         enemy.vx *= -1; enemy.vy *= -1;
         enemy.speed = speed;
-        enemy.reset = [ () => { enemy.immovable = false; enemy.speed = baseSpeed; if (advanced) enemy.target = "playerAdvanced"; else enemy.target = "-".repeat(Math.random()< 0.5) + "player"; enemy.vx *= 0.25; enemy.vy *= 0.25; }, length ];
+        enemy.reset = [ () => { enemy.immovable = false; enemy.speed = baseSpeed; if (advanced) enemy.target = "playerAdvanced"; else enemy.target = "-".repeat(Math.random()< 0.5) + "player"; enemy.vx *= 0.25; enemy.vy *= 0.25; 
+        }, length ];
     }
 }
