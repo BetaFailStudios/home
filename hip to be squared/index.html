@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="icon" type="image/x-icon" href="htbsplayer.png">
     <meta charset="utf-8">
-    <font src="resources/ShareTech-Regular.ttf"></font>
     <script src="resources/gpu-browser.min.js"></script>
 </head>
 <body>
@@ -21,10 +20,9 @@
             overflow: hidden;
             cursor: none;
         }
-        .share-tech-regular {
-            font-family: "Share Tech", sans-serif;
-            font-weight: 400;
-            font-style: normal;
+        @font-face {
+            font-family: "share tech";
+            src: "resources/ShareTech-Regular.ttf";
         }
     </style>
     <script>function xy(event) {  }</script>
